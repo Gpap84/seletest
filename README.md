@@ -1,4 +1,5 @@
 Seletest
 ========
 
-Web and Mobile Automation testing framework based on selenium - webdriver - appium in Java
+Web and Mobile Automation testing framework based on Selenium - Webdriver - Appium in Java
+
