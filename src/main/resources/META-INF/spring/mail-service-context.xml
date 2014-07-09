@@ -18,7 +18,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <context:component-scan base-package="com.selenium.qa.automation" />
 
  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-  <property name="host" value="mail.global-intra.net" />
+  <property name="host" value="smtp.gmail.com" />
   <property name="port" value="25" />
   <property name="javaMailProperties">
    <props>  
@@ -30,10 +30,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  </bean>
  <bean id="alertMailMessage" class="org.springframework.mail.SimpleMailMessage">
   <property name="from">
-   <value>myusername@unify.com</value>
+   <value>myusername@gmail.com</value>
   </property>
   <property name="to">
-   <value>myusername@unify.com</value>
+   <value>myusername@gmail.com</value>
   </property>
   <property name="subject"
    value="Alert - Exception occurred. Please investigate" />
