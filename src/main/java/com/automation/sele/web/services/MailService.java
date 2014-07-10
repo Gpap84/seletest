@@ -26,10 +26,7 @@ public class MailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        try{
-        mailSender.send(message);}
-        catch(Exception ex)
-        {}
+        mailSender.send(message);
 
     }
 
@@ -37,8 +34,7 @@ public class MailService {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage(alertMailMessage);
         mailMessage.setText(alert);
-        try{mailSender.send(mailMessage);}
-        catch(Exception ex){}
+        mailSender.send(mailMessage);
 
     }
 
