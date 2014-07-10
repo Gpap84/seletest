@@ -19,7 +19,7 @@ public class WebDriverListener implements WebDriverEventListener {
 
  
     /**
-     * Instantiates a new log driver.
+     * Instantiates a new event driver.
      * @throws Exception
      */
     public WebDriverListener(){
