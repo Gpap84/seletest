@@ -32,6 +32,7 @@ public class AutomationUITestBase extends AbstractTestNGSpringContextTests {
     	prepareTest();
     }
 
+    
     @BeforeSuite(alwaysRun = true)
     protected void suiteSettings()
             throws Exception {
