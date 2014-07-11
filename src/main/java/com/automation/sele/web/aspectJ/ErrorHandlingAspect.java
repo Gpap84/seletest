@@ -22,7 +22,7 @@ public class ErrorHandlingAspect{
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around("execution(* com.automation.sele.web.selenium.*(..)) && @annotation(retry)")
+	@Around("execution(* com.automation.sele.web.selenium.webAPI.WebDriverActionsController.*(..)) && @annotation(retry)")
 	public Object retry(ProceedingJoinPoint pjp, RetryIfFails retry) throws Throwable
 	{
 		Object returnValue = null;

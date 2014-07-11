@@ -34,8 +34,7 @@ public class AutomationUITestBase extends AbstractTestNGSpringContextTests {
 
     
     @BeforeSuite(alwaysRun = true)
-    protected void suiteSettings()
-            throws Exception {
+    protected void suiteSettings() throws Exception {
         
     }
 
@@ -75,6 +74,10 @@ public class AutomationUITestBase extends AbstractTestNGSpringContextTests {
     @AfterSuite(alwaysRun = true)
     protected void cleanSuite() throws Exception {
        
+    }
+    
+    private void initializaSession(){
+    	
     }
 
  
