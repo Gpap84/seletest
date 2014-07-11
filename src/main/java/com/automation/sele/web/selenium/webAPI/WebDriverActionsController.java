@@ -5,6 +5,8 @@ package com.automation.sele.web.selenium.webAPI;
 
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.automation.sele.web.services.SynchronizeService;
 
@@ -19,6 +21,8 @@ import lombok.Setter;
  *
  */
 @SuppressWarnings("unchecked")
+@Component
+@Scope("prototype")
 public class WebDriverActionsController implements WebActionsController{
 
 	@Autowired
