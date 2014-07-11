@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,7 @@ public class BrowserConfiguration {
 	@PropertySources({ 
 		@PropertySource({ "classpath:/BrowserSettings/browser.properties" }) //chrome properties
 	})
-	@Profile({"chrome","localhost"})
+	@Profile({"chrome"})
 	static class Chrome{
 		
 		@Autowired
@@ -69,6 +70,21 @@ public class BrowserConfiguration {
 			return options;
 		}
 	}
-
+	
+	/**
+	 * This class defines the firefox browser
+	 * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+	 *
+	 */
+	@Configuration
+	@Profile({"firefox"})
+	static class Firefox{
+	
+		@Bean
+		public WebDriver firefox(){
+			return new FirefoxDriver();	
+		}
+		
+	}
 
 }
