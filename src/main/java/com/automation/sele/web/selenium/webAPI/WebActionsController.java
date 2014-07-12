@@ -10,8 +10,10 @@ package com.automation.sele.web.selenium.webAPI;
  */
 public interface WebActionsController {
 
-	<T> T clickTo(Object locator);
+	<T> T clickTo(Object locator, long timeout);
 	
-	<T> T enterTo(Object locator, String text);
+	<T> T enterTo(Object locator, String text, long timeout);
+
+	void sleep(long milliseconds);
 	
 }
