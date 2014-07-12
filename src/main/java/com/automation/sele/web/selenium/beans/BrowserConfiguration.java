@@ -8,18 +8,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
-import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -27,33 +21,21 @@ import org.springframework.core.env.Environment;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Configuration
 public class BrowserConfiguration {
 
-	@Configuration
-	@PropertySources({ 
-		@PropertySource({ "classpath:/BrowserSettings/browser.properties" }) //chrome properties
-	})
+	@Component
 	@Profile({"chrome"})
-	static class Chrome{
+	public static class Chrome{
 		
-		@Autowired
-		Environment env;
-		
-		private final String optionsPath=env.getProperty("ChromeProperties");
-		
-		@Bean
 		public WebDriver chrome(){
 			return new ChromeDriver();	
 		}
 
-		@Bean
-		public WebDriver chromeWithOptions() throws FileNotFoundException, IOException{
-			return new ChromeDriver(chromeOptions());	
+		public WebDriver chromeWithOptions(String optionsPath) throws FileNotFoundException, IOException{
+			return new ChromeDriver(chromeOptions(optionsPath));	
 		}
 
-		@Bean
-		public ChromeOptions chromeOptions() throws FileNotFoundException, IOException{
+		public ChromeOptions chromeOptions(String optionsPath) throws FileNotFoundException, IOException{
 			ChromeOptions options=new ChromeOptions();
 			Properties configProp = new Properties();
 			configProp.load(new FileReader(optionsPath));
@@ -76,11 +58,10 @@ public class BrowserConfiguration {
 	 * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
 	 *
 	 */
-	@Configuration
+	@Component
 	@Profile({"firefox"})
-	static class Firefox{
+	public static class Firefox{
 	
-		@Bean
 		public WebDriver firefox(){
 			return new FirefoxDriver();	
 		}
