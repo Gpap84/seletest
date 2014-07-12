@@ -20,7 +20,7 @@ public enum Constants {
     CLASSLISTENER("classListener"),
 
     /** The parameter that determines the browser type. */
-    BROWSER("browser"),
+    BROWSERTYPE("browserType"),
 
     /** The parameter that determines the performance measures. */
     PERFORMANCE("performance"),

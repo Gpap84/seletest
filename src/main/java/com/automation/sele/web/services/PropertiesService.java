@@ -29,7 +29,6 @@ public class PropertiesService {
 	 */
     @SuppressWarnings({ "resource", "unused" })
 	public HashMap<String, String> readcsvDatafromJar(InputStream filepath)throws IOException {
-        
     	HashMap<String, String> parametersCSV=new HashMap<>();
     	CSVReader reader = new CSVReader(new InputStreamReader(filepath));
         String [] nextLine;
