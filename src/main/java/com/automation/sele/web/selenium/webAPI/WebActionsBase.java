@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public abstract class WebActionsBase implements WebActionsController{
+public abstract class WebActionsBase implements WebActionsController<Object>{
 	
 	/**
 	 * Log the screenshot of a failed log entry (error(...)) to

@@ -3,12 +3,13 @@
  */
 package com.automation.sele.web.selenium.webAPI;
 
+
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.automation.sele.web.aspectJ.RetryIfFails;
-import com.automation.sele.web.services.SynchronizeService;
+import com.automation.sele.web.services.Webdriverwait;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,10 +25,37 @@ import lombok.Setter;
 public class WebDriverActionsController extends WebActionsBase{
 
 	@Autowired
-	SynchronizeService waitFor;
+	Webdriverwait waitFor;
 	
 	/**The webDriver object*/
-	@Getter @Setter WebDriver driver;
+	@Getter @Setter
+	WebDriver driver;
+
+	
+	@Override
+	public void getTargetHost(String url) {
+        driver.get(url);
+	}
+
+	@Override
+	public <T extends WebDriver> T getDriverInstance() {
+		return (T) getDriver();
+	}
+	
+	@Override
+	public void quit(CloseSession type) {
+		switch (type) {
+		case QUIT:
+			driver.quit();
+			break;
+		case CLOSE:
+			driver.close();
+			break;
+		default:
+			driver.quit();
+			break;
+		}
+	} 
 
 	@Override
 	@RetryIfFails(retryCount=1)
