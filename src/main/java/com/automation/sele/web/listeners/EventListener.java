@@ -10,9 +10,6 @@ import org.springframework.context.ApplicationListener;
 @Slf4j
 public class EventListener implements ApplicationListener<Event.MessageEvent> {
 
-	/* (non-Javadoc)
-	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
-	 */
 	@Override
 	public void onApplicationEvent(Event.MessageEvent event) {
 		log.info("Event occured: "+event.getMessage());

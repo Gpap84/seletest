@@ -1,12 +1,12 @@
 package com.automation.sele.web.listeners;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.Reporter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.automation.sele.web.services.Logging;
 
 
 /**
@@ -14,9 +14,10 @@ import org.testng.Reporter;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Slf4j
 public class WebDriverListener implements WebDriverEventListener {
 
+	@Autowired
+	Logging log;
  
     /**
      * Instantiates a new log driver.
@@ -26,15 +27,7 @@ public class WebDriverListener implements WebDriverEventListener {
         System.setProperty("org.uncommons.reportng.escape-output", "false");
     }
 
-    private void info(String message) {
-        log.info(message);
-        Reporter.log(message + "<br>");
-    }
-
-    private void scriptLog(String message) {
-        log.info(message);
-        Reporter.log("<p class=\"testOutput\" style=\"color:blue; font-size:1em;\">"+ message + "</p>");
-    }
+  
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
@@ -43,7 +36,7 @@ public class WebDriverListener implements WebDriverEventListener {
 
     @Override
     public void afterNavigateTo(String url, WebDriver driver) {
-        info("Navigate to " + url);
+    	log.info("Navigate to " + url);
     }
 
     @Override
@@ -103,7 +96,7 @@ public class WebDriverListener implements WebDriverEventListener {
 
     @Override
     public void afterScript(String script, WebDriver driver) {
-        scriptLog("The following script executed: "+script.toString());
+    	log.warn("The following script executed: "+script.toString());
     }
 
     @Override
