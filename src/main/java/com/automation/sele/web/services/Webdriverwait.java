@@ -8,7 +8,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.google.sitebricks.headless.Service;
+import org.springframework.stereotype.Component;
+
 import com.automation.sele.web.selenium.webAPI.elements.Locators;
 
 /**
@@ -16,8 +17,8 @@ import com.automation.sele.web.selenium.webAPI.elements.Locators;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Service
-public class SynchronizeService {
+@Component
+public class Webdriverwait {
 
 
 	/** Wait for element to be present in DOM

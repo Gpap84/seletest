@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import com.google.sitebricks.headless.Service;
+
+import org.springframework.stereotype.Component;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
@@ -17,8 +19,8 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Service
-public class PropertiesService {
+@Component
+public class Properties {
 
 	
 	/**

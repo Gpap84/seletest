@@ -7,18 +7,21 @@ package com.automation.sele.web.services;
  */
 public enum Constants {
 
-    /*************************************Constants used for test status*****************************************************/
-    PASS_COLOR("Lime"),
-    FAIL_COLOR("OrangeRed"),
-
-    /*************************************Constants used for initialization phase*****************************************************/
-
-    /** The Constant METHODLISTENER. */
+	
+	/************************ Interfaces used **********************/
+	WEB_ACTIONS_CONTROLLER("webActionController"),
+	
+	/**************************Parameters XML**********************/
+	
+	/**The Constant that defines parallel level*/
+	PARALLEL("parallel"),
+	
+	/** The Constant METHODLISTENER. */
     METHODLISTENER("methodListener"),
 
     /** The Constant CLASSLISTENER. */
     CLASSLISTENER("classListener"),
-
+    
     /** The parameter that determines the browser type. */
     BROWSERTYPE("browserType"),
 
@@ -30,6 +33,13 @@ public enum Constants {
 
     /** The parameter that determines the Grid port. */
     GRID_PORT("gridPort"),
+
+	
+    /*************************************Constants used for test status*****************************************************/
+    PASS_COLOR("Lime"),
+    FAIL_COLOR("OrangeRed"),
+
+    /*************************************Constants used for initialization phase*****************************************************/
 
     /** The parameter that determines the application URL. */
     HOST_URL("hostUrl"),
@@ -57,8 +67,6 @@ public enum Constants {
     /** The parameter that determines the device type eg. iPhone, iPad*/
     DEVICE("deviceName"),
 
-    /** The parameter that determines the platform version*/
-    PLATFORMVERSION("platformVersion"),
     //----------------------------------------------------------------------->Parameters for testing Mobile Apps with Appium
 
     /** The parameter that determines extra node capability*/
@@ -67,7 +75,7 @@ public enum Constants {
     /** The parameter that determines the localization */
     LOCALE("locale"),
 
-    /** The parameter that determines the test mode. */
+    /** The parameter that determines the test mode (Local environment or Grid) */
     MODE("mode"),
 
     //--------------------------------------------------    Constants for locators --------------------->>>>>>>>>>>>>>>>>

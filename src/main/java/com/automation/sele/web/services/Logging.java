@@ -5,17 +5,17 @@ package com.automation.sele.web.services;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.stereotype.Component;
 import org.testng.Reporter;
 
-import com.google.sitebricks.headless.Service;
-
 /**
+ * Methods for logging
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Service
+@Component
 @Slf4j
-public class LoggingService {
+public class Logging {
 
 	
 	/**
