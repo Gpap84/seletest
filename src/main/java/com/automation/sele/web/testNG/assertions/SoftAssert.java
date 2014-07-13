@@ -9,7 +9,7 @@ import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
-import com.automation.sele.web.services.LoggingService;
+import com.automation.sele.web.services.Logging;
 
 /**
  * This class used for executing soft assertions
@@ -19,7 +19,7 @@ import com.automation.sele.web.services.LoggingService;
 public class SoftAssert extends Assertion {
 
 	@Autowired
-	LoggingService log;
+	Logging log;
 	
     // LinkedHashMap to preserve the order
     private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
