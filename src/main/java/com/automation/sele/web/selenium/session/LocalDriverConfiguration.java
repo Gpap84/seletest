@@ -16,8 +16,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -31,19 +30,19 @@ import com.opera.core.systems.OperaDriver;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@ImportResource({"classpath*:META-INF/spring/*-context.xml" })
-@PropertySources({ @PropertySource({ "BrowserSettings/browser.properties" })})
-@EnableAspectJAutoProxy(proxyTargetClass=true)
+@PropertySources({@PropertySource({"BrowserSettings/browser.properties"})})
+@Configuration
 public class LocalDriverConfiguration {
 	
-
+	
 	@Configuration
-	@Profile({"chrome","default"})
+	@Profile({"chrome"})
 	public static class ProfileChrome implements ProfileDriver{
 		
 		private final String PATH_CHROME_DRIVER="./target/test-classes/BrowserSettings/chromedriver.exe";
 		
-		@Override
+		@Override		
+		@Lazy(value = true)
 		@Bean
 		public WebDriver profileDriver(){
 			System.setProperty("webdriver.chrome.driver", new File(PATH_CHROME_DRIVER).getAbsolutePath());
@@ -60,6 +59,7 @@ public class LocalDriverConfiguration {
 		Environment env;
 		
 		@Override
+		@Lazy(value = true)
 		@Bean
 		public WebDriver profileDriver() throws Exception{
 			return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeProperties")).getAbsolutePath()));	
@@ -94,6 +94,7 @@ public class LocalDriverConfiguration {
 	
 		@Override
 		@Bean
+		@Lazy(value = true)
 		public WebDriver profileDriver(){
 			return new FirefoxDriver();	
 		}
@@ -111,6 +112,7 @@ public class LocalDriverConfiguration {
 	
 		@Override
 		@Bean
+		@Lazy(value = true)
 		public WebDriver profileDriver(){
 			return new InternetExplorerDriver();	
 		}
@@ -128,6 +130,7 @@ public class LocalDriverConfiguration {
 	
 		@Override
 		@Bean
+		@Lazy(value = true)
 		public WebDriver profileDriver(){
 			return new OperaDriver();	
 		}
