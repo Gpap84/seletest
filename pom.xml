@@ -113,56 +113,8 @@
 					</configuration>
 				</plugin>
 
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>autoincrement-versions-maven-plugin</artifactId>
-					<version>2.0-SNAPSHOT</version>
-					<executions>
-						<execution>
-							<id>update-pom-versions</id>
-							<goals>
-								<goal>increment</goal>
-								<goal>commit</goal>
-							</goals>
-							<configuration>
-								<autoVersionSubmodules>false</autoVersionSubmodules>
-								<autoIncrementVersion>true</autoIncrementVersion>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-
 			</plugins>
 		</pluginManagement>
-
-
-		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<inherited>false</inherited>
-				<executions>
-					<execution>
-						<id>create-distribution</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>zip.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>autoincrement-versions-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 
 
@@ -427,7 +379,7 @@
 	<!-- Shared version number properties -->
 	<properties>
 		<org.springframework.version>4.0.3.RELEASE</org.springframework.version>
-		<selenium.version>2.42.0</selenium.version>
+		<selenium.version>2.41.0</selenium.version>
 		<aspectj.version>1.6.11</aspectj.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
