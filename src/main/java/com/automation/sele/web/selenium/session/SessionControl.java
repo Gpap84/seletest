@@ -4,7 +4,7 @@
 package com.automation.sele.web.selenium.session;
 
 import com.automation.sele.web.selenium.threads.SessionContext;
-import com.automation.sele.web.selenium.webAPI.WebActionsController;
+import com.automation.sele.web.selenium.webAPI.ActionsController;
 import com.automation.sele.web.testNG.assertions.Assertion;
 
 /**
@@ -15,7 +15,7 @@ import com.automation.sele.web.testNG.assertions.Assertion;
 public class SessionControl {
 
 	
-	public static <T> WebActionsController<?> actionsController(){
+	public static <T> ActionsController<?> actionsController(){
 		return SessionContext.getSession().getActionscontroller();
 	}
 	
