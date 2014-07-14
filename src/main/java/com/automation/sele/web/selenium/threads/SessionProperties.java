@@ -1,11 +1,13 @@
 package com.automation.sele.web.selenium.threads;
 
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import com.automation.sele.web.selenium.webAPI.WebActionsController;
-import com.automation.sele.web.selenium.webAPI.WebActionsController.CloseSession;
+import com.automation.sele.web.selenium.webAPI.ActionsController;
+import com.automation.sele.web.selenium.webAPI.ActionsController.CloseSession;
 import com.automation.sele.web.testNG.assertions.Assertion;
 
 
@@ -27,8 +29,12 @@ public class SessionProperties {
 
     /** The web actions controller. */
     @Getter @Setter
-    WebActionsController<?> actionscontroller;
+    ActionsController<?> actionscontroller;
 
+    /**The web driver context*/
+    @Getter @Setter
+    AnnotationConfigApplicationContext driverContext;
+    
     /** The Assertion. */
     @Getter @Setter
     Assertion assertion;
@@ -52,11 +58,18 @@ public class SessionProperties {
 
     public void cleanSession(){
     	
+    	
+    	//quit driver
     	if(actionscontroller!=null){
     		actionscontroller.quit(CloseSession.QUIT);
     	}
     	
+    	//destroy the webdriver application context
+    	driverContext.destroy();
+    	
+    	//reset soft failures
         softFailures=0;
+        
         log.info("Session closed");
         Thread.currentThread().setName("CoreFramework - session closed!!!");
     }

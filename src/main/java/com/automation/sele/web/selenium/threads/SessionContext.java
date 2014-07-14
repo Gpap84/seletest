@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.aop.target.ThreadLocalTargetSource;
 
-import com.automation.sele.web.selenium.webAPI.WebActionsController;
+import com.automation.sele.web.selenium.webAPI.ActionsController;
 import com.automation.sele.web.services.Constants;
 import com.automation.sele.web.spring.ApplicationContextProvider;
 
@@ -64,11 +64,11 @@ public class SessionContext {
 
 	public static void setSessionProperties(Map<String, Object> sessionObjects) throws Exception {
 		SessionProperties session = getSession();
-		session.actionscontroller=(WebActionsController<?>) sessionObjects.get(Constants.WEB_ACTIONS_CONTROLLER.get());
+		session.actionscontroller=(ActionsController<?>) sessionObjects.get(Constants.WEB_ACTIONS_CONTROLLER.get());
 		threadStack.push(session);//push instanse of Session to stack
 		getSession().setThread(Thread.currentThread());//set the current thread to threadlocal variable
-		log.info("Session ready, driver is now set, type is {}", ApplicationContextProvider.getApplicationContext().containsBean("profileDriver") ? "Webdriver" : "AppiumDriver");
-		Thread.currentThread().setName("CoreFramework ["+(ApplicationContextProvider.getApplicationContext().containsBean("profileDriver") ? "Webdriver" : "AppiumDriver")+"] - context Active "+System.currentTimeMillis()%2048);
+		log.info("Session ready, driver is now set, type is {}", getSession().getDriverContext().containsBean("profileDriver") ? "Webdriver" : "AppiumDriver");
+		Thread.currentThread().setName("CoreFramework ["+(getSession().getDriverContext().containsBean("profileDriver") ? "Webdriver" : "AppiumDriver")+"] - context Active "+System.currentTimeMillis()%2048);
 	}
 
 	/**Clean all active threads stored in stack
