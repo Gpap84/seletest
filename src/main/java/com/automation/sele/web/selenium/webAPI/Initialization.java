@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.testng.Reporter;
+
+import com.automation.sele.web.selenium.session.LocalDriverConfiguration;
+import com.automation.sele.web.selenium.threads.SessionContext;
 import com.automation.sele.web.services.Constants;
 import com.automation.sele.web.spring.ApplicationContextProvider;
 
@@ -22,7 +27,7 @@ public class Initialization {
 		Map<String, Object> controllers= new HashMap<>();
 
 		if(mode.compareToIgnoreCase("web")==0){
-			WebActionsController<?> webcontroller = (WebActionsController<?>) ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
+			ActionsController<?> webcontroller = (ActionsController<?>) ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
 
 			webcontroller = new WebDriverInitialize().initialize(webcontroller);
 
@@ -41,16 +46,20 @@ public class Initialization {
 	static class WebDriverInitialize 
 	{
 		
-		public WebActionsController<?> initialize(WebActionsController<?> control){
+		public ActionsController<?> initialize(ActionsController<?> control){
 
 			//Get the beans 
-			WebDriverActionsController wdActions = (WebDriverActionsController) control;
+			WebDriverActionsController<?> wdActions = (WebDriverActionsController<?>) control;
 			WebDriver driver = null;
-
-			//Initialize Driver based on browser parameter
-			driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean("profileDriver");
-			wdActions.setDriver(driver);//set the driver obect for this session
-
+			
+			//Create App Context for initializing driver 
+			AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
+			app.getEnvironment().setActiveProfiles(new String[]{Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(Constants.BROWSERTYPE.get())});
+			app.register(LocalDriverConfiguration.class);
+			app.refresh();
+			driver=(WebDriver) app.getBean("profileDriver");
+			wdActions.setDriver(driver);//set the driver object for this session
+            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
 			return control;
 		}
 	}
