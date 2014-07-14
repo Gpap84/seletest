@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -19,7 +18,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
+@Service
 public class Properties {
 
 	

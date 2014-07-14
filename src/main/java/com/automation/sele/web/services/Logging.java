@@ -5,7 +5,7 @@ package com.automation.sele.web.services;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.testng.Reporter;
 
 /**
@@ -13,7 +13,7 @@ import org.testng.Reporter;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
+@Service
 @Slf4j
 public class Logging {
 
