@@ -37,7 +37,7 @@ import com.opera.core.systems.OperaDriver;
  *
  */
 @Slf4j
-@PropertySources({@PropertySource({"BrowserSettings/browser.properties"})})
+@PropertySources({@PropertySource({"BrowserSettings/chrome.properties"})})
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class LocalDriverConfiguration {
@@ -49,19 +49,17 @@ public class LocalDriverConfiguration {
         @Autowired
         Environment env;
 
-        private final String PATH_CHROME_DRIVER="./target/test-classes/BrowserSettings/";
-
         @Override
         @Lazy(true)
         @Bean
         public WebDriver profileDriver(){
-            System.setProperty("webdriver.chrome.driver", new File(PATH_CHROME_DRIVER).getAbsolutePath()+"/chromedriver.exe");
             return new ChromeDriver();
         }
 
         @PostConstruct
         public void init() throws IOException, InterruptedException{
-            StringBuilder profiles=new StringBuilder();
+            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
+        	StringBuilder profiles=new StringBuilder();
             for(String s: env.getActiveProfiles()){
                 profiles.append(s+" ");
             }
@@ -77,12 +75,12 @@ public class LocalDriverConfiguration {
 
         @Autowired
         Environment env;
-
+        
         @Override
         @Lazy(true)
         @Bean
         public WebDriver profileDriver() throws Exception{
-            return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeProperties")).getAbsolutePath()));
+            return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeDriverPath")).getAbsolutePath()));
         }
 
         public ChromeOptions chromeOptions(String optionsPath) throws Exception{
@@ -93,7 +91,7 @@ public class LocalDriverConfiguration {
             while(keys.hasMoreElements()){
                 String key = (String)keys.nextElement();
                 String value = (String) configProp.get(key);
-                if(!value.isEmpty()){
+                if(!value.isEmpty() && !key.startsWith("ChromeDriverPath")){
                     options.addArguments(key+"="+value);
                 } else {
                     options.addArguments(key);
@@ -129,7 +127,6 @@ public class LocalDriverConfiguration {
         @PostConstruct
         public void init(){
             log.info("FirefoxDriver initialized!!!");
-
         }
     }
 
