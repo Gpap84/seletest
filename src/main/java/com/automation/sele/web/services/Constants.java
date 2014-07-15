@@ -36,8 +36,9 @@ public enum Constants {
 
 	
     /*************************************Constants used for test status*****************************************************/
-    PASS_COLOR("Lime"),
-    FAIL_COLOR("OrangeRed"),
+    PASS_COLOR("Chartreuse"),
+    FAIL_COLOR("FireBrick"),
+    ACTION_COLOR("BurlyWood"),
 
     /*************************************Constants used for initialization phase*****************************************************/
 
