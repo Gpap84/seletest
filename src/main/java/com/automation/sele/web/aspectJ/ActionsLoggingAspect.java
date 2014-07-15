@@ -39,14 +39,14 @@ public class ActionsLoggingAspect {
     @After("clickController() || enterController()")
     public void highlight(final JoinPoint joinPoint){
         log.info("The following actions command executed: "+joinPoint.getSignature().getName()+" with arguments: "+arguments((ProceedingJoinPoint)joinPoint)+"!!!");
-    	SessionControl.actionsController().highlight((String) ((ProceedingJoinPoint)joinPoint).getArgs()[0], Constants.ACTION_COLOR.get());
+    	SessionControl.actionsController().changeStyle("backgroudColor", (String) ((ProceedingJoinPoint)joinPoint).getArgs()[0], Constants.ACTION_COLOR.get());
     }
     
     /**Arguments of an executed method*/
     private String arguments(ProceedingJoinPoint proceedPoint){
         StringBuilder arguments = new StringBuilder();
         for(Object o: proceedPoint.getArgs()){
-            arguments.append(o.toString()+" ");
+            arguments.append("'''"+o.toString()+"'''--");
         }
         if(arguments.toString().isEmpty()){
             return "NONE";

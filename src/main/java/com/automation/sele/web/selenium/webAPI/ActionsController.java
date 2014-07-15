@@ -3,6 +3,8 @@
  */
 package com.automation.sele.web.selenium.webAPI;
 
+import java.io.IOException;
+
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -28,6 +30,10 @@ public interface ActionsController<T> {
 
     void getTargetHost(String url);
     
-    T highlight(String locator, String color);
+    T changeStyle(String attribute, String locator, String attributevalue);
+    
+	void takeScreenShot() throws IOException;
+	
+	void takeScreenShotOfElement(String locator) throws IOException;
 
 }

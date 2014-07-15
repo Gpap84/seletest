@@ -26,11 +26,10 @@ public abstract class ActionsBase implements ActionsController<Object>{
      * @param file
      *            file must exist
      */
-    protected void reportLogScreenshot(File file, ITestContext ct) {
-        Reporter.log("<a href=\"" + relativePath(file, ct) + "\"><p align=\"left\">Error screenshot at " + new Date() + "</p>");
-        Reporter.log("<p><img width=\"878\" src=\"" + relativePath(file, ct) + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
+    protected void reportLogScreenshot(File file) {
+        Reporter.log("<a href=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\"><p align=\"left\">Error screenshot at " + new Date() + "</p>");
+        Reporter.log("<p><img width=\"878\" src=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
         log.warn("Screenshot has been generated, path is {}", file.getAbsolutePath());
-
     }
 
     @Override
@@ -49,9 +48,9 @@ public abstract class ActionsBase implements ActionsController<Object>{
      *
      * @return the file
      */
-    protected File createScreenshotFile(ITestContext ct) {
-        if (ct.getSuite().getOutputDirectory() != null) {
-            File outputDir = new File(new File(ct.getSuite().getOutputDirectory()).getParent(), "screenshots");
+    protected File createScreenshotFile() {
+        if (Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory() != null) {
+            File outputDir = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent(), "screenshots");
             if(!outputDir.exists()){
                 outputDir.mkdirs();
             }
