@@ -17,6 +17,10 @@ import org.testng.Reporter;
 @Slf4j
 public class Logging {
 
+	//For reportNG HTML
+	public Logging(){
+        System.setProperty("org.uncommons.reportng.escape-output", "false");
+	}
 	
 	/**
 	 * Info.
@@ -26,7 +30,7 @@ public class Logging {
 	 */
 	public void info(String message) {
 		log.info(message);
-		Reporter.log("<b><p class=\"testOutput\" style=\"font-size:1em;\">" + message + "</p></b>");
+		Reporter.log("<b><p class=\"testOutput\" style=\"color:MediumBlue; font-size:1em;\">" + message + "</p></b>");
 
 	}
 
