@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.automation.sele.web.selenium.session;
 
@@ -14,13 +14,14 @@ import com.automation.sele.web.testNG.assertions.Assertion;
  */
 public class SessionControl {
 
-	
-	public static <T> ActionsController<?> actionsController(){
-		return SessionContext.getSession().getActionscontroller();
-	}
-	
-	public static Assertion assertion(){
-		return SessionContext.getSession().getAssertion();
-	}
-	
+
+    public static <T> ActionsController<?> actionsController(){
+        return SessionContext.getSession().getActionscontroller();
+    }
+
+    public static Assertion assertion(){
+        return SessionContext.getSession().getAssertion();
+    }
+
+
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.automation.sele.web.selenium.session;
 
@@ -11,9 +11,9 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public interface ProfileDriver {
-	
-	/**Driver type*/
-	WebDriver profileDriver() throws Exception;
-	
-	
+
+    /**Driver type*/
+    WebDriver profileDriver() throws Exception;
+
+
 }
