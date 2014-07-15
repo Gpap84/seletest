@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.automation.sele.web.selenium.webAPI;
 
@@ -14,18 +14,20 @@ import org.openqa.selenium.WebDriver;
 @SuppressWarnings("hiding")
 public interface ActionsController<T> {
 
-	T clickTo(Object locator, long timeout);
-	
-	T enterTo(Object locator, String text, long timeout);
+    T clickTo(Object locator, long timeout);
 
-	void sleep(long milliseconds);
-	
-	void quit(CloseSession type);
-	
-	public enum CloseSession{QUIT,CLOSE};
-	
-	<T extends WebDriver> T getDriverInstance();
-	
-	void getTargetHost(String url);
-		
+    T enterTo(String locator, String text, long timeout);
+
+    void sleep(long milliseconds);
+
+    void quit(CloseSession type);
+
+    public enum CloseSession{QUIT,CLOSE};
+
+    <T extends WebDriver> T getDriverInstance();
+
+    void getTargetHost(String url);
+    
+    T highlight(String locator, String color);
+
 }
