@@ -16,12 +16,12 @@ import org.testng.annotations.BeforeMethod;
 @TransactionConfiguration(defaultRollback = false)
 @ContextConfiguration({"classpath*:META-INF/spring/*-context.xml" })
 public abstract class AutomationTransactionTestBase extends AbstractTransactionalTestNGSpringContextTests {
-	
-	@BeforeMethod(alwaysRun = true)
-	@AfterMethod(alwaysRun = true)
-	@Override
-	protected synchronized void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
-		super.springTestContextBeforeTestMethod(testMethod);
-	}
+
+    @BeforeMethod(alwaysRun = true)
+    @AfterMethod(alwaysRun = true)
+    @Override
+    protected synchronized void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
+        super.springTestContextBeforeTestMethod(testMethod);
+    }
 
 }

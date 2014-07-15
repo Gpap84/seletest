@@ -11,21 +11,22 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  */
 public class ApplicationContextProvider implements ApplicationContextAware {
-	private static ApplicationContext applicationContext = null;
+    private static ApplicationContext applicationContext = null;
 
-	//gets the ApplicationContext
-	public static ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	@SuppressWarnings("static-access")
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    //gets the ApplicationContext
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+    @Override
+    @SuppressWarnings("static-access")
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-		// Assign the ApplicationContext into a static variable
-		this.applicationContext = applicationContext;
-	}
-	
-	//gets the ConfigurableApplicationContext
-	public static ConfigurableApplicationContext getConfigurableApplicationContext() {
-		return (ConfigurableApplicationContext)applicationContext;
-	}
+        // Assign the ApplicationContext into a static variable
+        this.applicationContext = applicationContext;
+    }
+
+    //gets the ConfigurableApplicationContext
+    public static ConfigurableApplicationContext getConfigurableApplicationContext() {
+        return (ConfigurableApplicationContext)applicationContext;
+    }
 }
