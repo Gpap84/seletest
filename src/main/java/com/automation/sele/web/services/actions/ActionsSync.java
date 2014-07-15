@@ -1,23 +1,57 @@
 /**
- * 
+ *
  */
 package com.automation.sele.web.services.actions;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 
-
-
-
-/**
- * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- * @param <T>
- *
+/**Interface for synchronization methods
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com) *
  */
-public interface ActionsSync<T> {
+public interface ActionsSync {
 
-	T waitForElementPresence(Object driver, long waitSeconds, String locator);
-	T waitForElementVisibility(Object driver, long waitSeconds, Object locator);
-	T waitForElementToBeClickable(WebDriver driver, long waitSeconds, Object locator);
+
+    /** Wait for element to be present in DOM
+     *
+     * @param driver
+     * @param waitSeconds
+     * @param locator
+     * @return
+     */
+    WebElement waitForElementPresence(long waitSeconds, String locator);
+    /** Wait for element to be visible
+     * @param driver
+     * @param waitSeconds
+     * @param locator
+     * @return
+     */
+    WebElement waitForElementVisibility(long waitSeconds, Object locator);
+    /**
+     * Wait for element to be clickable
+     * @param driver
+     * @param waitSeconds
+     * @param locator
+     * @return
+     */
+    WebElement waitForElementToBeClickable(long waitSeconds, Object locator);
+    /**
+     * Wait for alert
+     * @param driver
+     * @param waitSeconds
+     * @return
+     */
+    Alert waitForAlert(long waitSeconds);
+
+    /**
+     * Wait for a frame and switch to it
+     * @param driver
+     * @param waitSeconds
+     * @param locator
+     * @return
+     */
+    WebDriver switchToFrame(long waitSeconds, String locator);
 
 }
