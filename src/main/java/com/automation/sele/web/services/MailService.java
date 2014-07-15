@@ -6,7 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 /**
- * This class used as a service for sending email at runtime...
+ * This class used as a service for sending email runtime...
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -17,21 +17,27 @@ public class MailService {
     private MailSender mailSender;
 
     @Autowired
-    private SimpleMailMessage alertMailMessage;
+    private SimpleMailMessage preConfiguredMessage;
 
-    public void sendMail(String from, String to, String subject, String body) {
+    /**
+     * This method will send compose and send the message
+     * */
+    public void sendMail(String to, String subject, String body)
+    {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        mailSender.send(message);  
+        mailSender.send(message);
     }
 
-    public void sendAlertMail(String alert) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage(alertMailMessage);
-        mailMessage.setText(alert);
+    /**
+     * This method will send a pre-configured message
+     * */
+    public void sendPreConfiguredMail(String message)
+    {
+        SimpleMailMessage mailMessage = new SimpleMailMessage(preConfiguredMessage);
+        mailMessage.setText(message);
         mailSender.send(mailMessage);
     }
-
 }

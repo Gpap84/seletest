@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import com.google.sitebricks.headless.Service;
+import org.springframework.stereotype.Service;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
@@ -18,7 +19,7 @@ import au.com.bytecode.opencsv.CSVReader;
  *
  */
 @Service
-public class PropertiesService {
+public class Properties {
 
 	
 	/**
@@ -29,7 +30,6 @@ public class PropertiesService {
 	 */
     @SuppressWarnings({ "resource", "unused" })
 	public HashMap<String, String> readcsvDatafromJar(InputStream filepath)throws IOException {
-        
     	HashMap<String, String> parametersCSV=new HashMap<>();
     	CSVReader reader = new CSVReader(new InputStreamReader(filepath));
         String [] nextLine;

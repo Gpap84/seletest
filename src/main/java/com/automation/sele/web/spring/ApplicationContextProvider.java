@@ -3,6 +3,7 @@ package com.automation.sele.web.spring;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * With this class we set application context in a static variable
@@ -10,15 +11,22 @@ import org.springframework.context.ApplicationContextAware;
  *
  */
 public class ApplicationContextProvider implements ApplicationContextAware {
-	private static ApplicationContext applicationContext = null;
+    private static ApplicationContext applicationContext = null;
 
-	public static ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	@SuppressWarnings("static-access")
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    //gets the ApplicationContext
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+    @Override
+    @SuppressWarnings("static-access")
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-		// Assign the ApplicationContext into a static variable
-		this.applicationContext = applicationContext;
-	}
+        // Assign the ApplicationContext into a static variable
+        this.applicationContext = applicationContext;
+    }
+
+    //gets the ConfigurableApplicationContext
+    public static ConfigurableApplicationContext getConfigurableApplicationContext() {
+        return (ConfigurableApplicationContext)applicationContext;
+    }
 }

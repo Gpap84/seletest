@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class ReflectionService {
+public class Reflection {
 
 
 	/**Invoke method of inner class
