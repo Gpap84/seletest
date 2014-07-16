@@ -14,14 +14,14 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <context:annotation-config />
 
  <!-- scan components and services -->
- <context:component-scan base-package="com.automation.sele.web">
-  <context:exclude-filter type="regex" expression="com.automation.sele.web.selenium.session.BrowserConfiguration.Profile*.*" />
+ <context:component-scan base-package="com.automation.seletest.core">
+  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration.Profile*.*" />
   </context:component-scan>
  
- <bean id="appContext" class="com.automation.sele.web.spring.ApplicationContextProvider" />
+ <bean id="appContext" class="com.automation.seletest.core.spring.ApplicationContextProvider" />
  
  <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="waitStrategyFactory">
-  <property name="serviceLocatorInterface" value="com.automation.sele.web.services.factories.WaitStrategyFactory">
+  <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.WaitStrategyFactory">
   </property>
   </bean>
  

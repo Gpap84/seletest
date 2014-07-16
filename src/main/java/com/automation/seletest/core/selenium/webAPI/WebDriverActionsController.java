@@ -104,12 +104,11 @@ public class WebDriverActionsController<T> extends ActionsBase{
 	@Override
 	public void takeScreenShot() throws IOException{
 		File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		if (scrFile != null) {
-			File file = createScreenshotFile();
-			FileUtils.copyFile(scrFile, file);
-			reportScreenshot(file);
-		}
+		File file = createScreenshotFile();
+		FileUtils.copyFile(scrFile, file);
+		reportScreenshot(file);
 	}
+
 	@Override
 	public void takeScreenShotOfElement(String locator) throws IOException {
 		File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);

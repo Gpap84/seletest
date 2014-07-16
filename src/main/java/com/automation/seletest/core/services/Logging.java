@@ -3,6 +3,8 @@
  */
 package com.automation.seletest.core.services;
 
+import javax.annotation.PostConstruct;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ import org.testng.Reporter;
 public class Logging {
 
 	//For reportNG HTML
-	public Logging(){
-        System.setProperty("org.uncommons.reportng.escape-output", "false");
+	@PostConstruct
+	public void init(){
+		System.setProperty("org.uncommons.reportng.escape-output", "false");
+		log.debug("org.uncommons.reportng.escape-output set to false for reporting");
 	}
-	
+
 	/**
 	 * Info.
 	 *
@@ -55,8 +59,8 @@ public class Logging {
 		log.error(message);
 		Reporter.log("<b><p class=\"testOutput\" style=\"color:red; font-size:1em;\">" + message + "</p></b>");
 	}
-	
-	
-	
+
+
+
 
 }

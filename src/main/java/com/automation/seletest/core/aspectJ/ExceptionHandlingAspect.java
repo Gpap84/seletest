@@ -27,7 +27,7 @@ public class ExceptionHandlingAspect{
      * @return
      * @throws Throwable
      */
-    @Around("execution(* com.automation.sele.web.selenium.webAPI.ActionsController.*(..)) && @annotation(retry)")
+    @Around("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.*(..)) && @annotation(retry)")
     public Object retry(ProceedingJoinPoint pjp, RetryFailure retry) throws Throwable
     {
         Object returnValue = null;

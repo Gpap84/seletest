@@ -15,7 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testng.Reporter;
 
-import com.automation.seletest.core.selenium.session.LocalDriverConfiguration;
+import com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.Constants;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
