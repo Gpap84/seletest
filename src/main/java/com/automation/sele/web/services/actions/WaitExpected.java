@@ -19,7 +19,7 @@ import com.automation.sele.web.selenium.webAPI.elements.Locators;
  * @param <T>
  *
  */
-@Component
+@Component("expectedWait")
 public class WaitExpected implements ActionsSync{
 
 

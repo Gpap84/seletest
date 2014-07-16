@@ -6,7 +6,6 @@ package com.automation.sele.web.services.actions;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
-@Scope("prototype")
+@Component("fluentWait")
 public class FluentWait implements ActionsSync{ {
 
 }
