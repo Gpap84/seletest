@@ -26,9 +26,9 @@ public class ActionsLoggingAspect {
     }  
    
    
-    /**********************
-     **Pointcuts***********
-     **********************
+    /************************************
+     ****************Pointcuts***********
+     ************************************
      */
     @Pointcut("execution(* com.automation.sele.web.selenium.webAPI.ActionsController.click*(..))") // expression
     private void clickController() {}//expression pointcut for function  returning T type and starting with click...
