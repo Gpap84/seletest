@@ -16,12 +16,6 @@ public enum Constants {
 	/**The Constant that defines parallel level*/
 	PARALLEL("parallel"),
 	
-	/** The Constant METHODLISTENER. */
-    METHODLISTENER("methodListener"),
-
-    /** The Constant CLASSLISTENER. */
-    CLASSLISTENER("classListener"),
-    
     /** The parameter that determines the browser type. */
     BROWSERTYPE("browserType"),
 
