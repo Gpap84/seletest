@@ -89,7 +89,6 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
             log.debug("*****************************************");
             log.debug("**** Parallel level is: {}***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
-
             initializeSession(hostURL,type);
         }
     }

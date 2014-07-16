@@ -4,7 +4,6 @@
 package com.automation.sele.web.services.actions;
 
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 
@@ -36,7 +35,7 @@ public interface ActionsSync {
      * @param locator
      * @return
      */
-    WebElement waitForElementToBeClickable(long waitSeconds, Object locator);
+    WebElement waitForElementToBeClickable(long waitSeconds, String locator);
     /**
      * Wait for alert
      * @param driver
@@ -44,14 +43,4 @@ public interface ActionsSync {
      * @return
      */
     Alert waitForAlert(long waitSeconds);
-
-    /**
-     * Wait for a frame and switch to it
-     * @param driver
-     * @param waitSeconds
-     * @param locator
-     * @return
-     */
-    WebDriver switchToFrame(long waitSeconds, String locator);
-
 }

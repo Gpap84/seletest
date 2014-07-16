@@ -4,7 +4,6 @@
 package com.automation.sele.web.services.actions;
 
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,7 @@ public WebElement waitForElementVisibility(long waitSeconds, Object locator) {
  * @see com.automation.sele.web.services.actions.ActionsSync#waitForElementToBeClickable(org.openqa.selenium.WebDriver, long, java.lang.Object)
  */
 @Override
-public WebElement waitForElementToBeClickable( long waitSeconds, Object locator) {
+public WebElement waitForElementToBeClickable( long waitSeconds, String locator) {
     // TODO Auto-generated method stub
     return null;
 }
@@ -51,9 +50,4 @@ public Alert waitForAlert(long waitSeconds) {
     return null;
 }
 
-@Override
-public WebDriver switchToFrame(long waitSeconds, String locator) {
-    // TODO Auto-generated method stub
-    return null;
-}
 }

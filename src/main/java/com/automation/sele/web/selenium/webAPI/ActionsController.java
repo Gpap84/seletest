@@ -14,7 +14,7 @@ import org.openqa.selenium.WebDriver;
 @SuppressWarnings("hiding")
 public interface ActionsController<T> {
 
-    T clickTo(Object locator, long timeout);
+    T clickTo(String locator, long timeout);
 
     T enterTo(String locator, String text, long timeout);
 
@@ -27,7 +27,7 @@ public interface ActionsController<T> {
     <T extends WebDriver> T getDriverInstance();
 
     void getTargetHost(String url);
-    
+
     T highlight(String locator, String color);
 
 }

@@ -46,17 +46,9 @@ public class WaitExpected implements ActionsSync{
 
 
     @Override
-    public WebElement waitForElementToBeClickable(long waitSeconds, Object locator) {
+    public WebElement waitForElementToBeClickable(long waitSeconds, String locator) {
         WebDriverWait wait = new WebDriverWait((WebDriver)SessionContext.getSession().getDriverContext().getBean("profileDriver"), waitSeconds);
-        if(locator instanceof String){
-            return wait.until(ExpectedConditions.elementToBeClickable(Locators.findByLocator((String)locator).determineLocator((String)locator)));
-        }
-        else if(locator instanceof WebElement){
-            return wait.until(ExpectedConditions.elementToBeClickable((WebElement)locator));
-        }
-        else{
-            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
-        }
+        return wait.until(ExpectedConditions.elementToBeClickable(Locators.findByLocator(locator).determineLocator(locator)));
     }
 
 
@@ -67,10 +59,5 @@ public class WaitExpected implements ActionsSync{
     }
 
 
-    @Override
-    public WebDriver switchToFrame(long waitSeconds, String locator) {
-        WebDriverWait wait = new WebDriverWait((WebDriver)SessionContext.getSession().getDriverContext().getBean("profileDriver"), waitSeconds);
-        return wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(Locators.findByLocator(locator).determineLocator(locator)));
-    }
 
 }

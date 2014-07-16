@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.sele.web.aspectJ.RetryIfFails;
 import com.automation.sele.web.selenium.threads.SessionContext;
-import com.automation.sele.web.services.actions.WaitExpected;
+import com.automation.sele.web.services.factories.WaitStrategyFactory;
 
 /**
  * This class contains the implementation of webDriver API
@@ -30,7 +30,7 @@ import com.automation.sele.web.services.actions.WaitExpected;
 public class WebDriverActionsController<T> extends ActionsBase{
 
     @Autowired
-    WaitExpected waitFor;
+    WaitStrategyFactory waitStrategy;
 
     /**The webDriver object*/
     @Getter @Setter
@@ -38,7 +38,7 @@ public class WebDriverActionsController<T> extends ActionsBase{
 
     @Getter @Setter
     JavascriptExecutor jsExec;
-    
+
     @Override
     public void getTargetHost(String url) {
         driver.get(url);
@@ -66,22 +66,24 @@ public class WebDriverActionsController<T> extends ActionsBase{
 
     @Override
     @RetryIfFails(retryCount=1)
-    public WebDriverActionsController<T> clickTo(Object locator, long timeout) {
-        waitFor.waitForElementToBeClickable(timeout, locator).click();
+    public WebDriverActionsController<T> clickTo(String locator, long timeout) {
+        waitStrategy.
+        getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable(timeout, locator).
+        click();
         return this;
     }
 
     @Override
     @RetryIfFails(retryCount=1)
     public WebDriverActionsController<T> enterTo(String locator, String text, long timeout) {
-        waitFor.waitForElementPresence(timeout, locator).sendKeys(text);
+        waitStrategy.
+        getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementPresence(timeout, locator).sendKeys(text);
         return this;
     }
-    
+
 	@Override
-	@RetryIfFails(retryCount=1)
 	public WebDriverActionsController<T> highlight(String locator, String color) {
-        jsExec.executeScript("arguments[0].style.backgroundColor=arguments[1]",waitFor.waitForElementVisibility(SessionContext.getSession().getWaitForElement(), locator),"1px solid "+color+"");
+        jsExec.executeScript("arguments[0].style.backgroundColor=arguments[1]",waitStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(SessionContext.getSession().getWaitForElement(), locator),color);
 		return this;
 	}
 
