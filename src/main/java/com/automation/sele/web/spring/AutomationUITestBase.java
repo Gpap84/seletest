@@ -72,7 +72,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
 
             log.debug("*****************************************");
-            log.debug("**** The parallel level is: {}***********", ctx.getCurrentXmlTest().getParallel());
+            log.debug("**** Parallel level is: {}***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
             initializeSession(hostURL,type);
         }
@@ -97,7 +97,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
     @AfterClass(alwaysRun = true)
     protected void cleanSessionOnClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-            log.debug("************* Clean session after test class*********************");
+            log.debug("************* Clean session after test class *********************");
             SessionContext.destroyThread();
         }
     }
@@ -106,7 +106,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
     public void cleanSessionOnTest(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
                 ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
-            log.debug("************* Clean session after test***************************");
+            log.debug("************* Clean session after test ***************************");
             SessionContext.destroyThread();
         }
     }
@@ -114,7 +114,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
     @AfterMethod(alwaysRun = true)
     public void cleanSessionOnMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-            log.debug("************* Clean session after test method*********************");
+            log.debug("************* Clean session after test method *********************");
             SessionContext.destroyThread();
         }
     }
