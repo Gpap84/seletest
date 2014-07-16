@@ -57,6 +57,10 @@ public class SessionProperties {
     String locality;
 
 
+    @Getter @Setter
+    String waitStrategy="DEFAULT";
+
+
     public void cleanSession(){
 
         //quit driver
@@ -69,6 +73,9 @@ public class SessionProperties {
 
         //destroy the webdriver application context
         driverContext.destroy();
+
+        //turn waitStrategy to default after closing a session
+        waitStrategy="DEFAULT";
 
         //reset soft failures
         softFailures=0;
