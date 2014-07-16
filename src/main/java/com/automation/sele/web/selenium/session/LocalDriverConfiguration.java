@@ -44,7 +44,7 @@ public class LocalDriverConfiguration {
 
     @Configuration
     @Profile({"chrome"})
-    public static class ProfileChrome implements ProfileDriver{
+    public abstract static class ProfileChrome implements ProfileDriver{
 
         @Autowired
         Environment env;
@@ -73,7 +73,7 @@ public class LocalDriverConfiguration {
 
     @Configuration
     @Profile({"chromeWithOptions"})
-    public static class ProfileChromeWithOptions implements ProfileDriver{
+    public abstract static class ProfileChromeWithOptions implements ProfileDriver{
 
         @Autowired
         Environment env;
@@ -117,7 +117,7 @@ public class LocalDriverConfiguration {
      */
     @Configuration
     @Profile({"firefox"})
-    public static class ProfileFirefox implements ProfileDriver{
+    public abstract static class ProfileFirefox implements ProfileDriver{
 
         @Override
         @Bean
@@ -140,7 +140,7 @@ public class LocalDriverConfiguration {
      */
     @Configuration
     @Profile({"ie"})
-    public static class ProfileInternetExplorer implements ProfileDriver{
+    public abstract static class ProfileInternetExplorer implements ProfileDriver{
 
         @Override
         @Bean
@@ -164,7 +164,7 @@ public class LocalDriverConfiguration {
      */
     @Configuration
     @Profile({"opera"})
-    public static class ProfileOpera implements ProfileDriver{
+    public abstract static class ProfileOpera implements ProfileDriver{
 
         @Override
         @Bean
