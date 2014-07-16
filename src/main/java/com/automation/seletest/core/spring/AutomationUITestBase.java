@@ -97,7 +97,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
     protected void cleanSessionOnClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
             log.debug("************* Clean session after test class *********************");
-            SessionContext.destroyThread();
+            SessionContext.cleanSession();
         }
     }
 
@@ -106,7 +106,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
                 ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
             log.debug("************* Clean session after test ***************************");
-            SessionContext.destroyThread();
+            SessionContext.cleanSession();
         }
     }
 
@@ -114,7 +114,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
     public void cleanSessionOnMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
             log.debug("************* Clean session after test method *********************");
-            SessionContext.destroyThread();
+            SessionContext.cleanSession();
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class AutomationUITestBase extends AbstractTestNGSpringContextTe
 
     /**Prepare initialization*/
     private void initializeSession(String hostURL, String mode) throws BeansException, Exception{
-        Map<String, Object> controls=Initialization.getControllers(mode);
+        Map<String, Object> controls=Initialization.getSessionCotrol(mode);
         SessionContext.setSessionProperties(controls);
         SessionContext.getSession().getActionscontroller().getTargetHost(hostURL);
     }

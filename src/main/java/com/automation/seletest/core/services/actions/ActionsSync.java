@@ -20,14 +20,14 @@ public interface ActionsSync {
      * @param locator
      * @return
      */
-    WebElement waitForElementPresence(long waitSeconds, String locator);
+    WebElement waitForElementPresence(String locator,long waitSeconds);
     /** Wait for element to be visible
      * @param driver
      * @param waitSeconds
      * @param locator
      * @return
      */
-    WebElement waitForElementVisibility(long waitSeconds, Object locator);
+    WebElement waitForElementVisibility(Object locator,long waitSeconds);
     /**
      * Wait for element to be clickable
      * @param driver
@@ -35,7 +35,7 @@ public interface ActionsSync {
      * @param locator
      * @return
      */
-    WebElement waitForElementToBeClickable(long waitSeconds, String locator);
+    WebElement waitForElementToBeClickable(String locator,long waitSeconds);
     /**
      * Wait for alert
      * @param driver

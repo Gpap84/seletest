@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation executes method of a class before invocation of a method
+ * This annotation executes method of a class after invocation of a method
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Inherited
-public @interface PreConfigure {
+public @interface PostConfiguration {
 
     Class<?> classReference();
 

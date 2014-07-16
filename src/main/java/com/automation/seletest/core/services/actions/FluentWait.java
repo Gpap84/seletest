@@ -13,41 +13,43 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component("fluentWait")
-public class FluentWait implements ActionsSync{ {
+public class FluentWait implements ActionsSync{
 
-}
+	/* (non-Javadoc)
+	 * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementPresence(java.lang.String, long)
+	 */
+	@Override
+	public WebElement waitForElementPresence(String locator, long waitSeconds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-/* (non-Javadoc)
- * @see com.automation.sele.web.services.actions.ActionsSync#waitForElementPresence(java.lang.Object, long, java.lang.String)
- */
-@Override
-public WebElement waitForElementPresence(long waitSeconds, String locator) {
-    // TODO Auto-generated method stub
-    return null;
-}
+	/* (non-Javadoc)
+	 * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementVisibility(java.lang.Object, long)
+	 */
+	@Override
+	public WebElement waitForElementVisibility(Object locator, long waitSeconds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-/* (non-Javadoc)
- * @see com.automation.sele.web.services.actions.ActionsSync#waitForElementVisibility(java.lang.Object, long, java.lang.Object)
- */
-@Override
-public WebElement waitForElementVisibility(long waitSeconds, Object locator) {
-    // TODO Auto-generated method stub
-    return null;
-}
+	/* (non-Javadoc)
+	 * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementToBeClickable(java.lang.String, long)
+	 */
+	@Override
+	public WebElement waitForElementToBeClickable(String locator,
+			long waitSeconds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-/* (non-Javadoc)
- * @see com.automation.sele.web.services.actions.ActionsSync#waitForElementToBeClickable(org.openqa.selenium.WebDriver, long, java.lang.Object)
- */
-@Override
-public WebElement waitForElementToBeClickable( long waitSeconds, String locator) {
-    // TODO Auto-generated method stub
-    return null;
-}
-
-@Override
-public Alert waitForAlert(long waitSeconds) {
-    // TODO Auto-generated method stub
-    return null;
-}
+	/* (non-Javadoc)
+	 * @see com.automation.seletest.core.services.actions.ActionsSync#waitForAlert(long)
+	 */
+	@Override
+	public Alert waitForAlert(long waitSeconds) {
+		// TODO Auto-generated method stub
+		return null;
+	} 
 
 }

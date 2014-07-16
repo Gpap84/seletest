@@ -27,7 +27,7 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
  */
 public class Initialization {
 
-	public static Map<String, Object> getControllers(String mode) throws BeansException, Exception {
+	public static Map<String, Object> getSessionCotrol(String mode) throws BeansException, Exception {
 		Map<String, Object> controllers= new HashMap<>();
 
 		if(mode.compareToIgnoreCase("web")==0){

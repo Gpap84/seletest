@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.automation.seletest.core.selenium.configuration;
 
 import java.io.File;
@@ -85,8 +82,8 @@ public class LocalDriverConfiguration {
             return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeProperties")).getAbsolutePath()));
         }
 
-        public ChromeOptions chromeOptions(String optionsPath) throws Exception{
-            ChromeOptions options=new ChromeOptions();
+        public ChromeOptions chromeOptions(String optionsPath) throws Exception{	
+        	ChromeOptions options=new ChromeOptions();
             Properties configProp = new Properties();
             configProp.load(new FileReader(optionsPath));
             Enumeration<?> keys = configProp.propertyNames();

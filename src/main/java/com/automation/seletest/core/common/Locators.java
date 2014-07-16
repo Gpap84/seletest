@@ -1,8 +1,12 @@
-package com.automation.seletest.core.selenium.webAPI.elements;
-
+package com.automation.seletest.core.common;
 
 import org.openqa.selenium.By;
 
+/**
+ * Enum for locators returning By object providing input in findElement
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 public enum Locators {
 
     //--------------------------------------------------    Constants for Locators --------------------->>>>>>>>>>>>>>>>>
@@ -10,8 +14,8 @@ public enum Locators {
     XPATH("xpath"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.xpath(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.xpath(findActualLocator(locator));
         }
     },
 
@@ -19,8 +23,8 @@ public enum Locators {
     CSS("css"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.cssSelector(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.cssSelector(findActualLocator(locator));
         }
     },
 
@@ -28,7 +32,7 @@ public enum Locators {
     XPATHEXPR("//"){
 
         @Override
-        public By setLocator(String locator) {
+        public By determineLocator(String locator) {
             return By.xpath(locator);
         }
     },
@@ -38,8 +42,8 @@ public enum Locators {
     NAME("name"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.name(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.name(findActualLocator(locator));
         }
     },
 
@@ -48,8 +52,8 @@ public enum Locators {
     LINK("link"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.linkText(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.linkText(findActualLocator(locator));
         }
     },
 
@@ -57,8 +61,8 @@ public enum Locators {
     ID("id"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.id(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.id(findActualLocator(locator));
         }
     },
 
@@ -66,21 +70,13 @@ public enum Locators {
     TAGNAME("tagname"){
 
         @Override
-        public By setLocator(String locator) {
-            return By.tagName(findLocatorSubstring(locator));
-        }
-    },
-
-    /** The Constant JQUERY. */
-    JQUERY("jquery"){
-
-        @Override
-        public By setLocator(String locator) {
-            return ByJQuerySelector.ByJQuery(findLocatorSubstring(locator));
+        public By determineLocator(String locator) {
+            return By.tagName(findActualLocator(locator));
         }
     },
    ;
-    public abstract By setLocator(String locator);
+
+    public abstract By determineLocator(String locator);
 
     /**The value of enum type*/
     private String value;
@@ -90,7 +86,7 @@ public enum Locators {
 
     }
 
-    synchronized static String findLocatorSubstring(String locator){
+    public synchronized static String findActualLocator(String locator){
         return locator.substring(locator.indexOf('=')+1);
     }
 

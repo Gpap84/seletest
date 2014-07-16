@@ -20,21 +20,21 @@ import com.automation.seletest.core.selenium.webAPI.elements.Locators;
  *
  */
 @Component("expectedWait")
-public class WaitExpected implements ActionsSync{
+public class ExpectedWait implements ActionsSync{
 
 
     @Override
-    public WebElement waitForElementPresence(long waitSeconds, String locator) {
+    public WebElement waitForElementPresence(String locator, long waitSeconds) {
         WebDriverWait wait = new WebDriverWait((WebDriver)SessionContext.getSession().getDriverContext().getBean("profileDriver"), waitSeconds);
-        return wait.until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).determineLocator(locator)));
+        return wait.until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
 
     @Override
-    public WebElement waitForElementVisibility(long waitSeconds, Object locator) {
+    public WebElement waitForElementVisibility(Object locator, long waitSeconds) {
         WebDriverWait wait = new WebDriverWait((WebDriver)SessionContext.getSession().getDriverContext().getBean("profileDriver"), waitSeconds);
         if(locator instanceof String){
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String)locator).determineLocator((String)locator)));
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator)));
         }
         else if(locator instanceof WebElement){
             return wait.until(ExpectedConditions.visibilityOf((WebElement)locator));
@@ -46,9 +46,9 @@ public class WaitExpected implements ActionsSync{
 
 
     @Override
-    public WebElement waitForElementToBeClickable(long waitSeconds, String locator) {
+    public WebElement waitForElementToBeClickable(String locator, long waitSeconds) {
         WebDriverWait wait = new WebDriverWait((WebDriver)SessionContext.getSession().getDriverContext().getBean("profileDriver"), waitSeconds);
-        return wait.until(ExpectedConditions.elementToBeClickable(Locators.findByLocator(locator).determineLocator(locator)));
+        return wait.until(ExpectedConditions.elementToBeClickable(Locators.findByLocator(locator).setLocator(locator)));
     }
 
 
