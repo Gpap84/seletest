@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
  */
 public enum Locators {
 
-    //--------------------------------------------------    Constants for Locators --------------------->>>>>>>>>>>>>>>>>
+    //--------------------------------------------------    CoreProperties for Locators --------------------->>>>>>>>>>>>>>>>>
     /** The Constant XPATH. */
     XPATH("xpath"){
 
