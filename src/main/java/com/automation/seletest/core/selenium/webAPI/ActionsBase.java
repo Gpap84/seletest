@@ -26,8 +26,8 @@ public abstract class ActionsBase implements ActionsController<Object>{
      *            file must exist
      */
     protected void reportScreenshot(File file) {
-        Reporter.log("<a href=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\"><p align=\"left\">" + new Date() + "</p><p><img width=\"878\" src=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
-        log.warn("Screenshot of error captured, path is {}", file.getAbsolutePath());
+        Reporter.log("<a href=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\"><p><img width=\"878\" src=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
+        log.warn("Screenshot captured, path is {}", file.getAbsolutePath());
     }
 
     /**
@@ -40,13 +40,13 @@ public abstract class ActionsBase implements ActionsController<Object>{
             if(!outputDir.exists()){
                 outputDir.mkdirs();
             }
-            return new File(outputDir, "screenshot-" + System.currentTimeMillis() + ".png");
+            return new File(outputDir, "screenshot-" + System.nanoTime() + ".png");
         }
-        return new File("screenshot-" + System.currentTimeMillis() + ".png");
+        return new File("screenshot-" + System.nanoTime() + ".png");
     }
 
     /**
-     * Make relative path
+     * Make relative path (different OS)
      * @param file
      * @param ct
      * @return
