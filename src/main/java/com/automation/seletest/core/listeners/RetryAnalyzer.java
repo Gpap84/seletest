@@ -1,5 +1,6 @@
 package com.automation.seletest.core.listeners;
 
+import org.openqa.selenium.TimeoutException;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -12,14 +13,13 @@ public class RetryAnalyzer implements IRetryAnalyzer{
     private int maxCount = 1;
 
     public RetryAnalyzer() {
-        System.setProperty("org.uncommons.reportng.escape-output", "false");
         setCount(maxCount);
     }
 
     @Override
     public boolean retry(ITestResult result) {
 
-        if ((!result.isSuccess())) {
+        if ((!result.isSuccess() && !(result.getThrowable() instanceof TimeoutException))) {
             if (count < maxCount) {
                 count++;
                 Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
