@@ -6,20 +6,20 @@ package com.automation.seletest.core.selenium.threads.exceptions;
  *
  */
 public class ElementNotVisibleException extends Exception {
-	
-	private static final long serialVersionUID = 1L;
 
-	public ElementNotVisibleException (){}
+    private static final long serialVersionUID = 1L;
 
-	public ElementNotVisibleException (String message) {
-		super (message);
-	}
+    public ElementNotVisibleException (){}
 
-	public ElementNotVisibleException (Throwable cause){
-		super (cause);
-	}
+    public ElementNotVisibleException (String message) {
+        super (message);
+    }
 
-	public ElementNotVisibleException (String message, Throwable cause){
-		super (message, cause);
-	}
+    public ElementNotVisibleException (Throwable cause){
+        super (cause);
+    }
+
+    public ElementNotVisibleException (String message, Throwable cause){
+        super (message, cause);
+    }
 }
