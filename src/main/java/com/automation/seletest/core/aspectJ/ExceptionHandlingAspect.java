@@ -20,6 +20,7 @@ public class ExceptionHandlingAspect{
     @Autowired
     Logging log;
 
+
     /**
      * Around advice with custom annotation for retrying execution of JoinPoint
      * @param pjp
@@ -42,6 +43,29 @@ public class ExceptionHandlingAspect{
         return returnValue;
     }
 
+
+    /**
+     * Around advice for takeScreenshot functions
+     * @param pjp
+     * @param retry
+     * @return
+     * @throws Throwable
+     */
+    @Around("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.takeScreenShot*(..))")
+    public Object handleException(ProceedingJoinPoint pjp) throws Throwable
+    {
+        Object returnValue = null;
+            try {
+                returnValue = pjp.proceed();
+            } catch (Exception ex) {
+                log.error(String.format("%s: Failed with exception '%s'",
+                        pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
+                        ex.getMessage().split("Build")[0].trim()));
+            }
+
+        return returnValue;
+    }
+
     /**
      * Method for handling exceptions....
      * @param pjp
@@ -61,8 +85,10 @@ public class ExceptionHandlingAspect{
                     attemptCount,
                     retry.retryCount(),
                     ex.getClass().getCanonicalName(),
-                    ex.getMessage()));
+                    ex.getMessage().split("Build info")[0].trim()));
             Thread.sleep(retry.sleepMillis());
         }
             }
+
+
 }
