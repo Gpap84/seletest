@@ -26,7 +26,7 @@ Tools used:<br>
 <b>* Browsermob-proxy</b><br>
 
 
-Current Drivers supported<br><br>
+Current Drivers supported<br>
 
 a] ChromeDriver<br>
 b] InternetExplorerDriver for IE9<br>
