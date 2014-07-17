@@ -7,7 +7,8 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebElement;
 
 
-/**Interface for synchronization methods
+/**
+ * Interface for waiting methods
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com) *
  */
 public interface ActionsSync {
@@ -21,6 +22,7 @@ public interface ActionsSync {
      * @return
      */
     WebElement waitForElementPresence(String locator,long waitSeconds);
+
     /** Wait for element to be visible
      * @param driver
      * @param waitSeconds
@@ -28,6 +30,7 @@ public interface ActionsSync {
      * @return
      */
     WebElement waitForElementVisibility(Object locator,long waitSeconds);
+
     /**
      * Wait for element to be clickable
      * @param driver
@@ -36,6 +39,7 @@ public interface ActionsSync {
      * @return
      */
     WebElement waitForElementToBeClickable(String locator,long waitSeconds);
+
     /**
      * Wait for alert
      * @param driver
