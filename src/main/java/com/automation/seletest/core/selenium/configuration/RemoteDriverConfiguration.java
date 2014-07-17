@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.annotation.Bean;
@@ -40,11 +41,15 @@ public class RemoteDriverConfiguration {
             return new RemoteWebDriver(new URL(url),capabilities());
         }
 
+        @Lazy(true)
+        @Bean
+        public WebDriver augmentDriver(WebDriver driver) throws MalformedURLException{
+            return new Augmenter().augment(driver);
+        }
+
         @Override
         public DesiredCapabilities capabilities(){
-            DesiredCapabilities capabilities=new DesiredCapabilities();
-            capabilities.merge(DesiredCapabilities.chrome());
-            return capabilities;
+            return DesiredCapabilities.chrome();
         }
 
         @PostConstruct
