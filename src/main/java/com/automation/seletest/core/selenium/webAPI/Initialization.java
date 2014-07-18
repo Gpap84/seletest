@@ -60,7 +60,7 @@ public class Initialization {
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-            app.getEnvironment().setActiveProfiles(new String[]{Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.BROWSERTYPE.get())});
+            app.getEnvironment().setActiveProfiles(new String[]{Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())});
             app.register(LocalDriverConfiguration.class);
             app.refresh();
             driver=(WebDriver) app.getBean("profileDriver");

@@ -13,8 +13,8 @@ public enum CoreProperties {
 
     /**************************Parameters XML**********************/
 
-    /** The parameter that determines the browser type. */
-    BROWSERTYPE("browserType"),
+    /** The parameter that determines the profile that will be used to start a new WebDriver object. */
+    PROFILEDRIVER("profileDriver"),
 
     /** The parameter that determines the performance measures. */
     PERFORMANCE("performance"),

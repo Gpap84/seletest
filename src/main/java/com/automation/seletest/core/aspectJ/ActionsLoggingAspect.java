@@ -50,7 +50,11 @@ import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.services.CoreProperties;
 import com.automation.seletest.core.services.Logging;
 
-
+/**
+ * Aspect that handles logging,screenshots and changing HTML style on browser
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 @Aspect
 @Component
 public class ActionsLoggingAspect {
@@ -73,9 +77,9 @@ public class ActionsLoggingAspect {
         log.info("Command: "+joinPoint.getSignature().getName()+" executed with arguments: "+arguments((ProceedingJoinPoint)joinPoint)+"!!!");
         SessionControl.actionsController().changeStyle("backgroudColor", (String) ((ProceedingJoinPoint)joinPoint).getArgs()[0], CoreProperties.ACTION_COLOR.get());
     }
-
-    @AfterThrowing("clickController() || enterController()")
-    public void takeScreenCap(final JoinPoint joinPoint) throws IOException{
+    @AfterThrowing(pointcut="clickController() || enterController()", throwing = "ex")
+    public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException{
+        log.info("Take screenCap after exception: "+ex.getMessage());
         SessionControl.actionsController().takeScreenShot();
     }
 
