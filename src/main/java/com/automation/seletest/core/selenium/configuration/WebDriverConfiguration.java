@@ -13,7 +13,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 
-
+/**
+ * Configuration class for instantiating various beans from WebDriver API
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class WebDriverConfiguration {
@@ -37,6 +41,7 @@ public class WebDriverConfiguration {
 
     @Lazy(true)
     @Bean
+    @Scope("prototype")
     public Actions actionsBuilder(WebDriver driver){
         return new Actions(driver);
     }

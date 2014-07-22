@@ -26,7 +26,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
+import org.testng.Reporter;
 
+import com.automation.seletest.core.services.CoreProperties;
 import com.automation.setest.groovy.configuration.WebDriverOptions;
 import com.opera.core.systems.OperaDriver;
 
@@ -43,6 +45,35 @@ import com.opera.core.systems.OperaDriver;
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class LocalDriverConfiguration {
 
+    @Autowired
+    Environment env;
+
+    @PostConstruct
+    public void init(){
+        log.info("Download and set appropriate driver executables!!!");
+
+        //download ChromeDriver.exe if not exists
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).startsWith("chrome")){
+            File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
+            WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
+            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
+        }
+
+        //download IEDriverServer.exe if not exists
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).startsWith("ie")){
+            File ieDriverExecutable=new File(env.getProperty("IEDriverPath"));
+            WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("IEDriverURL"));
+            System.setProperty("webdriver.ie.driver", new File(env.getProperty("IEDriverPath")).getAbsolutePath());
+        }
+
+        //download PhantomJS.exe if not exists
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).startsWith("phantom")){
+            File phantomJSDriverExecutable=new File(env.getProperty("PhantomJSDriverPath"));
+            WebDriverOptions.downloadDriver(phantomJSDriverExecutable, env.getProperty("PhantomJSDriverPathURL"));
+        }
+    }
+
+
     @Configuration
     @Profile({"chrome"})
     public abstract static class ProfileChrome implements ProfileDriver{
@@ -57,16 +88,8 @@ public class LocalDriverConfiguration {
             return new ChromeDriver();
         }
 
-        /**
-         * Get the chromedriver from HTTP if not exists in local environment
-         * @throws InterruptedException
-         */
         @PostConstruct
         public void init() throws InterruptedException {
-          //download ChromeDriver.exe if not exists
-            File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
-            WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
-            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
             log.info("ChromeDriver initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
         }
 
@@ -169,10 +192,6 @@ public class LocalDriverConfiguration {
 
         @PostConstruct
         public void init(){
-            //download IEDriverServer.exe if not exists
-            File ieDriverExecutable=new File(env.getProperty("IEDriverPath"));
-            WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("IEDriverURL"));
-            System.setProperty("webdriver.ie.driver", new File(env.getProperty("IEDriverPath")).getAbsolutePath());
             log.info("IEDriver initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
 
         }
@@ -234,7 +253,7 @@ public class LocalDriverConfiguration {
         @Bean
         @Lazy(true)
         public WebDriver profileDriver(){
-              return new PhantomJSDriver(capabilities());
+            return new PhantomJSDriver(capabilities());
         }
 
         //PhantomJS for security bypass and executable file
@@ -248,9 +267,6 @@ public class LocalDriverConfiguration {
 
         @PostConstruct
         public void init(){
-            //download IEDriverServer.exe if not exists
-            File phantomJSDriverExecutable=new File(env.getProperty("PhantomJSDriverPath"));
-            WebDriverOptions.downloadDriver(phantomJSDriverExecutable, env.getProperty("PhantomJSDriverPathURL"));
             log.info("PhantomJS initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
         }
 

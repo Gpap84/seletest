@@ -1,10 +1,7 @@
 package com.automation.seletest.core.spring;
 
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,8 +18,8 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
+import com.automation.seletest.core.listeners.EventPublisher;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.Initialization;
 
 /**
  * This class serves as the Base Class for Web Test Preparation
@@ -34,6 +31,7 @@ import com.automation.seletest.core.selenium.webAPI.Initialization;
 @ContextConfiguration({"classpath*:META-INF/spring/*-context.xml" })
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
+
 
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
@@ -60,6 +58,8 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("*****************************************");
             log.debug("**** Parallel level is: <<{}>>***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
+
+            /*****Define initialization phase*/
             initializeSession(hostURL,type);
         }
     }
@@ -71,9 +71,12 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             @Optional String hostURL,
             String type) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-            log.debug("*****************************************");
-            log.debug("**** Parallel level is: <<{}>>***********", ctx.getCurrentXmlTest().getParallel());
-            log.debug("*****************************************");
+
+            log.debug("******************************************************************");
+            log.debug("**** Initialize session upon parallel level: <<\"{}\">>***********", ctx.getCurrentXmlTest().getParallel());
+            log.debug("******************************************************************");
+
+            /*****Define initialization phase*/
             initializeSession(hostURL,type);
         }
     }
@@ -85,9 +88,12 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             @Optional String hostURL,
             String type) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-            log.debug("*****************************************");
-            log.debug("**** Parallel level is: <<{}>>***************", ctx.getCurrentXmlTest().getParallel());
-            log.debug("*****************************************");
+
+            log.debug("*********************************************************************");
+            log.debug("**** Initialize session upon parallel level <<\"{}\">>***************", ctx.getCurrentXmlTest().getParallel());
+            log.debug("*********************************************************************");
+
+            /*****Define initialization phase*/
             initializeSession(hostURL,type);
         }
     }
@@ -123,13 +129,18 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     }
 
     /**Prepare initialization*/
-    private void initializeSession(String hostURL, String mode) throws BeansException, Exception{
-        Map<String, Object> controls=Initialization.getSessionCotrol(mode);
-        SessionContext.setSessionProperties(controls);
-        SessionContext.getSession().getActionscontroller().getTargetHost(hostURL);
+    private void initializeSession(String hostUrl, String type){
+
+        EventPublisher publisher = applicationContext.getBean(EventPublisher.class);
+
+        if(type.compareTo("web")==0){
+            publisher.publishWebInitEvent("New web session initialized", hostUrl);
+        }
+        else if (type.compareTo("mobile")==0){
+            publisher.publishMobileInitEvent("New appium session initialized");
+        }
+
     }
-
-
 
     /**Starts the Spring container*/
     private void prepareTest() throws Exception{
@@ -142,4 +153,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             throw e1;
         }
     }
+
+
 }

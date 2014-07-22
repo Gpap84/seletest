@@ -38,13 +38,7 @@ public class RemoteDriverConfiguration {
         @Lazy(true)
         @Bean
         public WebDriver profileDriver(String url) throws MalformedURLException{
-            return new RemoteWebDriver(new URL(url),capabilities());
-        }
-
-        @Lazy(true)
-        @Bean
-        public WebDriver augmentDriver(WebDriver driver) throws MalformedURLException{
-            return new Augmenter().augment(driver);
+            return new Augmenter().augment(new RemoteWebDriver(new URL(url),capabilities()));
         }
 
         @Override

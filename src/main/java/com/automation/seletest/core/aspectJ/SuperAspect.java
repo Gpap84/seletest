@@ -3,6 +3,11 @@ package com.automation.seletest.core.aspectJ;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
+/**
+ * Super class with common functions
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 public class SuperAspect {
 
     /**Arguments of an executed method*/
