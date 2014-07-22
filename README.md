@@ -10,9 +10,9 @@ This is a Java Framework based on WebDriver API to interact with web or mobile a
 
 Tests supported:<br>
 a] Web End to End functional<br>
-b] DB transactions tests<br>
-c] Client performance Tests<br>
-d] Mobile End to End functional<br>
+b] DB transactions tests<br>Not supported yet...
+c] Client performance Tests<br>Not supported yet...
+d] Mobile End to End functional<br>Not fully supported yet
 
 
 Tools used:<br>
