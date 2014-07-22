@@ -38,26 +38,24 @@ import java.io.IOException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.CoreProperties;
 import com.automation.seletest.core.services.Logging;
 
 /**
- * Aspect that handles logging,screenshots and changing HTML style on browser
+ * Aspect that handles logging,screenshots etc.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Aspect
 @Component
-public class ActionsLoggingAspect {
+public class ActionsLoggingAspect extends SuperAspect{
 
     @Autowired
     Logging log;
@@ -72,30 +70,16 @@ public class ActionsLoggingAspect {
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.enter*(..))") // expression
     private void enterController() {}//expression pointcut for function  starting with enter...
 
-    @After("clickController() || enterController()")
-    public void highlight(final JoinPoint joinPoint){
-        log.info("Command: "+joinPoint.getSignature().getName()+" executed with arguments: "+arguments((ProceedingJoinPoint)joinPoint)+"!!!");
-        SessionControl.actionsController().changeStyle("backgroudColor", (String) ((ProceedingJoinPoint)joinPoint).getArgs()[0], CoreProperties.ACTION_COLOR.get());
-    }
     @AfterThrowing(pointcut="clickController() || enterController()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException{
-        log.info("Take screenCap after exception: "+ex.getMessage());
+        log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
         SessionControl.actionsController().takeScreenShot();
     }
-
-    /**Arguments of an executed method*/
-    private String arguments(ProceedingJoinPoint proceedPoint){
-        StringBuilder arguments = new StringBuilder();
-        for(int i=0; i < proceedPoint.getArgs().length ;i++ ){
-            MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
-            sig.getParameterNames();
-            arguments.append(""+sig.getParameterNames()[i].toString()+"="+proceedPoint.getArgs()[i].toString()+"***");
-        }
-        if(arguments.toString().isEmpty()){
-            return "NONE";
-        }
-        else{
-        return arguments.toString().trim();}
+    @Before(value="clickController() || enterController()")
+    public void logBefore(final JoinPoint pjp){
+        log.warn("Command is about to be executed: "+pjp.getSignature().getName()+" with arguments: "+arguments((ProceedingJoinPoint)pjp)+"!!!");
     }
+
+
 
 }

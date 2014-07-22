@@ -3,9 +3,12 @@ package com.automation.seletest.core.aspectJ;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.openqa.selenium.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.services.CoreProperties;
 import com.automation.seletest.core.services.Logging;
 
 /**
@@ -15,7 +18,7 @@ import com.automation.seletest.core.services.Logging;
  */
 @Aspect
 @Component
-public class ExceptionHandlingAspect{
+public class ExceptionHandlingAspect extends SuperAspect{
 
     @Autowired
     Logging log;
@@ -35,6 +38,8 @@ public class ExceptionHandlingAspect{
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
+                log.info("Command: "+pjp.getSignature().getName()+" executed with arguments: "+arguments(pjp)+"!!!");
+                SessionControl.actionsController().changeStyle("backgroudColor", (String) (pjp).getArgs()[0], CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -55,13 +60,13 @@ public class ExceptionHandlingAspect{
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable
     {
         Object returnValue = null;
-            try {
-                returnValue = pjp.proceed();
-            } catch (Exception ex) {
-                log.error(String.format("%s: Failed with exception '%s'",
-                        pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
-                        ex.getMessage().split("Build")[0].trim()));
-            }
+        try {
+            returnValue = pjp.proceed();
+        } catch (Exception ex) {
+            log.error(String.format("%s: Failed with exception '%s'",
+                    pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
+                    ex.getMessage().split("Build")[0].trim()));
+        }
 
         return returnValue;
     }
@@ -76,8 +81,11 @@ public class ExceptionHandlingAspect{
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex,
             int attemptCount, RetryFailure retry) throws Throwable
-            {
-        if (attemptCount == 1 + retry.retryCount()) {
+    {
+        if (ex instanceof TimeoutException) {
+            log.error("Element not found in Screen with exception: "+ex.getMessage().split("Build")[0].trim());
+            throw ex;
+        } if (attemptCount == 1 + retry.retryCount()) {
             throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);
         } else {
             log.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
@@ -88,7 +96,7 @@ public class ExceptionHandlingAspect{
                     ex.getMessage().split("Build info")[0].trim()));
             Thread.sleep(retry.sleepMillis());
         }
-            }
+    }
 
 
 }
