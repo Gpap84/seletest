@@ -24,6 +24,9 @@ public enum CoreProperties {
 
     /** The parameter that determines the Grid port. */
     GRID_PORT("gridPort"),
+    
+    /**Parameter that determined the URL of the web app under test*/
+    HOST_URL("hostURL"),
 
 
     /*************************************CoreProperties used for test status-actions on UI*****************************************************/

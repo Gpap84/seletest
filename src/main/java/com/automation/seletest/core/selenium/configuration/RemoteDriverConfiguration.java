@@ -44,6 +44,8 @@ public class RemoteDriverConfiguration {
         }
 
         @Override
+        @Lazy(true)
+        @Bean
         public DesiredCapabilities capabilities(){
             return DesiredCapabilities.chrome();
         }
@@ -69,6 +71,8 @@ public class RemoteDriverConfiguration {
         }
 
         @Override
+        @Lazy(true)
+        @Bean
         public DesiredCapabilities capabilities(){
             DesiredCapabilities capabilities=new DesiredCapabilities();
             return capabilities;

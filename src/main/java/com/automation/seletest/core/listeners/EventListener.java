@@ -33,38 +33,45 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     public void onApplicationEvent(ApplicationEvent event) {
 
         if (event instanceof WebInitEvent) {
-            Map<String, Object> controllers= new HashMap<>();
-
-            WebDriverActionsController<?> wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
-
-            //Create Application Context for initializing driver based on specified @Profile
-            AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-            app.getEnvironment().setActiveProfiles(new String[]{
-                    Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())
-            });
-
-            //register Configuration classes
-            app.register(
-                    LocalDriverConfiguration.class,
-                    WebDriverConfiguration.class,
-                    RemoteDriverConfiguration.class);
-
-            //start Container for bean initialization
-            app.refresh();
-            WebDriver driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get());
-
-            //Set objects per session
-            wdActions.setDriver(driver);//set the driver object for this session
-            wdActions.setJsExec((JavascriptExecutor)driver);//sets tthe Javascript executor
-            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
-
-            //get the address of the app under test
-            wdActions.getTargetHost(((WebInitEvent) event).getHostUrl());
-
-            //register all objects - interfaces and set them in sessionProperties
-            controllers.put(CoreProperties.WEB_ACTIONS_CONTROLLER.get(), wdActions);
-            SessionContext.setSessionProperties(controllers);
+        	new Initialize().initializeWeb(event);
         }
+    }
+    
+    static class Initialize{
+    	
+    	public void initializeWeb(ApplicationEvent event){
+    	Map<String, Object> controllers= new HashMap<>();
+
+        WebDriverActionsController<?> wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
+
+        //Create Application Context for initializing driver based on specified @Profile
+        AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
+        app.getEnvironment().setActiveProfiles(new String[]{
+                Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())
+        });
+
+        //register Configuration classes
+        app.register(
+                LocalDriverConfiguration.class,
+                WebDriverConfiguration.class,
+                RemoteDriverConfiguration.class);
+
+        //start Container for bean initialization
+        app.refresh();
+        WebDriver driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get());
+
+        //Set objects per session
+        wdActions.setDriver(driver);//set the driver object for this session
+        wdActions.setJsExec((JavascriptExecutor)driver);//sets tthe Javascript executor
+        SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
+
+        //get the address of the app under test
+        wdActions.getTargetHost(((WebInitEvent) event).getHostUrl());
+
+        //register all objects - interfaces and set them in sessionProperties
+        controllers.put(CoreProperties.WEB_ACTIONS_CONTROLLER.get(), wdActions);
+        SessionContext.setSessionProperties(controllers);
+    	}
     }
 
 }

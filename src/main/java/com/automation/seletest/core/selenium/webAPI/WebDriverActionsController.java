@@ -30,6 +30,7 @@ package com.automation.seletest.core.selenium.webAPI;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -43,7 +44,6 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -77,9 +77,6 @@ public class WebDriverActionsController<T> implements ActionsController{
     /**The webDriver object*/
     @Getter @Setter
     WebDriver driver;
-
-    @Getter @Setter
-    RemoteWebDriver remoteDriver;
 
     @Getter @Setter
     JavascriptExecutor jsExec;
@@ -156,6 +153,23 @@ public class WebDriverActionsController<T> implements ActionsController{
         fileService.reportScreenshot(file);
     }
 
+    @Override
+	public WebDriverActionsController<T> switchToLatestWindow() {
+    	 Iterator<String> iterator = driver.getWindowHandles().iterator();
+         String lastWindow = null;
+         while (iterator.hasNext()) {
+        	 lastWindow = iterator.next();
+         }
+         driver.switchTo().window(lastWindow);
+		 return this;
+	}
+    
+    
+    
+    
+    
+    
+    
     /**
      * Gets the strategy for Wait<WebDriver>
      * @return

@@ -11,7 +11,7 @@ import lombok.Setter;
  *
  */
 public class Assertion implements Assertable{
-	
+
 	@Getter @Setter
     private Object assertion;
 	
@@ -39,8 +39,8 @@ public class Assertion implements Assertable{
     }
     
     /**
-     * Defines the assertion type
-     * @author PI000003
+     * Defines assertionType
+     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */
     public enum AssertionType{SOFT,HARD};

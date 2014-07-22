@@ -23,7 +23,7 @@ public class Logging {
     @PostConstruct
     public void init(){
         System.setProperty("org.uncommons.reportng.escape-output", "false");
-        log.debug("'escape-output' set to false for reporting");
+        log.debug("'escape-output' set to false for ReportNG");
     }
 
 
@@ -43,7 +43,7 @@ public class Logging {
      * @param message
      */
     public void info(String message) {
-        info(message, "\"color:MediumBlue; font-size:1em;\"");
+        info(message, "\"color:black; font-size:1em;\"");
     }
 
     /**
