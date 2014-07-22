@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -37,8 +38,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
         }
     }
     
-    static class Initialize{
-    	
+    static class Initialize {
+    		
     	public void initializeWeb(ApplicationEvent event){
     	Map<String, Object> controllers= new HashMap<>();
 
@@ -47,8 +48,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
         //Create Application Context for initializing driver based on specified @Profile
         AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
         app.getEnvironment().setActiveProfiles(new String[]{
-                Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())
-        });
+                Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())});
 
         //register Configuration classes
         app.register(
@@ -58,7 +58,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
         //start Container for bean initialization
         app.refresh();
-        WebDriver driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get());
+        DesiredCapabilities cap = ApplicationContextProvider.getApplicationContext().getBean(DesiredCapabilities.class);
+        WebDriver driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
 
         //Set objects per session
         wdActions.setDriver(driver);//set the driver object for this session

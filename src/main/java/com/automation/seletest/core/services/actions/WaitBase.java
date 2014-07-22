@@ -8,7 +8,6 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 
 public abstract class WaitBase implements ActionsSync{
 
-    private final String profileDriver="profileDriver";
     private final String webDriverWait="wdWait";
     private final String fluentWait="fwWait";
 
@@ -17,7 +16,7 @@ public abstract class WaitBase implements ActionsSync{
      * @return
      */
     public WebDriver getDriverInstance(){
-        return (WebDriver) SessionContext.getSession().getDriverContext().getBean(profileDriver);
+        return SessionContext.getSession().getActionscontroller().getDriverInstance();
     }
 
     /**

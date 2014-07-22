@@ -65,9 +65,6 @@ import com.automation.seletest.core.services.factories.WaitStrategyFactory;
 @Scope("prototype")
 public class WebDriverActionsController<T> implements ActionsController{
 
-    @Autowired(required=false)
-    WebDriver profileDriver;
-
     @Autowired
     Files fileService;
 

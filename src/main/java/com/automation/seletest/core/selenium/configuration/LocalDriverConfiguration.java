@@ -18,6 +18,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -25,6 +26,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import com.automation.setest.groovy.configuration.WebDriverOptions;
 import com.opera.core.systems.OperaDriver;
@@ -46,7 +48,7 @@ public class LocalDriverConfiguration {
 	public void init(){
 		log.info("Download and set appropriate driver executables!!!");
 	}
-
+	
 	@Configuration
 	@Profile({"chrome"})
 	public abstract static class ProfileChrome implements ProfileDriver{
@@ -57,8 +59,9 @@ public class LocalDriverConfiguration {
 		@Override
 		@Lazy(true)
 		@Bean
-		public WebDriver profileDriver(){
-			return new ChromeDriver();
+		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+		public WebDriver profileDriver(DesiredCapabilities capabilities){
+			return new ChromeDriver(capabilities);
 		}
 
 		@PostConstruct
@@ -81,6 +84,7 @@ public class LocalDriverConfiguration {
 		@Override
 		@Lazy(true)
 		@Bean
+		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 		public WebDriver profileDriver() throws Exception{
 			return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeProperties")).getAbsolutePath()));
 		}
@@ -133,14 +137,14 @@ public class LocalDriverConfiguration {
 		@Override
 		@Bean
 		@Lazy(true)
-		public WebDriver profileDriver(){
-			return new FirefoxDriver();
+		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+		public WebDriver profileDriver(DesiredCapabilities capabilities){
+			return new FirefoxDriver(capabilities);
 		}
 
 		@PostConstruct
 		public void init(){
 			log.info("FirefoxDriver initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
-//			System.setProperty("webdriver.firefox.bin",env.getProperty("FirefoxBinaryPath"));
 		}
 	}
 
@@ -159,12 +163,13 @@ public class LocalDriverConfiguration {
 		@Override
 		@Bean
 		@Lazy(true)
-		public WebDriver profileDriver(){
-			return new InternetExplorerDriver(internetexplorerCap());
+		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+		public WebDriver profileDriver(DesiredCapabilities capabilities){
+			return new InternetExplorerDriver(capabilities.merge(cap()));
 		}
 
 		//Internet Explorer capabilities for security bypass
-		private DesiredCapabilities internetexplorerCap(){
+		private DesiredCapabilities cap(){
 			DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
 			capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			return capabilities;
@@ -240,10 +245,7 @@ public class LocalDriverConfiguration {
 		}
 
 		//PhantomJS for security bypass and executable file
-		@Override
-		@Lazy(true)
-        @Bean
-		public DesiredCapabilities capabilities(){
+		private DesiredCapabilities capabilities(){
 			DesiredCapabilities capabilities = new DesiredCapabilities();
 			capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,new File(env.getProperty("PhantomJSDriverPath")).getAbsolutePath());
 			capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--ignore-ssl-errors=yes","--web-security=false","--ssl-protocol=any"});

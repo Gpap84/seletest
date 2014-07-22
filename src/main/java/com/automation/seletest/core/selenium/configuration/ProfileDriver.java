@@ -18,11 +18,9 @@ public interface ProfileDriver {
     /**Driver type*/
     WebDriver profileDriver() throws Exception;
 
-
-    /**The DesiredCapabilities object*/
-    DesiredCapabilities capabilities();
-
-
+    /**Driver type with desired capabilities*/
+    WebDriver profileDriver(DesiredCapabilities capabilities) throws Exception;
+    
     /**The profileDriver for RemoteWebDriver*/
-    WebDriver profileDriver(String url) throws MalformedURLException;
+    WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException;
 }

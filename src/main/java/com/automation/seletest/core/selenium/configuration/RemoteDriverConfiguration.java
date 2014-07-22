@@ -39,16 +39,10 @@ public class RemoteDriverConfiguration {
         @Override
         @Lazy(true)
         @Bean
-        public WebDriver profileDriver(String url) throws MalformedURLException{
-            return new Augmenter().augment(new RemoteWebDriver(new URL(url),capabilities()));
+        public WebDriver profileDriver(String url,DesiredCapabilities cap) throws MalformedURLException{
+            return new Augmenter().augment(new RemoteWebDriver(new URL(url),cap));
         }
 
-        @Override
-        @Lazy(true)
-        @Bean
-        public DesiredCapabilities capabilities(){
-            return DesiredCapabilities.chrome();
-        }
 
         @PostConstruct
         public void init(){
@@ -66,16 +60,8 @@ public class RemoteDriverConfiguration {
         @Override
         @Lazy(true)
         @Bean
-        public WebDriver profileDriver(String url) throws MalformedURLException{
-            return new AppiumDriver(new URL(url),capabilities());
-        }
-
-        @Override
-        @Lazy(true)
-        @Bean
-        public DesiredCapabilities capabilities(){
-            DesiredCapabilities capabilities=new DesiredCapabilities();
-            return capabilities;
+        public WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException{
+            return new AppiumDriver(new URL(url),cap);
         }
 
         @PostConstruct
