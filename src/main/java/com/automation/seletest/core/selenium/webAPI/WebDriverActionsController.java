@@ -1,6 +1,29 @@
-/**
- *
- */
+/*
+This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
+
+Copyright (c) 2014, Papadakis Giannis <gpapadakis84@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 package com.automation.seletest.core.selenium.webAPI;
 
 
@@ -27,6 +50,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.aspectJ.RetryFailure;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.Files;
 import com.automation.seletest.core.services.factories.WaitStrategyFactory;
 
 /**
@@ -36,10 +60,16 @@ import com.automation.seletest.core.services.factories.WaitStrategyFactory;
  * @param <T>
  *
  */
-@SuppressWarnings({"hiding","unchecked"})
+@SuppressWarnings({"rawtypes"})
 @Component
 @Scope("prototype")
-public class WebDriverActionsController<T> extends ActionsBase{
+public class WebDriverActionsController<T> implements ActionsController{
+
+    @Autowired(required=false)
+    WebDriver profileDriver;
+
+    @Autowired
+    Files fileService;
 
     @Autowired
     WaitStrategyFactory waitStrategy;
@@ -60,8 +90,8 @@ public class WebDriverActionsController<T> extends ActionsBase{
     }
 
     @Override
-    public <T extends WebDriver> T getDriverInstance() {
-        return (T) getDriver();
+    public WebDriver getDriverInstance() {
+        return getDriver();
     }
 
     @Override
@@ -106,9 +136,9 @@ public class WebDriverActionsController<T> extends ActionsBase{
     @Override
     public void takeScreenShot() throws IOException{
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        File file = createScreenshotFile();
+        File file = fileService.createScreenshotFile();
         FileUtils.copyFile(scrFile, file);
-        reportScreenshot(file);
+        fileService.reportScreenshot(file);
     }
 
     @Override
@@ -121,9 +151,9 @@ public class WebDriverActionsController<T> extends ActionsBase{
         int eleHeight = element.getSize().getHeight();
         BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), eleWidth, eleHeight);
         ImageIO.write(eleScreenshot, "png", screenshot);
-        File file = createScreenshotFile();
+        File file = fileService.createScreenshotFile();
         FileUtils.copyFile(screenshot, file);
-        reportScreenshot(file);
+        fileService.reportScreenshot(file);
     }
 
     /**
@@ -133,4 +163,7 @@ public class WebDriverActionsController<T> extends ActionsBase{
     private String getWait(){
         return SessionContext.getSession().getWaitStrategy();
     }
+
+
+
 }

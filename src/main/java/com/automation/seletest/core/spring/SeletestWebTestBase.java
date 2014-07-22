@@ -2,7 +2,6 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -27,11 +26,9 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
  *
  */
 @Slf4j
-@Configuration
 @ContextConfiguration({"classpath*:META-INF/spring/*-context.xml" })
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
-
 
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
@@ -134,10 +131,10 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
         EventPublisher publisher = applicationContext.getBean(EventPublisher.class);
 
         if(type.compareTo("web")==0){
-            publisher.publishWebInitEvent("New web session initialized", hostUrl);
+            publisher.publishWebInitEvent("New Web session initialized!!!", hostUrl);
         }
         else if (type.compareTo("mobile")==0){
-            publisher.publishMobileInitEvent("New appium session initialized");
+            publisher.publishMobileInitEvent("New Appium session initialized!!!");
         }
 
     }

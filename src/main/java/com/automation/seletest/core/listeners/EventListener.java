@@ -34,6 +34,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
         if (event instanceof WebInitEvent) {
             Map<String, Object> controllers= new HashMap<>();
+
             WebDriverActionsController<?> wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
 
             //Create Application Context for initializing driver based on specified @Profile

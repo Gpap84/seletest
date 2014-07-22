@@ -6,17 +6,17 @@ import groovy.util.logging.*
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Log
+@Slf4j
 class WebDriverOptions {
 
     /**
-     * Download ChromeDriver or IEDriver in local environment if not exists using AntBuilder
+     * Download ChromeDriver or IEDriver or PhantomJS  executables in local environment if not exists using AntBuilder
      * @param file
      * @param path
      */
-    public static void downloadDriver(File file, String path) {
+    public static synchronized void downloadDriver(File file, String path) {
         if (!file.exists()) {
-            log.info 'Download ChromeDriver from Central Repo'
+            log.info('Download {} from Central Repo', file)
             def ant = new AntBuilder()
             ant.get(src: path, dest: 'driver.zip')
             ant.unzip(src: 'driver.zip', dest: file.parent)
@@ -24,7 +24,7 @@ class WebDriverOptions {
             ant.chmod(file: file, perm: '700')
         }
         else {
-            log.info 'ChromeDriver already exists'
+            log.info('{} already exists', file)
         }
 
     }

@@ -15,12 +15,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
  <!-- scan components and services -->
  <context:component-scan base-package="com.automation.seletest.core">
+ <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration*" />
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration.Profile*.*" />
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration.Profile*.*" />
   </context:component-scan>
  
+ <!-- Assign application context to static variable -->
  <bean id="appContext" class="com.automation.seletest.core.spring.ApplicationContextProvider" />
  
+ <!-- Factory for waiting strategy -->
  <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="waitStrategyFactory">
   <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.WaitStrategyFactory">
   </property>

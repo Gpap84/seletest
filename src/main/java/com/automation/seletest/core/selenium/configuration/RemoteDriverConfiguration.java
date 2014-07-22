@@ -1,5 +1,7 @@
 package com.automation.seletest.core.selenium.configuration;
 
+import io.appium.java_client.AppiumDriver;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -44,6 +46,32 @@ public class RemoteDriverConfiguration {
         @Override
         public DesiredCapabilities capabilities(){
             return DesiredCapabilities.chrome();
+        }
+
+        @PostConstruct
+        public void init(){
+            log.info(beanDescription);
+        }
+
+    }
+
+    @Configuration
+    @Profile({"appiumiOS"})
+    public abstract static class ProfileAppiumiOS implements ProfileDriver{
+
+        private final String beanDescription="AppiumDriver initialized targeting iOS native app!!!";
+
+        @Override
+        @Lazy(true)
+        @Bean
+        public WebDriver profileDriver(String url) throws MalformedURLException{
+            return new AppiumDriver(new URL(url),capabilities());
+        }
+
+        @Override
+        public DesiredCapabilities capabilities(){
+            DesiredCapabilities capabilities=new DesiredCapabilities();
+            return capabilities;
         }
 
         @PostConstruct

@@ -61,7 +61,7 @@ public class Logging {
      * @param message
      */
     public void warn(String message) {
-       warn(message, "\"color:orange; font-size:1em;\"");
+       warn(message, "\"color:#663366; font-size:1em;\"");
     }
 
    /**

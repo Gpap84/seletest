@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -42,7 +43,14 @@ public class WebDriverConfiguration {
     @Lazy(true)
     @Bean
     @Scope("prototype")
-    public Actions actionsBuilder(WebDriver driver){
+    public Actions webActionsBuilder(WebDriver driver){
         return new Actions(driver);
+    }
+
+    @Lazy(true)
+    @Bean
+    @Scope("prototype")
+    public TouchActions touchActionsBuilder(WebDriver driver){
+        return new TouchActions(driver);
     }
 }

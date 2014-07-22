@@ -56,14 +56,12 @@ public class LocalDriverConfiguration {
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).startsWith("chrome")){
             File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
             WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
-            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
         }
 
         //download IEDriverServer.exe if not exists
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).startsWith("ie")){
             File ieDriverExecutable=new File(env.getProperty("IEDriverPath"));
             WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("IEDriverURL"));
-            System.setProperty("webdriver.ie.driver", new File(env.getProperty("IEDriverPath")).getAbsolutePath());
         }
 
         //download PhantomJS.exe if not exists
@@ -90,6 +88,7 @@ public class LocalDriverConfiguration {
 
         @PostConstruct
         public void init() throws InterruptedException {
+            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
             log.info("ChromeDriver initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
         }
 
@@ -134,6 +133,7 @@ public class LocalDriverConfiguration {
 
         @PostConstruct
         public void init(){
+            System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
             log.info("ChromeDriver with Options initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
         }
 
@@ -192,6 +192,7 @@ public class LocalDriverConfiguration {
 
         @PostConstruct
         public void init(){
+            System.setProperty("webdriver.ie.driver", new File(env.getProperty("IEDriverPath")).getAbsolutePath());
             log.info("IEDriver initialized with active profiles: {"+LocalDriverConfiguration.activeProfiles(env).trim()+"}!!!");
 
         }
