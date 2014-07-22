@@ -210,7 +210,21 @@
   <dependency>
    <groupId>com.github.detro.ghostdriver</groupId>
    <artifactId>phantomjsdriver</artifactId>
-   <version>1.0.4</version>
+   <version>${phantomjs.version}</version>
+   <exclusions>
+    <exclusion>
+     <groupId>org.seleniumhq.selenium</groupId>
+     <artifactId>selenium-api</artifactId>
+    </exclusion>
+     <exclusion>
+     <groupId>org.seleniumhq.selenium</groupId>
+     <artifactId>selenium-remote-driver</artifactId>
+    </exclusion>
+     <exclusion>
+     <groupId>org.seleniumhq.selenium</groupId>
+     <artifactId>selenium-server</artifactId>
+    </exclusion>
+   </exclusions>
   </dependency>
 
   <dependency>
@@ -228,7 +242,7 @@
   <!-- Selenium Server -->
   <dependency>
    <groupId>org.seleniumhq.selenium</groupId>
-   <artifactId>selenium-server</artifactId>
+   <artifactId>selenium-java</artifactId>
    <version>${selenium.version}</version>
   </dependency>
 
@@ -388,11 +402,17 @@
    <version>1.1.1</version>
   </dependency>
 
-  <!-- Appium java client for testing mobile native apps -->
+  <dependency>
+   <groupId>org.apache.httpcomponents</groupId>
+   <artifactId>httpclient</artifactId>
+   <version>4.3.4</version>
+  </dependency>
+
+  <!-- Appium java client for mobile native apps -->
   <dependency>
    <groupId>io.appium</groupId>
    <artifactId>java-client</artifactId>
-   <version>1.1.0</version>
+   <version>${appium.version}</version>
    <exclusions>
     <exclusion>
      <groupId>org.seleniumhq.selenium</groupId>
@@ -400,7 +420,7 @@
     </exclusion>
    </exclusions>
   </dependency>
- </dependencies>
+  </dependencies>
 
 
  <!-- Shared version number properties -->
@@ -410,6 +430,8 @@
   <aspectj.version>1.6.11</aspectj.version>
   <testng.version>6.8.8</testng.version>
   <groovy.version>1.8.8</groovy.version>
+  <appium.version>1.5.0</appium.version>
+  <phantomjs.version>1.0.4</phantomjs.version>
   <gmaven.version>1.5</gmaven.version>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
