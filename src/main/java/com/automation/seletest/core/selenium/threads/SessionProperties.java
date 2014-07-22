@@ -42,7 +42,7 @@ public class SessionProperties {
 
     /**Timeout for waiting until condition fullfilled */
     @Getter @Setter
-    int waitUntil = 10;
+    int waitUntil = 5;
 
     /**Timeout for waiting an event to occur */
     @Getter @Setter

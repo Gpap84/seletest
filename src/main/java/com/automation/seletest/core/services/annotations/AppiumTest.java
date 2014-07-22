@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation defines that a Test Method or Class is targeting mobile app
+ * This annotation defines that a Test Method or Class will run against Appium Server
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */

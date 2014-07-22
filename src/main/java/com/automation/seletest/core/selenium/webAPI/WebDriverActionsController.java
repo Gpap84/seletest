@@ -126,6 +126,10 @@ public class WebDriverActionsController<T> extends ActionsBase{
         reportScreenshot(file);
     }
 
+    /**
+     * Gets the strategy for Wait<WebDriver>
+     * @return
+     */
     private String getWait(){
         return SessionContext.getSession().getWaitStrategy();
     }

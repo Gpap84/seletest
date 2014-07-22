@@ -4,10 +4,12 @@
 package com.automation.seletest.core.selenium.webAPI;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.FileUtils;
 import org.testng.ITestContext;
 import org.testng.Reporter;
 
@@ -33,13 +35,12 @@ public abstract class ActionsBase implements ActionsController<Object>{
     /**
      * make a filename within the reportng folders so we can use relative paths.
      * @return the file
+     * @throws IOException
      */
-    protected File createScreenshotFile() {
+    protected File createScreenshotFile() throws IOException {
         if (Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory() != null) {
             File outputDir = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent(), "screenshots");
-            if(!outputDir.exists()){
-                outputDir.mkdirs();
-            }
+            FileUtils.forceMkdir(outputDir);
             return new File(outputDir, "screenshot-" + System.nanoTime() + ".png");
         }
         return new File("screenshot-" + System.nanoTime() + ".png");
