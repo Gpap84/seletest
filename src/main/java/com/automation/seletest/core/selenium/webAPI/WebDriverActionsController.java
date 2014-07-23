@@ -105,6 +105,11 @@ public class WebDriverActionsController implements ActionsController<Object>{
         }
     }
 
+    /*************************************************************
+     ************************ACTIONS SECTION*********************
+     *************************************************************
+     */
+
     @Override
     @RetryFailure(retryCount=1)
     public WebDriverActionsController clickTo(String locator, long timeout) {
@@ -129,6 +134,11 @@ public class WebDriverActionsController implements ActionsController<Object>{
         return this;
     }
 
+    /*************************************************************
+     ************************SCREENSHOTS SECTION*********************
+     *************************************************************
+     */
+
     @Override
     public void takeScreenShot() throws IOException{
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -152,6 +162,10 @@ public class WebDriverActionsController implements ActionsController<Object>{
         fileService.reportScreenshot(file);
     }
 
+    /*************************************************************
+     ************************WINDOWS SECTION*********************
+     *************************************************************
+     */
     @Override
 	public WebDriverActionsController switchToLatestWindow() {
     	 Iterator<String> iterator = driver.getWindowHandles().iterator();

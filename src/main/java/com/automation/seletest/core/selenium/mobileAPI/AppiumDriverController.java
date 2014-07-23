@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("prototype")
-public class AppiumDriverController implements AppiumController{
+public class AppiumDriverController implements AppiumController<Object>{
 
     @Getter @Setter AppiumDriver appiumDriver;
 

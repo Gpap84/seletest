@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.proxy.ProxyServer;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@Slf4j
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Performance {
 
@@ -70,8 +72,12 @@ public class Performance {
      * @throws IOException
      */
     public void writePerformanceData(String path, Har harFile) throws IOException{
-        FileOutputStream fos = new FileOutputStream(path);
-        harFile.writeTo(fos);
+        try{
+            FileOutputStream fos = new FileOutputStream(path);
+            harFile.writeTo(fos);}
+        catch(Exception ex){
+            log.error("Cannot write to external file: "+ex.getLocalizedMessage());
+        }
     }
 
     /**

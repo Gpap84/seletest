@@ -9,7 +9,9 @@ import java.util.Stack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.aop.target.ThreadLocalTargetSource;
+
 import com.automation.seletest.core.selenium.webAPI.ActionsController;
 import com.automation.seletest.core.services.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
@@ -70,15 +72,15 @@ public class SessionContext {
         SessionProperties session = getSession();
         session.actionscontroller=(ActionsController<?>) sessionObjects.get(CoreProperties.WEB_ACTIONS_CONTROLLER.get());
         threadStack.push(session);//push instanse of Session to stack
-        getSession().setThread(Thread.currentThread());//set the current thread to threadlocal variable
         log.info("Session started with type of driver: {}", getSession().actionscontroller.getDriverInstance().toString().split(":")[0]);
         Thread.currentThread().setName("SeletestFramework ["+(getSession().actionscontroller.getDriverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
     }
 
     /**Clean all active threads stored in stack
+     * @throws Exception
      *
      */
-    public static void cleanSessionsFromStack() {
+    public static void cleanSessionsFromStack() throws Exception {
         for(int i=0; i < threadStack.size();i++){
             SessionContext.stopSession(i);
         }
@@ -86,8 +88,9 @@ public class SessionContext {
     /**
      * Clean specific thread from a Stack with threads
      * @param index
+     * @throws Exception
      */
-    public static void stopSession(int index) {
+    public static void stopSession(int index) throws Exception {
         threadStack.get(index).cleanSession();
         innerContext("threadLocalTargetSource").destroy();
         threadStack.removeElement(threadStack.get(index));

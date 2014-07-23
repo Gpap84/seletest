@@ -54,14 +54,13 @@ public class WebDriverConfiguration {
     public TouchActions touchActionsBuilder(WebDriver driver){
         return new TouchActions(driver);
     }
-    
 
-	@Lazy(true)
+
+    @Lazy(true)
     @Bean
-    @Scope("prototype")
-	public DesiredCapabilities capabilities(){
-		DesiredCapabilities capabilities = new DesiredCapabilities();
-		return capabilities;
-	}
+    public DesiredCapabilities capabilities(){
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        return capabilities;
+    }
 
 }

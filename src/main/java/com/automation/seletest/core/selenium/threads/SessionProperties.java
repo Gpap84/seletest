@@ -9,6 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.automation.seletest.core.selenium.webAPI.ActionsController;
 import com.automation.seletest.core.selenium.webAPI.ActionsController.CloseSession;
+import com.automation.seletest.core.services.Performance;
 import com.automation.seletest.core.testNG.assertions.Assertion;
 
 
@@ -20,9 +21,8 @@ import com.automation.seletest.core.testNG.assertions.Assertion;
 @Slf4j
 public class SessionProperties {
 
-    /** The current thread*/
     @Getter @Setter
-    Thread thread;
+    Performance performance;
 
     /**The number of soft failures*/
     @Getter @Setter
@@ -44,18 +44,10 @@ public class SessionProperties {
     @Getter @Setter
     int waitUntil = 5;
 
-    /**Timeout for waiting an event to occur */
-    @Getter @Setter
-    long waitForEvent = 20000;
-
-    /**Locality*/
-    @Getter @Setter
-    String locality;
-
     @Getter @Setter
     String waitStrategy="DEFAULT";
 
-    public void cleanSession(){
+    public void cleanSession() throws Exception{
 
         //quit driver
         if(actionscontroller!=null){
@@ -73,6 +65,15 @@ public class SessionProperties {
 
         //reset soft failures
         softFailures=0;
+
+        //performance measurement
+        if(performance!=null){
+            performance.getPerformanceData(performance.getServer());
+            performance.writePerformanceData("./target/test-classes/test.txt", performance.getHar());
+            performance.stopServer(performance.getServer());
+            performance=null;
+            log.info("Performance data collected!!!");
+        }
 
         log.info("Session closed");
     }

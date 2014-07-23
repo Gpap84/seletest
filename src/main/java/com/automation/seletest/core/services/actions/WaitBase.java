@@ -11,6 +11,11 @@ public abstract class WaitBase implements ActionsSync{
     private final String webDriverWait="wdWait";
     private final String fluentWait="fwWait";
 
+    public final String NOT_PRESENT="Element not present in DOM";
+    public final String NOT_VISIBLE="Element not visible in Screen";
+    public final String NOT_CLICKABLE="Element cannot be clicked";
+    public final String ALERT_NOT_PRESENT="Alert not present";
+
     /**
      * Returns the driver instance
      * @return
