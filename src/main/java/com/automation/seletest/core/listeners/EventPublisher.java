@@ -26,15 +26,15 @@ public class EventPublisher implements ApplicationEventPublisherAware{
      * @param message
      */
     public void publishMessageEvent(String message) {
-        this.publisher.publishEvent(new Event.MessageEvent(this,message,Thread.currentThread()));
+        this.publisher.publishEvent(new Event.MessageEvent(this, message, Thread.currentThread()));
     }
 
     /**
      * Publish event for initializing web session
      * @param message
      */
-    public void publishWebInitEvent(String message, String hostUrl) {
-        this.publisher.publishEvent(new Event.WebInitEvent(this,message,hostUrl));
+    public void publishWebInitEvent(String message, String hostUrl, boolean performance) {
+        this.publisher.publishEvent(new Event.WebInitEvent(this, message, hostUrl, performance));
     }
 
     /**

@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -38,6 +39,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -60,10 +62,10 @@ import com.automation.seletest.core.services.factories.WaitStrategyFactory;
  * @param <T>
  *
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({"unchecked"})
 @Component
 @Scope("prototype")
-public class WebDriverActionsController<T> implements ActionsController{
+public class WebDriverActionsController implements ActionsController<Object>{
 
     @Autowired
     Files fileService;
@@ -105,7 +107,7 @@ public class WebDriverActionsController<T> implements ActionsController{
 
     @Override
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController<T> clickTo(String locator, long timeout) {
+    public WebDriverActionsController clickTo(String locator, long timeout) {
         waitStrategy.
         getWaitStrategy(getWait()).waitForElementToBeClickable(locator, timeout).
         click();
@@ -114,7 +116,7 @@ public class WebDriverActionsController<T> implements ActionsController{
 
     @Override
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController<T> enterTo(String locator, String text, long timeout) {
+    public WebDriverActionsController enterTo(String locator, String text, long timeout) {
         waitStrategy.
         getWaitStrategy(getWait()).waitForElementPresence(locator, timeout).
         sendKeys(text);
@@ -122,7 +124,7 @@ public class WebDriverActionsController<T> implements ActionsController{
     }
 
     @Override
-    public WebDriverActionsController<T> changeStyle(String attribute, String locator, String attributevalue) {
+    public WebDriverActionsController changeStyle(String attribute, String locator, String attributevalue) {
         jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",waitStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator, SessionContext.getSession().getWaitUntil()),attributevalue);
         return this;
     }
@@ -151,7 +153,7 @@ public class WebDriverActionsController<T> implements ActionsController{
     }
 
     @Override
-	public WebDriverActionsController<T> switchToLatestWindow() {
+	public WebDriverActionsController switchToLatestWindow() {
     	 Iterator<String> iterator = driver.getWindowHandles().iterator();
          String lastWindow = null;
          while (iterator.hasNext()) {
@@ -160,19 +162,51 @@ public class WebDriverActionsController<T> implements ActionsController{
          driver.switchTo().window(lastWindow);
 		 return this;
 	}
-    
-    
-    
-    
-    
-    
-    
+
     /**
      * Gets the strategy for Wait<WebDriver>
      * @return
      */
     private String getWait(){
         return SessionContext.getSession().getWaitStrategy();
+    }
+
+
+    /*************************************************************
+     ************************COOKIES SECTION*********************
+     *************************************************************
+     */
+    @Override
+    public WebDriverActionsController deleteCookieNamed(String name) {
+        driver.manage().deleteCookieNamed(name);
+        return this;
+    }
+
+    @Override
+    public WebDriverActionsController deleteAllCookies() {
+        driver.manage().deleteAllCookies();
+        return this;
+    }
+
+
+    @Override
+    public WebDriverActionsController addCookie(Cookie cookie) {
+        driver.manage().addCookie(cookie);
+        return this;
+    }
+
+
+    @Override
+    public Set<Cookie> getCookies() {
+        Set<Cookie> cookies=driver.manage().getCookies();
+        return cookies;
+    }
+
+
+    @Override
+    public WebDriverActionsController deleteCookie(Cookie cookie) {
+        driver.manage().deleteCookie(cookie);
+        return this;
     }
 
 

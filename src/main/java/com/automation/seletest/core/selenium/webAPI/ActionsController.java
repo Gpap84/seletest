@@ -4,7 +4,9 @@
 package com.automation.seletest.core.selenium.webAPI;
 
 import java.io.IOException;
+import java.util.Set;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -56,7 +58,7 @@ public interface ActionsController<T> {
      * @param url
      */
     void getTargetHost(String url);
-    
+
     /**
      * Change style of specific element
      * @param attribute
@@ -65,25 +67,61 @@ public interface ActionsController<T> {
      * @return
      */
     T changeStyle(String attribute, String locator, String attributevalue);
-    
+
     /**
      * Takes screenshot
      * @throws IOException
      */
 	void takeScreenShot() throws IOException;
-	
+
 	/**
 	 * Take screenshot of an element
 	 * @param locator
 	 * @throws IOException
 	 */
 	void takeScreenShotOfElement(String locator) throws IOException;
-	
+
 	/**
 	 * switch to latest window
 	 * @return
 	 */
 	T switchToLatestWindow();
-	
-	
+
+	 /**
+     * Deletes a cookie by name
+     * @param name
+     * @param value
+     * @return
+     */
+    T deleteCookieNamed(String name);
+
+    /**
+     * Deletes a cookie
+     * @param cookie
+     * @return
+     */
+    T deleteCookie(Cookie cookie);
+
+    /**
+     * Delete all cookies
+     * @return
+     */
+    T deleteAllCookies();
+
+    /**
+     * Create a cookie
+     * @param name
+     * @param value
+     * @return
+     */
+    T addCookie(Cookie cookie);
+
+    /**
+     * Gets all cookies
+     * @return
+     */
+    Set<Cookie> getCookies();
+
+
+
 }

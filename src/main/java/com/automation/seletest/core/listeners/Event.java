@@ -45,13 +45,15 @@ public class Event extends ApplicationEvent{
     public static class WebInitEvent extends Event {
         @Getter @Setter private String message;
         @Getter @Setter private String hostUrl;
+        @Getter @Setter private boolean performance;
 
         private static final long serialVersionUID = -5308299518665062983L;
 
-        public WebInitEvent(Object source, String msg, String hostUrl) {
+        public WebInitEvent(Object source, String msg, String hostUrl, boolean performance) {
             super(source);
             this.message=msg;
             this.hostUrl=hostUrl;
+            this.performance=performance;
         }
     }
 
