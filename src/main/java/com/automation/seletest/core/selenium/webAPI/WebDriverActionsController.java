@@ -52,8 +52,9 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.aspectJ.RetryFailure;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.Files;
-import com.automation.seletest.core.services.factories.WaitStrategyFactory;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * This class contains the implementation of webDriver API
@@ -71,7 +72,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
     Files fileService;
 
     @Autowired
-    WaitStrategyFactory waitStrategy;
+    StrategyFactory<?> factoryStrategy;
 
     /**The webDriver object*/
     @Getter @Setter
@@ -112,25 +113,21 @@ public class WebDriverActionsController implements ActionsController<Object>{
 
     @Override
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController clickTo(String locator, long timeout) {
-        waitStrategy.
-        getWaitStrategy(getWait()).waitForElementToBeClickable(locator, timeout).
-        click();
-        return this;
+    public WebDriverActionsController clickTo(String locator) {
+       driver.findElement(Locators.findByLocator(locator).setLocator(locator)).click();
+       return this;
     }
 
     @Override
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController enterTo(String locator, String text, long timeout) {
-        waitStrategy.
-        getWaitStrategy(getWait()).waitForElementPresence(locator, timeout).
-        sendKeys(text);
+    public WebDriverActionsController enterTo(String locator, String text) {
+        driver.findElement(Locators.findByLocator(locator).setLocator(locator)).sendKeys(text);
         return this;
     }
 
     @Override
     public WebDriverActionsController changeStyle(String attribute, String locator, String attributevalue) {
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",waitStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator, SessionContext.getSession().getWaitUntil()),attributevalue);
+        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator),attributevalue);
         return this;
     }
 
@@ -151,7 +148,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
     public void takeScreenShotOfElement(String locator) throws IOException {
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=waitStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator, SessionContext.getSession().getWaitUntil());
+        WebElement element=factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();
@@ -221,6 +218,11 @@ public class WebDriverActionsController implements ActionsController<Object>{
     public WebDriverActionsController deleteCookie(Cookie cookie) {
         driver.manage().deleteCookie(cookie);
         return this;
+    }
+
+    @Override
+    public WebElement findElement(String locator) {
+        return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
     }
 
 

@@ -25,8 +25,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <bean id="appContext" class="com.automation.seletest.core.spring.ApplicationContextProvider" />
  
  <!-- Factory for waiting strategy -->
- <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="waitStrategyFactory">
-  <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.WaitStrategyFactory">
+ <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
+  <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.StrategyFactory">
   </property>
   </bean>
  
@@ -35,7 +35,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <alias alias="Fluent" name="fluentWait"/>
  <alias alias="DEFAULT" name="expectedWait"/>
  
-
+ 
  <!-- Import test beans -->
  <import resource="classpath:/META-INF/spring/test-beans*.xml" />
 
