@@ -18,7 +18,7 @@ import org.testng.annotations.BeforeMethod;
  */
 @Transactional
 @TransactionConfiguration(defaultRollback = false)
-@ContextConfiguration({"classpath*:META-INF/spring/*-context.xml" })
+@ContextConfiguration({"classpath*:META-INF/spring/db*-context.xml" })
 public abstract class SeletestDBTestBase extends AbstractTransactionalTestNGSpringContextTests {
 
     @BeforeMethod(alwaysRun = true)
