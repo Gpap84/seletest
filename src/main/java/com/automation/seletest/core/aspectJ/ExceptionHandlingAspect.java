@@ -63,8 +63,8 @@ public class ExceptionHandlingAspect extends SuperAspect{
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
-                log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp)+"!!!");
-                SessionControl.actionsController().changeStyle("backgroudColor", (String) (pjp).getArgs()[0], CoreProperties.ACTION_COLOR.get());
+                log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp));
+                SessionControl.actionsController().changeStyle("backgroudColor",(pjp).getArgs()[0],CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);

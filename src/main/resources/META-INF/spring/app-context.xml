@@ -16,7 +16,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 <context:property-placeholder location="BrowserSettings/mail.properties" order="2" ignore-unresolvable="true" />
 
  <!-- scan components and services -->
- <context:component-scan base-package="com.automation.seletest.core">
+ <context:component-scan base-package="com.automation.seletest">
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration.Profile*.*" />
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration.Profile*.*" />
   </context:component-scan>

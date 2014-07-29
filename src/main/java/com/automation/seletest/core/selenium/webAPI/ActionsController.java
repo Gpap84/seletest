@@ -54,7 +54,7 @@ public interface ActionsController<T> {
 	 * @param timeout
 	 * @return
 	 */
-    T clickTo(String locator);
+    T clickTo(Object locator);
 
     /**
      * Enter function
@@ -63,7 +63,7 @@ public interface ActionsController<T> {
      * @param timeout
      * @return
      */
-    T enterTo(String locator, String text);
+    T enterTo(Object locator, String text);
 
 
     /**
@@ -98,7 +98,7 @@ public interface ActionsController<T> {
      * @param attributevalue
      * @return
      */
-    T changeStyle(String attribute, String locator, String attributevalue);
+    T changeStyle(String attribute, Object locator, String attributevalue);
 
     /**
      * Takes screenshot

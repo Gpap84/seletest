@@ -88,7 +88,7 @@ public class ActionsLoggingAspect extends SuperAspect{
         Object returnValue = null;
         try {
             returnValue = pjp.proceed();
-            log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp)+"!!!");
+            log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp));
         } catch (Exception ex) {
             if (ex instanceof TimeoutException) {
                 log.error("Element not found in screen with exception: "+ex.getMessage().split("Build")[0].trim());
@@ -112,7 +112,7 @@ public class ActionsLoggingAspect extends SuperAspect{
 
     @Before(value="clickController() || enterController() || actionsBuilderController()")
     public void logBefore(final JoinPoint pjp){
-        log.warn("Command is about to be executed: "+pjp.getSignature().getName()+" with arguments: "+arguments((ProceedingJoinPoint)pjp)+"!!!");
+        log.warn("Command is about to be executed: "+pjp.getSignature().getName()+" with arguments: "+arguments((ProceedingJoinPoint)pjp));
 
 
         //Wait for element to be visible before any action

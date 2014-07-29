@@ -24,49 +24,43 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.aspectJ;
+package com.automation.seletest.pagecomponents.PageObjects;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 
 /**
- * Super class with common functions
+ * Abstract super class serves as base page object
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
+ * @param <T>
  */
-public class SuperAspect {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public abstract class AbstractPage<T> {
 
-    /**
-     * Type of arguments of an executed method
-     * @param proceedPoint
-     * @return
-     */
-    public String arguments(ProceedingJoinPoint proceedPoint){
-        StringBuilder arguments = new StringBuilder();
-        arguments.append("<br>");
-        for(int i=0; i < proceedPoint.getArgs().length ;i++ ){
-            MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
-            String methodArgument="";
-            if(proceedPoint.getArgs()[i].toString().contains("->")){
-                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1];
-            }
-            else{
-                methodArgument=proceedPoint.getArgs()[i].toString();
-            }
-            arguments.append(""+sig.getParameterNames()[i].toString()+"--->"+methodArgument+"<br>");
-        } if(arguments.toString().isEmpty()){
-            return "NONE";
-        } else{
-            return arguments.toString().trim();
-        }
+    private static final int LOAD_TIMEOUT = 30;
+    private static final int REFRESH_RATE = 2;
+
+    public T openPage(Class<T> clazz) {
+        T page = PageFactory.initElements(SessionControl.actionsController().getDriverInstance(), clazz);
+        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
+        waitForPageToLoad(pageLoadCondition);
+        return page;
     }
 
-    /**
-     * Get method arguments
-     * @param proceedPoint
-     * @return
-     */
-    public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
-        return proceedPoint.getArgs();
+    protected abstract ExpectedCondition<?> getPageLoadCondition();
+
+    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
+        Wait wait = new FluentWait(SessionControl.actionsController().getDriverInstance())
+                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
+                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
+
+        wait.until(pageLoadCondition);
     }
 }

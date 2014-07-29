@@ -24,49 +24,48 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.aspectJ;
+package com.automation.seletest.pagecomponents.PageObjects;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.springframework.stereotype.Component;
 
-/**
- * Super class with common functions
- * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- *
- */
-public class SuperAspect {
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 
-    /**
-     * Type of arguments of an executed method
-     * @param proceedPoint
-     * @return
-     */
-    public String arguments(ProceedingJoinPoint proceedPoint){
-        StringBuilder arguments = new StringBuilder();
-        arguments.append("<br>");
-        for(int i=0; i < proceedPoint.getArgs().length ;i++ ){
-            MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
-            String methodArgument="";
-            if(proceedPoint.getArgs()[i].toString().contains("->")){
-                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1];
-            }
-            else{
-                methodArgument=proceedPoint.getArgs()[i].toString();
-            }
-            arguments.append(""+sig.getParameterNames()[i].toString()+"--->"+methodArgument+"<br>");
-        } if(arguments.toString().isEmpty()){
-            return "NONE";
-        } else{
-            return arguments.toString().trim();
-        }
+@Component
+public class GooglePage extends AbstractPage<GooglePage>{
+
+    @FindBy(id = "gbqfq")
+    private WebElement search;
+
+    @FindBy(className = "gbqfb")
+    private WebElement submit;
+
+
+    public boolean isTextDisplayed(String text) {
+        return SessionControl.actionsController().getDriverInstance().getPageSource().contains(text);
     }
 
-    /**
-     * Get method arguments
-     * @param proceedPoint
-     * @return
-     */
-    public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
-        return proceedPoint.getArgs();
+    public GooglePage typeSearch(String text){
+        SessionControl.actionsController().enterTo(search, text);
+        return this;
     }
+
+    public GooglePage buttonSearch(){
+        SessionControl.actionsController().clickTo(submit);
+        return this;
+    }
+
+    @Override
+    protected ExpectedCondition<?> getPageLoadCondition() {
+        return ExpectedConditions.visibilityOf(search);
+    }
+
+    public GooglePage open() {
+        return this.openPage(GooglePage.class);
+    }
+
+
 }

@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,7 +23,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.selenium.webAPI;
 
 
@@ -45,6 +45,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -113,21 +114,21 @@ public class WebDriverActionsController implements ActionsController<Object>{
 
     @Override
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController clickTo(String locator) {
-       driver.findElement(Locators.findByLocator(locator).setLocator(locator)).click();
-       return this;
-    }
-
-    @Override
-    @RetryFailure(retryCount=1)
-    public WebDriverActionsController enterTo(String locator, String text) {
-        driver.findElement(Locators.findByLocator(locator).setLocator(locator)).sendKeys(text);
+    public WebDriverActionsController clickTo(Object locator) {
+        element(locator).click();
         return this;
     }
 
     @Override
-    public WebDriverActionsController changeStyle(String attribute, String locator, String attributevalue) {
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator),attributevalue);
+    @RetryFailure(retryCount=1)
+    public WebDriverActionsController enterTo(Object locator, String text) {
+        element(locator).sendKeys(text);
+        return this;
+    }
+
+    @Override
+    public WebDriverActionsController changeStyle(String attribute, Object locator, String attributevalue) {
+        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",element(locator),attributevalue);
         return this;
     }
 
@@ -164,15 +165,15 @@ public class WebDriverActionsController implements ActionsController<Object>{
      *************************************************************
      */
     @Override
-	public WebDriverActionsController switchToLatestWindow() {
-    	 Iterator<String> iterator = driver.getWindowHandles().iterator();
-         String lastWindow = null;
-         while (iterator.hasNext()) {
-        	 lastWindow = iterator.next();
-         }
-         driver.switchTo().window(lastWindow);
-		 return this;
-	}
+    public WebDriverActionsController switchToLatestWindow() {
+        Iterator<String> iterator = driver.getWindowHandles().iterator();
+        String lastWindow = null;
+        while (iterator.hasNext()) {
+            lastWindow = iterator.next();
+        }
+        driver.switchTo().window(lastWindow);
+        return this;
+    }
 
     /**
      * Gets the strategy for Wait<WebDriver>
@@ -225,6 +226,20 @@ public class WebDriverActionsController implements ActionsController<Object>{
         return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
     }
 
-
-
+    /**
+     * Returns a WebElement based on arguments called
+     * @param locator
+     * @return
+     */
+    private WebElement element(Object locator){
+        if(locator instanceof WebElement){
+            return ((WebElement)locator);
+        }
+        else if(locator instanceof String){
+            return driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
+        }
+        else{
+            throw new WebDriverException("The locator is not a known one: "+locator);
+        }
+    }
 }
