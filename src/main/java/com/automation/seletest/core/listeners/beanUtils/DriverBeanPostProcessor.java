@@ -24,56 +24,48 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.automation.seletest.core.listeners.beanUtils;
 
-package com.automation.seletest.core.listeners;
-
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.stereotype.Component;
-import org.testng.ITestContext;
-
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.testng.Reporter;
 
 /**
- * This class serves as for publishing events to Spring IoC
+ * DriverBeanPostProcessor class
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
-public class EventPublisher implements ApplicationEventPublisherAware{
+public class DriverBeanPostProcessor implements BeanPostProcessor{
 
-    private ApplicationEventPublisher publisher;
-
+    /**
+     * Actions before initializing beans
+     */
     @Override
-	public void setApplicationEventPublisher(ApplicationEventPublisher publisher) {
-        this.publisher = publisher;
+    public Object postProcessBeforeInitialization(Object bean, String beanName)
+            throws BeansException {
+        return bean;
     }
 
     /**
-     * Publish a message event
-     * @param message
+     * Actions after initializing beans
      */
-    public void publishMessageEvent(String message) {
-        this.publisher.publishEvent(new Event.MessageEvent(this, message, Thread.currentThread()));
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName)
+            throws BeansException {
+
+        final String REMOTETYPE="remoteType";
+        final String CHROME="chrome";
+
+        /**
+         * Merge capabilities depending on the parameter remoteType
+         */
+        if(bean instanceof DesiredCapabilities) {
+            if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(REMOTETYPE).compareTo(CHROME)==0) {
+                ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
+            }
+        }
+        return bean;
     }
-
-    /**
-     * Publish event for initializing web session
-     * @param message
-     */
-    public void publishWebInitEvent(String message, String hostUrl, boolean performance, ITestContext ctx) {
-        this.publisher.publishEvent(new Event.WebInitEvent(this, message, hostUrl, performance,ctx));
-    }
-
-    /**
-     * Publish event for initializing mobile session
-     * @param message
-     */
-    public void publishMobileInitEvent(String message,ITestContext ctx) {
-        this.publisher.publishEvent(new Event.MobileInitEvent(this,message,ctx));
-    }
-
-
-
 
 }

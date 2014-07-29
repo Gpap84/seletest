@@ -39,11 +39,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 
 /**
  * RemoteDriverConfiguration class
@@ -57,14 +59,15 @@ public class RemoteDriverConfiguration {
 
 
     @Configuration
-    @Profile({"chromeGrid"})
-    public abstract static class ProfileChrome implements ProfileDriver{
+    @Profile({"seleniumGrid"})
+    public abstract static class ProfileSeleniumGrid implements ProfileDriver{
 
-        private final String beanDescription="RemoteWebDriver initialized using chrome capabilities!!!";
+        private final String beanDescription="RemoteWebDriver will be initialized!!!";
 
         @Override
         @Lazy(true)
         @Bean
+        @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
         public WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException{
             return new Augmenter().augment(new RemoteWebDriver(new URL(url),cap));
         }
@@ -81,11 +84,12 @@ public class RemoteDriverConfiguration {
     @Profile({"appiumGrid"})
     public abstract static class ProfileAppium implements ProfileDriver{
 
-        private final String beanDescription="AppiumDriver initialized!!!";
+        private final String beanDescription="AppiumDriver will be initialized!!!";
 
         @Override
         @Lazy(true)
         @Bean
+        @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
         public WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException{
             return new AppiumDriver(new URL(url),cap);
         }

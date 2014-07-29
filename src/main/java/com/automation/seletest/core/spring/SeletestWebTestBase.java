@@ -158,9 +158,9 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     private void initializeSession(ITestContext ctx){
         EventPublisher publisher = applicationContext.getBean(EventPublisher.class);
         if(!testNG.getParameterXML(ctx, CoreProperties.PROFILEDRIVER.get()).startsWith("appium")){
-            publisher.publishWebInitEvent(INIT_WEB, testNG.getParameterXML(ctx, "hostURL"),Boolean.parseBoolean(performance));
+            publisher.publishWebInitEvent(INIT_WEB, testNG.getParameterXML(ctx, "hostURL"),Boolean.parseBoolean(performance),ctx);
         } else {
-            publisher.publishMobileInitEvent(INIT_APPIUM);
+            publisher.publishMobileInitEvent(INIT_APPIUM,ctx);
         }
 
     }

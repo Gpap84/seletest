@@ -14,6 +14,9 @@ public enum CoreProperties {
     /**************************Parameters XML**********************/
 
     /** The parameter that determines the profile that will be used to start a new WebDriver object. */
+    CAPABILITIES("capabilities"),
+
+    /** The parameter that determines the capabilities to start a new WebDriver object. */
     PROFILEDRIVER("profileDriver"),
 
     /** The parameter that determines the performance measures. */
@@ -24,7 +27,7 @@ public enum CoreProperties {
 
     /** The parameter that determines the Grid port. */
     GRID_PORT("gridPort"),
-    
+
     /**Parameter that determined the URL of the web app under test*/
     HOST_URL("hostURL"),
 

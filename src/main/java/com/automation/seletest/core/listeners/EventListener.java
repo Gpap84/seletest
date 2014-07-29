@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,7 +23,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.listeners;
 
 
@@ -40,9 +40,10 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-import org.testng.Reporter;
+import org.testng.ITestContext;
 
 import com.automation.seletest.core.listeners.Event.WebInitEvent;
+import com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor;
 import com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
@@ -75,6 +76,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
     static class Initialize {
 
+
         /**
          * Initialize web session
          * @param event
@@ -83,11 +85,20 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
         public void initializeWeb(ApplicationEvent event) throws Exception{
             WebDriverActionsController wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
             SessionContext.getSession().setActionscontroller(wdActions);
+            WebDriver driver=null;
+            ITestContext textcontext=((WebInitEvent) event).getTestcontext();
+
+            /*************************
+             **XML PARAMETERS*********
+             *************************
+             */
+            String GridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
+            String GridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
+            String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-            app.getEnvironment().setActiveProfiles(new String[]{
-                    Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get())});
+            app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
 
             //register Configuration classes
             app.register(
@@ -98,7 +109,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             //start Container for bean initialization
             app.refresh();
 
-            DesiredCapabilities cap = ApplicationContextProvider.getApplicationContext().getBean(DesiredCapabilities.class);
+            //register a bean post processor for merging capabilities
+            app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
+
+            DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
             //If performance is enabled
             if(((WebInitEvent) event).isPerformance()){
@@ -110,11 +124,15 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             //start a driver object with capabilities
-            WebDriver driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
+            if(profileDriver.contains("Grid")) {
+                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
+            } else {
+                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
+            }
 
             //Set objects per session
             wdActions.setDriver(driver);//set the driver object for this session
-            wdActions.setJsExec((JavascriptExecutor)driver);//sets tthe Javascript executor
+            wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
 
             //get the address of the app under test

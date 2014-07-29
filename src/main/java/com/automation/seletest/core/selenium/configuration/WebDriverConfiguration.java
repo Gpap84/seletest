@@ -87,6 +87,7 @@ public class WebDriverConfiguration {
 
     @Lazy(true)
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities capabilities(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
         return capabilities;
