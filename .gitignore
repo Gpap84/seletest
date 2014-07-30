@@ -2,7 +2,7 @@
 .settings/
 target/
 .classpath
-velocity.log
+*.log
 .gitignore
 chromedriver.log
 

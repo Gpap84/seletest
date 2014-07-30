@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Google Search Demo" verbose="2" parallel="false">
+
+ 
+ <parameter name="profileDriver" value="chrome" />
+ <parameter name="testType" value="web" />
+  <parameter name="hostURL" value="http://www.google.gr/" />
+ 
+ <listeners>
+  <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+  <listener class-name="com.automation.seletest.core.listeners.TestListener"/>
+</listeners>
+
+
+<test
+ name="Google Search">
+  <classes>
+   <class
+    name="DemoTest.GoogleTest">
+   </class>
+  </classes>
+  </test>
+</suite>
