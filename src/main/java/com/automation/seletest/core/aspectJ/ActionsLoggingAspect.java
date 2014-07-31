@@ -28,7 +28,6 @@ package com.automation.seletest.core.aspectJ;
 
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,7 +36,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,10 +116,9 @@ public class ActionsLoggingAspect extends SuperAspect{
 
     @Before(value="clickController() || enterController() || actionsBuilderController()")
     public void logBefore(final JoinPoint pjp){
+
         /**Determine the WebDriverWait condition*/
-        MethodSignature ms = (MethodSignature) pjp.getSignature();
-        Method m = ms.getMethod();
-        WaitCondition waitFor=m.getAnnotation(WaitCondition.class);
+        WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
 
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement){
             factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]);

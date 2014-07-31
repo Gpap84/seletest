@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**

@@ -1,4 +1,4 @@
-package com.automation.seletest.core.aspectJ;
+package com.automation.seletest.core.services.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

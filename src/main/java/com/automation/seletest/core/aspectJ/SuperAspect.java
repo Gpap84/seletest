@@ -26,6 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.aspectJ;
 
+import java.lang.reflect.Method;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -68,5 +71,16 @@ public class SuperAspect {
      */
     public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
         return proceedPoint.getArgs();
+    }
+
+    /**
+     * Return invoked method
+     * @param pjp
+     * @return
+     */
+    public Method invokedMethod(JoinPoint pjp) {
+        MethodSignature ms = (MethodSignature) pjp.getSignature();
+        Method m = ms.getMethod();
+        return m;
     }
 }
