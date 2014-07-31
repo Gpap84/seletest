@@ -50,12 +50,11 @@ public class SoftAssert extends Assertion {
     // LinkedHashMap to preserve the order
     private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
 
-
     @Override
     public void executeAssert(IAssert a) {
         try {
             a.doAssert();
-            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage());
+            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage(),"background-color:green; color:black; margin-left:20px;");
         } catch(AssertionError ex) {
             log.error("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
             onAssertFailure(a, ex);
@@ -82,6 +81,11 @@ public class SoftAssert extends Assertion {
         }
     }
 
+    /**
+     * Display stackTrace to HTML report
+     * @param ex
+     * @return
+     */
     private String findLineExceptionOccured(AssertionError ex){
         StringBuilder sb = new StringBuilder("");
 

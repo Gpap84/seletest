@@ -45,10 +45,6 @@ import com.opera.core.systems.OperaDriver;
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class LocalDriverConfiguration {
 
-    @PostConstruct
-    public void init(){
-        log.info("Download and set appropriate driver executables!!!");
-    }
 
     @Configuration
     @Profile({"chrome"})

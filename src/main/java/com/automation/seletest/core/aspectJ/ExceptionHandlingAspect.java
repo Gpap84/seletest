@@ -29,13 +29,14 @@ package com.automation.seletest.core.aspectJ;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.CoreProperties;
 import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**
  * Error Handling Aspect
@@ -84,7 +85,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex,
             int attemptCount, RetryFailure retry) throws Throwable
     {
-        if (ex instanceof TimeoutException) {
+        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
             log.error("Element not found in screen with exception: "+ex.getMessage().split("Build")[0].trim());
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {

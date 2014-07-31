@@ -14,14 +14,13 @@ public class Assertion implements Assertable{
 
 	@Getter @Setter
     private Object assertion;
-	
+
 	public Assertion(){
-		System.setProperty("org.uncommons.reportng.escape-output", "false");
 		 if(assertion==null) {
 	            setAssertionType(AssertionType.SOFT);
 	        }
 	}
-	
+
 
     /**
      * Specify the type of assertion (Hard or Soft)
@@ -37,7 +36,7 @@ public class Assertion implements Assertable{
         }
         return this;
     }
-    
+
     /**
      * Defines assertionType
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)

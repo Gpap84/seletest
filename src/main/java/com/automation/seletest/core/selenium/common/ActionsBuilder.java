@@ -71,6 +71,12 @@ public class ActionsBuilder<T> extends AbstractBase.ActionsBase<Object>{
         return this;
     }
 
+    @Override
+    public ActionsBuilder<T> click(Object locator) {
+        actionsBuilder().click(findElement(locator)).perform();
+        return this;
+    }
+
     /**
      * Returns WebElement based on arguments
      * @param locator
@@ -84,12 +90,6 @@ public class ActionsBuilder<T> extends AbstractBase.ActionsBase<Object>{
             return element;
         }
         return null;
-    }
-
-    @Override
-    public ActionsBuilder<T> click(Object locator) {
-        actionsBuilder().click(findElement(locator)).perform();
-        return this;
     }
 
 

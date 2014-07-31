@@ -48,12 +48,12 @@ public class SuperAspect {
             MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
             String methodArgument="";
             if(proceedPoint.getArgs()[i].toString().contains("->")){
-                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1];
+                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1].replace("]", "");
             }
             else{
                 methodArgument=proceedPoint.getArgs()[i].toString();
             }
-            arguments.append(""+sig.getParameterNames()[i].toString()+"--->"+methodArgument+"<br>");
+            arguments.append("<font>"+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+"<br>");
         } if(arguments.toString().isEmpty()){
             return "NONE";
         } else{

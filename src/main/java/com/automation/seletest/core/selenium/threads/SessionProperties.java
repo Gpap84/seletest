@@ -1,6 +1,8 @@
 package com.automation.seletest.core.selenium.threads;
 
 
+import java.io.File;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.automation.seletest.core.selenium.webAPI.ActionsController;
 import com.automation.seletest.core.selenium.webAPI.ActionsController.CloseSession;
-import com.automation.seletest.core.services.Performance;
+import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.testNG.assertions.Assertion;
 
 
@@ -22,7 +24,7 @@ import com.automation.seletest.core.testNG.assertions.Assertion;
 public class SessionProperties {
 
     @Getter @Setter
-    Performance performance;
+    PerformanceUtils performanceUtils;
 
     /**The number of soft failures*/
     @Getter @Setter
@@ -49,6 +51,15 @@ public class SessionProperties {
 
     public void cleanSession() throws Exception{
 
+        //performance measurement
+        if(performanceUtils!=null){
+            performanceUtils.getPerformanceData(performanceUtils.getServer());
+            performanceUtils.writePerformanceData(new File("./target/test-classes/").getAbsolutePath(), performanceUtils.getHar());
+            performanceUtils.stopServer(performanceUtils.getServer());
+            performanceUtils=null;
+            log.info("Performance data collected!!!");
+        }
+
         //quit driver
         if(actionscontroller!=null){
             actionscontroller.quit(CloseSession.QUIT);
@@ -66,14 +77,6 @@ public class SessionProperties {
         //reset soft failures
         softFailures=0;
 
-        //performance measurement
-        if(performance!=null){
-            performance.getPerformanceData(performance.getServer());
-            performance.writePerformanceData("./target/test-classes/test.txt", performance.getHar());
-            performance.stopServer(performance.getServer());
-            performance=null;
-            log.info("Performance data collected!!!");
-        }
 
         log.info("Session closed");
     }
