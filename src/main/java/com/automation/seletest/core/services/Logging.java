@@ -46,7 +46,6 @@ public class Logging {
     @PostConstruct
     public void init(){
         System.setProperty("org.uncommons.reportng.escape-output", "false");
-        log.debug("'escape-output' set to false for ReportNG");
     }
 
 
@@ -58,7 +57,6 @@ public class Logging {
     public void info(String message, String style) {
         log.info(message);
         Reporter.log("<p class=\"testOutput\" style="+style+">" + message + "</p>");
-
     }
 
     /**

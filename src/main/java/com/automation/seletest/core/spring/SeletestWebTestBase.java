@@ -64,6 +64,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     private final String INIT_WEB="Initialize Web session!!!";
     private final String INIT_APPIUM="Initialize Appium session!!!";
     private final String ERROR_IOC="Error during initializing spring container ";
+    private final String TEST_TYPE="The test type is not defined!!!";
 
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
@@ -159,7 +160,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
         } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
             publisher.publishMobileInitEvent(INIT_APPIUM,ctx);
         } else {
-            throw new RuntimeException("The test type is not defined!!!");
+            throw new RuntimeException(TEST_TYPE);
         }
 
     }

@@ -199,8 +199,8 @@ public class LocalDriverConfiguration {
         @Bean
         @Lazy(true)
         @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-        public WebDriver profileDriver(){
-            return new OperaDriver();
+        public WebDriver profileDriver(DesiredCapabilities capabilities){
+            return new OperaDriver(capabilities);
         }
 
         @PostConstruct
@@ -239,12 +239,12 @@ public class LocalDriverConfiguration {
         @Bean
         @Lazy(true)
         @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-        public WebDriver profileDriver(){
-            return new PhantomJSDriver(capabilities());
+        public WebDriver profileDriver(DesiredCapabilities capabilities){
+            return new PhantomJSDriver(capabilities.merge(securityCap()));
         }
 
         //PhantomJS for security bypass and executable file
-        private DesiredCapabilities capabilities(){
+        private DesiredCapabilities securityCap(){
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,new File(env.getProperty("PhantomJSDriverPath")).getAbsolutePath());
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--ignore-ssl-errors=yes","--web-security=false","--ssl-protocol=any"});

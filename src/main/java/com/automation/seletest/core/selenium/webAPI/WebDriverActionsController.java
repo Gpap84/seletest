@@ -51,10 +51,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.aspectJ.RetryFailure;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.Files;
+import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
