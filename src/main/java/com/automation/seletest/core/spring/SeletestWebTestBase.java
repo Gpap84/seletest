@@ -28,7 +28,6 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,11 +41,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
-import com.automation.seletest.core.listeners.EventPublisher;
+import com.automation.seletest.core.listeners.InitListener;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.CoreProperties;
-import com.automation.seletest.core.testNG.TestNG;
+import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**
  * This class serves as the Base Class for Web Test Preparation
@@ -54,12 +53,10 @@ import com.automation.seletest.core.testNG.TestNG;
  *
  */
 @Slf4j
+@Listeners(InitListener.class)
 @ContextConfiguration({"classpath*:META-INF/spring/app-context.xml","classpath*:META-INF/spring/mail-context.xml","classpath*:META-INF/spring/thread-pool-context.xml" })
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
-
-    @Autowired
-    TestNG testNG;
 
     @Value("${performance}")
     private String performance;
@@ -156,11 +153,13 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
 
     /**Prepare initialization*/
     private void initializeSession(ITestContext ctx){
-        EventPublisher publisher = applicationContext.getBean(EventPublisher.class);
-        if(!testNG.getParameterXML(ctx, CoreProperties.PROFILEDRIVER.get()).startsWith("appium")){
-            publisher.publishWebInitEvent(INIT_WEB, testNG.getParameterXML(ctx, "hostURL"),Boolean.parseBoolean(performance),ctx);
-        } else {
+        ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
+        if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.WEBTYPE.get())==0){
+            publisher.publishWebInitEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx);
+        } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
             publisher.publishMobileInitEvent(INIT_APPIUM,ctx);
+        } else {
+            throw new RuntimeException("The test type is not defined!!!");
         }
 
     }

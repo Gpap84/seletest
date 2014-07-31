@@ -24,48 +24,43 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.pagecomponents.PageObjects;
+package com.automation.seletest.pagecomponents.pageObjects;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.springframework.stereotype.Component;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 
-@Component
-public class GooglePage extends AbstractPage<GooglePage>{
+/**
+ * Abstract super class serves as base page object
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ * @param <T>
+ */
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public abstract class AbstractPage<T> {
 
-    @FindBy(id = "gbqfq")
-    private WebElement search;
+    private static final int LOAD_TIMEOUT = 30;
+    private static final int REFRESH_RATE = 2;
 
-    @FindBy(className = "gbqfb")
-    private WebElement submit;
-
-
-    public boolean isTextDisplayed(String text) {
-        return SessionControl.actionsController().getDriverInstance().getPageSource().contains(text);
+    public T openPage(Class<T> clazz) {
+        T page = PageFactory.initElements(SessionControl.actionsController().getDriverInstance(), clazz);
+        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
+        waitForPageToLoad(pageLoadCondition);
+        return page;
     }
 
-    public GooglePage typeSearch(String text){
-        SessionControl.actionsController().enterTo(search, text);
-        return this;
+    protected abstract ExpectedCondition<?> getPageLoadCondition();
+
+    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
+        Wait wait = new FluentWait(SessionControl.actionsController().getDriverInstance())
+                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
+                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
+
+        wait.until(pageLoadCondition);
     }
-
-    public GooglePage buttonSearch(){
-        SessionControl.actionsController().clickTo(submit);
-        return this;
-    }
-
-    @Override
-    protected ExpectedCondition<?> getPageLoadCondition() {
-        return ExpectedConditions.visibilityOf(search);
-    }
-
-    public GooglePage open() {
-        return this.openPage(GooglePage.class);
-    }
-
-
 }

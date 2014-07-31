@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.listeners;
 
 
+import java.sql.Time;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,15 +43,15 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 import org.testng.ITestContext;
 
-import com.automation.seletest.core.listeners.Event.WebInitEvent;
 import com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor;
+import com.automation.seletest.core.listeners.beanUtils.Events.WebInitEvent;
 import com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebDriverActionsController;
-import com.automation.seletest.core.services.CoreProperties;
-import com.automation.seletest.core.services.Performance;
+import com.automation.seletest.core.services.PerformanceUtils;
+import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 /**
@@ -64,8 +65,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
+        Time test=new Time(event.getTimestamp());
 
         if (event instanceof WebInitEvent) {
+            log.info("Event for initializing Web Session occured at: {} !!!",test);
             try {
                 new Initialize().initializeWeb(event);
             } catch (Exception e) {
@@ -116,11 +119,11 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             //If performance is enabled
             if(((WebInitEvent) event).isPerformance()){
-                Performance perf = ApplicationContextProvider.getApplicationContext().getBean(Performance.class);
+                PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
                 ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
                 perf.newHar("Har at: "+event.getTimestamp());
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
-                SessionContext.getSession().setPerformance(perf);
+                SessionContext.getSession().setPerformanceUtils(perf);
             }
 
             //start a driver object with capabilities

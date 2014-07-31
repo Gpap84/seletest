@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,11 +23,12 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.aspectJ;
 
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,6 +37,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
@@ -77,12 +80,15 @@ public class ActionsLoggingAspect extends SuperAspect{
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.takeScreenShot*(..))") // expression
     private void takeScreenCap() {}
 
+    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))") // expression for wait for conditions
+    private void waitConditions() {}
+
 
     /****************************************************
      **************\\\\ADVICES\\\\***********************
      ****************************************************
      */
-    @Around(value="actionsBuilderController() || takeScreenCap()")
+    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable
     {
         Object returnValue = null;
@@ -112,20 +118,18 @@ public class ActionsLoggingAspect extends SuperAspect{
 
     @Before(value="clickController() || enterController() || actionsBuilderController()")
     public void logBefore(final JoinPoint pjp){
-        log.warn("Command is about to be executed: "+pjp.getSignature().getName()+" with arguments: "+arguments((ProceedingJoinPoint)pjp));
+        /**Determine the WebDriverWait condition*/
+        MethodSignature ms = (MethodSignature) pjp.getSignature();
+        Method m = ms.getMethod();
+        WaitCondition waitFor=m.getAnnotation(WaitCondition.class);
 
-
-        //Wait for element to be visible before any action
-        if(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement) {
-            factoryStrategy.getWaitStrategy(
-                    SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(
-                            methodArguments((ProceedingJoinPoint)pjp)[0]);
-        } else if(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof String){
-            factoryStrategy.getWaitStrategy(
-                    SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(
-                            methodArguments((ProceedingJoinPoint)pjp)[0]);
+        if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement){
+            factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]);
+        } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
+            factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable((String)methodArguments((ProceedingJoinPoint)pjp)[0]);
+        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE)) {
+            factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]);
         }
-
     }
 
 

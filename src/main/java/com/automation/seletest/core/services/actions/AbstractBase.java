@@ -81,7 +81,8 @@ public abstract class AbstractBase {
      *
      * @param <T>
      */
-    public static abstract class ActionsBase<T> extends SessionControl implements BuildActions<T>{
+    @SuppressWarnings("rawtypes")
+    public static abstract class ActionsBase<T> extends SessionControl implements BuildActions<ActionsBase>{
 
         private final String actionsBuilder="webActionsBuilder";
         private final String touchactionsBuilder="touchActionsBuilder";

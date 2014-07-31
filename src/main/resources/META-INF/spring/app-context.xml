@@ -23,9 +23,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.listeners.WebDriver*.*" />
   </context:component-scan>
  
- <!-- Assign application context to static variable -->
- <bean id="appContext" class="com.automation.seletest.core.spring.ApplicationContextProvider" />
- 
  <!-- Factory for waiting strategy -->
  <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
   <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.StrategyFactory">

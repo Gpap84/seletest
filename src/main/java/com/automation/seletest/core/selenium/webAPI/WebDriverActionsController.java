@@ -55,6 +55,8 @@ import com.automation.seletest.core.aspectJ.RetryFailure;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.Files;
+import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
@@ -113,6 +115,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
      */
 
     @Override
+    @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
     public WebDriverActionsController clickTo(Object locator) {
         element(locator).click();
@@ -120,6 +123,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
     }
 
     @Override
+    @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
     public WebDriverActionsController enterTo(Object locator, String text) {
         element(locator).sendKeys(text);

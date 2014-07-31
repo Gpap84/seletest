@@ -24,50 +24,47 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.listeners;
 
-import org.openqa.selenium.TimeoutException;
-import org.testng.IRetryAnalyzer;
-import org.testng.ITestResult;
-import org.testng.Reporter;
+package com.automation.seletest.core.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 
-public class RetryAnalyzer implements IRetryAnalyzer{
+/**
+ * This class used as a service for sending email runtime...
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ *
+ */
+@Service
+public class MailUtils {
 
-    private int count = 0;
+    @Autowired
+    private MailSender mailSender;
 
-    private int maxCount = 1;
+    @Autowired
+    private SimpleMailMessage preConfiguredMessage;
 
-    public RetryAnalyzer() {
-        System.setProperty("org.uncommons.reportng.escape-output", "false");
-        setCount(maxCount);
+    /**
+     * This method will send compose and send the message
+     * */
+    public void sendMail(String to, String subject, String body)
+    {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        mailSender.send(message);
     }
 
-    @Override
-    public boolean retry(ITestResult result) {
-
-        if ((!result.isSuccess() && !(result.getThrowable() instanceof TimeoutException))) {
-            if (count < maxCount) {
-                count++;
-                Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
-                        + result.getName() + " with status "
-                        + result.getStatus() + " Retrying " + count + " times</font><br>");
-                return true;
-            }
-
-        }
-        else{
-            Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
-                    + result.getName() + " with status "
-                    + result.getStatus() + "</font><br>");
-        }
-        return false;
-
+    /**
+     * This method will send a pre-configured message
+     * */
+    public void sendPreConfiguredMail(String message)
+    {
+        SimpleMailMessage mailMessage = new SimpleMailMessage(preConfiguredMessage);
+        mailMessage.setText(message);
+        mailSender.send(mailMessage);
     }
-
-    public void setCount(int count) {
-        maxCount = count;
-    }
-
-
 }
