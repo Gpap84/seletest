@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.mobileAPI;
 
+
 /**
  * Appium Controller interface
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -59,6 +60,13 @@ public interface AppiumController<T> {
      * @return
      */
     T closeApp();
+
+    /**
+     * This method installs an app or ipa file to mobile device
+     * @param appPath
+     * @param remoteWebDriver
+     */
+    T installApp(String bundleId, String appPath);
 
 
 

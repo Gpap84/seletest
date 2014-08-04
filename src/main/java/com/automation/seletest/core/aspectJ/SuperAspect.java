@@ -46,7 +46,6 @@ public class SuperAspect {
      */
     public String arguments(ProceedingJoinPoint proceedPoint){
         StringBuilder arguments = new StringBuilder();
-        arguments.append("<br>");
         for(int i=0; i < proceedPoint.getArgs().length ;i++ ){
             MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
             String methodArgument="";
@@ -56,7 +55,7 @@ public class SuperAspect {
             else{
                 methodArgument=proceedPoint.getArgs()[i].toString();
             }
-            arguments.append("<font>"+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+"<br>");
+            arguments.append("("+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+") ");
         } if(arguments.toString().isEmpty()){
             return "NONE";
         } else{

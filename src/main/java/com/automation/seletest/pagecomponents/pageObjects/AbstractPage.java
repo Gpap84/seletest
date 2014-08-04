@@ -48,7 +48,7 @@ public abstract class AbstractPage<T> {
     private static final int REFRESH_RATE = 2;
 
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionControl.actionsController().getDriverInstance(), clazz);
+        T page = PageFactory.initElements(SessionControl.actionsController().driverInstance(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
         waitForPageToLoad(pageLoadCondition);
         return page;
@@ -57,7 +57,7 @@ public abstract class AbstractPage<T> {
     protected abstract ExpectedCondition<?> getPageLoadCondition();
 
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionControl.actionsController().getDriverInstance())
+        Wait wait = new FluentWait(SessionControl.actionsController().driverInstance())
                 .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 

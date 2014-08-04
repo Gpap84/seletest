@@ -60,7 +60,7 @@ public abstract class AbstractBase {
          * @return
          */
         public WebDriverWait wfExpected(){
-            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{super.actionsController().getDriverInstance()});
+            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{super.actionsController().driverInstance()});
         }
 
         /**
@@ -71,7 +71,7 @@ public abstract class AbstractBase {
          */
         @SuppressWarnings("unchecked")
         public Wait<WebDriver> fluentWait(String msg){
-            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{super.actionsController().getDriverInstance(), msg});
+            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{super.actionsController().driverInstance(), msg});
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractBase {
          * @return
          */
         public Actions actionsBuilder(){
-            return (Actions) SessionContext.getSession().getDriverContext().getBean(actionsBuilder, new Object[]{super.actionsController().getDriverInstance()});
+            return (Actions) SessionContext.getSession().getDriverContext().getBean(actionsBuilder, new Object[]{super.actionsController().driverInstance()});
         }
 
         /**
@@ -102,7 +102,7 @@ public abstract class AbstractBase {
          * @return
          */
         public TouchActions touchactionsBuilder(){
-            return (TouchActions) SessionContext.getSession().getDriverContext().getBean(touchactionsBuilder, new Object[]{super.actionsController().getDriverInstance()});
+            return (TouchActions) SessionContext.getSession().getDriverContext().getBean(touchactionsBuilder, new Object[]{super.actionsController().driverInstance()});
         }
 
 

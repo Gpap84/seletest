@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -83,13 +85,13 @@ public interface ActionsController<T> {
      * Gets the driver instance
      * @return
      */
-    <T extends WebDriver> T getDriverInstance();
+    <T extends WebDriver> T driverInstance();
 
     /**
      * Gets URL
      * @param url
      */
-    void getTargetHost(String url);
+    void goToTargetHost(String url);
 
     /**
      * Change style of specific element
@@ -132,13 +134,13 @@ public interface ActionsController<T> {
      * @param cookie
      * @return
      */
-    T deleteCookie(Cookie cookie);
+    T cookieDelete(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return
      */
-    T deleteAllCookies();
+    T cookiesAllDelete();
 
     /**
      * Create a cookie
@@ -146,7 +148,7 @@ public interface ActionsController<T> {
      * @param value
      * @return
      */
-    T addCookie(Cookie cookie);
+    T cookieAdd(Cookie cookie);
 
     /**
      * Gets all cookies
@@ -155,5 +157,31 @@ public interface ActionsController<T> {
     Set<Cookie> getCookies();
 
 
+    /**
+     * Returns text of element
+     * @param locator
+     * @return
+     */
+    String getText(Object locator);
 
+    /**
+     * Gets the tagName of the element
+     * @param locator
+     * @return
+     */
+    String getTagName(Object locator);
+
+    /**
+     * Gets the element Location
+     * @param locator
+     * @return
+     */
+    Point getLocation(Object locator);
+
+    /**
+     * Gets the element Dimensions
+     * @param locator
+     * @return
+     */
+    Dimension getElementDimensions(Object locator);
 }

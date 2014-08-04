@@ -65,7 +65,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
-                log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp));
+                log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
                 SessionControl.actionsController().changeStyle("backgroudColor",(pjp).getArgs()[0],CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
@@ -87,7 +87,6 @@ public class ExceptionHandlingAspect extends SuperAspect{
             int attemptCount, RetryFailure retry) throws Throwable
     {
         if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
-            log.error("Element not found in screen with exception: "+ex.getMessage().split("Build")[0].trim());
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
             throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.webAPI.ActionsController;
 import com.automation.seletest.core.selenium.webAPI.ActionsController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
@@ -33,6 +34,10 @@ public class SessionProperties {
     /** The web actions interface. */
     @Getter @Setter
     ActionsController<?> actionscontroller;
+
+    /** The mobile actions interface*/
+    @Getter @Setter
+    AppiumController<?> appiumController;
 
     /**The web driver context*/
     @Getter @Setter
