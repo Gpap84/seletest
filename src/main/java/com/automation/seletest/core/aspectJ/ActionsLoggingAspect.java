@@ -31,12 +31,15 @@ import java.io.IOException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,25 +69,37 @@ public class ActionsLoggingAspect extends SuperAspect{
      ****************Pointcuts***********
      ************************************
      */
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.click*(..))")
-    private void clickController() {}//expression pointcut for function  starting with click...
+    @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
+    private void waitAnnotation() {}//A pointcut that finds all methods marked with the @WaitCondition on the classpath
 
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.enter*(..))")
-    private void enterController() {}//expression pointcut for function  starting with enter...
+    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilder.*(..))")
+    private void actionsBuilderController() {}//A pointcut that finds all methods inside ActionsBuilder class
 
-    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilder.*(..))") // expression
-    private void actionsBuilderController() {}
-
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.takeScreenShot*(..))") // expression
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.takeScreenShot*(..))")
     private void takeScreenCap() {}
 
-    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))") // expression for wait for conditions
-    private void waitConditions() {}
+    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
+    private void waitConditions() {}//A pointcut that finds all methods inside classes that contains WaitStrategy in name
+
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.get*(..))")
+    private void webElement() {}//A pointcut that finds all methods inside class  ActionsController that start with get***
 
 
     /****************************************************
      **************\\\\ADVICES\\\\***********************
      ****************************************************
+     */
+
+    @AfterReturning(pointcut ="webElement()",returning="returnVal")
+    public void afterReturningAdvice(final JoinPoint jp,Object returnVal){
+     log.info("Command: "+jp.getSignature().getName()+" for["+arguments((ProceedingJoinPoint)jp)+"]"+" returned value: "+returnVal);
+    }
+
+    /**
+     * Handle Exceptions...
+     * @param pjp
+     * @return
+     * @throws Throwable
      */
     @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable
@@ -92,9 +107,9 @@ public class ActionsLoggingAspect extends SuperAspect{
         Object returnValue = null;
         try {
             returnValue = pjp.proceed();
-            log.info("Command: "+pjp.getSignature().getName()+" executed successfully with arguments: "+arguments(pjp));
+            log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
         } catch (Exception ex) {
-            if (ex instanceof TimeoutException) {
+            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
                 log.error("Element not found in screen with exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             }
@@ -108,14 +123,28 @@ public class ActionsLoggingAspect extends SuperAspect{
         return returnValue;
     }
 
-    @AfterThrowing(pointcut="clickController() || enterController() || actionsBuilderController()", throwing = "ex")
+    /**
+     * Take screencap after exceptions...
+     * @param joinPoint
+     * @param ex
+     * @throws IOException
+     */
+    @AfterThrowing(pointcut="waitAnnotation() || actionsBuilderController()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException{
-        log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
-        SessionControl.actionsController().takeScreenShot();
+        if(ex instanceof WebDriverException || ex instanceof AssertionError){
+            log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
+            SessionControl.actionsController().takeScreenShot();
+        } else {
+            log.error("Unknown exception occured: "+ex.getMessage());
+        }
     }
 
-    @Before(value="clickController() || enterController() || actionsBuilderController()")
-    public void logBefore(final JoinPoint pjp){
+    /**
+     * Wait for elements before any action....
+     * @param pjp
+     */
+    @Before(value="waitAnnotation() || actionsBuilderController()")
+    public void waitFor(final JoinPoint pjp){
 
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);

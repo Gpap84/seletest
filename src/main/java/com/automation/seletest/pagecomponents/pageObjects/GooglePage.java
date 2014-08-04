@@ -38,20 +38,21 @@ import com.automation.seletest.core.selenium.configuration.SessionControl;
 @Component
 public class GooglePage extends AbstractPage<GooglePage>{
 
-    @FindBy(id = "gbqfq")
+    @FindBy(name = "q")
     @CacheLookup
     private WebElement search;
 
-    @FindBy(className = "gbqfb")
+    @FindBy(name = "q")
     @CacheLookup
     private WebElement submit;
 
 
     public boolean isTextDisplayed(String text) {
-        return SessionControl.actionsController().getDriverInstance().getPageSource().contains(text);
+        return SessionControl.actionsController().driverInstance().getPageSource().contains(text);
     }
 
     public GooglePage typeSearch(String text){
+        SessionControl.actionsController().getLocation(search);
         SessionControl.actionsController().enterTo(search, text);
         return this;
     }

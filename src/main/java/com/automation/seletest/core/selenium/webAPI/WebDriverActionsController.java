@@ -40,6 +40,7 @@ import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -69,7 +70,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
 @SuppressWarnings({"unchecked"})
 @Component
 @Scope("prototype")
-public class WebDriverActionsController implements ActionsController<Object>{
+public class WebDriverActionsController implements ActionsController<WebDriverActionsController>{
 
     @Autowired
     Files fileService;
@@ -85,12 +86,12 @@ public class WebDriverActionsController implements ActionsController<Object>{
     JavascriptExecutor jsExec;
 
     @Override
-    public void getTargetHost(String url) {
+    public void goToTargetHost(String url) {
         driver.get(url);
     }
 
     @Override
-    public WebDriver getDriverInstance() {
+    public WebDriver driverInstance() {
         return getDriver();
     }
 
@@ -199,14 +200,14 @@ public class WebDriverActionsController implements ActionsController<Object>{
     }
 
     @Override
-    public WebDriverActionsController deleteAllCookies() {
+    public WebDriverActionsController cookiesAllDelete() {
         driver.manage().deleteAllCookies();
         return this;
     }
 
 
     @Override
-    public WebDriverActionsController addCookie(Cookie cookie) {
+    public WebDriverActionsController cookieAdd(Cookie cookie) {
         driver.manage().addCookie(cookie);
         return this;
     }
@@ -220,7 +221,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
 
 
     @Override
-    public WebDriverActionsController deleteCookie(Cookie cookie) {
+    public WebDriverActionsController cookieDelete(Cookie cookie) {
         driver.manage().deleteCookie(cookie);
         return this;
     }
@@ -245,5 +246,38 @@ public class WebDriverActionsController implements ActionsController<Object>{
         else{
             throw new WebDriverException("The locator is not a known one: "+locator);
         }
+    }
+
+
+   /**************************************
+    **Returning type methods**************
+    **************************************
+    */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getText(Object locator) {
+        return element(locator).getText();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getTagName(Object locator) {
+        return element(locator).getTagName();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public Point getLocation(Object locator) {
+        return element(locator).getLocation();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public Dimension getElementDimensions(Object locator) {
+        return element(locator).getSize();
     }
 }

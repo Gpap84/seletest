@@ -66,6 +66,16 @@ public enum CoreProperties {
     HOST_URL("hostURL"),
 
 
+    /*************************MOBILE PROPERTIES*************************************************/
+    /** The parameter that determines the mobile app name*/
+    BUNDLEID("bundleId"),
+
+    /** The parameter that determines if an application is to be launched*/
+    APP_LAUNCH("applaunch"),
+
+    /** The parameter that determines local path to app file*/
+    APP_PATH("apppath"),
+
     /*************************************CoreProperties used for test status-actions on UI*****************************************************/
     PASS_COLOR("Chartreuse"),
     FAIL_COLOR("FireBrick"),
