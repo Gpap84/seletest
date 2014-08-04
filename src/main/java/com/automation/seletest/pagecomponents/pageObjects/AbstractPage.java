@@ -33,7 +33,9 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import com.automation.seletest.core.selenium.common.ActionsBuilder;
 import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 /**
  * Abstract super class serves as base page object
@@ -62,5 +64,9 @@ public abstract class AbstractPage<T> {
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 
         wait.until(pageLoadCondition);
+    }
+
+    public ActionsBuilder<T> getBuilder() {
+        return ApplicationContextProvider.getApplicationContext().getBean(ActionsBuilder.class);
     }
 }

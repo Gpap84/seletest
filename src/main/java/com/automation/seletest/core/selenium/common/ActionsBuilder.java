@@ -32,8 +32,9 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.services.actions.AbstractBase;
 
+@SuppressWarnings("rawtypes")
 @Component
-public class ActionsBuilder<T> extends AbstractBase.ActionsBase<Object>{
+public class ActionsBuilder<T> extends AbstractBase.ActionsBase<ActionsBuilder>{
 
     @Override
     public ActionsBuilder<T> mouseOver(Object locator) {
