@@ -26,6 +26,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.mobileAPI;
 
+import io.appium.java_client.MultiTouchAction;
+import io.appium.java_client.TouchAction;
+
+import java.util.HashMap;
+
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
+
+
 
 /**
  * Appium Controller interface
@@ -68,6 +77,131 @@ public interface AppiumController<T> {
      */
     T installApp(String bundleId, String appPath);
 
+
+    /**
+     * Performs a touch action
+     * @param e
+     * @return
+     */
+    T performTouchAction(TouchAction e);
+
+    /**
+     * Performs multitouch action
+     * @param e
+     * @return
+     */
+    T performMultiTouchAction(MultiTouchAction e);
+
+    /**
+     * Hide the kieyboard
+     * @return
+     */
+    T hideKeyboard();
+
+    /**
+     * rotate screen of mobile device
+     * @param e
+     * @return
+     */
+    T rotate(ScreenOrientation e);
+
+    /**
+     * gets the screen orientation
+     * @return
+     */
+    ScreenOrientation getscreen();
+
+    /**
+     * Gets multi touch action
+     * @return
+     */
+    MultiTouchAction getMultiTouchAction();
+
+
+    /**
+     * checks if application is installed in device
+     * @param bundleId
+     * @return
+     */
+    boolean isAppInstalled(String bundleId);
+
+    /**
+     * Pinch to specific coordinates
+     * @param x
+     * @param y
+     * @return
+     */
+    T pinch(int x,int y);
+
+    /**
+     * Locks the screen for specific amount of time
+     * @param sec
+     * @return
+     */
+    T lockScreen(int sec);
+
+
+    /**
+     * Tap to element with coordinates for specific duration
+     * @param fingers
+     * @param y
+     * @param z
+     * @param duration
+     * @return
+     */
+    T tap(int fingers, int y, int z, int duration);
+
+    /**
+     * Shake the screen
+     * @return
+     */
+    T shake();
+
+    /**
+     * Zoom to element with coordinates
+     * @param x
+     * @param y
+     * @return
+     */
+    T zoom(int x, int y);
+
+    /**
+     * swipe gesture
+     * @param startx
+     * @param starty
+     * @param endx
+     * @param endy
+     * @param duration
+     * @return
+     */
+    T swipe(int startx, int starty, int endx, int endy, int duration);
+
+
+    /**
+     * Get the Dimensions of the screen
+     * @return Dimensions
+     */
+    Dimension getScreenDimensions();
+
+    /**
+     * Executes javascript
+     * @param driverCommand
+     * @param parameters
+     * @return
+     */
+    T executeScript(String driverCommand, HashMap<String, ?> parameters);
+
+    /**
+     * Navigate Back
+     * @return
+     */
+    T navigateBack();
+
+    /**
+     * Gets the currently focused activity
+     * @return String CurrentActivity
+     */
+    String getCurrentActivity();
 
 
 

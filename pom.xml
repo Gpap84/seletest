@@ -154,9 +154,9 @@
       <aggregate>true</aggregate>
       <show>public</show>
       <nohelp>true</nohelp>
-      <header>Seletest, ${project.version}</header>
-      <footer>Seletest, ${project.version}</footer>
-      <doctitle>Seletest, ${project.version}</doctitle>
+      <header>Seletest Automation Framework - ${project.version}</header>
+      <footer>Seletest Automation Framework - ${project.version}</footer>
+      <doctitle>Seletest Automation Framework - ${project.version}</doctitle>
       <links>
        <link>http://static.springsource.org/spring/docs/3.0.x/javadoc-api/</link>
       </links>
