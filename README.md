@@ -7,6 +7,8 @@ Web and Mobile Automation testing framework based on Spring - Webdriver - Appium
 
 This is a Java Framework based on WebDriver API to interact with web or mobile applications for performing automated functional tests.
 
+******<b>Javadoc: http://giannispapadakis.github.io/Seletest/</b> ******
+
 
 Tests supported:<br>
 a] Web End to End functional <b>Supported</b><br>
