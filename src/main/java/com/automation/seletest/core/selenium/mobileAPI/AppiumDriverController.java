@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.mobileAPI;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MultiTouchAction;
+import io.appium.java_client.TouchAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,17 +36,20 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+
 /**
- * AppiumDriverController api for Appium interaction
+ * AppiumDriverController api for iOS-Android native app interaction
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Component
 @Scope("prototype")
-public class AppiumDriverController implements AppiumController<Object>{
+public class AppiumDriverController implements AppiumController<AppiumDriverController>{
 
     @Getter @Setter AppiumDriver appiumDriver;
 
@@ -80,7 +85,101 @@ public class AppiumDriverController implements AppiumController<Object>{
         return this;
     }
 
+    @Override
+    public AppiumDriverController performTouchAction(TouchAction e) {
+        appiumDriver.performTouchAction(e);
+        return this;
+    }
 
+    @Override
+    public AppiumDriverController performMultiTouchAction(MultiTouchAction e) {
+        appiumDriver.performMultiTouchAction(e);
+        return this;
+    }
 
+    @Override
+    public AppiumDriverController hideKeyboard() {
+        appiumDriver.hideKeyboard();
+        return this;
+    }
 
+    @Override
+    public AppiumDriverController rotate(ScreenOrientation e) {
+        appiumDriver.rotate(e);
+        return this;
+    }
+
+    @Override
+    public ScreenOrientation getscreen() {
+        return appiumDriver.getOrientation();
+    }
+
+    @Override
+    public MultiTouchAction getMultiTouchAction() {
+        return new MultiTouchAction(appiumDriver);
+    }
+
+    @Override
+    public boolean isAppInstalled(String bundleId) {
+        return appiumDriver.isAppInstalled(bundleId);
+    }
+
+    @Override
+    public AppiumDriverController pinch(int x, int y) {
+        appiumDriver.pinch(x, y);
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController lockScreen(int sec) {
+        appiumDriver.lockScreen(sec);
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController tap(int finger, int y, int z, int duration) {
+        appiumDriver.tap(finger,y,z,duration);
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController shake() {
+        appiumDriver.shake();
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController zoom(int x, int y) {
+        appiumDriver.zoom(x, y);
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController swipe(int startx, int starty, int endx, int endy,
+            int duration) {
+        appiumDriver.swipe(startx, starty, endx, endy, duration);
+        return this;
+    }
+
+    @Override
+    public Dimension getScreenDimensions() {
+        return appiumDriver.manage().window().getSize();
+    }
+
+    @Override
+    public AppiumDriverController executeScript(String driverCommand, HashMap<String, ?> parameters) {
+        appiumDriver.execute(driverCommand, parameters);
+        return this;
+    }
+
+    @Override
+    public AppiumDriverController navigateBack() {
+        appiumDriver.navigate().back();
+        return this;
+    }
+
+    @Override
+    public String getCurrentActivity() {
+        return appiumDriver.currentActivity();
+    }
 }

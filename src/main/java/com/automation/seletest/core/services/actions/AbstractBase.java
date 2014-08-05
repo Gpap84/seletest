@@ -40,7 +40,7 @@ public abstract class AbstractBase {
 
 
     /**
-     * Abstract class for ActionsSync
+     * Abstract class for Waiting Conditions
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
@@ -76,7 +76,7 @@ public abstract class AbstractBase {
     }
 
     /**
-     * Abstract class for actions builders
+     * Abstract class for actions builders (A)
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      * @param <T>

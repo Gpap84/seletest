@@ -30,8 +30,6 @@ package com.automation.seletest.core.testNG.assertions;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
 /**
  * This class represents the Assertion API
  * @author Giannis Papadakis
@@ -39,15 +37,17 @@ import lombok.Setter;
  */
 public class Assertion implements Assertable{
 
-    @Getter @Setter
-    private Object assertion;
+    /** Assertion object*/
+    @Getter @Setter private Object assertion;
 
+    /**
+     * Default constructor sets the type of Object
+     */
     public Assertion(){
         if(assertion==null) {
             setAssertionType(AssertionType.SOFT);
         }
     }
-
 
     /**
      * Specify the type of assertion (Hard or Soft)
@@ -57,11 +57,9 @@ public class Assertion implements Assertable{
     public Assertion setAssertionType(AssertionType assertionType){
         if(assertionType.equals(AssertionType.HARD)) {
             setAssertion(new Assertion());
-        }
-        else {
+        } else {
             setAssertion(new SoftAssert());
-        }
-        return this;
+        } return this;
     }
 
     /**
