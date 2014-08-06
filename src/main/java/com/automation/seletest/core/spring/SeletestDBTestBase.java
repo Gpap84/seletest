@@ -49,10 +49,16 @@ import org.testng.annotations.BeforeMethod;
 public abstract class SeletestDBTestBase extends AbstractTransactionalTestNGSpringContextTests {
 
     @BeforeMethod(alwaysRun = true)
-    @AfterMethod(alwaysRun = true)
     @Override
     protected synchronized void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
         super.springTestContextBeforeTestMethod(testMethod);
+    }
+    
+    
+    @AfterMethod(alwaysRun = true)
+    @Override
+    protected synchronized void springTestContextAfterTestMethod(Method testMethod) throws Exception {
+        super.springTestContextAfterTestMethod(testMethod);
     }
 
     @BeforeTransaction

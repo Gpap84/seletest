@@ -64,8 +64,8 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     @Value("${performance}")
     private String performance;
 
-    private final String INIT_WEB="Initialize Web session!!!";
-    private final String INIT_APPIUM="Initialize Appium session!!!";
+    private final String INIT_WEB="Event for initializing Web Session occured at: {} !!!";
+    private final String INIT_APPIUM="Event for initializing Mobile Session occured at: {} !!!";
     private final String ERROR_IOC="Error during initializing spring container ";
     private final String TEST_TYPE="The test type is not defined!!!";
 
@@ -91,8 +91,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("*****************************************");
             log.debug("**** Initialize session upon parallel level: <<{}>>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -105,8 +103,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("******************************************************************");
             log.debug("**** Initialize session upon parallel level: <<\"{}\">>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("******************************************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -119,8 +115,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("*********************************************************************");
             log.debug("**** Initialize session upon parallel level <<\"{}\">>***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*********************************************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -159,9 +153,9 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     private void initializeSession(ITestContext ctx){
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
         if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.WEBTYPE.get())==0){
-            publisher.publishWebInitEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx);
+            publisher.publishInitializationEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
         } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
-            publisher.publishMobileInitEvent(INIT_APPIUM,ctx);
+            publisher.publishInitializationEvent(INIT_APPIUM, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,false);
         } else {
             throw new RuntimeException(TEST_TYPE);
         }

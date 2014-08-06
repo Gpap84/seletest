@@ -56,10 +56,6 @@ public class InitListener implements IInvokedMethodListener{
                 testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.MOBILETYPE.get());
             }
         }
-
-
-
-
     }
 
     @Override

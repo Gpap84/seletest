@@ -90,8 +90,8 @@ public class SessionContext {
      */
     public static void setSessionProperties(){
         threadStack.push(getSession());//push instanse of Session to stack
-        log.info("Session started with type of driver: {}", getSession().actionscontroller.driverInstance().toString().split(":")[0]);
-        Thread.currentThread().setName("SeletestFramework ["+(getSession().actionscontroller.driverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
+        log.info("Session started with type of driver: {}", getSession().webactionscontroller.driverInstance().toString().split(":")[0]);
+        Thread.currentThread().setName("SeletestFramework ["+(getSession().webactionscontroller.driverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
     }
 
     /**Clean all active threads stored in stack

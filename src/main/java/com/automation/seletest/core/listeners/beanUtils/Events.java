@@ -46,43 +46,33 @@ public class Events extends ApplicationEvent{
     }
 
     /**
-     * Class for events regarding initialization of web session
+     * Class for events regarding initialization of web or mobile session
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */
-    public static class WebInitEvent extends Events {
+    public static class InitializationEvent extends Events {
         @Getter @Setter private String message;
         @Getter @Setter private String hostUrl;
         @Getter @Setter private boolean performance;
         @Getter @Setter private ITestContext testcontext;
+        @Getter @Setter private boolean isWeb;
+
 
         private static final long serialVersionUID = -5308299518665062983L;
 
-        public WebInitEvent(Object source, String msg, String hostUrl, boolean performance, ITestContext context) {
+        public InitializationEvent(
+                Object source,
+                String msg,
+                String hostUrl,
+                boolean performance,
+                ITestContext context,
+                boolean isWeb) {
             super(source);
             this.message=msg;
             this.hostUrl=hostUrl;
             this.performance=performance;
             this.testcontext=context;
+            this.isWeb=isWeb;
         }
     }
-
-    /**
-     * Class for events regarding initialization of mobile session
-     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
-     *
-     */
-    public static class MobileInitEvent extends Events {
-        @Getter @Setter private String message;
-        @Getter @Setter private ITestContext testcontext;
-
-        private static final long serialVersionUID = -5308299518665062983L;
-
-        public MobileInitEvent(Object source, String msg, ITestContext context) {
-            super(source);
-            this.message=msg;
-            this.testcontext=context;
-        }
-    }
-
 }

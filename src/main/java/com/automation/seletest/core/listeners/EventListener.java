@@ -46,8 +46,7 @@ import org.springframework.stereotype.Component;
 import org.testng.ITestContext;
 
 import com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor;
-import com.automation.seletest.core.listeners.beanUtils.Events.MobileInitEvent;
-import com.automation.seletest.core.listeners.beanUtils.Events.WebInitEvent;
+import com.automation.seletest.core.listeners.beanUtils.Events.InitializationEvent;
 import com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
@@ -71,12 +70,9 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     public void onApplicationEvent(ApplicationEvent event) {
         Time sessionTime=new Time(event.getTimestamp());
         try {
-            if (event instanceof WebInitEvent) {
-                log.info("Event for initializing Web Session occured at: {} !!!",sessionTime);
-                new Initialize().initializeWeb(event);
-            } else if(event instanceof MobileInitEvent) {
-                log.info("Event for initializing Mobile Session occured at: {} !!!",sessionTime);
-                new Initialize().initializeAppium(event);
+            if (event instanceof InitializationEvent) {
+                log.info(((InitializationEvent) event).getMessage(), sessionTime);
+                new Initialize().initializeSession(event);
             }
         }
         catch (Exception e) {
@@ -84,83 +80,31 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
         }
     }
 
+    /**
+     * Initializa class
+     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     *
+     */
     static class Initialize {
         /**
-         * Initialize web session
+         * Initialize web or mobile session
          * @param event
          * @throws Exception
          */
-        public void initializeWeb(ApplicationEvent event) throws Exception{
-            WebDriverActionsController wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
-            SessionContext.getSession().setActionscontroller(wdActions);
+        public void initializeSession(ApplicationEvent event) throws Exception{
+            WebDriverActionsController wdActions=null;
             WebDriver driver=null;
-            ITestContext textcontext=((WebInitEvent) event).getTestcontext();
+            AppiumDriverController adController=null;
 
-            /*************************
-             **XML PARAMETERS*********
-             *************************
-             */
-            String GridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
-            String GridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
-            String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
+            if(((InitializationEvent) event).isWeb()){
+                wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
+                SessionContext.getSession().setWebactionscontroller(wdActions);
 
-            //Create Application Context for initializing driver based on specified @Profile
-            AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-            app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
-
-            //register Configuration classes
-            app.register(
-                    LocalDriverConfiguration.class,
-                    WebDriverConfiguration.class,
-                    RemoteDriverConfiguration.class);
-
-            //start Container for bean initialization
-            app.refresh();
-
-            //register a bean post processor for merging capabilities
-            app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
-
-            DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
-
-            //If performance is enabled
-            if(((WebInitEvent) event).isPerformance()){
-                PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
-                ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
-                perf.newHar("Har at: "+event.getTimestamp());
-                cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
-                SessionContext.getSession().setPerformanceUtils(perf);
-            }
-
-            //start a driver object with capabilities
-            if(profileDriver.contains("Grid")) {
-                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
             } else {
-                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
+                adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
             }
 
-            //Set objects per session
-            wdActions.setDriver(driver);//set the driver object for this session
-            wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
-            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
-
-            //get the address of the app under test
-            wdActions.goToTargetHost(((WebInitEvent) event).getHostUrl());
-            SessionContext.setSessionProperties();
-        }
-
-
-        /**
-         * Initialize mobile session
-         * @param event
-         * @throws Exception
-         */
-        public void initializeAppium(ApplicationEvent event) throws Exception {
-
-            //Get the beans for controllers
-            AppiumDriverController adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
-            SessionContext.getSession().setAppiumController(adController);
-            WebDriver driver=null;
-            ITestContext textcontext=((MobileInitEvent) event).getTestcontext();
+            ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
             /*************************
              **XML PARAMETERS*********
@@ -184,20 +128,43 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             //start Container for bean initialization
             app.refresh();
+
+            //register a bean post processor for merging capabilities
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
+
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
-            driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
-            adController.setAppiumDriver((AppiumDriver)driver);
-            SessionContext.getSession().setDriverContext(app);
+
+            //If performance is enabled
+            if(((InitializationEvent) event).isPerformance()){
+                PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
+                ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
+                perf.newHar("Har at: "+event.getTimestamp());
+                cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
+                SessionContext.getSession().setPerformanceUtils(perf);
+            }
+
+            //start a driver object with capabilities
+            if(profileDriver.contains("Grid")) {
+                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
+            } else {
+                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
+            }
+
+            if(((InitializationEvent) event).isWeb()){
+                //Set objects per session
+                wdActions.setDriver(driver);//set the driver object for this session
+                wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
+                wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());
+
+            } else {
+                adController.setAppiumDriver((AppiumDriver)driver);
+                adController.installApp(bundleId,appPath).launchApp();
+            }
+
+            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 
-            //Install app or apk files and launch
-            adController.
-            installApp(bundleId,appPath).
-            launchApp();
-
         }
-
     }
 
 }

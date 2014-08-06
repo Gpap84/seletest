@@ -184,4 +184,24 @@ public interface ActionsController<T> {
      * @return
      */
     Dimension getElementDimensions(Object locator);
+
+    /**
+     * Returns the source of the current page
+     * @return html source
+     */
+    String getPageSource();
+
+    /**
+     * Defines if a web element is present
+     * @param locator
+     * @return if a web element is present
+     */
+    boolean isWebElementPresent(Object locator);
+
+    /**
+     * Defines if text is present in source
+     * @param text
+     * @return false if not text present in page source
+     */
+    boolean isTextPresent(String text);
 }
