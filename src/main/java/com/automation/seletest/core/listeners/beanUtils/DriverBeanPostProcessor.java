@@ -56,19 +56,17 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
 
-        /**
-         * Set browser capabilities
-         */
+        /** Set browser capabilities */
         if(bean instanceof DesiredCapabilities) {
             String browserType=Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.BROWSERTYPE.get());
             if(browserType!=null){
-                if(browserType.compareTo("chrome")==0) {
+                if(browserType.compareTo("chrome") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
-                } else if(browserType.compareTo("firefox")==0) {
+                } else if(browserType.compareTo("firefox") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.firefox());
-                } else if(browserType.compareTo("ie")==0) {
+                } else if(browserType.compareTo("ie") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.internetExplorer());
-                } else if(browserType.compareTo("phantomJs")==0) {
+                } else if(browserType.compareTo("phantomJs") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.phantomjs());
                 }
             }

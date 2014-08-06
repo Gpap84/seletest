@@ -39,7 +39,7 @@ public class SessionControl {
 
 
     public static <T> ActionsController<?> actionsController(){
-        return SessionContext.getSession().getActionscontroller();
+        return SessionContext.getSession().getWebactionscontroller();
     }
 
     public static Assertion assertion(){

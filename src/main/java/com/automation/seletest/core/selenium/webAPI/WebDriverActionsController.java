@@ -49,6 +49,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +70,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @SuppressWarnings({"unchecked"})
 @Component
-@Scope("prototype")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WebDriverActionsController implements ActionsController<WebDriverActionsController>{
 
     @Autowired
@@ -249,10 +250,9 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
     }
 
 
-   /**************************************
-    **Returning type methods**************
-    **************************************
-    */
+    /**************************************
+     **Returning type methods**************
+     ***************************************/
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
@@ -280,4 +280,38 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
     public Dimension getElementDimensions(Object locator) {
         return element(locator).getSize();
     }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#getPageSource()
+     */
+    @Override
+    public String getPageSource() {
+        return driver.getPageSource();
+    }
+
+    /**************************************
+     *Verification type methods**************
+     ***************************************/
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#isWebElementPresent(java.lang.Object)
+     */
+    @Override
+    public boolean isWebElementPresent(Object locator) {
+        findElement((String) locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#isTextPresent(java.lang.String)
+     */
+    @Override
+    public boolean isTextPresent(String text) {
+        if(getPageSource().contains(text)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

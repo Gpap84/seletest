@@ -29,6 +29,8 @@ package com.automation.seletest.core.selenium.threads;
 
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,11 +62,11 @@ public class SessionProperties {
 
     /** The web actions interface. */
     @Getter @Setter
-    ActionsController<?> actionscontroller;
+    ActionsController<?> webactionscontroller;
 
     /** The mobile actions interface*/
     @Getter @Setter
-    AppiumController<?> appiumController;
+    AppiumController<?> appiumactionsController;
 
     /**The web driver context*/
     @Getter @Setter
@@ -73,6 +75,10 @@ public class SessionProperties {
     /** The Assertion. */
     @Getter @Setter
     Assertion assertion;
+
+    /** The xml parameters. */
+    @Getter @Setter
+    Map<String, String> xmlParams = new HashMap<String, String>();
 
     /**Timeout for waiting until condition fullfilled */
     @Getter @Setter
@@ -86,15 +92,15 @@ public class SessionProperties {
         //performance measurement
         if(performanceUtils!=null){
             performanceUtils.getPerformanceData(performanceUtils.getServer());
-            performanceUtils.writePerformanceData(new File("./target/test-classes/").getAbsolutePath(), performanceUtils.getHar());
+            performanceUtils.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), performanceUtils.getHar());
             performanceUtils.stopServer(performanceUtils.getServer());
             performanceUtils=null;
             log.info("Performance data collected!!!");
         }
 
         //quit driver
-        if(actionscontroller!=null){
-            actionscontroller.quit(CloseSession.QUIT);
+        if(webactionscontroller!=null){
+            webactionscontroller.quit(CloseSession.QUIT);
         }
 
         //initialize assertion
@@ -109,7 +115,6 @@ public class SessionProperties {
         //reset soft failures
         softFailures=0;
 
-
-        log.info("Session closed");
+        log.info("Session closed!!!");
     }
 }

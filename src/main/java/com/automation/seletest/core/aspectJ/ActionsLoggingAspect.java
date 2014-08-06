@@ -82,7 +82,7 @@ public class ActionsLoggingAspect extends SuperAspect{
     private void waitConditions() {}//A pointcut that finds all methods inside classes that contains WaitStrategy in name
 
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.get*(..))")
-    private void webElement() {}//A pointcut that finds all methods inside class  ActionsController that start with get***
+    private void getReturningValue() {}//A pointcut that finds all methods inside class  ActionsController that start with get***
 
 
     /****************************************************
@@ -95,7 +95,7 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @param jp
      * @param returnVal
      */
-    @AfterReturning(pointcut ="webElement()",returning="returnVal")
+    @AfterReturning(pointcut ="getReturningValue()",returning="returnVal")
     public void afterReturningAdvice(final JoinPoint jp,Object returnVal){
      log.info("Command: "+jp.getSignature().getName()+" for["+arguments((ProceedingJoinPoint)jp)+"]"+" returned value: "+returnVal);
     }

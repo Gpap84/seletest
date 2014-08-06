@@ -30,11 +30,14 @@ package com.automation.seletest.core.testNG.assertions;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.stereotype.Service;
+
 /**
  * This class represents the Assertion API
  * @author Giannis Papadakis
  *
  */
+@Service
 public class Assertion implements Assertable{
 
     /** Assertion object*/

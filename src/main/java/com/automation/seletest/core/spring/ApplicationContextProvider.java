@@ -80,18 +80,11 @@ public class ApplicationContextProvider implements ApplicationContextAware,Appli
     }
 
     /**
-     * Publish event for initializing web session
+     * Publish event for initializing a session (against Web or Mobile Application)
      * @param message
      */
-    public void publishWebInitEvent(String message, String hostUrl, boolean performance, ITestContext ctx) {
-        this.publisher.publishEvent(new Events.WebInitEvent(this, message, hostUrl, performance,ctx));
+    public void publishInitializationEvent(String message, String hostUrl, boolean performance, ITestContext ctx, boolean isWeb) {
+        this.publisher.publishEvent(new Events.InitializationEvent(this, message, hostUrl, performance,ctx,isWeb));
     }
 
-    /**
-     * Publish event for initializing mobile session
-     * @param message
-     */
-    public void publishMobileInitEvent(String message,ITestContext ctx) {
-        this.publisher.publishEvent(new Events.MobileInitEvent(this,message,ctx));
-    }
 }
