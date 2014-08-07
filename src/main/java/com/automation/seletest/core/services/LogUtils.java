@@ -40,7 +40,7 @@ import org.testng.Reporter;
  */
 @Service
 @Slf4j
-public class Logging {
+public class LogUtils {
 
 
     @PostConstruct

@@ -46,7 +46,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
@@ -60,7 +60,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
 public class ActionsLoggingAspect extends SuperAspect{
 
     @Autowired
-    Logging log;
+    LogUtils log;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
@@ -72,17 +72,17 @@ public class ActionsLoggingAspect extends SuperAspect{
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
     private void waitAnnotation() {}//A pointcut that finds all methods marked with the @WaitCondition on the classpath
 
-    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilder.*(..))")
-    private void actionsBuilderController() {}//A pointcut that finds all methods inside ActionsBuilder class
+    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
+    private void actionsBuilderController() {}//A pointcut that finds all methods inside ActionsBuilderController interface
 
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.takeScreenShot*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
     private void takeScreenCap() {}
 
     @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
     private void waitConditions() {}//A pointcut that finds all methods inside classes that contains WaitStrategy in name
 
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.get*(..))")
-    private void getReturningValue() {}//A pointcut that finds all methods inside class  ActionsController that start with get***
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
+    private void getReturningValue() {}//A pointcut that finds all methods inside interface  WebController that start with get***
 
 
     /****************************************************
@@ -138,7 +138,7 @@ public class ActionsLoggingAspect extends SuperAspect{
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException{
         if(ex instanceof WebDriverException || ex instanceof AssertionError){
             log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
-            SessionControl.actionsController().takeScreenShot();
+            SessionControl.webController().takeScreenShot();
         } else {
             log.error("Unknown exception occured: "+ex.getMessage());
         }
@@ -148,7 +148,7 @@ public class ActionsLoggingAspect extends SuperAspect{
      * Wait for elements before any action....
      * @param pjp
      */
-    @Before(value="waitAnnotation() || actionsBuilderController()")
+    @Before(value="waitAnnotation()")
     public void waitFor(final JoinPoint pjp){
 
         /**Determine the WebDriverWait condition*/

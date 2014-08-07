@@ -28,14 +28,15 @@ package com.automation.seletest.pagecomponents.pageObjects;
 
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilder;
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
  * Abstract super class serves as base page object
@@ -44,29 +45,31 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
  * @param <T>
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public abstract class AbstractPage<T> {
+public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
     private static final int LOAD_TIMEOUT = 30;
     private static final int REFRESH_RATE = 2;
 
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionControl.actionsController().driverInstance(), clazz);
+        T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
         waitForPageToLoad(pageLoadCondition);
+        Object action=((AbstractPage) page).getAction();
+        SessionContext.getSession().setActions((Actions) action);
         return page;
     }
 
     protected abstract ExpectedCondition<?> getPageLoadCondition();
 
+
+    protected abstract Object getAction();
+
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionControl.actionsController().driverInstance())
+        Wait wait = new FluentWait(SessionControl.webController().driverInstance())
                 .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 
         wait.until(pageLoadCondition);
     }
 
-    public ActionsBuilder<T> getBuilder() {
-        return ApplicationContextProvider.getApplicationContext().getBean(ActionsBuilder.class);
-    }
 }

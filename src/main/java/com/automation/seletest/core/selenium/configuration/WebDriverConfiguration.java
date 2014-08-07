@@ -29,8 +29,6 @@ package com.automation.seletest.core.selenium.configuration;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -69,21 +67,6 @@ public class WebDriverConfiguration {
                 pollingEvery(100,TimeUnit.MILLISECONDS).
                 withMessage(msg);
     }
-
-    @Lazy(true)
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Actions webActionsBuilder(WebDriver driver){
-        return new Actions(driver);
-    }
-
-    @Lazy(true)
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public TouchActions touchActionsBuilder(WebDriver driver){
-        return new TouchActions(driver);
-    }
-
 
     @Lazy(true)
     @Bean

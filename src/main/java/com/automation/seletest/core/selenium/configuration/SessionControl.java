@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.configuration;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ActionsController;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.testNG.assertions.Assertion;
 
 /**
@@ -38,7 +38,7 @@ import com.automation.seletest.core.testNG.assertions.Assertion;
 public class SessionControl {
 
 
-    public static <T> ActionsController<?> actionsController(){
+    public static <T> WebController<?> webController(){
         return SessionContext.getSession().getWebactionscontroller();
     }
 

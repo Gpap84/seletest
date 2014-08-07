@@ -36,6 +36,11 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * By Appium extended locator strategy
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 public abstract class ByAppium extends By{
 
     public static By accessibilitySelector(final String selector) {
@@ -48,11 +53,13 @@ public abstract class ByAppium extends By{
 
     }
 
+    /**
+     * By Accessibility Id locator strategy
+     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     *
+     */
     public static class ByAccessibility extends By implements Serializable{
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final String selector;
