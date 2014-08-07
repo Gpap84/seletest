@@ -30,51 +30,57 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.services.actions.AbstractBase;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 
-@SuppressWarnings("rawtypes")
+/**
+ * Actions builder class.
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 @Component
-public class ActionsBuilder<T> extends AbstractBase.ActionsBase<ActionsBuilder>{
+public class ActionsBuilder implements ActionsBuilderController{
 
     @Override
-    public ActionsBuilder<T> mouseOver(Object locator) {
-        actionsBuilder().moveToElement(findElement(locator)).perform();
+    public ActionsBuilder mouseOver(Object locator) {
+         SessionContext.getSession().getActions().moveToElement(findElement(locator));
+         return this;
+    }
+
+    @Override
+    public ActionsBuilder mouseUp(Keys key) {
+        SessionContext.getSession().getActions().keyUp(key);
+        return this;
+
+    }
+
+    @Override
+    public ActionsBuilder mouseDown(Keys key) {
+        SessionContext.getSession().getActions().keyDown(key);
         return this;
     }
 
     @Override
-    public ActionsBuilder<T> mouseUp(Keys key) {
-        actionsBuilder().keyUp(key).perform();
+    public ActionsBuilder mouseDown(Object locator, Keys key) {
+        SessionContext.getSession().getActions().keyDown(findElement(locator),key);
+        return this;
+
+    }
+
+    @Override
+    public ActionsBuilder mouseUp(Object locator, Keys key) {
+        SessionContext.getSession().getActions().keyUp(findElement(locator),key);
         return this;
     }
 
     @Override
-    public ActionsBuilder<T> mouseDown(Keys key) {
-        actionsBuilder().keyDown(key).perform();
+    public ActionsBuilder clickAndHold(Object locator) {
+        SessionContext.getSession().getActions().clickAndHold(findElement(locator));
         return this;
     }
 
     @Override
-    public ActionsBuilder<T> mouseDown(Object locator, Keys key) {
-        actionsBuilder().keyDown(findElement(locator),key).perform();
-        return this;
-    }
-
-    @Override
-    public ActionsBuilder<T> mouseUp(Object locator, Keys key) {
-        actionsBuilder().keyUp(findElement(locator),key).perform();
-        return this;
-    }
-
-    @Override
-    public ActionsBuilder<T> clickAndHold(Object locator) {
-        actionsBuilder().clickAndHold(findElement(locator)).perform();
-        return this;
-    }
-
-    @Override
-    public ActionsBuilder<T> click(Object locator) {
-        actionsBuilder().click(findElement(locator)).perform();
+    public ActionsBuilder click(Object locator) {
+        SessionContext.getSession().getActions().click(findElement(locator));
         return this;
     }
 
@@ -87,11 +93,18 @@ public class ActionsBuilder<T> extends AbstractBase.ActionsBase<ActionsBuilder>{
         if(locator instanceof WebElement){
             return (WebElement) locator;
         } else if(locator instanceof String){
-            WebElement element=super.actionsController().findElement((String)locator);
+            WebElement element=SessionContext.getSession().getWebactionscontroller().findElement((String)locator);
             return element;
         }
         return null;
     }
+
+    @Override
+    public ActionsBuilder performActions() {
+        SessionContext.getSession().getActions().build().perform();
+        return this;
+    }
+
 
 
 

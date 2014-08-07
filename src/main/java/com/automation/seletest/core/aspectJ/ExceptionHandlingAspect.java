@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
@@ -49,7 +49,7 @@ import com.automation.seletest.core.services.properties.CoreProperties;
 public class ExceptionHandlingAspect extends SuperAspect{
 
     @Autowired
-    Logging log;
+    LogUtils log;
 
     /**
      * Around advice with custom annotation for retrying execution of JoinPoint
@@ -58,7 +58,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
      * @return
      * @throws Throwable
      */
-    @Around("execution(* com.automation.seletest.core.selenium.webAPI.ActionsController.*(..)) && @annotation(retry)")
+    @Around("execution(* com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..)) && @annotation(retry)")
     public Object retry(ProceedingJoinPoint pjp, RetryFailure retry) throws Throwable
     {
         Object returnValue = null;
@@ -66,7 +66,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                SessionControl.actionsController().changeStyle("backgroudColor",(pjp).getArgs()[0],CoreProperties.ACTION_COLOR.get());
+                SessionControl.webController().changeStyle("backgroudColor",(pjp).getArgs()[0],CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);

@@ -29,18 +29,17 @@ package com.automation.seletest.core.selenium.threads;
 
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.openqa.selenium.interactions.Actions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.webAPI.ActionsController;
-import com.automation.seletest.core.selenium.webAPI.ActionsController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.testNG.assertions.Assertion;
 
@@ -53,6 +52,7 @@ import com.automation.seletest.core.testNG.assertions.Assertion;
 @Slf4j
 public class SessionProperties {
 
+    /**Performance api*/
     @Getter @Setter
     PerformanceUtils performanceUtils;
 
@@ -62,7 +62,7 @@ public class SessionProperties {
 
     /** The web actions interface. */
     @Getter @Setter
-    ActionsController<?> webactionscontroller;
+    WebController<?> webactionscontroller;
 
     /** The mobile actions interface*/
     @Getter @Setter
@@ -76,9 +76,9 @@ public class SessionProperties {
     @Getter @Setter
     Assertion assertion;
 
-    /** The xml parameters. */
+    /**The actions builder instance*/
     @Getter @Setter
-    Map<String, String> xmlParams = new HashMap<String, String>();
+    Actions actions;
 
     /**Timeout for waiting until condition fullfilled */
     @Getter @Setter
@@ -105,6 +105,9 @@ public class SessionProperties {
 
         //initialize assertion
         assertion=null;
+
+        //initialize actions Builder
+        actions=null;
 
         //destroy the webdriver application context
         driverContext.destroy();

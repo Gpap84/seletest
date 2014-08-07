@@ -19,8 +19,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <context:component-scan base-package="com.automation.seletest">
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration.Profile*.*" />
   <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration.Profile*.*" />
-  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.WebDriverConfiguration.*" />
-  <context:exclude-filter type="regex" expression="com.automation.seletest.core.listeners.WebDriver*.*" />
   </context:component-scan>
  
  <!-- Factory for waiting strategy -->

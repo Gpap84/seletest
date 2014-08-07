@@ -52,7 +52,7 @@ import com.automation.seletest.core.selenium.configuration.RemoteDriverConfigura
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumDriverController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebDriverActionsController;
+import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
@@ -92,12 +92,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
          * @throws Exception
          */
         public void initializeSession(ApplicationEvent event) throws Exception{
-            WebDriverActionsController wdActions=null;
-            WebDriver driver=null;
+
+            WebDriverController wdActions=null;
             AppiumDriverController adController=null;
+            WebDriver driver=null;
 
             if(((InitializationEvent) event).isWeb()){
-                wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverActionsController.class);
+                wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
                 SessionContext.getSession().setWebactionscontroller(wdActions);
 
             } else {
@@ -108,8 +109,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             /*************************
              **XML PARAMETERS*********
-             *************************
-             */
+             *************************/
             String GridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
             String GridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
@@ -151,7 +151,6 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(((InitializationEvent) event).isWeb()){
-                //Set objects per session
                 wdActions.setDriver(driver);//set the driver object for this session
                 wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
                 wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());

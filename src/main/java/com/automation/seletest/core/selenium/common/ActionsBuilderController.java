@@ -28,21 +28,21 @@ package com.automation.seletest.core.selenium.common;
 
 import org.openqa.selenium.Keys;
 
-public interface BuildActions<T> {
+public interface ActionsBuilderController {
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
      * @param locator
      * @return
      */
-    T click(Object locator);
+    ActionsBuilder click(Object locator);
 
     /**
      * Moves the mouse to the middle of the element
      * @param locator
      * @return
      */
-    T mouseOver(Object locator);
+    ActionsBuilder mouseOver(Object locator);
 
     /**
      * Performs a modifier key release.
@@ -50,7 +50,7 @@ public interface BuildActions<T> {
      * @param key
      * @return
      */
-    T mouseUp(Keys key);
+    ActionsBuilder mouseUp(Keys key);
 
     /**
      * Performs a modifier key press.
@@ -60,7 +60,7 @@ public interface BuildActions<T> {
      * @param key
      * @return
      */
-    T mouseDown(Keys key);
+    ActionsBuilder mouseDown(Keys key);
 
     /**
      * Move to element first and then perform mouseDown
@@ -68,7 +68,7 @@ public interface BuildActions<T> {
      * @param key
      * @return
      */
-    T mouseDown(Object locator, Keys key);
+    ActionsBuilder mouseDown(Object locator, Keys key);
 
     /**
      * Move to element and then perform mouseUp
@@ -76,14 +76,19 @@ public interface BuildActions<T> {
      * @param key
      * @return
      */
-    T mouseUp(Object locator, Keys key);
+    ActionsBuilder mouseUp(Object locator, Keys key);
 
     /**
      * Clicks (without releasing) in the middle of the given element. This is equivalent to: Actions.moveToElement(onElement).clickAndHold()
      * @param locator
      * @return
      */
-    T clickAndHold(Object locator);
+    ActionsBuilder clickAndHold(Object locator);
 
+    /**
+     * Performs the sequence of actions represented by this instance
+     * @return
+     */
+    ActionsBuilder performActions();
 
 }

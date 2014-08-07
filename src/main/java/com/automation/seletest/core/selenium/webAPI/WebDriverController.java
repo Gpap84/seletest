@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.Files;
+import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
@@ -71,10 +71,10 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
 @SuppressWarnings({"unchecked"})
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WebDriverActionsController implements ActionsController<WebDriverActionsController>{
+public class WebDriverController implements WebController<WebDriverController>{
 
     @Autowired
-    Files fileService;
+    FilesUtils fileService;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
@@ -119,7 +119,7 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
     @Override
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController clickTo(Object locator) {
+    public WebDriverController clickTo(Object locator) {
         element(locator).click();
         return this;
     }
@@ -127,13 +127,13 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
     @Override
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController enterTo(Object locator, String text) {
+    public WebDriverController enterTo(Object locator, String text) {
         element(locator).sendKeys(text);
         return this;
     }
 
     @Override
-    public WebDriverActionsController changeStyle(String attribute, Object locator, String attributevalue) {
+    public WebDriverController changeStyle(String attribute, Object locator, String attributevalue) {
         jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",element(locator),attributevalue);
         return this;
     }
@@ -171,7 +171,7 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
      *************************************************************
      */
     @Override
-    public WebDriverActionsController switchToLatestWindow() {
+    public WebDriverController switchToLatestWindow() {
         Iterator<String> iterator = driver.getWindowHandles().iterator();
         String lastWindow = null;
         while (iterator.hasNext()) {
@@ -195,20 +195,20 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
      *************************************************************
      */
     @Override
-    public WebDriverActionsController deleteCookieNamed(String name) {
+    public WebDriverController deleteCookieNamed(String name) {
         driver.manage().deleteCookieNamed(name);
         return this;
     }
 
     @Override
-    public WebDriverActionsController cookiesAllDelete() {
+    public WebDriverController cookiesAllDelete() {
         driver.manage().deleteAllCookies();
         return this;
     }
 
 
     @Override
-    public WebDriverActionsController cookieAdd(Cookie cookie) {
+    public WebDriverController cookieAdd(Cookie cookie) {
         driver.manage().addCookie(cookie);
         return this;
     }
@@ -222,7 +222,7 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
 
 
     @Override
-    public WebDriverActionsController cookieDelete(Cookie cookie) {
+    public WebDriverController cookieDelete(Cookie cookie) {
         driver.manage().deleteCookie(cookie);
         return this;
     }
@@ -281,9 +281,6 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
         return element(locator).getSize();
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#getPageSource()
-     */
     @Override
     public String getPageSource() {
         return driver.getPageSource();
@@ -293,18 +290,13 @@ public class WebDriverActionsController implements ActionsController<WebDriverAc
      *Verification type methods**************
      ***************************************/
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#isWebElementPresent(java.lang.Object)
-     */
     @Override
     public boolean isWebElementPresent(Object locator) {
         findElement((String) locator);
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.ActionsController#isTextPresent(java.lang.String)
-     */
+
     @Override
     public boolean isTextPresent(String text) {
         if(getPageSource().contains(text)){

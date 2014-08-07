@@ -51,7 +51,7 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 @Service
 @Slf4j
-public class Files {
+public class FilesUtils {
 
 
 	/**

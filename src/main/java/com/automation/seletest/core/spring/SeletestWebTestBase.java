@@ -155,7 +155,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
         if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.WEBTYPE.get())==0){
             publisher.publishInitializationEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
         } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
-            publisher.publishInitializationEvent(INIT_APPIUM, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,false);
+            publisher.publishInitializationEvent(INIT_APPIUM, null,false,ctx,false);
         } else {
             throw new RuntimeException(TEST_TYPE);
         }

@@ -35,7 +35,7 @@ import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
-import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.LogUtils;
 
 /**
  * This class used for executing soft assertions
@@ -46,7 +46,7 @@ import com.automation.seletest.core.services.Logging;
 public class SoftAssert extends Assertion {
 
     @Autowired
-    Logging log;
+    LogUtils log;
 
     // LinkedHashMap to preserve the order
     private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
