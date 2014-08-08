@@ -46,13 +46,13 @@ Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. T
 
 To actually get the injection working to domain objects (non Spring classes) you need to weave some Spring aspects in your domain class. While you could do this by compile time weaving, i chose load time weaving as it is much simpler to set up in development environment. The cruicial part is to activate a Java agent for your runtime that now weaves the aspects into the domain class during class loading.
 
-<b>Eclipse:</b> 
-Run with JVM arguments:
--javaagent:${localMavenRepository}\org\springframework\spring-agent\2.5.6\spring-agent-2.5.6.jar
--noverify
+<b>Eclipse:</b><br>
+Run with JVM arguments:<br>
+-javaagent:${localMavenRepository}\org\springframework\spring-agent\2.5.6\spring-agent-2.5.6.jar<br>
+-noverify<br>
 
-<b>Maven:</b>
-Surefire argument: 
-<argLine>
-       -javaagent:${settings.localRepository}/org/springframework/spring-agent/2.5.6/spring-agent-2.5.6.jar
-</argLine>
+<b>Maven:</b><br>
+Surefire argument:<br>
+<argLine><br>
+       -javaagent:${settings.localRepository}/org/springframework/spring-agent/2.5.6/spring-agent-2.5.6.jar<br>
+</argLine><br>
