@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,21 +23,22 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 package com.automation.seletest.core.selenium.threads;
 
 
 import java.io.File;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
@@ -50,23 +51,16 @@ import com.automation.seletest.core.testNG.assertions.Assertion;
  *
  */
 @Slf4j
+@SuppressWarnings("rawtypes")
 public class SessionProperties {
 
     /**Performance api*/
     @Getter @Setter
     PerformanceUtils performanceUtils;
 
-    /**The number of soft failures*/
+    /** Array List to store various object*/
     @Getter @Setter
-    int softFailures;
-
-    /** The web actions interface. */
-    @Getter @Setter
-    WebController<?> webactionscontroller;
-
-    /** The mobile actions interface*/
-    @Getter @Setter
-    AppiumController<?> appiumactionsController;
+    ArrayList controllers;
 
     /**The web driver context*/
     @Getter @Setter
@@ -84,12 +78,17 @@ public class SessionProperties {
     @Getter @Setter
     int waitUntil = 5;
 
+    /** Wait Strategy*/
     @Getter @Setter
     String waitStrategy="DEFAULT";
 
+    /**WebElement per session*/
+    @Getter @Setter
+    WebElement webElement;
+
     public void cleanSession() throws Exception{
 
-        //performance measurement
+        //Performance collection data
         if(performanceUtils!=null){
             performanceUtils.getPerformanceData(performanceUtils.getServer());
             performanceUtils.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), performanceUtils.getHar());
@@ -98,25 +97,28 @@ public class SessionProperties {
             log.info("Performance data collected!!!");
         }
 
-        //quit driver
-        if(webactionscontroller!=null){
-            webactionscontroller.quit(CloseSession.QUIT);
+        //Quits driver
+        for(int i=0; i<controllers.size(); i++)
+        {
+            Object controller = controllers.get(i);
+            if(controller instanceof WebController<?> && controller !=null){
+                ((WebController) controller).quit(CloseSession.QUIT);
+            }
         }
 
-        //initialize assertion
-        assertion=null;
+        //Initialize Objects of Array List
+        if(controllers!=null){
+            controllers.clear();
+        }
 
-        //initialize actions Builder
+        //Initialize actions Builder
         actions=null;
 
-        //destroy the webdriver application context
+        //Destroy the webdriver application context
         driverContext.destroy();
 
-        //turn waitStrategy to default after closing a session
+        //Turn waitStrategy to default after closing a session
         waitStrategy="DEFAULT";
-
-        //reset soft failures
-        softFailures=0;
 
         log.info("Session closed!!!");
     }

@@ -291,8 +291,8 @@ public class WebDriverController implements WebController<WebDriverController>{
      ***************************************/
 
     @Override
-    public boolean isWebElementPresent(Object locator) {
-        findElement((String) locator);
+    public boolean isWebElementPresent(String locator) {
+        findElement(locator);
         return true;
     }
 

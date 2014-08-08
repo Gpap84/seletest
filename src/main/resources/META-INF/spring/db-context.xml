@@ -9,6 +9,7 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+<!-- Properties for datasource and hibernate -->
 <context:property-placeholder location="classpath:DB/db.properties"/>
 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -18,22 +19,25 @@
     <property name="password" value="${jdbc.password}"/>
   </bean>
   
+  <!-- SessionFactory -->
    <bean id="sessionFactory"
-    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" destroy-method="close">
       <property name="dataSource" ref="dataSource" />
       <property name="hibernateProperties">
          <props>
             <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
             <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+            <prop key="hibernate.hbm2ddl.import_files">${hibernate.import}</prop>
          </props>
       </property>
    </bean>
 
+<!-- Transaction Manager -->
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <tx:annotation-driven/>
-
+   <!-- Enable Annotation based Declarative Transaction Management -->
+    <tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
 
 </beans>
