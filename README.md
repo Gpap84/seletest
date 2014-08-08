@@ -52,6 +52,6 @@ Run with JVM arguments:<br>
 
 <b>Maven:</b><br>
 Surefire argument:<br>
-<argLine><br>
+argLine<br>
        -javaagent:${settings.localRepository}/org/springframework/spring-agent/2.5.6/spring-agent-2.5.6.jar<br>
-</argLine><br>
+/argLine<br>
