@@ -38,6 +38,7 @@ import net.lightbody.bmp.proxy.ProxyServer;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.context.ApplicationEvent;
@@ -155,16 +156,18 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
             }
 
-            if(((InitializationEvent) event).isWeb()){
+            if(((InitializationEvent) event).isWeb()) {
                 wdActions.setDriver(driver);//set the driver object for this session
                 wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
                 wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());
 
             } else {
-                adController.setAppiumDriver((AppiumDriver)driver);
+                adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
                 adController.installApp(bundleId,appPath).launchApp();
             }
 
+            //Set objects for this session
+            SessionContext.getSession().setActions(new Actions(driver));
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 
