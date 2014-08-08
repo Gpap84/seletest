@@ -33,6 +33,7 @@ a] ChromeDriver<br>
 b] InternetExplorerDriver for IE9<br>
 c] FirefoxDriver<br>
 d] PhantomJSDrive<br>
+e] AppiumDriver<br>
 
 
 <b>Tips for IEDriver</b><br>
