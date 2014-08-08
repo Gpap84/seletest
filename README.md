@@ -33,6 +33,7 @@ a] ChromeDriver<br>
 b] InternetExplorerDriver for IE9<br>
 c] FirefoxDriver<br>
 d] PhantomJSDrive<br>
+e] AppiumDriver<br>
 
 <b>Tips for IEDriver</b><br>
 On IE 7 or higher on Windows Vista or Windows 7, you must set the Protected Mode settings for each zone to be the same value. The value can be on or off, as long as it is the same for every zone. To set the Protected Mode settings, choose "Internet Options..." from the Tools menu, and click on the Security tab. For each zone, there will be a check box at the bottom of the tab labeled "Enable Protected Mode".<br>
