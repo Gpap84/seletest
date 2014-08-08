@@ -89,19 +89,15 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
         }
     }
 
-
-
     @Override
     public void onTestSuccess(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" passed");
     }
 
-
     @Override
     public void onTestSkipped(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" skipped");
     }
-
 
     @Override
     public void onTestFailure(ITestResult testResult) {
@@ -112,7 +108,6 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
     public void onTestStart(ITestResult result) {
         log.debug("Test "+ result.getName()+" started!!");
     }
-
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {

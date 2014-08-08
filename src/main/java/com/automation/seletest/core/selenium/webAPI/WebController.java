@@ -196,7 +196,7 @@ public interface WebController<T> {
      * @param locator
      * @return if a web element is present
      */
-    boolean isWebElementPresent(Object locator);
+    boolean isWebElementPresent(String locator);
 
     /**
      * Defines if text is present in source

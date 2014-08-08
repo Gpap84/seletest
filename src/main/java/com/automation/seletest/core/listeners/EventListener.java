@@ -30,6 +30,7 @@ package com.automation.seletest.core.listeners;
 import io.appium.java_client.AppiumDriver;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +86,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     static class Initialize {
         /**
          * Initialize web or mobile session
@@ -96,13 +98,15 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             WebDriverController wdActions=null;
             AppiumDriverController adController=null;
             WebDriver driver=null;
+            SessionContext.getSession().setControllers(new ArrayList());
 
             if(((InitializationEvent) event).isWeb()){
                 wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
-                SessionContext.getSession().setWebactionscontroller(wdActions);
+                SessionContext.getSession().getControllers().add(wdActions);
 
             } else {
                 adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
+                SessionContext.getSession().getControllers().add(adController);
             }
 
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
@@ -140,7 +144,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
                 perf.newHar("Har at: "+event.getTimestamp());
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
-                SessionContext.getSession().setPerformanceUtils(perf);
+                SessionContext.getSession().getControllers().add(perf);
+
             }
 
             //start a driver object with capabilities
