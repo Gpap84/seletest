@@ -30,43 +30,49 @@ package com.automation.seletest.core.testNG.assertions;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.testng.asserts.Assertion;
 
 /**
  * This class represents the Assertion API
  * @author Giannis Papadakis
  *
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 @Service
-public class Assertion implements Assertable{
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class AssertTest<T extends Assertion> implements Assertable{
 
     /** Assertion object*/
-    @Getter @Setter private Object assertion;
+    @Getter @Setter
+    private T assertion;
 
     /**
      * Default constructor sets the type of Object
      */
-    public Assertion(){
+    public AssertTest(){
         if(assertion==null) {
             setAssertionType(AssertionType.SOFT);
         }
     }
 
     /**
-     * Specify the type of assertion (Hard or Soft)
+     * Specify the type of assertion (Hard or Soft) for this test
      * @param assertionType
      * @return
      */
-    public Assertion setAssertionType(AssertionType assertionType){
+    public AssertTest setAssertionType(AssertionType assertionType){
         if(assertionType.equals(AssertionType.HARD)) {
-            setAssertion(new Assertion());
+            setAssertion((T) new Assertion());
         } else {
-            setAssertion(new SoftAssert());
+            setAssertion((T) new SoftAssert());
         } return this;
     }
 
     /**
-     * Defines assertionType
+     * Defines Assertion Type
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */

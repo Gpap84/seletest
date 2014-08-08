@@ -42,13 +42,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
-import com.automation.seletest.core.testNG.assertions.Assertion;
+import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 
 /**
  * Custom objects per session
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- *
  */
 @Slf4j
 @SuppressWarnings("rawtypes")
@@ -68,7 +67,7 @@ public class SessionProperties {
 
     /** The Assertion. */
     @Getter @Setter
-    Assertion assertion;
+    AssertTest assertTest;
 
     /**The actions builder instance*/
     @Getter @Setter

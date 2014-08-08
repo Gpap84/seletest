@@ -27,18 +27,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.pagecomponents.pageObjects;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.common.ActionsBuilder;
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 @Component
+@Configurable
 public class GooglePage extends AbstractPage<GooglePage>{
 
     @FindBy(name = "q")
@@ -48,6 +49,10 @@ public class GooglePage extends AbstractPage<GooglePage>{
     @FindBy(name = "btnG")
     @CacheLookup
     private WebElement submit;
+
+    @Autowired
+    ActionsBuilder action;
+
 
     public boolean isTextDisplayed(String text) {
         return SessionControl.webController().driverInstance().getPageSource().contains(text);
@@ -59,32 +64,29 @@ public class GooglePage extends AbstractPage<GooglePage>{
         return this;
     }
 
+    /**
+     * Press search with Actions Builder
+     * @return
+     */
     public GooglePage buttonSearch(){
-
-        ((ActionsBuilder)getBean(ActionsBuilder.class)).
-        click(submit).
-        performActions();
+        action.click(submit).performActions();
         return this;
     }
 
+    /**
+     * Expected Condition for loading this page object
+     */
     @Override
     protected ExpectedCondition<?> getPageLoadCondition() {
         return ExpectedConditions.visibilityOf(search);
     }
 
+    /**
+     * Opens this page object
+     * @return
+     */
     public GooglePage open() {
         return openPage(GooglePage.class);
     }
-
-
-    @Override
-    protected Actions getAction() {
-        return new Actions(SessionControl.webController().driverInstance());
-    }
-
-    private Object getBean(Class<?> clazz){
-        return ApplicationContextProvider.getApplicationContext().getBean(clazz);
-    }
-
 
 }

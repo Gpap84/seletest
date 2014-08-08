@@ -45,10 +45,11 @@ import com.automation.seletest.core.services.LogUtils;
 
 public class SoftAssert extends Assertion {
 
+
     @Autowired
     LogUtils log;
 
-    // LinkedHashMap to preserve the order
+    /** LinkedHashMap to preserve the order*/
     private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
 
     @Override
@@ -63,6 +64,9 @@ public class SoftAssert extends Assertion {
         }
     }
 
+    /**
+     * Assert failures after test execution
+     */
     public void assertAll() {
         if (! m_errors.isEmpty()) {
             StringBuilder sb = new StringBuilder("The following asserts failed:\n");
@@ -85,7 +89,7 @@ public class SoftAssert extends Assertion {
     /**
      * Display stackTrace to HTML report
      * @param ex
-     * @return
+     * @return StackTrace to String
      */
     private String findLineExceptionOccured(AssertionError ex){
         StringBuilder sb = new StringBuilder("");

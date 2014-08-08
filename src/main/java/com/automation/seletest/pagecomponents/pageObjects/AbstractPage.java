@@ -28,14 +28,12 @@ package com.automation.seletest.pagecomponents.pageObjects;
 
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -54,15 +52,10 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
         T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
         waitForPageToLoad(pageLoadCondition);
-        Object action=((AbstractPage) page).getAction();
-        SessionContext.getSession().setActions((Actions) action);
         return page;
     }
 
     protected abstract ExpectedCondition<?> getPageLoadCondition();
-
-
-    protected abstract Object getAction();
 
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
         Wait wait = new FluentWait(SessionControl.webController().driverInstance())

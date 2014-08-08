@@ -11,7 +11,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
- <context:annotation-config />
+<context:spring-configured />
+<context:load-time-weaver />
+<context:annotation-config />
+
 <context:property-placeholder location="BrowserSettings/browser.properties" order="1" ignore-unresolvable="true" />
 <context:property-placeholder location="BrowserSettings/mail.properties" order="2" ignore-unresolvable="true" />
 
