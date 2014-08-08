@@ -32,6 +32,7 @@ Current Drivers supported<br>
 a] ChromeDriver<br>
 b] InternetExplorerDriver for IE9<br>
 c] FirefoxDriver<br>
+d] PhantomJSDrive<br>
 
 
 <b>Tips for IEDriver</b><br>
