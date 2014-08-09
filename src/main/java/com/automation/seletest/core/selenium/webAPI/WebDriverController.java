@@ -46,7 +46,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -54,7 +53,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
@@ -120,7 +118,7 @@ public class WebDriverController implements WebController<WebDriverController>{
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
     public WebDriverController clickTo(Object locator) {
-        element(locator).click();
+        SessionContext.getSession().getWebElement().click();
         return this;
     }
 
@@ -128,13 +126,14 @@ public class WebDriverController implements WebController<WebDriverController>{
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
     public WebDriverController enterTo(Object locator, String text) {
-        element(locator).sendKeys(text);
+        SessionContext.getSession().getWebElement().sendKeys(text);
         return this;
     }
 
+    @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public WebDriverController changeStyle(String attribute, Object locator, String attributevalue) {
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",element(locator),attributevalue);
+    public WebDriverController changeStyle(Object locator, String attribute, String attributevalue) {
+        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
         return this;
     }
 
@@ -232,22 +231,7 @@ public class WebDriverController implements WebController<WebDriverController>{
         return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
     }
 
-    /**
-     * Returns a WebElement based on arguments called
-     * @param locator
-     * @return
-     */
-    private WebElement element(Object locator){
-        if(locator instanceof WebElement){
-            return ((WebElement)locator);
-        }
-        else if(locator instanceof String){
-            return driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
-        }
-        else{
-            throw new WebDriverException("The locator is not a known one: "+locator);
-        }
-    }
+
 
 
     /**************************************
@@ -257,28 +241,28 @@ public class WebDriverController implements WebController<WebDriverController>{
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public String getText(Object locator) {
-        return element(locator).getText();
+        return SessionContext.getSession().getWebElement().getText();
     }
 
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public String getTagName(Object locator) {
-        return element(locator).getTagName();
+        return SessionContext.getSession().getWebElement().getTagName();
     }
 
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public Point getLocation(Object locator) {
-        return element(locator).getLocation();
+        return SessionContext.getSession().getWebElement().getLocation();
     }
 
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public Dimension getElementDimensions(Object locator) {
-        return element(locator).getSize();
+        return SessionContext.getSession().getWebElement().getSize();
     }
 
     @Override
@@ -292,7 +276,7 @@ public class WebDriverController implements WebController<WebDriverController>{
 
     @Override
     public boolean isWebElementPresent(String locator) {
-        findElement(locator);
+        factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
         return true;
     }
 

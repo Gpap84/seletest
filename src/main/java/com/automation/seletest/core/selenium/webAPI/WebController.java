@@ -100,7 +100,7 @@ public interface WebController<T> {
      * @param attributevalue
      * @return
      */
-    T changeStyle(String attribute, Object locator, String attributevalue);
+    T changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
