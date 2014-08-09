@@ -26,12 +26,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.services;
 
+import java.io.IOException;
+
 import javax.annotation.PostConstruct;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.testng.Reporter;
+
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 
 /**
  * Methods for logging
@@ -101,6 +105,28 @@ public class LogUtils {
      */
     public void error(String message) {
         error(message, "\"color:red; font-size:1em;\"");
+    }
+
+    /**
+     * Error message for verification methods
+     * @param message
+     */
+    public void verificationError(String message) {
+        log.error(message);
+        String alertmessage="";
+        String beforeSplitMessage="";
+        if(message.contains("------")){
+            alertmessage=message.replace("'", "\"").split("------")[1];
+            beforeSplitMessage=message.split("------")[0];}
+        else {
+            alertmessage="Error without StackTrace!!!";
+            beforeSplitMessage=message;
+        }
+        Reporter.log("<b><p class=\"testOutput\" style=\"color:red; font-size:1em;\" onclick=\"javascript:alert('"+alertmessage+"');\">"+beforeSplitMessage+"</p></b>");
+        try {
+            SessionControl.webController().takeScreenShot();
+        } catch (IOException ioe ) {
+        }
     }
 
 

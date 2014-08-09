@@ -1,7 +1,7 @@
 /*
-This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
+This file is part of the Seletest by Giannis Papadakis <gpapadakis84@gmail.com>.
 
-Copyright (c) 2014, Papadakis Giannis <gpapadakis84@gmail.com>
+Copyright (c) 2014, Giannis Papadakis <gpapadakis84@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -24,33 +24,24 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+package com.automation.seletest.core.services.annotations;
 
-package com.automation.seletest.core.testNG;
-
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-
 /**
- * This annotation executes method of a class after invocation of a method
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD,ElementType.TYPE})
-@Inherited
-public @interface PostConfiguration {
+@Target(ElementType.METHOD)
+public @interface VerifyLog {
 
-    Class<? extends AbstractTestNGSpringContextTests> classReference();
+    String messagePass();
 
-    String method();
+    String messageFail();
 
-    String[] arguments() default {""};
-
+    String message();
 }
