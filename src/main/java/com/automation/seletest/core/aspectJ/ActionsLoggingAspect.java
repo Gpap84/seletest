@@ -154,9 +154,7 @@ public class ActionsLoggingAspect extends SuperAspect{
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
 
-        if(waitFor==null ||
-                waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) ||
-                methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement) {
+        if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement) {
             SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
             SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
