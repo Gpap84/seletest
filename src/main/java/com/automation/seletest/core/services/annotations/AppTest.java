@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
- * Redistributions of source code must retain the above copyright notice,
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
+    * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,42 +23,29 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.automation.seletest.core.selenium.configuration;
+*/
+package com.automation.seletest.core.services.annotations;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * This class returns all the interfaces - objects used for testing
- * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ * This annotation defines Web Test
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-public class SessionControl {
+@Retention(RUNTIME)
+@Target({CONSTRUCTOR, METHOD, TYPE})
+public @interface  AppTest {
 
+    public enum AssertionType{SOFT,HARD};
 
-    /**
-     * webController
-     * @return WebController<?>
-     */
-    public static <T> WebController<?> webController(){
-        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++)
-        {
-            Object controller = SessionContext.getSession().getControllers().get(i);
-            if(controller !=null && controller instanceof WebController){
-                return (WebController<?>) controller;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Verify controller
-     * @return AssertTest instance
-     */
-    public static AssertTest<?> verifyController(){
-        return SessionContext.getSession().getAssertTest();
-    }
+    /**AssertionType value*/
+    AssertionType assertion() default AssertionType.SOFT;
 
 }
