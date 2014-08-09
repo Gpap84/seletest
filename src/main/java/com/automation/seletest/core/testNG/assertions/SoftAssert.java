@@ -29,6 +29,7 @@ package com.automation.seletest.core.testNG.assertions;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.asserts.Assertion;
@@ -42,9 +43,8 @@ import com.automation.seletest.core.services.LogUtils;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-
+@Configurable
 public class SoftAssert extends Assertion {
-
 
     @Autowired
     LogUtils log;
@@ -58,7 +58,7 @@ public class SoftAssert extends Assertion {
             a.doAssert();
             log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage(),"background-color:green; color:black; margin-left:20px;");
         } catch(AssertionError ex) {
-            log.error("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
+            log.verificationError("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
             onAssertFailure(a, ex);
             m_errors.put(ex, a);
         }
@@ -95,7 +95,7 @@ public class SoftAssert extends Assertion {
         StringBuilder sb = new StringBuilder("");
 
         for(StackTraceElement line:ex.getStackTrace()){
-            if(line.getClassName().startsWith("com.automation.sele.web")) {
+            if(line.getClassName().startsWith("com.automation.seletest")) {
                 sb.append("Class: "+line.getClassName()+ " method: "+line.getMethodName()+" line: "+line.getLineNumber()+"\\n");
             }
         }
