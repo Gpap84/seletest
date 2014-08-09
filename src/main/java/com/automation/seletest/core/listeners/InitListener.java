@@ -34,8 +34,8 @@ import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
-import com.automation.seletest.core.services.annotations.AppiumTest;
-import com.automation.seletest.core.services.annotations.WebTest;
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.services.annotations.AppTest;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
 @Slf4j
@@ -44,24 +44,29 @@ public class InitListener implements IInvokedMethodListener{
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
+        log.debug("Specify browser type by finding custom annotation on class level!!!");
+        AppTest appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), AppTest.class);
+
         //Set parameter for specifying Application Type
         if(method.getTestMethod().isBeforeSuiteConfiguration()){
-            log.debug("Specify browser type by finding custom annotation on class level!!!");
-            Object webannotation=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), WebTest.class);
-            Object mobileannotation=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), AppiumTest.class);
-
-            if(webannotation!=null){
+            if(appTest!=null){
                 testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.WEBTYPE.get());
-            } else if (mobileannotation!=null){
-                testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.MOBILETYPE.get());
             }
         }
+
+        //Set assertion type (Hard / Soft) for this test method
+        if(method.getTestMethod().isTest()){
+            appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), AppTest.class);
+            SessionControl.verifyController().setAssertionType(appTest.assertion());
+        }
+
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        // TODO Auto-generated method stub
-
+        if(method.getTestMethod().isTest()){
+            SessionControl.verifyController().assertAll();
+        }
     }
 
 

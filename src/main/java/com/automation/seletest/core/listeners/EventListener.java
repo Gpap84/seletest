@@ -58,6 +58,7 @@ import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 /**
  * ApplicationListener for event handling
@@ -167,6 +168,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             //Set objects for this session
+            SessionContext.getSession().setAssertTest(ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
             SessionContext.getSession().setActions(new Actions(driver));
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();

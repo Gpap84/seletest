@@ -156,7 +156,9 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
         @Override
         public boolean retry(ITestResult result) {
 
-            if ((!result.isSuccess() && !(result.getThrowable() instanceof TimeoutException))) {
+            if ((!result.isSuccess() &&
+                    (!(result.getThrowable() instanceof TimeoutException)
+                            || !(result.getThrowable() instanceof AssertionError)))) {
                 if (count < maxCount) {
                     count++;
                     log.info(Thread.currentThread().getName() + "Error in "
