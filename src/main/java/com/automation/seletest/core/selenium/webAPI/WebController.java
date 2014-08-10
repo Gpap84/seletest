@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,13 +23,15 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.selenium.webAPI;
 
 import java.io.IOException;
 import java.util.Set;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -39,7 +41,7 @@ import org.openqa.selenium.WebElement;
  * @param <T>
  */
 @SuppressWarnings("hiding")
-public interface ActionsController<T> {
+public interface WebController<T> {
 
     /**
      * Finds a web element
@@ -48,12 +50,12 @@ public interface ActionsController<T> {
      */
     WebElement findElement(String locator);
 
-	/**
-	 * Click function
-	 * @param locator
-	 * @param timeout
-	 * @return
-	 */
+    /**
+     * Click function
+     * @param locator
+     * @param timeout
+     * @return
+     */
     T clickTo(Object locator);
 
     /**
@@ -83,13 +85,13 @@ public interface ActionsController<T> {
      * Gets the driver instance
      * @return
      */
-    <T extends WebDriver> T getDriverInstance();
+    <T extends WebDriver> T driverInstance();
 
     /**
      * Gets URL
      * @param url
      */
-    void getTargetHost(String url);
+    void goToTargetHost(String url);
 
     /**
      * Change style of specific element
@@ -98,28 +100,28 @@ public interface ActionsController<T> {
      * @param attributevalue
      * @return
      */
-    T changeStyle(String attribute, Object locator, String attributevalue);
+    T changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
      * @throws IOException
      */
-	void takeScreenShot() throws IOException;
+    void takeScreenShot() throws IOException;
 
-	/**
-	 * Take screenshot of an element
-	 * @param locator
-	 * @throws IOException
-	 */
-	void takeScreenShotOfElement(String locator) throws IOException;
+    /**
+     * Take screenshot of an element
+     * @param locator
+     * @throws IOException
+     */
+    void takeScreenShotOfElement(String locator) throws IOException;
 
-	/**
-	 * switch to latest window
-	 * @return
-	 */
-	T switchToLatestWindow();
+    /**
+     * switch to latest window
+     * @return
+     */
+    T switchToLatestWindow();
 
-	 /**
+    /**
      * Deletes a cookie by name
      * @param name
      * @param value
@@ -132,13 +134,13 @@ public interface ActionsController<T> {
      * @param cookie
      * @return
      */
-    T deleteCookie(Cookie cookie);
+    T cookieDelete(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return
      */
-    T deleteAllCookies();
+    T cookiesAllDelete();
 
     /**
      * Create a cookie
@@ -146,7 +148,7 @@ public interface ActionsController<T> {
      * @param value
      * @return
      */
-    T addCookie(Cookie cookie);
+    T cookieAdd(Cookie cookie);
 
     /**
      * Gets all cookies
@@ -155,5 +157,51 @@ public interface ActionsController<T> {
     Set<Cookie> getCookies();
 
 
+    /**
+     * Returns text of element
+     * @param locator
+     * @return
+     */
+    String getText(Object locator);
 
+    /**
+     * Gets the tagName of the element
+     * @param locator
+     * @return
+     */
+    String getTagName(Object locator);
+
+    /**
+     * Gets the element Location
+     * @param locator
+     * @return
+     */
+    Point getLocation(Object locator);
+
+    /**
+     * Gets the element Dimensions
+     * @param locator
+     * @return
+     */
+    Dimension getElementDimensions(Object locator);
+
+    /**
+     * Returns the source of the current page
+     * @return html source
+     */
+    String getPageSource();
+
+    /**
+     * Defines if a web element is present
+     * @param locator
+     * @return if a web element is present
+     */
+    boolean isWebElementPresent(String locator);
+
+    /**
+     * Defines if text is present in source
+     * @param text
+     * @return false if not text present in page source
+     */
+    boolean isTextPresent(String text);
 }

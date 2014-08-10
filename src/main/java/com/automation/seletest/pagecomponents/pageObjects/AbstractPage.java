@@ -24,25 +24,45 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.services.annotations;
+package com.automation.seletest.pagecomponents.pageObjects;
 
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.util.concurrent.TimeUnit;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
- * This annotation defines Web Test
+ * Abstract super class serves as base page object
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
+ * @param <T>
  */
-@Retention(RUNTIME)
-@Target({CONSTRUCTOR, METHOD, TYPE})
-public @interface  WebTest {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
-    String browserProfile() default "";
+    private static final int LOAD_TIMEOUT = 30;
+    private static final int REFRESH_RATE = 2;
+
+    public T openPage(Class<T> clazz) {
+        T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
+        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
+        waitForPageToLoad(pageLoadCondition);
+        return page;
+    }
+
+    protected abstract ExpectedCondition<?> getPageLoadCondition();
+
+    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
+        Wait wait = new FluentWait(SessionControl.webController().driverInstance())
+                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
+                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
+
+        wait.until(pageLoadCondition);
+    }
 
 }

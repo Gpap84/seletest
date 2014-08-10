@@ -40,21 +40,23 @@ import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.aspectJ.RetryFailure;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.Files;
+import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
@@ -66,11 +68,11 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @SuppressWarnings({"unchecked"})
 @Component
-@Scope("prototype")
-public class WebDriverActionsController implements ActionsController<Object>{
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class WebDriverController implements WebController<WebDriverController>{
 
     @Autowired
-    Files fileService;
+    FilesUtils fileService;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
@@ -83,12 +85,12 @@ public class WebDriverActionsController implements ActionsController<Object>{
     JavascriptExecutor jsExec;
 
     @Override
-    public void getTargetHost(String url) {
+    public void goToTargetHost(String url) {
         driver.get(url);
     }
 
     @Override
-    public WebDriver getDriverInstance() {
+    public WebDriver driverInstance() {
         return getDriver();
     }
 
@@ -113,22 +115,25 @@ public class WebDriverActionsController implements ActionsController<Object>{
      */
 
     @Override
+    @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController clickTo(Object locator) {
-        element(locator).click();
+    public WebDriverController clickTo(Object locator) {
+        SessionContext.getSession().getWebElement().click();
         return this;
     }
 
     @Override
+    @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
-    public WebDriverActionsController enterTo(Object locator, String text) {
-        element(locator).sendKeys(text);
+    public WebDriverController enterTo(Object locator, String text) {
+        SessionContext.getSession().getWebElement().sendKeys(text);
         return this;
     }
 
+    @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public WebDriverActionsController changeStyle(String attribute, Object locator, String attributevalue) {
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",element(locator),attributevalue);
+    public WebDriverController changeStyle(Object locator, String attribute, String attributevalue) {
+        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
         return this;
     }
 
@@ -165,7 +170,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
      *************************************************************
      */
     @Override
-    public WebDriverActionsController switchToLatestWindow() {
+    public WebDriverController switchToLatestWindow() {
         Iterator<String> iterator = driver.getWindowHandles().iterator();
         String lastWindow = null;
         while (iterator.hasNext()) {
@@ -189,20 +194,20 @@ public class WebDriverActionsController implements ActionsController<Object>{
      *************************************************************
      */
     @Override
-    public WebDriverActionsController deleteCookieNamed(String name) {
+    public WebDriverController deleteCookieNamed(String name) {
         driver.manage().deleteCookieNamed(name);
         return this;
     }
 
     @Override
-    public WebDriverActionsController deleteAllCookies() {
+    public WebDriverController cookiesAllDelete() {
         driver.manage().deleteAllCookies();
         return this;
     }
 
 
     @Override
-    public WebDriverActionsController addCookie(Cookie cookie) {
+    public WebDriverController cookieAdd(Cookie cookie) {
         driver.manage().addCookie(cookie);
         return this;
     }
@@ -216,7 +221,7 @@ public class WebDriverActionsController implements ActionsController<Object>{
 
 
     @Override
-    public WebDriverActionsController deleteCookie(Cookie cookie) {
+    public WebDriverController cookieDelete(Cookie cookie) {
         driver.manage().deleteCookie(cookie);
         return this;
     }
@@ -226,20 +231,63 @@ public class WebDriverActionsController implements ActionsController<Object>{
         return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
     }
 
-    /**
-     * Returns a WebElement based on arguments called
-     * @param locator
-     * @return
-     */
-    private WebElement element(Object locator){
-        if(locator instanceof WebElement){
-            return ((WebElement)locator);
-        }
-        else if(locator instanceof String){
-            return driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
-        }
-        else{
-            throw new WebDriverException("The locator is not a known one: "+locator);
+
+
+
+    /**************************************
+     **Returning type methods**************
+     ***************************************/
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getText(Object locator) {
+        return SessionContext.getSession().getWebElement().getText();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getTagName(Object locator) {
+        return SessionContext.getSession().getWebElement().getTagName();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public Point getLocation(Object locator) {
+        return SessionContext.getSession().getWebElement().getLocation();
+    }
+
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public Dimension getElementDimensions(Object locator) {
+        return SessionContext.getSession().getWebElement().getSize();
+    }
+
+    @Override
+    public String getPageSource() {
+        return driver.getPageSource();
+    }
+
+    /**************************************
+     *Verification type methods**************
+     ***************************************/
+
+    @Override
+    public boolean isWebElementPresent(String locator) {
+        factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
+        return true;
+    }
+
+
+    @Override
+    public boolean isTextPresent(String text) {
+        if(getPageSource().contains(text)){
+            return true;
+        } else {
+            return false;
         }
     }
+
 }

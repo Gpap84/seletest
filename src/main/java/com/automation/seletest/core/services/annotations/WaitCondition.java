@@ -24,43 +24,33 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.pagecomponents.PageObjects;
 
-import java.util.concurrent.TimeUnit;
+package com.automation.seletest.core.services.annotations;
 
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 
 /**
- * Abstract super class serves as base page object
+ * This annotation defines Wait Conditions
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
- * @param <T>
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public abstract class AbstractPage<T> {
+@Retention(RUNTIME)
+@Target({CONSTRUCTOR, METHOD, TYPE})
+public @interface  WaitCondition {
 
-    private static final int LOAD_TIMEOUT = 30;
-    private static final int REFRESH_RATE = 2;
-
-    public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionControl.actionsController().getDriverInstance(), clazz);
-        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
-        waitForPageToLoad(pageLoadCondition);
-        return page;
+    /**Enum specifying type of wait strategies*/
+    public enum waitFor{
+        VISIBILITY,PRESENCE,ALERT,CLICKABLE;
     }
 
-    protected abstract ExpectedCondition<?> getPageLoadCondition();
+    /**waitFor value*/
+    waitFor value() default waitFor.VISIBILITY;
 
-    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionControl.actionsController().getDriverInstance())
-                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
-                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
-
-        wait.until(pageLoadCondition);
-    }
 }

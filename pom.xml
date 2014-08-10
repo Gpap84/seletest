@@ -6,7 +6,20 @@
  <artifactId>Seletest</artifactId>
  <version>0.0.1-SNAPSHOT</version>
  <packaging>jar</packaging>
+
  <name>Selenium QA Test Framework</name>
+ <developers>
+  <developer>
+   <name>Papadakis Giannis</name>
+   <id>GiannisPapadakis</id>
+   <email>gpapadakis84@gmail.com</email>
+  </developer>
+ </developers>
+ <issueManagement>
+  <system>GitHub</system>
+  <url>https://github.com/GiannisPapadakis/Seletest/issues</url>
+ </issueManagement>
+
  <profiles>
   <!-- Custom profile for performing code coverage to our Project -->
   <profile>
@@ -63,6 +76,19 @@
       </formats>
      </configuration>
     </plugin>
+
+    <!-- surefire plugin to run tests.... -->
+    <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-surefire-plugin</artifactId>
+     <configuration>
+      <forkMode>always</forkMode>
+      <argLine>
+       -javaagent:${settings.localRepository}/org/springframework/spring-agent/2.5.6/spring-agent-2.5.6.jar
+      </argLine>
+     </configuration>
+    </plugin>
+
 
     <!-- Build a JAR from the current project -->
     <plugin>
@@ -132,17 +158,37 @@
      <version>2.4.1</version>
     </plugin>
 
+    <!-- Plugins for javadoc -->
     <plugin>
      <groupId>org.apache.maven.plugins</groupId>
      <artifactId>maven-javadoc-plugin</artifactId>
      <version>2.9.1</version>
      <configuration>
-      <doclet>ydoc.doclets.YStandard</doclet>
-      <docletPath>${pathToUML}/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:${pathToUML}/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
-      <additionalparam>-umlautogen</additionalparam>
-      <systemPropertyVariables>
-       <pathToUML>${pathToUML}</pathToUML>
-      </systemPropertyVariables>
+      <aggregate>true</aggregate>
+      <show>public</show>
+      <nohelp>true</nohelp>
+      <header>Seletest Automation Framework - ${project.version}</header>
+      <footer>Seletest Automation Framework - ${project.version}</footer>
+      <doctitle>Seletest Automation Framework - ${project.version}</doctitle>
+      <links>
+       <link>http://static.springsource.org/spring/docs/3.0.x/javadoc-api/</link>
+      </links>
+     </configuration>
+    </plugin>
+
+    <!-- Publish Javadoc on static pages gh-pages -->
+    <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-scm-publish-plugin</artifactId>
+     <version>1.0-beta-2</version>
+     <configuration>
+      <checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+      <checkinComment>Publishing javadoc for
+       ${project.artifactId}:${project.version}</checkinComment>
+      <content>${project.reporting.outputDirectory}/apidocs</content>
+      <skipDeletedFiles>true</skipDeletedFiles>
+      <pubScmUrl>scm:git:git@github.com:GiannisPapadakis/Seletest.git</pubScmUrl>
+      <scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
      </configuration>
     </plugin>
 
@@ -150,17 +196,6 @@
   </pluginManagement>
  </build>
 
-
- <pluginRepositories>
-  <pluginRepository>
-   <id>autoincrement-versions-maven-plugin</id>
-   <name>autoincrement-versions-maven-plugin</name>
-   <url>http://autoincrement-versions-maven-plugin.googlecode.com/svn/repo</url>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-  </pluginRepository>
- </pluginRepositories>
  <dependencies>
 
   <!-- Groovy libraries support -->
@@ -206,6 +241,8 @@
    </exclusions>
   </dependency>
 
+
+
   <!-- PhantomJS driver for headless testing -->
   <dependency>
    <groupId>com.github.detro.ghostdriver</groupId>
@@ -216,11 +253,11 @@
      <groupId>org.seleniumhq.selenium</groupId>
      <artifactId>selenium-api</artifactId>
     </exclusion>
-     <exclusion>
+    <exclusion>
      <groupId>org.seleniumhq.selenium</groupId>
      <artifactId>selenium-remote-driver</artifactId>
     </exclusion>
-     <exclusion>
+    <exclusion>
      <groupId>org.seleniumhq.selenium</groupId>
      <artifactId>selenium-server</artifactId>
     </exclusion>
@@ -267,10 +304,23 @@
    <version>${org.springframework.version}</version>
   </dependency>
 
+  <!-- Using AspectJ to dependency inject domain objects -->
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-agent</artifactId>
+   <version>2.5.6</version>
+  </dependency>
+
   <!-- Aspect Oriented Programming -->
   <dependency>
    <groupId>org.springframework</groupId>
    <artifactId>spring-aop</artifactId>
+   <version>${org.springframework.version}</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-aspects</artifactId>
    <version>${org.springframework.version}</version>
   </dependency>
 
@@ -334,6 +384,20 @@
    </exclusions>
   </dependency>
 
+  <!-- MySQL database driver -->
+  <dependency>
+   <groupId>mysql</groupId>
+   <artifactId>mysql-connector-java</artifactId>
+   <version>5.1.30</version>
+   <scope>runtime</scope>
+  </dependency>
+
+  <!-- Hibernate framework -->
+  <dependency>
+   <groupId>org.hibernate</groupId>
+   <artifactId>hibernate-core</artifactId>
+   <version>4.3.5.Final</version>
+  </dependency>
 
   <!-- Logging to console with slf4j and logback-classic -->
   <dependency>
@@ -354,6 +418,12 @@
    <groupId>net.sf.opencsv</groupId>
    <artifactId>opencsv</artifactId>
    <version>2.3</version>
+  </dependency>
+
+  <dependency>
+   <groupId>xml-apis</groupId>
+   <artifactId>xml-apis</artifactId>
+   <version>1.4.01</version>
   </dependency>
 
 
@@ -420,7 +490,7 @@
     </exclusion>
    </exclusions>
   </dependency>
-  </dependencies>
+ </dependencies>
 
 
  <!-- Shared version number properties -->

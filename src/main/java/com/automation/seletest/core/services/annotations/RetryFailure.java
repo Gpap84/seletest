@@ -24,50 +24,25 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.listeners;
 
-import org.openqa.selenium.TimeoutException;
-import org.testng.IRetryAnalyzer;
-import org.testng.ITestResult;
-import org.testng.Reporter;
+package com.automation.seletest.core.services.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class RetryAnalyzer implements IRetryAnalyzer{
+/**
+ * This is a custom annotation for retrying execution of methods using aspectJ advices
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ *
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface RetryFailure {
+    int sleepMillis() default 1000;
 
-    private int count = 0;
+    int retryCount() default 1;
 
-    private int maxCount = 1;
-
-    public RetryAnalyzer() {
-        System.setProperty("org.uncommons.reportng.escape-output", "false");
-        setCount(maxCount);
-    }
-
-    @Override
-    public boolean retry(ITestResult result) {
-
-        if ((!result.isSuccess() && !(result.getThrowable() instanceof TimeoutException))) {
-            if (count < maxCount) {
-                count++;
-                Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
-                        + result.getName() + " with status "
-                        + result.getStatus() + " Retrying " + count + " times</font><br>");
-                return true;
-            }
-
-        }
-        else{
-            Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
-                    + result.getName() + " with status "
-                    + result.getStatus() + "</font><br>");
-        }
-        return false;
-
-    }
-
-    public void setCount(int count) {
-        maxCount = count;
-    }
-
-
+    String message() default "Retry limit exceeded.";
 }

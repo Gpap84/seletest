@@ -35,14 +35,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation defines Mobile Test
+ * This annotation defines Web Test
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Retention(RUNTIME)
 @Target({CONSTRUCTOR, METHOD, TYPE})
-public @interface AppiumTest {
+public @interface  AppTest {
 
-    String browserProfile() default "";
+    public enum AssertionType{SOFT,HARD};
+
+    /**AssertionType value*/
+    AssertionType assertion() default AssertionType.SOFT;
 
 }

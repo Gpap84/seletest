@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,46 +23,50 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.testNG.assertions;
 
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
-import com.automation.seletest.core.services.Logging;
+import com.automation.seletest.core.services.LogUtils;
 
 /**
  * This class used for executing soft assertions
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@Configurable
 public class SoftAssert extends Assertion {
 
-	@Autowired
-	Logging log;
+    @Autowired
+    LogUtils log;
 
-    // LinkedHashMap to preserve the order
+    /** LinkedHashMap to preserve the order*/
     private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
-
 
     @Override
     public void executeAssert(IAssert a) {
         try {
             a.doAssert();
-            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage());
+            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage(),"background-color:green; color:black; margin-left:20px;");
         } catch(AssertionError ex) {
-            log.error("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
+            log.verificationError("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
             onAssertFailure(a, ex);
             m_errors.put(ex, a);
         }
     }
 
+    /**
+     * Assert failures after test execution
+     */
     public void assertAll() {
         if (! m_errors.isEmpty()) {
             StringBuilder sb = new StringBuilder("The following asserts failed:\n");
@@ -82,11 +86,16 @@ public class SoftAssert extends Assertion {
         }
     }
 
+    /**
+     * Display stackTrace to HTML report
+     * @param ex
+     * @return StackTrace to String
+     */
     private String findLineExceptionOccured(AssertionError ex){
         StringBuilder sb = new StringBuilder("");
 
         for(StackTraceElement line:ex.getStackTrace()){
-            if(line.getClassName().startsWith("com.automation.sele.web")) {
+            if(line.getClassName().startsWith("com.automation.seletest")) {
                 sb.append("Class: "+line.getClassName()+ " method: "+line.getMethodName()+" line: "+line.getLineNumber()+"\\n");
             }
         }

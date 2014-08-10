@@ -31,6 +31,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.testng.Reporter;
 
+import com.automation.seletest.core.services.properties.CoreProperties;
+
 /**
  * DriverBeanPostProcessor class
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -54,15 +56,19 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
 
-        final String REMOTETYPE="remoteType";
-        final String CHROME="chrome";
-
-        /**
-         * Merge capabilities depending on the parameter remoteType
-         */
+        /** Set browser capabilities */
         if(bean instanceof DesiredCapabilities) {
-            if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(REMOTETYPE).compareTo(CHROME)==0) {
-                ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
+            String browserType=Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.BROWSERTYPE.get());
+            if(browserType!=null){
+                if(browserType.compareTo("chrome") == 0) {
+                    ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
+                } else if(browserType.compareTo("firefox") == 0) {
+                    ((DesiredCapabilities) bean).merge(DesiredCapabilities.firefox());
+                } else if(browserType.compareTo("ie") == 0) {
+                    ((DesiredCapabilities) bean).merge(DesiredCapabilities.internetExplorer());
+                } else if(browserType.compareTo("phantomJs") == 0) {
+                    ((DesiredCapabilities) bean).merge(DesiredCapabilities.phantomjs());
+                }
             }
         }
         return bean;

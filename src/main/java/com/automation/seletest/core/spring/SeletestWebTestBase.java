@@ -28,7 +28,6 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,11 +41,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
-import com.automation.seletest.core.listeners.EventPublisher;
+import com.automation.seletest.core.listeners.InitListener;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.CoreProperties;
-import com.automation.seletest.core.testNG.TestNG;
+import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**
  * This class serves as the Base Class for Web Test Preparation
@@ -54,19 +53,21 @@ import com.automation.seletest.core.testNG.TestNG;
  *
  */
 @Slf4j
-@ContextConfiguration({"classpath*:META-INF/spring/app-context.xml","classpath*:META-INF/spring/mail-context.xml","classpath*:META-INF/spring/thread-pool-context.xml" })
+@Listeners(InitListener.class)
+@ContextConfiguration(locations={
+        "classpath*:META-INF/spring/app-context.xml",
+        "classpath*:META-INF/spring/mail-context.xml",
+        "classpath*:META-INF/spring/thread-pool-context.xml" })
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
-
-    @Autowired
-    TestNG testNG;
 
     @Value("${performance}")
     private String performance;
 
-    private final String INIT_WEB="Initialize Web session!!!";
-    private final String INIT_APPIUM="Initialize Appium session!!!";
+    private final String INIT_WEB="Event for initializing Web Session occured at: {} !!!";
+    private final String INIT_APPIUM="Event for initializing Mobile Session occured at: {} !!!";
     private final String ERROR_IOC="Error during initializing spring container ";
+    private final String TEST_TYPE="The test type is not defined!!!";
 
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
@@ -90,8 +91,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("*****************************************");
             log.debug("**** Initialize session upon parallel level: <<{}>>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -104,8 +103,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("******************************************************************");
             log.debug("**** Initialize session upon parallel level: <<\"{}\">>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("******************************************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -118,8 +115,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             log.debug("*********************************************************************");
             log.debug("**** Initialize session upon parallel level <<\"{}\">>***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*********************************************************************");
-
-            /*****Define initialization phase*/
             initializeSession(ctx);
         }
     }
@@ -156,11 +151,13 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
 
     /**Prepare initialization*/
     private void initializeSession(ITestContext ctx){
-        EventPublisher publisher = applicationContext.getBean(EventPublisher.class);
-        if(!testNG.getParameterXML(ctx, CoreProperties.PROFILEDRIVER.get()).startsWith("appium")){
-            publisher.publishWebInitEvent(INIT_WEB, testNG.getParameterXML(ctx, "hostURL"),Boolean.parseBoolean(performance),ctx);
+        ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
+        if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.WEBTYPE.get())==0){
+            publisher.publishInitializationEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
+        } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
+            publisher.publishInitializationEvent(INIT_APPIUM, null,false,ctx,false);
         } else {
-            publisher.publishMobileInitEvent(INIT_APPIUM,ctx);
+            throw new RuntimeException(TEST_TYPE);
         }
 
     }

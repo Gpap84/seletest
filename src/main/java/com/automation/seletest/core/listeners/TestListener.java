@@ -33,12 +33,14 @@ import java.lang.reflect.Method;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.openqa.selenium.TimeoutException;
 import org.testng.IAnnotationTransformer;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.ITestAnnotation;
 
 
@@ -87,19 +89,15 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
         }
     }
 
-
-
     @Override
     public void onTestSuccess(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" passed");
     }
 
-
     @Override
     public void onTestSkipped(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" skipped");
     }
-
 
     @Override
     public void onTestFailure(ITestResult testResult) {
@@ -110,7 +108,6 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
     public void onTestStart(ITestResult result) {
         log.debug("Test "+ result.getName()+" started!!");
     }
-
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
@@ -141,5 +138,48 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
         }
     }
 
+    /**
+     * retry analyzer class
+     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    public class RetryAnalyzer implements IRetryAnalyzer{
+
+        private int count = 0;
+
+        private int maxCount = 1;
+
+        public RetryAnalyzer() {
+            setCount(maxCount);
+        }
+
+        @Override
+        public boolean retry(ITestResult result) {
+
+            if ((!result.isSuccess() &&
+                    (!(result.getThrowable() instanceof TimeoutException)
+                            || !(result.getThrowable() instanceof AssertionError)))) {
+                if (count < maxCount) {
+                    count++;
+                    log.info(Thread.currentThread().getName() + "Error in "
+                            + result.getName() + " with status "
+                            + result.getStatus() + " Retrying " + count + " times");
+                    return true;
+                }
+
+            }
+            else{
+                Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
+                        + result.getName() + " with status "
+                        + result.getStatus() + "</font><br>");
+            }
+            return false;
+
+        }
+
+        public void setCount(int count) {
+            maxCount = count;
+        }
+    }
 
 }

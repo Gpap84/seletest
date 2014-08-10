@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.aop.target.ThreadLocalTargetSource;
 
+import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 
@@ -90,8 +91,8 @@ public class SessionContext {
      */
     public static void setSessionProperties(){
         threadStack.push(getSession());//push instanse of Session to stack
-        log.info("Session started with type of driver: {}", getSession().actionscontroller.getDriverInstance().toString().split(":")[0]);
-        Thread.currentThread().setName("SeletestFramework ["+(getSession().actionscontroller.getDriverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
+        log.info("Session started with type of driver: {}", ((WebDriverController)getSession().controllers.get(0)).driverInstance().toString().split(":")[0]);
+        Thread.currentThread().setName("SeletestFramework ["+(((WebDriverController)getSession().controllers.get(0)).driverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
     }
 
     /**Clean all active threads stored in stack

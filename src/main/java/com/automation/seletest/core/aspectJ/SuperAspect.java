@@ -26,6 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.aspectJ;
 
+import java.lang.reflect.Method;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -43,17 +46,16 @@ public class SuperAspect {
      */
     public String arguments(ProceedingJoinPoint proceedPoint){
         StringBuilder arguments = new StringBuilder();
-        arguments.append("<br>");
         for(int i=0; i < proceedPoint.getArgs().length ;i++ ){
             MethodSignature sig = (MethodSignature)proceedPoint.getSignature();
             String methodArgument="";
             if(proceedPoint.getArgs()[i].toString().contains("->")){
-                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1];
+                methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1].replace("]", "");
             }
             else{
                 methodArgument=proceedPoint.getArgs()[i].toString();
             }
-            arguments.append(""+sig.getParameterNames()[i].toString()+"--->"+methodArgument+"<br>");
+            arguments.append("("+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+") ");
         } if(arguments.toString().isEmpty()){
             return "NONE";
         } else{
@@ -68,5 +70,16 @@ public class SuperAspect {
      */
     public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
         return proceedPoint.getArgs();
+    }
+
+    /**
+     * Return invoked method
+     * @param pjp
+     * @return
+     */
+    public Method invokedMethod(JoinPoint pjp) {
+        MethodSignature ms = (MethodSignature) pjp.getSignature();
+        Method m = ms.getMethod();
+        return m;
     }
 }
