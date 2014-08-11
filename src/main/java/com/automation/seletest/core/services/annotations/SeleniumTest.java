@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target({CONSTRUCTOR, METHOD, TYPE})
-public @interface  AppTest {
+public @interface  SeleniumTest {
 
     public enum AssertionType{SOFT,HARD};
 

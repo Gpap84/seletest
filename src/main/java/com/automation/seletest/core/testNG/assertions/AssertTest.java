@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.annotations.AppTest.AssertionType;
+import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 
 /**

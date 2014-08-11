@@ -29,48 +29,53 @@ package com.automation.seletest.core.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.annotations.AppTest;
+import com.automation.seletest.core.services.PerformanceUtils;
+import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
 @Slf4j
+@Configurable
 public class InitListener implements IInvokedMethodListener{
+
+
+    @Autowired
+    PerformanceUtils performance;
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
         log.debug("Specify browser type by finding custom annotation on class level!!!");
-        AppTest appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), AppTest.class);
+        SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
 
         //Set parameter for specifying Application Type
         if(method.getTestMethod().isBeforeSuiteConfiguration()){
-            if(appTest!=null){
+            if(seleniumTest!=null){
                 testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.WEBTYPE.get());
             }
         }
 
         //Set assertion type (Hard / Soft) for this test method
         if(method.getTestMethod().isTest()){
-            appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), AppTest.class);
-            SessionControl.verifyController().setAssertionType(appTest.assertion());
+            seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
+            SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
         }
 
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+
+        //Status of test method if type is Soft Assert
         if(method.getTestMethod().isTest()){
             SessionControl.verifyController().assertAll();
         }
     }
-
-
-
-
-
 }

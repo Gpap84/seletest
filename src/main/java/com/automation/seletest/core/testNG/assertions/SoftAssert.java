@@ -56,7 +56,7 @@ public class SoftAssert extends Assertion {
     public void executeAssert(IAssert a) {
         try {
             a.doAssert();
-            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage(),"background-color:green; color:black; margin-left:20px;");
+            log.info("[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage(),"color:green; margin-left:20px;");
         } catch(AssertionError ex) {
             log.verificationError("*****[EXPECTED]:"+a.getExpected()+" [ACTUAL]:"+ a.getActual()+"***** ----> VERIFICATION: "+a.getMessage()+ "------StackTrace:\\n"+findLineExceptionOccured(ex));
             onAssertFailure(a, ex);

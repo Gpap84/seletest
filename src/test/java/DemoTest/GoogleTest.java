@@ -4,18 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.annotations.AppTest;
-import com.automation.seletest.core.services.annotations.AppTest.AssertionType;
+import com.automation.seletest.core.services.annotations.SeleniumTest;
+import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 import com.automation.seletest.pagecomponents.pageObjects.GooglePage;
 
-@AppTest
+@SeleniumTest
 public class GoogleTest extends SeletestWebTestBase{
 
     @Autowired
     GooglePage googlePage;
 
-    @AppTest(assertion=AssertionType.SOFT)
+    @SeleniumTest(assertion=AssertionType.HARD)
     @Test
     public void googleSearch(){
         googlePage.
@@ -26,7 +26,7 @@ public class GoogleTest extends SeletestWebTestBase{
         SessionControl.verifyController().elementPresent("//*[contains(text(),'Giannis Papadakis')]");
     }
 
-    @AppTest(assertion=AssertionType.HARD)
+    @SeleniumTest(assertion=AssertionType.SOFT)
     @Test
     public void googleSearch2(){
         googlePage.

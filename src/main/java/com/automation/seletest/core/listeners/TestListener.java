@@ -28,11 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.listeners;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.TimeoutException;
 import org.testng.IAnnotationTransformer;
 import org.testng.IRetryAnalyzer;
@@ -86,6 +88,13 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
                     }
                 }
             }
+        }
+
+        try {
+            FileUtils.copyDirectoryToDirectory(new File(new File(context.getSuite().getOutputDirectory()).getParent(),"screenshots"),
+                    new File(new File(context.getSuite().getOutputDirectory()).getParent(),"html"));
+        } catch (IOException e) {
+            log.error("Exception during copying screenshots to HTML folder!!!" + e);
         }
     }
 
@@ -143,7 +152,7 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    public class RetryAnalyzer implements IRetryAnalyzer{
+    static class RetryAnalyzer implements IRetryAnalyzer{
 
         private int count = 0;
 
