@@ -38,9 +38,6 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
  */
 public class SessionControl {
 
-
-    private final static String assertion="assert";
-
     /**
      * webController for this test instance
      * @return WebController<?>
@@ -74,7 +71,7 @@ public class SessionControl {
      * @return AssertTest instance
      */
     public static AssertTest<?> verifyController(){
-        return (AssertTest<?>) SessionContext.getSession().getTestProperties().get(assertion);
+        return (AssertTest<?>) SessionContext.getSession().getTestProperties().get(AssertTest.class);
     }
 
 }

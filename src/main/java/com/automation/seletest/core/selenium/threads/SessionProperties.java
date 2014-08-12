@@ -58,7 +58,7 @@ public class SessionProperties {
 
     /**Map with various objects for test session*/
     @Getter @Setter
-    Map<Object,Object> testProperties;
+    Map<Class<?>,Object> testProperties;
 
     /**The web driver context*/
     @Getter @Setter
@@ -78,7 +78,7 @@ public class SessionProperties {
 
     public void cleanSession() throws Exception{
 
-        PerformanceUtils perf=(PerformanceUtils) testProperties.get("performance");
+        PerformanceUtils perf=(PerformanceUtils) testProperties.get(PerformanceUtils.class);
 
         //Performance collection data
         if(perf!=null){
@@ -99,10 +99,10 @@ public class SessionProperties {
             controller=null;
         }
 
-        //Initialize Objects of Array List
+        //Initialize Controllers Array List
         controllers.clear();
 
-        //remove mappings
+        //Initialize testProperties Map
         testProperties.clear();
 
         //Destroy the webdriver application context

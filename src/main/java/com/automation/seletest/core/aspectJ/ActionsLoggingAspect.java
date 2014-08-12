@@ -74,11 +74,11 @@ public class ActionsLoggingAspect extends SuperAspect{
 
     /**Methods in classpath that have @WaitCondition*/
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
-    private void waitAnnotation() {}//A pointcut that finds all methods marked with the @WaitCondition on the classpath
+    private void waitAnnotation() {}
 
     /**All methods in ActionsBuilderController*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
-    private void actionsBuilderController() {}//A pointcut that finds all methods inside ActionsBuilderController interface
+    private void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
@@ -86,11 +86,15 @@ public class ActionsLoggingAspect extends SuperAspect{
 
     /**Methods for wait conditions*/
     @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
-    private void waitConditions() {}//A pointcut that finds all methods inside classes that contains WaitStrategy in name
+    private void waitConditions() {}
 
     /**Methods that are returning objects*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
-    private void getReturningValue() {}//A pointcut that finds all methods inside interface  WebController that start with get***
+    private void getReturningValue() {}
+
+    /**Methods for sending email*/
+    @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
+    private void sendMail() {}
 
 
     /****************************************************
@@ -114,7 +118,7 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @return
      * @throws Throwable
      */
-    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions()")
+    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable
     {
         Object returnValue = null;

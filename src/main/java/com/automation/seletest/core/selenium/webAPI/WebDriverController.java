@@ -170,7 +170,7 @@ public class WebDriverController implements WebController<WebDriverController>{
     public void takeScreenShotOfElement(String locator) throws IOException {
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        WebElement element=factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();

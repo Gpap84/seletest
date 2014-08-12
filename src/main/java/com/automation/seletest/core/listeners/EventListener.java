@@ -104,7 +104,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             AppiumDriverController adController=null;
             WebDriver driver=null;
             SessionContext.getSession().setControllers(new ArrayList());
-            SessionContext.getSession().setTestProperties(new HashMap<Object, Object>());
+            SessionContext.getSession().setTestProperties(new HashMap<Class<?>, Object>());
 
             if(((InitializationEvent) event).isWeb()){
                 wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
@@ -145,9 +145,9 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             if(((InitializationEvent) event).isPerformance()){
                 PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
                 ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
-                perf.newHar("Har at: "+event.getTimestamp());
+                perf.newHar("Har created at: "+ new Time(event.getTimestamp()));
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
-                SessionContext.getSession().getTestProperties().put("performance",perf);
+                SessionContext.getSession().getTestProperties().put(PerformanceUtils.class,perf);
             }
 
             //start a driver object with capabilities
@@ -165,13 +165,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             } else {
                 adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
-                SessionContext.getSession().getTestProperties().put("touchaction", new TouchAction(adController.getAppiumDriver()));
+                SessionContext.getSession().getTestProperties().put(TouchAction.class, new TouchAction(adController.getAppiumDriver()));
                 adController.installApp(bundleId,appPath).launchApp();//install .app or .apk file in mobile device and launch native app
             }
 
             //Set objects for this test instance
-            SessionContext.getSession().getTestProperties().put("assert", ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-            SessionContext.getSession().getTestProperties().put("actions", new Actions(driver));
+            SessionContext.getSession().getTestProperties().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+            SessionContext.getSession().getTestProperties().put(Actions.class, new Actions(driver));
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 

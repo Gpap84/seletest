@@ -46,15 +46,12 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 @Component
 public class ActionsBuilder implements ActionsBuilderController{
 
-    private final String actionsBuilder="actions";
-    private final String touchactionsBuilder="touchactions";
-
     /**
      * Actions
      * @return Actions instance
      */
     private Actions actionsBuilder(){
-        return ((Actions) SessionContext.getSession().getTestProperties().get(actionsBuilder));
+        return ((Actions) SessionContext.getSession().getTestProperties().get(Actions.class));
     }
 
     /**
@@ -62,7 +59,7 @@ public class ActionsBuilder implements ActionsBuilderController{
      * @return TouchAction instance
      */
     private TouchAction touchactionsBuilder(){
-        return ((TouchAction) SessionContext.getSession().getTestProperties().get(touchactionsBuilder));
+        return ((TouchAction) SessionContext.getSession().getTestProperties().get(TouchAction.class));
     }
 
 
@@ -118,8 +115,8 @@ public class ActionsBuilder implements ActionsBuilderController{
     @Override
     public ActionsBuilder performActions() {
         actionsBuilder().build().perform();
-        SessionContext.getSession().getTestProperties().remove(actionsBuilder);
-        SessionContext.getSession().getTestProperties().put(actionsBuilder, new Actions(SessionControl.webController().driverInstance()));
+        SessionContext.getSession().getTestProperties().remove(Actions.class);
+        SessionContext.getSession().getTestProperties().put(Actions.class, new Actions(SessionControl.webController().driverInstance()));
         return this;
     }
 
@@ -187,8 +184,8 @@ public class ActionsBuilder implements ActionsBuilderController{
     @Override
     public ActionsBuilder performTouchActions() {
         touchactionsBuilder().perform();
-        SessionContext.getSession().getTestProperties().remove(touchactionsBuilder);
-        SessionContext.getSession().getTestProperties().put(touchactionsBuilder, new TouchAction((MobileDriver) SessionControl.webController().driverInstance()));
+        SessionContext.getSession().getTestProperties().remove(TouchAction.class);
+        SessionContext.getSession().getTestProperties().put(TouchAction.class, new TouchAction((MobileDriver) SessionControl.webController().driverInstance()));
         return this;
     }
 

@@ -45,6 +45,9 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.ITestAnnotation;
 
+import com.automation.seletest.core.services.MailUtils;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
+
 
 /**
  * Test Listener
@@ -111,6 +114,7 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
     @Override
     public void onTestFailure(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" failed");
+        ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail("gpapadakis84@gmail.com","Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
     }
 
     @Override

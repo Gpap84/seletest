@@ -123,11 +123,8 @@ public class ExceptionHandlingAspect extends SuperAspect{
         Object returnValue=null;
         try {
                 returnValue = pjp.proceed();
-                if(!(((AssertTest<?>) SessionContext.getSession().getTestProperties().get("assert")).getAssertion() instanceof SoftAssert)) {
+                if(!(((AssertTest<?>) SessionContext.getSession().getTestProperties().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
                      log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
-                     if(pjp.getSignature().getName().startsWith("element")){
-                         SessionControl.webController().takeScreenShotOfElement((String)(pjp).getArgs()[0]);
-                     }
                 }
         }
         catch(AssertionError ex) {

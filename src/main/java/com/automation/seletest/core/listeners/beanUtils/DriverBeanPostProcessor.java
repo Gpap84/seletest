@@ -54,9 +54,10 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
+        String browserType=Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.BROWSERTYPE.get());
+
         /** Set browser capabilities */
         if(bean instanceof DesiredCapabilities) {
-            String browserType=Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.BROWSERTYPE.get());
             if(browserType!=null){
                 if(browserType.compareTo("chrome") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
