@@ -28,7 +28,6 @@ package com.automation.seletest.core.listeners;
 
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 
 import java.sql.Time;
@@ -165,8 +164,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
 
             } else {
-                SessionContext.getSession().getTestProperties().put("touchaction", new TouchAction((MobileDriver) driver));
                 adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
+                SessionContext.getSession().getTestProperties().put("touchaction", new TouchAction(adController.getAppiumDriver()));
                 adController.installApp(bundleId,appPath).launchApp();//install .app or .apk file in mobile device and launch native app
             }
 
