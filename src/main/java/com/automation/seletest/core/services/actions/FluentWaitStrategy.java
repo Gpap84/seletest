@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,7 +23,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.services.actions;
 
 import org.openqa.selenium.Alert;
@@ -59,19 +59,17 @@ public class FluentWaitStrategy extends AbstractBase.WaitBase{
         return fluentWait(NOT_VISIBLE).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
-                WebElement element=driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
-                    return element.isDisplayed() ? element : null;
+                return elementToWait(driver, locator).isDisplayed() ? elementToWait(driver, locator) : null;
             }
         });
     }
 
     @Override
-    public WebElement waitForElementToBeClickable(final String locator) {
+    public WebElement waitForElementToBeClickable(final Object locator) {
         return fluentWait(NOT_CLICKABLE).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
-                WebElement element=driver.findElement(Locators.findByLocator(locator).setLocator(locator));
-                    return element.isEnabled() ? element : null;
+                return elementToWait(driver, locator).isEnabled() ? elementToWait(driver, locator) : null;
             }
         });
     }
@@ -82,6 +80,19 @@ public class FluentWaitStrategy extends AbstractBase.WaitBase{
             @Override
             public Alert apply(WebDriver driver) {
                 return driver.switchTo().alert();
+            }
+        });
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementInvisibility(java.lang.String)
+     */
+    @Override
+    public Boolean waitForElementInvisibility(final String locator) {
+        return fluentWait(NOT_PRESENT).until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return driver.findElement(Locators.findByLocator(locator).setLocator(locator)).isDisplayed();
             }
         });
     }

@@ -28,9 +28,12 @@ package com.automation.seletest.core.listeners;
 
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileDriver;
+import io.appium.java_client.TouchAction;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -79,7 +83,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
         }
         catch (Exception e) {
-            log.error("Error "+e.getMessage());
+            log.error("Error in Test Initialization phase "+e);
         }
     }
 
@@ -91,7 +95,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static class Initialize {
         /**
-         * Initialize web or mobile session
+         * Initialize Web or Mobile session
          * @param event
          * @throws Exception
          */
@@ -101,6 +105,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             AppiumDriverController adController=null;
             WebDriver driver=null;
             SessionContext.getSession().setControllers(new ArrayList());
+            SessionContext.getSession().setTestProperties(new HashMap<Object, Object>());
 
             if(((InitializationEvent) event).isWeb()){
                 wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
@@ -127,10 +132,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
 
             //register Configuration classes
-            app.register(
-                    LocalDriverConfiguration.class,
-                    WebDriverConfiguration.class,
-                    RemoteDriverConfiguration.class);
+            app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
 
             //start Container for bean initialization
             app.refresh();
@@ -146,13 +148,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
                 perf.newHar("Har at: "+event.getTimestamp());
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
-                SessionContext.getSession().getControllers().add(perf);
-
+                SessionContext.getSession().getTestProperties().put("performance",perf);
             }
 
             //start a driver object with capabilities
             if(profileDriver.contains("Grid")) {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
+                wdActions.setRemoteWebDriver((RemoteWebDriver) driver);
             } else {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
             }
@@ -160,16 +162,17 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             if(((InitializationEvent) event).isWeb()) {
                 wdActions.setDriver(driver);//set the driver object for this session
                 wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
-                wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());
+                wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
 
             } else {
+                SessionContext.getSession().getTestProperties().put("touchaction", new TouchAction((MobileDriver) driver));
                 adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
-                adController.installApp(bundleId,appPath).launchApp();
+                adController.installApp(bundleId,appPath).launchApp();//install .app or .apk file in mobile device and launch native app
             }
 
-            //Set objects for this session
-            SessionContext.getSession().setAssertTest(ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-            SessionContext.getSession().setActions(new Actions(driver));
+            //Set objects for this test instance
+            SessionContext.getSession().getTestProperties().put("assert", ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+            SessionContext.getSession().getTestProperties().put("actions", new Actions(driver));
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 

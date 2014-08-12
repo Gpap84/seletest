@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.configuration;
 
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
@@ -38,13 +39,14 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
 public class SessionControl {
 
 
+    private final static String assertion="assert";
+
     /**
-     * webController
+     * webController for this test instance
      * @return WebController<?>
      */
     public static <T> WebController<?> webController(){
-        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++)
-        {
+        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++) {
             Object controller = SessionContext.getSession().getControllers().get(i);
             if(controller !=null && controller instanceof WebController){
                 return (WebController<?>) controller;
@@ -54,11 +56,25 @@ public class SessionControl {
     }
 
     /**
-     * Verify controller
+     * appiumController for this test instance
+     * @return AppiumController<?>
+     */
+    public static <T> AppiumController<?> appiumController(){
+        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++) {
+            Object controller = SessionContext.getSession().getControllers().get(i);
+            if(controller !=null && controller instanceof AppiumController){
+                return (AppiumController<?>) controller;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * verifyController for this test instance
      * @return AssertTest instance
      */
     public static AssertTest<?> verifyController(){
-        return SessionContext.getSession().getAssertTest();
+        return (AssertTest<?>) SessionContext.getSession().getTestProperties().get(assertion);
     }
 
 }

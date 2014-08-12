@@ -30,19 +30,18 @@ package com.automation.seletest.core.selenium.threads;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 
 /**
@@ -53,25 +52,17 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
 @SuppressWarnings("rawtypes")
 public class SessionProperties {
 
-    /**Performance api*/
-    @Getter @Setter
-    PerformanceUtils performanceUtils;
-
     /** Array List to store various object*/
     @Getter @Setter
     ArrayList controllers;
 
+    /**Map with various objects for test session*/
+    @Getter @Setter
+    Map<Object,Object> testProperties;
+
     /**The web driver context*/
     @Getter @Setter
     AnnotationConfigApplicationContext driverContext;
-
-    /** The Assertion. */
-    @Getter @Setter
-    AssertTest assertTest;
-
-    /**The actions builder instance*/
-    @Getter @Setter
-    Actions actions;
 
     /**Timeout for waiting until condition fullfilled */
     @Getter @Setter
@@ -87,12 +78,14 @@ public class SessionProperties {
 
     public void cleanSession() throws Exception{
 
+        PerformanceUtils perf=(PerformanceUtils) testProperties.get("performance");
+
         //Performance collection data
-        if(performanceUtils!=null){
-            performanceUtils.getPerformanceData(performanceUtils.getServer());
-            performanceUtils.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), performanceUtils.getHar());
-            performanceUtils.stopServer(performanceUtils.getServer());
-            performanceUtils=null;
+        if(perf!=null){
+            perf.getPerformanceData(perf.getServer());
+            perf.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), perf.getHar());
+            perf.stopServer(perf.getServer());
+            perf=null;
             log.info("Performance data collected!!!");
         }
 
@@ -103,15 +96,14 @@ public class SessionProperties {
             if(controller instanceof WebController<?> && controller !=null){
                 ((WebController) controller).quit(CloseSession.QUIT);
             }
+            controller=null;
         }
 
         //Initialize Objects of Array List
-        if(controllers!=null){
-            controllers.clear();
-        }
+        controllers.clear();
 
-        //Initialize actions Builder
-        actions=null;
+        //remove mappings
+        testProperties.clear();
 
         //Destroy the webdriver application context
         driverContext.destroy();

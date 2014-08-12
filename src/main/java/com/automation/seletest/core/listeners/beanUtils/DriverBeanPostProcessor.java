@@ -44,8 +44,7 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
      * Actions before initializing beans
      */
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName)
-            throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
 
@@ -53,8 +52,7 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
      * Actions after initializing beans
      */
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-            throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
         /** Set browser capabilities */
         if(bean instanceof DesiredCapabilities) {

@@ -59,9 +59,11 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
 @Component
 public class ActionsLoggingAspect extends SuperAspect{
 
+    /**Log service*/
     @Autowired
     LogUtils log;
 
+    /**Wait Strategy*/
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
@@ -69,18 +71,24 @@ public class ActionsLoggingAspect extends SuperAspect{
      ****************Pointcuts***********
      ************************************
      */
+
+    /**Methods in classpath that have @WaitCondition*/
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
     private void waitAnnotation() {}//A pointcut that finds all methods marked with the @WaitCondition on the classpath
 
+    /**All methods in ActionsBuilderController*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
     private void actionsBuilderController() {}//A pointcut that finds all methods inside ActionsBuilderController interface
 
+    /**Methods for taking screenshots!!*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
     private void takeScreenCap() {}
 
+    /**Methods for wait conditions*/
     @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
     private void waitConditions() {}//A pointcut that finds all methods inside classes that contains WaitStrategy in name
 
+    /**Methods that are returning objects*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
     private void getReturningValue() {}//A pointcut that finds all methods inside interface  WebController that start with get***
 
@@ -154,11 +162,11 @@ public class ActionsLoggingAspect extends SuperAspect{
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
 
-        if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement) {
+        if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
             SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
-        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE)) {
+            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
+        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
             SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }

@@ -38,36 +38,35 @@ public interface ActionsSync {
 
 
     /** Wait for element to be present in DOM
-     *
-     * @param driver
-     * @param waitSeconds
-     * @param locator
+     * @param locator the locator of the WebElement to wait to be present in DOM
      * @return
      */
     WebElement waitForElementPresence(String locator);
 
     /** Wait for element to be visible
-     * @param driver
-     * @param waitSeconds
-     * @param locator
+     * @param locator the locator of the WebElement to wait for visibility
      * @return
      */
     WebElement waitForElementVisibility(Object locator);
 
     /**
      * Wait for element to be clickable
-     * @param driver
-     * @param waitSeconds
-     * @param locator
+     * @param locator the locator of the WebElement to wait to be clickable
      * @return
      */
-    WebElement waitForElementToBeClickable(String locator);
+    WebElement waitForElementToBeClickable(Object locator);
 
     /**
      * Wait for alert
-     * @param driver
-     * @param waitSeconds
-     * @return
+     * @return Alert
      */
     Alert waitForAlert();
+
+    /**
+     * Wait for element to be invisble
+     * @param locator the locator of the WebElement to wait to become invisible
+     * @return
+     */
+    Boolean waitForElementInvisibility(String locator);
+
 }

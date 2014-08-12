@@ -29,25 +29,17 @@ package com.automation.seletest.core.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
 @Slf4j
-@Configurable
 public class InitListener implements IInvokedMethodListener{
-
-
-    @Autowired
-    PerformanceUtils performance;
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {

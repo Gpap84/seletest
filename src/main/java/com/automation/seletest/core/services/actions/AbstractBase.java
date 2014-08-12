@@ -27,11 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.services.actions;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractBase {
@@ -70,6 +72,23 @@ public abstract class AbstractBase {
         public Wait<WebDriver> fluentWait(String msg){
             return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{super.webController().driverInstance(), msg});
         }
+
+        /**
+         * Element to wait for condition
+         * @param driver the WebDriver instance
+         * @param locator the locator of the WebElement
+         * @return WebElement
+         */
+        public WebElement elementToWait(WebDriver driver, Object locator){
+            WebElement element=null;
+            if(locator instanceof String){
+                element=driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
+            } else{
+                element=(WebElement)locator;
+            }
+            return element;
+        }
+
     }
 
 

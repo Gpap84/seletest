@@ -42,7 +42,7 @@ public class SuperAspect {
     /**
      * Type of arguments of an executed method
      * @param proceedPoint
-     * @return
+     * @return String arguments
      */
     public String arguments(ProceedingJoinPoint proceedPoint){
         StringBuilder arguments = new StringBuilder();
@@ -51,14 +51,13 @@ public class SuperAspect {
             String methodArgument="";
             if(proceedPoint.getArgs()[i].toString().contains("->")){
                 methodArgument=proceedPoint.getArgs()[i].toString().split("->")[1].replace("]", "");
-            }
-            else{
+            } else{
                 methodArgument=proceedPoint.getArgs()[i].toString();
             }
             arguments.append("("+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+") ");
         } if(arguments.toString().isEmpty()){
             return "NONE";
-        } else{
+        } else {
             return arguments.toString().trim();
         }
     }
@@ -66,7 +65,7 @@ public class SuperAspect {
     /**
      * Get method arguments
      * @param proceedPoint
-     * @return
+     * @return arguments of proxied methods
      */
     public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
         return proceedPoint.getArgs();
@@ -75,7 +74,7 @@ public class SuperAspect {
     /**
      * Return invoked method
      * @param pjp
-     * @return
+     * @return invoked Method
      */
     public Method invokedMethod(JoinPoint pjp) {
         MethodSignature ms = (MethodSignature) pjp.getSignature();

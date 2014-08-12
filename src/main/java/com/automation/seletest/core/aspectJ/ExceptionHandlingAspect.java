@@ -43,6 +43,7 @@ import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.properties.CoreProperties;
+import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
 
 /**
@@ -54,18 +55,26 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
 @Component
 public class ExceptionHandlingAspect extends SuperAspect{
 
+    /**The log service*/
     @Autowired
     LogUtils log;
 
+    /** Environment instance*/
     @Autowired
     Environment env;
 
-    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..))") // expression
+    /** Pointcut for boolean methods inside WebDriverController*/
+    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..))")
     private void componentsStatus() {}
 
+    /**
+     * Around Advice for
+     * @param pjp
+     * @return Output of executed method
+     * @throws Throwable
+     */
     @Around("componentsStatus()")
-    public Object handleReturningFunctions(ProceedingJoinPoint pjp) throws Throwable
-    {
+    public Object handleReturningFunctions(ProceedingJoinPoint pjp) throws Throwable {
 
         Object returnValue = null;
 
@@ -86,8 +95,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
      * @throws Throwable
      */
     @Around("execution(* com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..)) && @annotation(retry)")
-    public Object retry(ProceedingJoinPoint pjp, RetryFailure retry) throws Throwable
-    {
+    public Object retry(ProceedingJoinPoint pjp, RetryFailure retry) throws Throwable {
         Object returnValue = null;
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
@@ -115,7 +123,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
         Object returnValue=null;
         try {
                 returnValue = pjp.proceed();
-                if(!(SessionContext.getSession().getAssertTest().getAssertion() instanceof SoftAssert)) {
+                if(!(((AssertTest<?>) SessionContext.getSession().getTestProperties().get("assert")).getAssertion() instanceof SoftAssert)) {
                      log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                      if(pjp.getSignature().getName().startsWith("element")){
                          SessionControl.webController().takeScreenShotOfElement((String)(pjp).getArgs()[0]);
@@ -137,9 +145,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
      * @param retry
      * @throws Throwable
      */
-    private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex,
-            int attemptCount, RetryFailure retry) throws Throwable
-            {
+    private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
         if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
@@ -153,7 +159,7 @@ public class ExceptionHandlingAspect extends SuperAspect{
                     ex.getMessage().split("Build info")[0].trim()));
             Thread.sleep(retry.sleepMillis());
         }
-            }
+    }
 
     /**
      * Handle exceptions for Boolean-Integer returning type methods in web controller
@@ -171,10 +177,10 @@ public class ExceptionHandlingAspect extends SuperAspect{
             if(returnType.getName().compareTo("int")==0){
                 return 0;
             }
-            if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+            else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
                 return false;
             }
-            if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
+            else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
                 return true;
             }
         }

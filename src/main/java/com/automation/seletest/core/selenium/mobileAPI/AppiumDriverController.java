@@ -36,8 +36,8 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ScreenOrientation;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -48,10 +48,11 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-@Scope("prototype")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AppiumDriverController implements AppiumController<AppiumDriverController>{
 
-    @Getter @Setter AppiumDriver appiumDriver;
+    @Getter @Setter
+    AppiumDriver appiumDriver;
 
     @Override
     public AppiumDriverController launchApp() {
@@ -162,19 +163,8 @@ public class AppiumDriverController implements AppiumController<AppiumDriverCont
     }
 
     @Override
-    public Dimension getScreenDimensions() {
-        return appiumDriver.manage().window().getSize();
-    }
-
-    @Override
     public AppiumDriverController executeScript(String driverCommand, HashMap<String, ?> parameters) {
         appiumDriver.execute(driverCommand, parameters);
-        return this;
-    }
-
-    @Override
-    public AppiumDriverController navigateBack() {
-        appiumDriver.navigate().back();
         return this;
     }
 

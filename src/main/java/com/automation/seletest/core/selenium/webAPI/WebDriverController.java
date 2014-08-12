@@ -47,6 +47,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -58,6 +59,8 @@ import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
  * This class contains the implementation of webDriver API
@@ -81,8 +84,22 @@ public class WebDriverController implements WebController<WebDriverController>{
     @Getter @Setter
     WebDriver driver;
 
+    /**The remoteWebDriver object*/
+    @Getter @Setter
+    RemoteWebDriver remoteWebDriver;
+
+    /**The Javascript executor*/
     @Getter @Setter
     JavascriptExecutor jsExec;
+
+    /**
+     * Gets the selenium instance.
+     * @param baseUrl the base url
+     * @return the selenium instance
+     */
+    public Selenium getSeleniumInstance(String baseUrl) {
+        return new WebDriverBackedSelenium(driver, baseUrl);
+    }
 
     @Override
     public void goToTargetHost(String url) {
@@ -141,7 +158,6 @@ public class WebDriverController implements WebController<WebDriverController>{
      ************************SCREENSHOTS SECTION*********************
      *************************************************************
      */
-
     @Override
     public void takeScreenShot() throws IOException{
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -188,7 +204,6 @@ public class WebDriverController implements WebController<WebDriverController>{
         return SessionContext.getSession().getWaitStrategy();
     }
 
-
     /*************************************************************
      ************************COOKIES SECTION*********************
      *************************************************************
@@ -205,20 +220,17 @@ public class WebDriverController implements WebController<WebDriverController>{
         return this;
     }
 
-
     @Override
     public WebDriverController cookieAdd(Cookie cookie) {
         driver.manage().addCookie(cookie);
         return this;
     }
 
-
     @Override
     public Set<Cookie> getCookies() {
         Set<Cookie> cookies=driver.manage().getCookies();
         return cookies;
     }
-
 
     @Override
     public WebDriverController cookieDelete(Cookie cookie) {
@@ -232,11 +244,10 @@ public class WebDriverController implements WebController<WebDriverController>{
     }
 
 
-
-
     /**************************************
      **Returning type methods**************
-     ***************************************/
+     **************************************/
+
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
@@ -271,15 +282,14 @@ public class WebDriverController implements WebController<WebDriverController>{
     }
 
     /**************************************
-     *Verification type methods**************
-     ***************************************/
+     *Verification type methods************
+     **************************************/
 
     @Override
     public boolean isWebElementPresent(String locator) {
         factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
         return true;
     }
-
 
     @Override
     public boolean isTextPresent(String text) {
