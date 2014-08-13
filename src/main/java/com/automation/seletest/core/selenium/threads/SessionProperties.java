@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.threads;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -41,7 +40,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
-import com.automation.seletest.core.services.PerformanceUtils;
 
 
 /**
@@ -76,18 +74,7 @@ public class SessionProperties {
     @Getter @Setter
     WebElement webElement;
 
-    public void cleanSession() throws Exception{
-
-        PerformanceUtils perf=(PerformanceUtils) testProperties.get(PerformanceUtils.class);
-
-        //Performance collection data
-        if(perf!=null){
-            perf.getPerformanceData(perf.getServer());
-            perf.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), perf.getHar());
-            perf.stopServer(perf.getServer());
-            perf=null;
-            log.info("Performance data collected!!!");
-        }
+    public void cleanSession(){
 
         //Quits driver
         for(int i=0; i<controllers.size(); i++)

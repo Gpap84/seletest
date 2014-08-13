@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
-import net.lightbody.bmp.proxy.ProxyServer;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -144,9 +143,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             //If performance is enabled
             if(((InitializationEvent) event).isPerformance()){
                 PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
-                ProxyServer server=perf.proxyServer(new Random().nextInt(5000));
+                int proxyPort=new Random().nextInt(5000);
+                perf.proxyServer(proxyPort);
                 perf.newHar("Har created at: "+ new Time(event.getTimestamp()));
-                cap.setCapability(CapabilityType.PROXY, perf.proxy(server));
+                cap.setCapability(CapabilityType.PROXY, perf.proxy(proxyPort));
                 SessionContext.getSession().getTestProperties().put(PerformanceUtils.class,perf);
             }
 

@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.automation.seletest.core.listeners;
 
+import java.io.File;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -35,6 +37,8 @@ import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
@@ -67,9 +71,17 @@ public class InitListener implements IInvokedMethodListener{
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 
-        //Status of test method if type is Soft Assert
         if(method.getTestMethod().isTest()){
+            PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getTestProperties().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
+
+            //Performance collection data
+            if(perf!=null){
+                perf.getPerformanceData(perf.getServer());
+                perf.writePerformanceData(new File("./target/surefire-reports/logs/"+testResult.getName()+".har").getAbsolutePath(), perf.getHar());
+                perf.stopServer(perf.getServer());
+                log.info("Performance data collected for test: {} !!!",testResult.getName());
+            }
         }
     }
 }
