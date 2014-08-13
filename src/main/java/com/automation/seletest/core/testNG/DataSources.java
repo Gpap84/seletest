@@ -26,23 +26,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.testNG;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.testng.ITestContext;
-import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 
-import com.automation.seletest.core.services.annotations.DataDriven;
+import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 
 /**
@@ -50,70 +40,20 @@ import com.automation.seletest.core.services.annotations.DataDriven;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Slf4j
 public class DataSources {
 
     /**
-     * Generic dataProvider that returns data from a Map
+     * Generic DataProvider that returns data from a Map
      * @param method
      * @return Object[][] with the Map that contains properties
      * @throws Exception
      */
     @DataProvider(name = "GenericDataProvider")
-    public static Object[][] getDataProvider(final Method method, ITestContext context) throws Exception {
-        Map<String, String> map = readData(method,context);
+    public static Object[][] getDataProvider(final Method method) throws Exception {
+        Map<String, String> map = ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).readData(method);
         return new Object[][] { { map } };
     }
 
 
-    /**
-     * Read data from Properties File and return to a Map
-     * @param method
-     * @return
-     */
-    private static Map<String, String> readData(Method method,ITestContext context) {
 
-        String inputFile=null;
-
-        if(method.isAnnotationPresent(DataDriven.class) && method.getAnnotation(DataDriven.class).filePath() !=""){
-            inputFile=new File(method.getAnnotation(DataDriven.class).filePath()).getAbsolutePath();
-        } else if(method.getDeclaringClass().isAnnotationPresent(DataDriven.class) && method.getDeclaringClass().getAnnotation(DataDriven.class).filePath()!=""){
-            inputFile=new File(method.getDeclaringClass().getAnnotation(DataDriven.class).filePath()).getAbsolutePath();
-        } else if(context.getCurrentXmlTest().getParameter("filePath")!=null){
-            inputFile=context.getCurrentXmlTest().getParameter("filePath");
-        } else {
-            throw new SkipException("The path to the file is undefined!!!");
-        }
-
-        Properties prop = new Properties();
-        InputStream input = null;
-        Map<String, String> map = new HashMap<String, String>();
-
-        try {
-            prop.load(new FileReader(inputFile));
-            Enumeration<?> keys = prop.propertyNames();
-            while(keys.hasMoreElements()){
-                String key = (String)keys.nextElement();
-                String value = (String) prop.get(key);
-                if(!value.isEmpty()){
-                    map.put(key,prop.getProperty(key));
-                } else {
-                    log.error("No value specified for key: "+key);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Exception during loading test data sources: "+e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    log.error("Exception during closing InputStream for loading test data sources: "+e);
-                }
-            }
-        }
-
-        return map;
-
-    }
 }
