@@ -8,6 +8,7 @@
  <listeners>
   <listener class-name="org.uncommons.reportng.HTMLReporter"/>
   <listener class-name="com.automation.seletest.core.listeners.TestListener"/>
+  <listener class-name="com.automation.seletest.core.listeners.AnnotationTransformer"/>
 </listeners>
 
 

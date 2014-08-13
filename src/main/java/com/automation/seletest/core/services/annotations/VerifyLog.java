@@ -39,9 +39,21 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface VerifyLog {
 
+    /**
+     * messagePass
+     * @return the message displayed in HTML report for passed assertion
+     */
     String messagePass();
 
+    /**
+     * messageFail
+     * @return the message displayed in HTML report for failed assertion
+     */
     String messageFail();
 
+    /**
+     * message
+     * @return the message displayed in HTML report displaying parameters of invoked method
+     */
     String message();
 }

@@ -1,14 +1,18 @@
 package DemoTest;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.services.annotations.DataDriven;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 import com.automation.seletest.pagecomponents.pageObjects.GooglePage;
 
+@DataDriven(filePath="./target/test-classes/DataSources/demoTest.properties")
 @SeleniumTest
 public class GoogleTest extends SeletestWebTestBase{
 
@@ -17,24 +21,24 @@ public class GoogleTest extends SeletestWebTestBase{
 
     @SeleniumTest(assertion=AssertionType.HARD)
     @Test
-    public void googleSearch(){
+    public void googleSearch(Map<String, String> map){
         googlePage.
                 openPage(GooglePage.class).
-                typeSearch("https://github.com/GiannisPapadakis").
+                typeSearch(map.get("GoogleSearch")).
                 buttonSearch();
 
-        SessionControl.verifyController().elementPresent("//*[contains(text(),'Giannis Papadakis')]");
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
     }
 
     @SeleniumTest(assertion=AssertionType.SOFT)
     @Test
-    public void googleSearch2(){
+    public void googleSearch2(Map<String, String> map){
         googlePage.
                 openPage(GooglePage.class).
-                typeSearch("Nothing").
+                typeSearch(map.get("GoogleSearch2")).
                 buttonSearch();
 
-        SessionControl.verifyController().elementPresent("//text");
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
     }
 
 }

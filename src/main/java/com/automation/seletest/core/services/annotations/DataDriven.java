@@ -35,31 +35,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation defines Web Test
+ * DataDriven custom annotation
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Retention(RUNTIME)
 @Target({CONSTRUCTOR, METHOD, TYPE})
-public @interface  SeleniumTest {
+public @interface DataDriven {
 
     /**
-     * AssertionType enum to specify type of assertion level (SOFT - HARD)
-     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
-     *
+     * The filePath
+     * @return filePath the File Path in order to load properties
      */
-    public enum AssertionType{SOFT,HARD};
-
-    /**
-     * AssertioType
-     * @return AssertionType the type of assertion to apply to @Test
-     */
-    AssertionType assertion() default AssertionType.SOFT;
-
-    /**
-     * Defines the type if app under test
-     * @return
-     */
-    boolean isWeb() default true;
-
+    String filePath() default "";
 }

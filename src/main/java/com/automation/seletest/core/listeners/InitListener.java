@@ -49,8 +49,10 @@ public class InitListener implements IInvokedMethodListener{
 
         //Set parameter for specifying Application Type
         if(method.getTestMethod().isBeforeSuiteConfiguration()){
-            if(seleniumTest!=null){
+            if(seleniumTest!=null && seleniumTest.isWeb()){
                 testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.WEBTYPE.get());
+            } else if (seleniumTest!=null && !seleniumTest.isWeb()){
+                testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.MOBILETYPE.get());
             }
         }
 
