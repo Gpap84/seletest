@@ -42,15 +42,16 @@ import com.automation.seletest.core.services.annotations.DataDriven;
 import com.automation.seletest.core.testNG.DataSources;
 
 /**
+ * Test AnnotationTransformer
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Slf4j
 public class AnnotationTransformer implements IAnnotationTransformer{
 
-    /* (non-Javadoc)
-     * @see org.testng.IAnnotationTransformer#transform(org.testng.annotations.ITestAnnotation, java.lang.Class, java.lang.reflect.Constructor, java.lang.reflect.Method)
-     */
+    /**The name of the DataProvider used to load properties for data driven testing*/
+    private final String dataSource="GenericDataProvider";
+
     @Override
     @SuppressWarnings("rawtypes")
     public void transform(final ITestAnnotation test, final Class testClass, final Constructor testConstructor,
@@ -58,7 +59,7 @@ public class AnnotationTransformer implements IAnnotationTransformer{
         //Set DataProvider for the test i
         if (testMethod != null && usesDataSource(testMethod)) {
             test.setDataProviderClass(DataSources.class);
-            test.setDataProvider("GenericDataProvider");
+            test.setDataProvider(dataSource);
         }
 
         //Set retry analyzer class for all @Test methods
@@ -75,7 +76,7 @@ public class AnnotationTransformer implements IAnnotationTransformer{
 
 
     /**
-     * retry analyzer class
+     * Retry analyzer class
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */

@@ -43,13 +43,7 @@ public class SessionControl {
      * @return WebController<?>
      */
     public static <T> WebController<?> webController(){
-        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++) {
-            Object controller = SessionContext.getSession().getControllers().get(i);
-            if(controller !=null && controller instanceof WebController){
-                return (WebController<?>) controller;
-            }
-        }
-        return null;
+        return (WebController<?>) SessionContext.getSession().getControllers().get(WebController.class);
     }
 
     /**
@@ -57,21 +51,15 @@ public class SessionControl {
      * @return AppiumController<?>
      */
     public static <T> AppiumController<?> appiumController(){
-        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++) {
-            Object controller = SessionContext.getSession().getControllers().get(i);
-            if(controller !=null && controller instanceof AppiumController){
-                return (AppiumController<?>) controller;
-            }
-        }
-        return null;
+        return (AppiumController<?>) SessionContext.getSession().getControllers().get(AppiumController.class);
     }
 
     /**
      * verifyController for this test instance
      * @return AssertTest instance
      */
-    public static AssertTest<?> verifyController(){
-        return (AssertTest<?>) SessionContext.getSession().getTestProperties().get(AssertTest.class);
+    public static <T> AssertTest<?> verifyController(){
+        return (AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class);
     }
 
 }

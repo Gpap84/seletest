@@ -72,7 +72,7 @@ public class InitListener implements IInvokedMethodListener{
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 
         if(method.getTestMethod().isTest()){
-            PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getTestProperties().get(PerformanceUtils.class);
+            PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
 
             //Performance collection data

@@ -51,7 +51,7 @@ public class ActionsBuilder implements ActionsBuilderController{
      * @return Actions instance
      */
     private Actions actionsBuilder(){
-        return ((Actions) SessionContext.getSession().getTestProperties().get(Actions.class));
+        return ((Actions) SessionContext.getSession().getControllers().get(Actions.class));
     }
 
     /**
@@ -59,7 +59,7 @@ public class ActionsBuilder implements ActionsBuilderController{
      * @return TouchAction instance
      */
     private TouchAction touchactionsBuilder(){
-        return ((TouchAction) SessionContext.getSession().getTestProperties().get(TouchAction.class));
+        return ((TouchAction) SessionContext.getSession().getControllers().get(TouchAction.class));
     }
 
 
@@ -115,14 +115,11 @@ public class ActionsBuilder implements ActionsBuilderController{
     @Override
     public ActionsBuilder performActions() {
         actionsBuilder().build().perform();
-        SessionContext.getSession().getTestProperties().remove(Actions.class);
-        SessionContext.getSession().getTestProperties().put(Actions.class, new Actions(SessionControl.webController().driverInstance()));
+        SessionContext.getSession().getControllers().remove(Actions.class);
+        SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionControl.webController().driverInstance()));
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#tap(java.lang.Object)
-     */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder tap(Object locator) {
@@ -130,9 +127,6 @@ public class ActionsBuilder implements ActionsBuilderController{
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#tap(java.lang.Object, int, int)
-     */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder tap(Object locator, int x, int y) {
@@ -140,27 +134,18 @@ public class ActionsBuilder implements ActionsBuilderController{
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#tap(int, int)
-     */
     @Override
     public ActionsBuilder tap(int x, int y) {
         touchactionsBuilder().tap(x,y);
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(int, int)
-     */
     @Override
     public ActionsBuilder press(int x, int y) {
         touchactionsBuilder().press(x,y);
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(java.lang.Object)
-     */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder press(Object locator) {
@@ -168,9 +153,6 @@ public class ActionsBuilder implements ActionsBuilderController{
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(java.lang.Object, int, int)
-     */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder press(Object locator, int x, int y) {
@@ -178,14 +160,11 @@ public class ActionsBuilder implements ActionsBuilderController{
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#performTouchActions()
-     */
     @Override
     public ActionsBuilder performTouchActions() {
         touchactionsBuilder().perform();
-        SessionContext.getSession().getTestProperties().remove(TouchAction.class);
-        SessionContext.getSession().getTestProperties().put(TouchAction.class, new TouchAction((MobileDriver) SessionControl.webController().driverInstance()));
+        SessionContext.getSession().getControllers().remove(TouchAction.class);
+        SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((MobileDriver) SessionControl.webController().driverInstance()));
         return this;
     }
 

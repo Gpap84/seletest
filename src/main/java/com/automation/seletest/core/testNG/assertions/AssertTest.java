@@ -38,8 +38,10 @@ import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * This class represents the Assertion API
@@ -58,6 +60,9 @@ public class AssertTest<T extends Assertion> {
     /** Assertion object*/
     @Getter @Setter
     private T assertion;
+
+    @Autowired
+    StrategyFactory<?> waitFor;
 
     /**
      * Specify the type of assertion (Hard or Soft) for this test
@@ -85,11 +90,46 @@ public class AssertTest<T extends Assertion> {
     /**
      * Verify that element is present in Screen
      * @param locator
-     * @return
+     * @return AssertTest instance
      */
     @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator")
     public AssertTest elementPresent(String locator) {
         assertion.assertTrue(SessionControl.webController().isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
+        return this;
+    }
+
+    /**
+     * Verify that element is visible in Screen
+     * @param locator
+     * @return AssertTest instance
+     */
+    @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator")
+    public AssertTest elementVisible(String locator) {
+        assertion.assertTrue(SessionControl.webController().isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
+        return this;
+    }
+
+    /**
+     * Verify that text is present in element
+     * @param locator
+     * @param text
+     * @return AssertTest instance
+     */
+    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator")
+    public AssertTest textPresentinElement(Object locator, String text) {
+        assertion.assertTrue(waitFor.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinElement(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        return this;
+    }
+
+    /**
+     * Verify that text is present in value attribute of element
+     * @param locator
+     * @param text
+     * @return AssertTest instance
+     */
+    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator")
+    public AssertTest textPresentinValueAttribute(Object locator, String text) {
+        assertion.assertTrue(waitFor.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinValue(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return this;
     }
 }

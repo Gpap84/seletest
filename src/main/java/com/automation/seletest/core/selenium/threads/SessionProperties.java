@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.threads;
 
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import lombok.Getter;
@@ -50,13 +49,9 @@ import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 @SuppressWarnings("rawtypes")
 public class SessionProperties {
 
-    /** Array List to store various object*/
+    /**Map with various controllers for test session*/
     @Getter @Setter
-    ArrayList controllers;
-
-    /**Map with various objects for test session*/
-    @Getter @Setter
-    Map<Class<?>,Object> testProperties;
+    Map<Class<?>,Object> controllers;
 
     /**The web driver context*/
     @Getter @Setter
@@ -77,20 +72,12 @@ public class SessionProperties {
     public void cleanSession(){
 
         //Quits driver
-        for(int i=0; i<controllers.size(); i++)
-        {
-            Object controller = controllers.get(i);
-            if(controller instanceof WebController<?> && controller !=null){
-                ((WebController) controller).quit(CloseSession.QUIT);
-            }
-            controller=null;
+        if(controllers.get(WebController.class)!=null){
+            ((WebController) controllers.get(WebController.class)).quit(CloseSession.QUIT);
         }
 
         //Initialize Controllers Array List
         controllers.clear();
-
-        //Initialize testProperties Map
-        testProperties.clear();
 
         //Destroy the webdriver application context
         driverContext.destroy();

@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
+import java.util.List;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Wait;
@@ -35,6 +37,11 @@ import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 
+/**
+ * AbstractBase contains all static abstract classes used
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
+ */
 @SuppressWarnings("unchecked")
 public abstract class AbstractBase {
 
@@ -53,6 +60,9 @@ public abstract class AbstractBase {
         public final String NOT_VISIBLE="Element not visible in Screen";
         public final String NOT_CLICKABLE="Element cannot be clicked";
         public final String ALERT_NOT_PRESENT="Alert not present";
+        public final String TEXT_NOT_PRESENT="Text not present in Element";
+        public final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+
 
         /**
          * Returns a new WebDriverWait instance
@@ -87,6 +97,18 @@ public abstract class AbstractBase {
                 element=(WebElement)locator;
             }
             return element;
+        }
+
+        /**
+         * Elements to wait for condition
+         * @param driver
+         * @param locator
+         * @return List<WebElement>
+         */
+        public List<WebElement> elementsToWait(WebDriver driver, String locator){
+            List<WebElement> elements=null;
+            elements=driver.findElements(Locators.findByLocator(locator).setLocator(locator));
+            return elements;
         }
 
     }

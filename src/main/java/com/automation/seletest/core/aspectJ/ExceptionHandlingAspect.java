@@ -53,7 +53,7 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
  */
 @Aspect
 @Component
-public class ExceptionHandlingAspect extends SuperAspect{
+public class ExceptionHandlingAspect extends SuperAspect {
 
     /**The log service*/
     @Autowired
@@ -75,15 +75,12 @@ public class ExceptionHandlingAspect extends SuperAspect{
      */
     @Around("componentsStatus()")
     public Object handleReturningFunctions(ProceedingJoinPoint pjp) throws Throwable {
-
         Object returnValue = null;
-
-            try {
-                returnValue= pjp.proceed();
-            } catch (Exception ex) {
-                returnValue=handleException(returnValue, pjp, ex);
-            }
-
+        try {
+            returnValue= pjp.proceed();
+        } catch (Exception ex) {
+            returnValue=handleException(returnValue, pjp, ex);
+        }
         return returnValue;
     }
 
@@ -118,14 +115,17 @@ public class ExceptionHandlingAspect extends SuperAspect{
      * @throws Throwable
      */
     @Around("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
-    public Object verify(ProceedingJoinPoint pjp, VerifyLog verify) throws Throwable
-    {
+    public Object verify(ProceedingJoinPoint pjp, VerifyLog verify) throws Throwable {
         Object returnValue=null;
         try {
-                returnValue = pjp.proceed();
-                if(!(((AssertTest<?>) SessionContext.getSession().getTestProperties().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
-                     log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
+            returnValue = pjp.proceed();
+            if(!(((AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
+                if((pjp).getArgs().length==1){
+                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
+                } else {
+                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
                 }
+            }
         }
         catch(AssertionError ex) {
             log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
@@ -165,19 +165,16 @@ public class ExceptionHandlingAspect extends SuperAspect{
      * @return
      * @throws Throwable
      */
-    private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable
-            {
+    private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
         if (ex instanceof TimeoutException || ex instanceof NoSuchElementException ){//Timeout exception thrown
             MethodSignature signature = (MethodSignature ) pjp.getSignature();
             Class<?> returnType = signature.getReturnType();
 
             if(returnType.getName().compareTo("int")==0){
                 return 0;
-            }
-            else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+            } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
                 return false;
-            }
-            else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
+            } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
                 return true;
             }
         }

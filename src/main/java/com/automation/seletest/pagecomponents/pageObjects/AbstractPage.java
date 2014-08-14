@@ -26,8 +26,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -45,9 +47,17 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
+    /**Timeout to load a page*/
     private static final int LOAD_TIMEOUT = 30;
+
+    /**Polling time*/
     private static final int REFRESH_RATE = 2;
 
+    /**
+     * Opens a page object
+     * @param clazz
+     * @return T the type of object
+     */
     public T openPage(Class<T> clazz) {
         T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
@@ -55,14 +65,43 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
         return page;
     }
 
+    /**
+     * Condition for loading a page object
+     * @return ExpectedCondition<?> condition to load a page
+     */
     protected abstract ExpectedCondition<?> getPageLoadCondition();
 
+    /**
+     * Wait for page to load
+     * @param pageLoadCondition
+     */
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
         Wait wait = new FluentWait(SessionControl.webController().driverInstance())
                 .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 
         wait.until(pageLoadCondition);
+    }
+
+
+    /**
+     * Find String locator of WebElement
+     * @param clazz
+     * @param element
+     * @return
+     */
+    public String getWebElementLocator(Class<?> clazz, String element){
+        Field[] fields=clazz.getFields();
+        for(Field field:fields){
+            if(field.getAnnotation(FindBy.class)!=null){
+                if(field.getName().equals(element)){
+                    if(field.getAnnotation(FindBy.class).className()!=null){
+                        return "className="+field.getAnnotation(FindBy.class).className();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

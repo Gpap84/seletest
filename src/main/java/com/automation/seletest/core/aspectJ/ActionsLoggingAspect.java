@@ -57,7 +57,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @Aspect
 @Component
-public class ActionsLoggingAspect extends SuperAspect{
+public class ActionsLoggingAspect extends SuperAspect {
 
     /**Log service*/
     @Autowired
@@ -108,7 +108,7 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @param returnVal
      */
     @AfterReturning(pointcut ="getReturningValue()",returning="returnVal")
-    public void afterReturningAdvice(final JoinPoint jp,Object returnVal){
+    public void afterReturningAdvice(final JoinPoint jp,Object returnVal) {
         log.info("Command: "+jp.getSignature().getName()+" for["+arguments((ProceedingJoinPoint)jp)+"]"+" returned value: "+returnVal);
     }
 
@@ -119,15 +119,14 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @throws Throwable
      */
     @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
-    public Object handleException(ProceedingJoinPoint pjp) throws Throwable
-    {
+    public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         try {
             returnValue = pjp.proceed();
             log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
-                log.error("Element not found in screen with exception: "+ex.getMessage().split("Build")[0].trim());
+                log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             }
             else{
@@ -146,9 +145,9 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @param ex
      * @throws IOException
      */
-    @AfterThrowing(pointcut="waitAnnotation() || actionsBuilderController()", throwing = "ex")
-    public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException{
-        if(ex instanceof WebDriverException || ex instanceof AssertionError){
+    @AfterThrowing(pointcut="waitConditions() || actionsBuilderController()", throwing = "ex")
+    public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
+        if(ex instanceof WebDriverException){
             log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
             SessionControl.webController().takeScreenShot();
         } else {
@@ -161,7 +160,7 @@ public class ActionsLoggingAspect extends SuperAspect{
      * @param pjp
      */
     @Before(value="waitAnnotation()")
-    public void waitFor(final JoinPoint pjp){
+    public void waitFor(final JoinPoint pjp) {
 
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);

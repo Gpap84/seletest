@@ -28,6 +28,8 @@ package com.automation.seletest.core.services.actions;
 
 
 
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -79,12 +81,46 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         return wfExpected().until(ExpectedConditions.alertIsPresent());
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementInvisibility(java.lang.String)
-     */
     @Override
     public Boolean waitForElementInvisibility(String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+    }
+
+    @Override
+    public Boolean waitForTextPresentinElement(Object locator, String text) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElement((WebElement)locator,text));
+        }
+        else{
+            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
+        }
+    }
+
+    @Override
+    public Boolean waitForTextPresentinValue(Object locator,String text) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue((WebElement)locator,text));
+        }
+        else{
+            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
+        }
+    }
+
+    @Override
+    public List<WebElement> waitForPresenceofAllElements(String locator) {
+        return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
+
+    }
+
+    @Override
+    public List<WebElement> waitForVisibilityofAllElements(String locator) {
+        return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
     }
 
 

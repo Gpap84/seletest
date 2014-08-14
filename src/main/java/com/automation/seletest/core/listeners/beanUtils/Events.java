@@ -51,15 +51,34 @@ public class Events extends ApplicationEvent{
      *
      */
     public static class InitializationEvent extends Events {
+
+        /**General Message for event*/
         @Getter @Setter private String message;
+
+        /**Host url to run tests*/
         @Getter @Setter private String hostUrl;
+
+        /**If performance metrics enabled*/
         @Getter @Setter private boolean performance;
+
+        /**TestContext interface*/
         @Getter @Setter private ITestContext testcontext;
+
+        /**If the test is against Web App*/
         @Getter @Setter private boolean isWeb;
 
 
         private static final long serialVersionUID = -5308299518665062983L;
 
+        /**
+         * Initialize event
+         * @param source
+         * @param msg
+         * @param hostUrl
+         * @param performance
+         * @param context
+         * @param isWeb
+         */
         public InitializationEvent(
                 Object source,
                 String msg,

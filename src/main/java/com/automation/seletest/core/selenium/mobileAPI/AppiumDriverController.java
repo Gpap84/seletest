@@ -41,6 +41,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.services.actions.AbstractBase;
+
 
 /**
  * AppiumDriverController api for iOS-Android native app interaction
@@ -49,7 +51,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AppiumDriverController implements AppiumController<AppiumDriverController>{
+public class AppiumDriverController extends AbstractBase implements AppiumController<AppiumDriverController>{
 
     @Getter @Setter
     AppiumDriver appiumDriver;

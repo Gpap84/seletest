@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -48,7 +50,7 @@ public class FluentWaitStrategy extends AbstractBase.WaitBase{
         return fluentWait(NOT_PRESENT).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
-                return driver.findElement(Locators.findByLocator(locator).setLocator(locator));
+                return elementToWait(driver, locator);
             }
         });
     }
@@ -84,15 +86,58 @@ public class FluentWaitStrategy extends AbstractBase.WaitBase{
         });
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementInvisibility(java.lang.String)
-     */
     @Override
     public Boolean waitForElementInvisibility(final String locator) {
-        return fluentWait(NOT_PRESENT).until(new Function<WebDriver, Boolean>() {
+        return fluentWait(NOT_VISIBLE).until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                return driver.findElement(Locators.findByLocator(locator).setLocator(locator)).isDisplayed();
+                return !driver.findElement(Locators.findByLocator(locator).setLocator(locator)).isDisplayed();
+            }
+        });
+    }
+
+    @Override
+    public Boolean waitForTextPresentinElement(final Object locator, final String text) {
+        return fluentWait(TEXT_NOT_PRESENT).until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return elementToWait(driver, locator).getText().contains(text);
+            }
+        });
+    }
+
+    @Override
+    public Boolean waitForTextPresentinValue(final Object locator, final String text) {
+        return fluentWait(TEXT_NOT_PRESENT_VALUE).until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return elementToWait(driver, locator).getAttribute("value").contains(text);
+            }
+        });
+    }
+
+    @Override
+    public List<WebElement> waitForPresenceofAllElements(final String locator) {
+        return fluentWait(NOT_PRESENT).until(new Function<WebDriver, List<WebElement>>() {
+            @Override
+            public List<WebElement> apply(WebDriver driver) {
+                return elementsToWait(driver, locator);
+            }
+        });
+    }
+
+    @Override
+    public List<WebElement> waitForVisibilityofAllElements(final String locator) {
+        return fluentWait(NOT_VISIBLE).until(new Function<WebDriver, List<WebElement>>() {
+            @Override
+            public List<WebElement> apply(WebDriver driver) {
+                List<WebElement> elements = elementsToWait(driver, locator);
+                for(WebElement element : elements){
+                  if(!element.isDisplayed()){
+                    return null;
+                  }
+                }
+                return elements.size() > 0 ? elements : null;
             }
         });
     }
