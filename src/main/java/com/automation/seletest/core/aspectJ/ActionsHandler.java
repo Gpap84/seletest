@@ -33,12 +33,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +53,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @Aspect
 @Component
-public class ActionsLoggingAspect extends SuperAspect {
+public class ActionsHandler extends SuperAspect {
 
     /**Log service*/
     @Autowired
@@ -67,40 +63,9 @@ public class ActionsLoggingAspect extends SuperAspect {
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    /************************************
-     ****************Pointcuts***********
-     ************************************
-     */
+    private final String takeScreencap="Take screenshot after exception: ";
 
-    /**Methods in classpath that have @WaitCondition*/
-    @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
-    private void waitAnnotation() {}
-
-    /**All methods in ActionsBuilderController*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
-    private void actionsBuilderController() {}
-
-    /**Methods for taking screenshots!!*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
-    private void takeScreenCap() {}
-
-    /**Methods for wait conditions*/
-    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
-    private void waitConditions() {}
-
-    /**Methods that are returning objects*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
-    private void getReturningValue() {}
-
-    /**Methods for sending email*/
-    @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
-    private void sendMail() {}
-
-
-    /****************************************************
-     **************\\\\ADVICES\\\\***********************
-     ****************************************************
-     */
+    private final String unknownException="Unknown exception occured: ";
 
     /**
      * Log returning value for get** methods
@@ -113,45 +78,18 @@ public class ActionsLoggingAspect extends SuperAspect {
     }
 
     /**
-     * Handle Exceptions...
-     * @param pjp
-     * @return
-     * @throws Throwable
-     */
-    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
-    public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
-        Object returnValue = null;
-        try {
-            returnValue = pjp.proceed();
-            log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
-        } catch (Exception ex) {
-            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
-                log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
-                throw ex;
-            }
-            else{
-                log.error(String.format("%s: Failed with exception '%s'",
-                        pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
-                        ex.getMessage().split("Build")[0].trim()));
-            }
-        }
-
-        return returnValue;
-    }
-
-    /**
      * Take screencap after exceptions...
      * @param joinPoint
-     * @param ex
+     * @param ex Throwable
      * @throws IOException
      */
-    @AfterThrowing(pointcut="waitConditions() || actionsBuilderController()", throwing = "ex")
+    @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
         if(ex instanceof WebDriverException){
-            log.warn("Take screenshot after exception: "+ex.getMessage().split("Build")[0].trim());
+            log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
             SessionControl.webController().takeScreenShot();
         } else {
-            log.error("Unknown exception occured: "+ex.getMessage());
+            log.error(unknownException+ex.getMessage());
         }
     }
 

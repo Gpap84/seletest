@@ -56,4 +56,10 @@ public @interface VerifyLog {
      * @return the message displayed in HTML report displaying parameters of invoked method
      */
     String message();
+
+    /**
+     * screenshot
+     * @return true if we want to capture screenshot on error
+     */
+    boolean screenShot() default true;
 }

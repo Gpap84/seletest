@@ -30,14 +30,55 @@ import java.lang.reflect.Method;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.annotations.VerifyLog;
 
 /**
  * Super class with common functions
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-public class SuperAspect {
+public abstract class SuperAspect {
+
+    /**Methods in classpath that have @WaitCondition*/
+    @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
+    protected void waitAnnotation() {}
+
+    /**All methods in ActionsBuilderController*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
+    protected void actionsBuilderController() {}
+
+    /**Methods for taking screenshots!!*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
+    protected void takeScreenCap() {}
+
+    /**Methods for wait conditions*/
+    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
+    protected void waitConditions() {}
+
+    /**Methods that are returning objects*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
+    protected void getReturningValue() {}
+
+    /**Methods for sending email*/
+    @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
+    protected void sendMail() {}
+
+    /** Pointcut for boolean methods inside WebController*/
+    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebController.*(..))")
+    protected void componentsStatus() {}
+
+    /** Pointcut for reexecuting metthods*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.*(..)) && @annotation(retry)")
+    protected void retryExecution(RetryFailure retry) {}
+
+    /** Pointcut for logging in Custom Verify methods*/
+    @Pointcut("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
+    protected void logVerify(VerifyLog verify) {}
+
 
     /**
      * Type of arguments of an executed method

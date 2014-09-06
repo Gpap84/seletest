@@ -100,14 +100,14 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
          */
         public void initializeSession(ApplicationEvent event) throws Exception{
 
-            WebDriverController wdActions=null;
+            WebDriverController wdController=null;
             AppiumDriverController adController=null;
             WebDriver driver=null;
             SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
 
             if(((InitializationEvent) event).isWeb()){
-                wdActions = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
-                SessionContext.getSession().getControllers().put(WebController.class,wdActions);
+                wdController = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
+                SessionContext.getSession().getControllers().put(WebController.class,wdController);
 
             } else {
                 adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
@@ -119,8 +119,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             /*************************
              **XML PARAMETERS*********
              *************************/
-            String GridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
-            String GridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
+            String gridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
+            String gridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
             String bundleId=textcontext.getCurrentXmlTest().getParameter(CoreProperties.BUNDLEID.get());
             String appPath=textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PATH.get());
@@ -152,15 +152,15 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             //start a driver object with capabilities
             if(profileDriver.contains("Grid")) {
-                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{GridHost+":"+GridPort,cap});
+                driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{gridHost+":"+gridPort+"/wd/hub",cap});
             } else {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
             }
 
             if(((InitializationEvent) event).isWeb()) {
-                wdActions.setWebDriver((RemoteWebDriver) driver);
-                wdActions.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
-                wdActions.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
+                wdController.setWebDriver((RemoteWebDriver) driver);
+                wdController.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
+                wdController.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
 
             } else {
                 adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session

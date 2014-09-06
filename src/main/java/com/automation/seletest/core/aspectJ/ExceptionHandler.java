@@ -29,7 +29,6 @@ package com.automation.seletest.core.aspectJ;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -53,7 +52,7 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
  */
 @Aspect
 @Component
-public class ExceptionHandlingAspect extends SuperAspect {
+public class ExceptionHandler extends SuperAspect {
 
     /**The log service*/
     @Autowired
@@ -63,10 +62,32 @@ public class ExceptionHandlingAspect extends SuperAspect {
     @Autowired
     Environment env;
 
-    /** Pointcut for boolean methods inside WebDriverController*/
-    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..))")
-    private void componentsStatus() {}
-
+    /**
+     * Handle Exceptions...
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
+    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
+    public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
+        Object returnValue = null;
+        try {
+            returnValue = pjp.proceed();
+            if(!pjp.getTarget().toString().contains("WaitStrategy") || invokedMethod(pjp).getName().contains("takeScreen")) {
+                log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
+            }
+        } catch (Exception ex) {
+            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
+                log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
+                throw ex;
+            } else{
+                log.error(String.format("%s: Failed with exception '%s'",
+                        pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
+                        ex.getMessage().split("Build")[0].trim()));
+            }
+        }
+        return returnValue;
+    }
     /**
      * Around Advice for
      * @param pjp
@@ -91,14 +112,14 @@ public class ExceptionHandlingAspect extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around("execution(* com.automation.seletest.core.selenium.webAPI.WebDriverController.*(..)) && @annotation(retry)")
+    @Around("retryExecution(retry)")
     public Object retry(ProceedingJoinPoint pjp, RetryFailure retry) throws Throwable {
         Object returnValue = null;
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroudColor", CoreProperties.ACTION_COLOR.get());
+                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -114,7 +135,7 @@ public class ExceptionHandlingAspect extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
+    @Around("logVerify(verify)")
     public Object verify(ProceedingJoinPoint pjp, VerifyLog verify) throws Throwable {
         Object returnValue=null;
         try {
@@ -129,6 +150,9 @@ public class ExceptionHandlingAspect extends SuperAspect {
         }
         catch(AssertionError ex) {
             log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
+            if(verify.screenShot()) {
+                SessionControl.webController().takeScreenShot();
+            }
             throw ex;
         }
         return returnValue;
@@ -166,10 +190,9 @@ public class ExceptionHandlingAspect extends SuperAspect {
      * @throws Throwable
      */
     private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException ){//Timeout exception thrown
+        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException ){
             MethodSignature signature = (MethodSignature ) pjp.getSignature();
             Class<?> returnType = signature.getReturnType();
-
             if(returnType.getName().compareTo("int")==0){
                 return 0;
             } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){

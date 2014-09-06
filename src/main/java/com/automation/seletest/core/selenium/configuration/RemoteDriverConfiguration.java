@@ -62,7 +62,7 @@ public class RemoteDriverConfiguration {
     @Profile({"seleniumGrid"})
     public abstract static class ProfileSeleniumGrid implements ProfileDriver{
 
-        private final String beanDescription="RemoteWebDriver will be initialized!!!";
+        private final String beanDescription="Web Session on Selenium Grid 2 is about to execute!!";
 
         @Override
         @Lazy(true)
@@ -84,7 +84,7 @@ public class RemoteDriverConfiguration {
     @Profile({"appiumGrid"})
     public abstract static class ProfileAppium implements ProfileDriver{
 
-        private final String beanDescription="AppiumDriver will be initialized!!!";
+        private final String beanDescription="Appium Session on Selenium Grid 2 is about to execute!!";
 
         @Override
         @Lazy(true)

@@ -113,7 +113,7 @@ public interface WebController<T> {
      * @param locator
      * @throws IOException
      */
-    void takeScreenShotOfElement(String locator) throws IOException;
+    void takeScreenShotOfElement(Object locator) throws IOException;
 
     /**
      * switch to latest window
@@ -127,20 +127,20 @@ public interface WebController<T> {
      * @param value
      * @return
      */
-    T deleteCookieNamed(String name);
+    T deleteCookieByName(String name);
 
     /**
      * Deletes a cookie
      * @param cookie
      * @return
      */
-    T cookieDelete(Cookie cookie);
+    T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return
      */
-    T cookiesAllDelete();
+    T deleteAllCookies();
 
     /**
      * Create a cookie
@@ -148,7 +148,7 @@ public interface WebController<T> {
      * @param value
      * @return
      */
-    T cookieAdd(Cookie cookie);
+    T addCookie(Cookie cookie);
 
     /**
      * Gets all cookies

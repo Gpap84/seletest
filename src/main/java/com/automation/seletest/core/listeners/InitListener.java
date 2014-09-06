@@ -40,7 +40,6 @@ import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
-import com.automation.seletest.core.services.properties.CoreProperties;
 
 @Slf4j
 public class InitListener implements IInvokedMethodListener{
@@ -50,15 +49,6 @@ public class InitListener implements IInvokedMethodListener{
 
         log.debug("Specify browser type by finding custom annotation on class level!!!");
         SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
-
-        //Set parameter for specifying Application Type
-        if(method.getTestMethod().isBeforeSuiteConfiguration()){
-            if(seleniumTest!=null && seleniumTest.isWeb()){
-                testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.WEBTYPE.get());
-            } else if (seleniumTest!=null && !seleniumTest.isWeb()){
-                testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.MOBILETYPE.get());
-            }
-        }
 
         //Set assertion type (Hard / Soft) for this test method
         if(method.getTestMethod().isTest()){

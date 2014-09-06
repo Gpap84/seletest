@@ -34,6 +34,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
+
 /**
  * This annotation executes method of a class before invocation of a method
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -45,7 +47,7 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface PreConfiguration {
 
-    Class<?> classReference();
+    Class<? extends AbstractPage<?>> classReference();
 
     String method();
 

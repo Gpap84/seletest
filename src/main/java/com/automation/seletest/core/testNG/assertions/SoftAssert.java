@@ -82,7 +82,7 @@ public class SoftAssert extends Assertion {
             //set the test as failed
             Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
             org.testng.Reporter.setCurrentTestResult(Reporter.getCurrentTestResult());
-            m_errors.clear();//clear the soft assertion HashMap
+            m_errors.clear();
         }
     }
 

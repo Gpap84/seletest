@@ -70,7 +70,7 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  * @param <T>
  *
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"unchecked","rawtypes"})
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase implements WebController<WebDriverController>{
@@ -163,11 +163,12 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
         fileService.reportScreenshot(file);
     }
 
+    @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public void takeScreenShotOfElement(String locator) throws IOException {
+    public void takeScreenShotOfElement(Object locator) throws IOException {
         File screenshot = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
+        WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();
@@ -206,19 +207,19 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
      *************************************************************
      */
     @Override
-    public WebDriverController deleteCookieNamed(String name) {
+    public WebDriverController deleteCookieByName(String name) {
         webDriver.manage().deleteCookieNamed(name);
         return this;
     }
 
     @Override
-    public WebDriverController cookiesAllDelete() {
+    public WebDriverController deleteAllCookies() {
         webDriver.manage().deleteAllCookies();
         return this;
     }
 
     @Override
-    public WebDriverController cookieAdd(Cookie cookie) {
+    public WebDriverController addCookie(Cookie cookie) {
         webDriver.manage().addCookie(cookie);
         return this;
     }
@@ -230,7 +231,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
     }
 
     @Override
-    public WebDriverController cookieDelete(Cookie cookie) {
+    public WebDriverController deleteCookie(Cookie cookie) {
         webDriver.manage().deleteCookie(cookie);
         return this;
     }

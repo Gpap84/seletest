@@ -55,11 +55,4 @@ public @interface  SeleniumTest {
      * @return AssertionType the type of assertion to apply to @Test
      */
     AssertionType assertion() default AssertionType.SOFT;
-
-    /**
-     * Defines the type if app under test
-     * @return
-     */
-    boolean isWeb() default true;
-
 }
