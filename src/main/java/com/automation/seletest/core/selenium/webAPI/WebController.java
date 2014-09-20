@@ -113,7 +113,7 @@ public interface WebController<T> {
      * @param locator
      * @throws IOException
      */
-    void takeScreenShotOfElement(String locator) throws IOException;
+    void takeScreenShotOfElement(Object locator) throws IOException;
 
     /**
      * switch to latest window
@@ -127,20 +127,20 @@ public interface WebController<T> {
      * @param value
      * @return
      */
-    T deleteCookieNamed(String name);
+    T deleteCookieByName(String name);
 
     /**
      * Deletes a cookie
      * @param cookie
      * @return
      */
-    T cookieDelete(Cookie cookie);
+    T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return
      */
-    T cookiesAllDelete();
+    T deleteAllCookies();
 
     /**
      * Create a cookie
@@ -148,7 +148,7 @@ public interface WebController<T> {
      * @param value
      * @return
      */
-    T cookieAdd(Cookie cookie);
+    T addCookie(Cookie cookie);
 
     /**
      * Gets all cookies
@@ -167,21 +167,21 @@ public interface WebController<T> {
     /**
      * Gets the tagName of the element
      * @param locator
-     * @return
+     * @return tagName
      */
     String getTagName(Object locator);
 
     /**
      * Gets the element Location
      * @param locator
-     * @return
+     * @return Point Location of element
      */
     Point getLocation(Object locator);
 
     /**
      * Gets the element Dimensions
      * @param locator
-     * @return
+     * @return Dimension for Element Dimensions
      */
     Dimension getElementDimensions(Object locator);
 
@@ -194,7 +194,7 @@ public interface WebController<T> {
     /**
      * Defines if a web element is present
      * @param locator
-     * @return if a web element is present
+     * @return true if a web element is present
      */
     boolean isWebElementPresent(String locator);
 
@@ -204,4 +204,11 @@ public interface WebController<T> {
      * @return false if not text present in page source
      */
     boolean isTextPresent(String text);
+
+    /**
+     * Defines if a web element is visible
+     * @param locator
+     * @return true if a web element is visible
+     */
+    boolean isWebElementVisible(Object locator);
 }

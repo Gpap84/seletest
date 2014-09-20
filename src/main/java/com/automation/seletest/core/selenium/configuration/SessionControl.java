@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.configuration;
 
+
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
@@ -36,29 +38,28 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
  *
  */
 public class SessionControl {
-
-
     /**
-     * webController
+     * webController for this test instance
      * @return WebController<?>
      */
     public static <T> WebController<?> webController(){
-        for(int i=0; i < SessionContext.getSession().getControllers().size(); i++)
-        {
-            Object controller = SessionContext.getSession().getControllers().get(i);
-            if(controller !=null && controller instanceof WebController){
-                return (WebController<?>) controller;
-            }
-        }
-        return null;
+        return (WebController<?>) SessionContext.getSession().getControllers().get(WebController.class);
     }
 
     /**
-     * Verify controller
+     * appiumController for this test instance
+     * @return AppiumController<?>
+     */
+    public static <T> AppiumController<?> appiumController(){
+        return (AppiumController<?>) SessionContext.getSession().getControllers().get(AppiumController.class);
+    }
+
+    /**
+     * verifyController for this test instance
      * @return AssertTest instance
      */
-    public static AssertTest<?> verifyController(){
-        return SessionContext.getSession().getAssertTest();
+    public static <T> AssertTest<?> verifyController(){
+        return (AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class);
     }
 
 }

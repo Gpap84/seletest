@@ -1,3 +1,4 @@
+
 /*
 This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
 
@@ -26,6 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.common;
 
+import io.appium.java_client.MobileDriver;
+import io.appium.java_client.TouchAction;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.stereotype.Component;
@@ -43,30 +47,47 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 @Component
 public class ActionsBuilder implements ActionsBuilderController{
 
+    /**
+     * Actions
+     * @return Actions instance
+     */
+    private Actions actionsBuilder(){
+        return ((Actions) SessionContext.getSession().getControllers().get(Actions.class));
+    }
+
+    /**
+     * TouchAction
+     * @return TouchAction instance
+     */
+    private TouchAction touchactionsBuilder(){
+        return ((TouchAction) SessionContext.getSession().getControllers().get(TouchAction.class));
+    }
+
+
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder mouseOver(Object locator) {
-        SessionContext.getSession().getActions().moveToElement(SessionContext.getSession().getWebElement());
+        actionsBuilder().moveToElement(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
     public ActionsBuilder mouseUp(Keys key) {
-        SessionContext.getSession().getActions().keyUp(key);
+        actionsBuilder().keyUp(key);
         return this;
 
     }
 
     @Override
     public ActionsBuilder mouseDown(Keys key) {
-        SessionContext.getSession().getActions().keyDown(key);
+        actionsBuilder().keyDown(key);
         return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder mouseDown(Object locator, Keys key) {
-        SessionContext.getSession().getActions().keyDown(SessionContext.getSession().getWebElement(),key);
+        actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key);
         return this;
 
     }
@@ -74,33 +95,78 @@ public class ActionsBuilder implements ActionsBuilderController{
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder mouseUp(Object locator, Keys key) {
-        SessionContext.getSession().getActions().keyUp(SessionContext.getSession().getWebElement(),key);
+        actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key);
         return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsBuilder clickAndHold(Object locator) {
-        SessionContext.getSession().getActions().clickAndHold(SessionContext.getSession().getWebElement());
+        actionsBuilder().clickAndHold(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsBuilder click(Object locator) {
-        SessionContext.getSession().getActions().click(SessionContext.getSession().getWebElement());
+        actionsBuilder().click(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
     public ActionsBuilder performActions() {
-        SessionContext.getSession().getActions().build().perform();
-        SessionContext.getSession().setActions(new Actions(SessionControl.webController().driverInstance()));
+        actionsBuilder().build().perform();
+        SessionContext.getSession().getControllers().remove(Actions.class);
+        SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionControl.webController().driverInstance()));
         return this;
     }
 
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsBuilder tap(Object locator) {
+        touchactionsBuilder().tap(SessionContext.getSession().getWebElement());
+        return this;
+    }
 
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsBuilder tap(Object locator, int x, int y) {
+        touchactionsBuilder().tap(SessionContext.getSession().getWebElement(),x,y);
+        return null;
+    }
 
+    @Override
+    public ActionsBuilder tap(int x, int y) {
+        touchactionsBuilder().tap(x,y);
+        return this;
+    }
 
+    @Override
+    public ActionsBuilder press(int x, int y) {
+        touchactionsBuilder().press(x,y);
+        return this;
+    }
+
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsBuilder press(Object locator) {
+        touchactionsBuilder().press(SessionContext.getSession().getWebElement());
+        return this;
+    }
+
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsBuilder press(Object locator, int x, int y) {
+        touchactionsBuilder().press(SessionContext.getSession().getWebElement(),x,y);
+        return this;
+    }
+
+    @Override
+    public ActionsBuilder performTouchActions() {
+        touchactionsBuilder().perform();
+        SessionContext.getSession().getControllers().remove(TouchAction.class);
+        SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((MobileDriver) SessionControl.webController().driverInstance()));
+        return this;
+    }
 
 }

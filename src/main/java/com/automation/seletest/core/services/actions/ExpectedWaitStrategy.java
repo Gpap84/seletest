@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,10 +23,12 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.services.actions;
 
 
+
+import java.util.List;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebElement;
@@ -45,11 +47,8 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 
     @Override
     public WebElement waitForElementPresence(String locator) {
-        return wfExpected().until
-                (ExpectedConditions.
-                        presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+        return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
-
 
     @Override
     public WebElement waitForElementVisibility(Object locator) {
@@ -64,16 +63,64 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         }
     }
 
-
     @Override
-    public WebElement waitForElementToBeClickable(String locator) {
-        return wfExpected().until(ExpectedConditions.elementToBeClickable(Locators.findByLocator(locator).setLocator(locator)));
+    public WebElement waitForElementToBeClickable(Object locator) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.elementToBeClickable(Locators.findByLocator((String)locator).setLocator((String)locator)));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.elementToBeClickable((WebElement)locator));
+        }
+        else{
+            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
+        }
     }
-
 
     @Override
     public Alert waitForAlert() {
         return wfExpected().until(ExpectedConditions.alertIsPresent());
+    }
+
+    @Override
+    public Boolean waitForElementInvisibility(String locator) {
+        return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+    }
+
+    @Override
+    public Boolean waitForTextPresentinElement(Object locator, String text) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElement((WebElement)locator,text));
+        }
+        else{
+            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
+        }
+    }
+
+    @Override
+    public Boolean waitForTextPresentinValue(Object locator,String text) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue((WebElement)locator,text));
+        }
+        else{
+            throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
+        }
+    }
+
+    @Override
+    public List<WebElement> waitForPresenceofAllElements(String locator) {
+        return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
+
+    }
+
+    @Override
+    public List<WebElement> waitForVisibilityofAllElements(String locator) {
+        return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
     }
 
 

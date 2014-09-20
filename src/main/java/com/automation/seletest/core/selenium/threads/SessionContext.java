@@ -1,3 +1,4 @@
+
 /*
 This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
 
@@ -7,9 +8,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,7 +24,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.selenium.threads;
 
 import java.util.Stack;
@@ -34,6 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.aop.target.ThreadLocalTargetSource;
 
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
+import com.automation.seletest.core.selenium.mobileAPI.AppiumDriverController;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
@@ -54,15 +58,6 @@ public class SessionContext {
     public static SessionProperties getSession(){
         return (SessionProperties) innerContext("threadLocalTargetSource").getTarget();
     }
-
-    /**
-     * Get the session in non parallel execution from factory bean
-     * @return
-     */
-    public static SessionProperties getSessionOnTest(){
-        return (SessionProperties) ApplicationContextProvider.getApplicationContext().getBean("engineThread");
-    }
-
     /**
      * Return the ThreadLocalTargetSource
      * @param targetBean
@@ -89,10 +84,17 @@ public class SessionContext {
      * @param sessionObjects
      * @throws Exception
      */
+    @SuppressWarnings("rawtypes")
     public static void setSessionProperties(){
         threadStack.push(getSession());//push instanse of Session to stack
-        log.info("Session started with type of driver: {}", ((WebDriverController)getSession().controllers.get(0)).driverInstance().toString().split(":")[0]);
-        Thread.currentThread().setName("SeletestFramework ["+(((WebDriverController)getSession().controllers.get(0)).driverInstance().toString().split(":")[0])+"] - session Active "+System.currentTimeMillis()%2048);
+        String driver="";
+        if(getSession().controllers.get(WebController.class)!=null) {
+            driver=((WebDriverController)getSession().controllers.get(WebController.class)).getWebDriver().toString().split(":")[0];
+        } else if(getSession().controllers.get(AppiumController.class)!=null) {
+            driver=((AppiumDriverController)getSession().controllers.get(AppiumController.class)).getAppiumDriver().toString().split(":")[0];
+        }
+        log.info("Session started with type of driver: {}", driver);
+        Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);
     }
 
     /**Clean all active threads stored in stack

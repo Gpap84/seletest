@@ -28,21 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.listeners;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.TimeoutException;
-import org.testng.IAnnotationTransformer;
-import org.testng.IRetryAnalyzer;
+import org.apache.commons.io.FileUtils;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
-import org.testng.Reporter;
-import org.testng.annotations.ITestAnnotation;
-
 
 /**
  * Test Listener
@@ -50,7 +44,7 @@ import org.testng.annotations.ITestAnnotation;
  *
  */
 @Slf4j
-public class TestListener implements ITestListener,IAnnotationTransformer{
+public class TestListener implements ITestListener{
 
     private final String screenShots="./target/surefire-reports/screenshots";
     private final String logs="./target/surefire-reports/logs";
@@ -87,6 +81,12 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
                 }
             }
         }
+        try {
+            FileUtils.copyDirectoryToDirectory(new File(new File(context.getSuite().getOutputDirectory()).getParent(),"screenshots"),
+                    new File(new File(context.getSuite().getOutputDirectory()).getParent(),"html"));
+        } catch (IOException e) {
+            log.error("Exception during copying screenshots to HTML folder!!!" + e);
+        }
     }
 
     @Override
@@ -102,6 +102,7 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
     @Override
     public void onTestFailure(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" failed");
+//        ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail("gpapadakis84@gmail.com","Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
     }
 
     @Override
@@ -113,20 +114,6 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 
     }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void transform(ITestAnnotation annotation, Class testClass,
-            Constructor testConstructor, Method testMethod) {
-
-        //Set retry analyzer class for all @Test methods
-        IRetryAnalyzer retry = annotation.getRetryAnalyzer();
-        if (retry==null){
-            annotation.setRetryAnalyzer(RetryAnalyzer.class);
-        }
-
-    }
-
     /**
      * Create a directory
      * @param dir
@@ -137,49 +124,4 @@ public class TestListener implements ITestListener,IAnnotationTransformer{
             currentPath.mkdirs();
         }
     }
-
-    /**
-     * retry analyzer class
-     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
-     *
-     */
-    public class RetryAnalyzer implements IRetryAnalyzer{
-
-        private int count = 0;
-
-        private int maxCount = 1;
-
-        public RetryAnalyzer() {
-            setCount(maxCount);
-        }
-
-        @Override
-        public boolean retry(ITestResult result) {
-
-            if ((!result.isSuccess() &&
-                    (!(result.getThrowable() instanceof TimeoutException)
-                            || !(result.getThrowable() instanceof AssertionError)))) {
-                if (count < maxCount) {
-                    count++;
-                    log.info(Thread.currentThread().getName() + "Error in "
-                            + result.getName() + " with status "
-                            + result.getStatus() + " Retrying " + count + " times");
-                    return true;
-                }
-
-            }
-            else{
-                Reporter.log("<font color=\"#FF00FF\"/>"+Thread.currentThread().getName() + "Error in "
-                        + result.getName() + " with status "
-                        + result.getStatus() + "</font><br>");
-            }
-            return false;
-
-        }
-
-        public void setCount(int count) {
-            maxCount = count;
-        }
-    }
-
 }

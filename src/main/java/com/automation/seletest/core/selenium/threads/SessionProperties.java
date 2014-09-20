@@ -28,21 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.threads;
 
 
-import java.io.File;
-import java.util.ArrayList;
+
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
-import com.automation.seletest.core.services.PerformanceUtils;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 
 /**
@@ -53,25 +50,15 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
 @SuppressWarnings("rawtypes")
 public class SessionProperties {
 
-    /**Performance api*/
-    @Getter @Setter
-    PerformanceUtils performanceUtils;
 
-    /** Array List to store various object*/
+    /**Map with various controllers for test session*/
     @Getter @Setter
-    ArrayList controllers;
+    Map<Class<?>,Object> controllers;
 
     /**The web driver context*/
     @Getter @Setter
     AnnotationConfigApplicationContext driverContext;
 
-    /** The Assertion. */
-    @Getter @Setter
-    AssertTest assertTest;
-
-    /**The actions builder instance*/
-    @Getter @Setter
-    Actions actions;
 
     /**Timeout for waiting until condition fullfilled */
     @Getter @Setter
@@ -85,33 +72,16 @@ public class SessionProperties {
     @Getter @Setter
     WebElement webElement;
 
-    public void cleanSession() throws Exception{
 
-        //Performance collection data
-        if(performanceUtils!=null){
-            performanceUtils.getPerformanceData(performanceUtils.getServer());
-            performanceUtils.writePerformanceData(new File("./target/test-classes/logs/").getAbsolutePath(), performanceUtils.getHar());
-            performanceUtils.stopServer(performanceUtils.getServer());
-            performanceUtils=null;
-            log.info("Performance data collected!!!");
-        }
+    public void cleanSession(){
 
         //Quits driver
-        for(int i=0; i<controllers.size(); i++)
-        {
-            Object controller = controllers.get(i);
-            if(controller instanceof WebController<?> && controller !=null){
-                ((WebController) controller).quit(CloseSession.QUIT);
-            }
+        if(controllers.get(WebController.class)!=null){
+            ((WebController) controllers.get(WebController.class)).quit(CloseSession.QUIT);
         }
 
-        //Initialize Objects of Array List
-        if(controllers!=null){
-            controllers.clear();
-        }
-
-        //Initialize actions Builder
-        actions=null;
+        //Initialize Controllers Array List
+        controllers.clear();
 
         //Destroy the webdriver application context
         driverContext.destroy();

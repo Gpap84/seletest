@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.services.actions;
 
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebElement;
 
@@ -38,36 +40,64 @@ public interface ActionsSync {
 
 
     /** Wait for element to be present in DOM
-     *
-     * @param driver
-     * @param waitSeconds
-     * @param locator
-     * @return
+     * @param locator the locator of the WebElement to wait to be present in DOM
+     * @return WebElement that is present in screen
      */
     WebElement waitForElementPresence(String locator);
 
     /** Wait for element to be visible
-     * @param driver
-     * @param waitSeconds
-     * @param locator
-     * @return
+     * @param locator the locator of the WebElement to wait for visibility
+     * @return WebElement that is visible
      */
     WebElement waitForElementVisibility(Object locator);
 
     /**
      * Wait for element to be clickable
-     * @param driver
-     * @param waitSeconds
-     * @param locator
-     * @return
+     * @param locator the locator of the WebElement to wait to be clickable
+     * @return WebElement that is clickable
      */
-    WebElement waitForElementToBeClickable(String locator);
+    WebElement waitForElementToBeClickable(Object locator);
 
     /**
      * Wait for alert
-     * @param driver
-     * @param waitSeconds
-     * @return
+     * @return Alert
      */
     Alert waitForAlert();
+
+    /**
+     * Wait for element to be invisble
+     * @param locator the locator of the WebElement to wait to become invisible
+     * @return true if element is invisible or false otherwise
+     */
+    Boolean waitForElementInvisibility(String locator);
+
+    /**
+     * Wait for text to be present in Element
+     * @param locator
+     * @return true if text present in webElement or false otherwise
+     */
+    Boolean waitForTextPresentinElement(Object locator,String text);
+
+    /**
+     * Wait for text to be present in attribute value
+     * @param locator
+     * @return true if text present in attribute value or false otherwise
+     */
+    Boolean waitForTextPresentinValue(Object locator,String text);
+
+
+    /**
+     * Wait for elements with matching locator to be present in screen
+     * @param locator
+     * @return List<WebElement> the elements to be present in screen
+     */
+    List<WebElement> waitForPresenceofAllElements(String locator);
+
+    /**
+     * Wait for elements with matching locator to be visible in screen
+     * @param locator
+     * @return List<WebElement> the elements to be visible in screen
+     */
+    List<WebElement> waitForVisibilityofAllElements(String locator);
+
 }

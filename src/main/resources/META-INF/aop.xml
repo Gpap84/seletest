@@ -1,0 +1,5 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+  <weaver options="-XnoInline -Xlint:ignore -verbose -showWeaveInfo -Xset:weaveJavaPackages=true,weaveJavaxPackages=true" />
+</aspectj>

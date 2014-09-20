@@ -33,8 +33,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 /**
  * This annotation executes method of a class after invocation of a method
@@ -47,7 +46,8 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 @Inherited
 public @interface PostConfiguration {
 
-    Class<? extends AbstractTestNGSpringContextTests> classReference();
+
+    Class<? extends AbstractPage<?>> classReference();
 
     String method();
 

@@ -40,9 +40,22 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RetryFailure {
+
+    /**
+     * sleepMillis
+     * @return The thread sleep before reexecuting invoked method
+     */
     int sleepMillis() default 1000;
 
+    /**
+     * retryCount
+     * @return the number of method invocation count
+     */
     int retryCount() default 1;
 
+    /**
+     * message
+     * @return message the message after throwing RunTime exception if after retry the result is the same
+     */
     String message() default "Retry limit exceeded.";
 }

@@ -53,11 +53,6 @@ public class GooglePage extends AbstractPage<GooglePage>{
     @Autowired
     ActionsBuilder action;
 
-
-    public boolean isTextDisplayed(String text) {
-        return SessionControl.webController().driverInstance().getPageSource().contains(text);
-    }
-
     public GooglePage typeSearch(String text){
         SessionControl.webController().getLocation(search);
         SessionControl.webController().enterTo(search, text);

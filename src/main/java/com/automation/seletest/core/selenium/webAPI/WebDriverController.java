@@ -47,6 +47,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -54,22 +55,24 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.actions.AbstractBase;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
-
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 /**
- * This class contains the implementation of webDriver API
+ * This class contains the implementation of webwebDriver API
  * for interaction with UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  *
  */
-@SuppressWarnings({"unchecked"})
+@SuppressWarnings({"unchecked","rawtypes"})
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WebDriverController implements WebController<WebDriverController>{
+public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase implements WebController<WebDriverController>{
 
     @Autowired
     FilesUtils fileService;
@@ -77,34 +80,44 @@ public class WebDriverController implements WebController<WebDriverController>{
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    /**The webDriver object*/
+    /**The remoteWebwebDriver object*/
     @Getter @Setter
-    WebDriver driver;
+    T webDriver;
 
+    /**The Javascript executor*/
     @Getter @Setter
     JavascriptExecutor jsExec;
 
+    /**
+     * Gets the selenium instance.
+     * @param baseUrl the base url
+     * @return the selenium instance
+     */
+    public Selenium getSeleniumInstance(String baseUrl) {
+        return new WebDriverBackedSelenium(webDriver, baseUrl);
+    }
+
     @Override
     public void goToTargetHost(String url) {
-        driver.get(url);
+        webDriver.get(url);
     }
 
     @Override
     public WebDriver driverInstance() {
-        return getDriver();
+        return getWebDriver();
     }
 
     @Override
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
-            driver.quit();
+            webDriver.quit();
             break;
         case CLOSE:
-            driver.close();
+            webDriver.close();
             break;
         default:
-            driver.quit();
+            webDriver.quit();
             break;
         }
     }
@@ -141,20 +154,20 @@ public class WebDriverController implements WebController<WebDriverController>{
      ************************SCREENSHOTS SECTION*********************
      *************************************************************
      */
-
     @Override
     public void takeScreenShot() throws IOException{
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
         File file = fileService.createScreenshotFile();
         FileUtils.copyFile(scrFile, file);
         fileService.reportScreenshot(file);
     }
 
+    @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public void takeScreenShotOfElement(String locator) throws IOException {
-        File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+    public void takeScreenShotOfElement(Object locator) throws IOException {
+        File screenshot = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();
@@ -171,58 +184,54 @@ public class WebDriverController implements WebController<WebDriverController>{
      */
     @Override
     public WebDriverController switchToLatestWindow() {
-        Iterator<String> iterator = driver.getWindowHandles().iterator();
+        Iterator<String> iterator = webDriver.getWindowHandles().iterator();
         String lastWindow = null;
         while (iterator.hasNext()) {
             lastWindow = iterator.next();
         }
-        driver.switchTo().window(lastWindow);
+        webDriver.switchTo().window(lastWindow);
         return this;
     }
 
     /**
-     * Gets the strategy for Wait<WebDriver>
+     * Gets the strategy for Wait<WebwebDriver>
      * @return
      */
     private String getWait(){
         return SessionContext.getSession().getWaitStrategy();
     }
 
-
     /*************************************************************
      ************************COOKIES SECTION*********************
      *************************************************************
      */
     @Override
-    public WebDriverController deleteCookieNamed(String name) {
-        driver.manage().deleteCookieNamed(name);
+    public WebDriverController deleteCookieByName(String name) {
+        webDriver.manage().deleteCookieNamed(name);
         return this;
     }
 
     @Override
-    public WebDriverController cookiesAllDelete() {
-        driver.manage().deleteAllCookies();
+    public WebDriverController deleteAllCookies() {
+        webDriver.manage().deleteAllCookies();
         return this;
     }
-
 
     @Override
-    public WebDriverController cookieAdd(Cookie cookie) {
-        driver.manage().addCookie(cookie);
+    public WebDriverController addCookie(Cookie cookie) {
+        webDriver.manage().addCookie(cookie);
         return this;
     }
-
 
     @Override
     public Set<Cookie> getCookies() {
-        Set<Cookie> cookies=driver.manage().getCookies();
+        Set<Cookie> cookies=webDriver.manage().getCookies();
         return cookies;
     }
 
-
     @Override
-    public WebDriverController cookieDelete(Cookie cookie) {
-        driver.manage().deleteCookie(cookie);
+    public WebDriverController deleteCookie(Cookie cookie) {
+        webDriver.manage().deleteCookie(cookie);
         return this;
     }
 
@@ -232,11 +241,10 @@ public class WebDriverController implements WebController<WebDriverController>{
     }
 
 
-
-
     /**************************************
      **Returning type methods**************
-     ***************************************/
+     **************************************/
+
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
@@ -267,19 +275,18 @@ public class WebDriverController implements WebController<WebDriverController>{
 
     @Override
     public String getPageSource() {
-        return driver.getPageSource();
+        return webDriver.getPageSource();
     }
 
     /**************************************
-     *Verification type methods**************
-     ***************************************/
+     *Verification type methods************
+     **************************************/
 
     @Override
     public boolean isWebElementPresent(String locator) {
         factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
         return true;
     }
-
 
     @Override
     public boolean isTextPresent(String text) {
@@ -288,6 +295,12 @@ public class WebDriverController implements WebController<WebDriverController>{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean isWebElementVisible(Object locator) {
+        factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        return true;
     }
 
 }

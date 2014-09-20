@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,17 +23,19 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.services;
 
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,54 +43,43 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.testng.ITestContext;
 import org.testng.Reporter;
+import org.testng.SkipException;
 
 import au.com.bytecode.opencsv.CSVReader;
+
+import com.automation.seletest.core.services.annotations.DataDriven;
 
 /**
  * This class operates as a service for reading properties from various input types
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ * @param <T>
  *
  */
-@Service
 @Slf4j
+@Service
 public class FilesUtils {
-
-
-	/**
-	 * Read data from CSV file lying inside a JAR
-	 * @param filePathToJar
-	 * @return
-	 * @throws IOException
-	 */
-    @SuppressWarnings({ "resource", "unused" })
-	public HashMap<String, String> readcsvDatafromJar(InputStream filepath)throws IOException {
-    	HashMap<String, String> parametersCSV=new HashMap<>();
-    	CSVReader reader = new CSVReader(new InputStreamReader(filepath));
-        String [] nextLine;
-        int i=0;
-        while ((nextLine = reader.readNext()) != null) {
-        	parametersCSV.put(nextLine[0], nextLine[1]);
-            i++;
-        }
-        return parametersCSV;
-    }
-
 
     /**
      * Read data from CSV file
      * @param filepath
-     * @return
+     * @return HashMap<String, String> with the stored data
      * @throws IOException
      */
     @SuppressWarnings({ "unused", "resource" })
-	public HashMap<String, String> readcsvData(String filepath)throws IOException {
-    	HashMap<String, String> parametersCSV=new HashMap<>();
-        CSVReader reader = new CSVReader(new FileReader(filepath));
-        String [] nextLine;
-        int i=0;
-        while ((nextLine = reader.readNext()) != null) {
-        	parametersCSV.put(nextLine[0], nextLine[1]);
-            i++;
+    private HashMap<String, String> readcsvData(String filepath) {
+        HashMap<String, String> parametersCSV=new HashMap<>();
+        CSVReader reader;
+        try {
+            reader = new CSVReader(new FileReader(filepath));
+            String [] nextLine;
+            int i=0;
+            while ((nextLine = reader.readNext()) != null) {
+                parametersCSV.put(nextLine[0], nextLine[1]);
+                i++;
+            }
+        } catch (Exception e) {
+            log.error("Exception during loading test data sources: "+e);
+            throw new SkipException("Data not loaded for test execution!!!");
         }
         return parametersCSV;
     }
@@ -133,6 +124,62 @@ public class FilesUtils {
             return "."+relative.replace('\\', '/');
         }
         return file.getPath();
+    }
+
+    /**
+     * Read data from various external sources and return to a Map
+     * @param method
+     * @return
+     */
+    public Map<String, String> readData(final Method method) {
+
+        String inputFile=null;
+        DataDriven testData=null;
+        Map<String, String> data = new HashMap<String, String>();
+
+        if(method.isAnnotationPresent(DataDriven.class) && method.getAnnotation(DataDriven.class).filePath() !=""){
+            testData=method.getAnnotation(DataDriven.class);
+        } else if(method.getDeclaringClass().isAnnotationPresent(DataDriven.class) && method.getDeclaringClass().getAnnotation(DataDriven.class).filePath()!=""){
+            testData=method.getDeclaringClass().getAnnotation(DataDriven.class);
+        } else {
+            throw new SkipException("The path to the file is undefined!!!");
+        }
+
+        inputFile=new File(testData.filePath()).getAbsolutePath();
+
+        if(inputFile.endsWith(".properties")) {
+            data=readDataFromProperties(inputFile);
+        } else if(inputFile.endsWith(".csv")) {
+            data=readcsvData(inputFile);
+        }
+        return data;
+    }
+
+    /**
+     * Read Data from a properties file
+     * @param inputFile
+     * @return
+     */
+    private Map<String, String> readDataFromProperties(String inputFile){
+        Properties prop=new Properties();
+        Map<String, String> map = new HashMap<String, String>();
+        try {
+            prop.load(new FileReader(inputFile));
+            Enumeration<?> keys = prop.propertyNames();
+            while(keys.hasMoreElements()){
+                String key = (String)keys.nextElement();
+                String value = (String) prop.get(key);
+                if(!value.isEmpty()){
+                    map.put(key,prop.getProperty(key));
+                } else {
+                    log.error("No value specified for key: "+key);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Exception during loading test data sources: "+e);
+            throw new SkipException("Data not loaded for test execution!!!");
+        }
+        return map;
     }
 
 

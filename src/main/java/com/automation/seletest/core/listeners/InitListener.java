@@ -27,6 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.automation.seletest.core.listeners;
 
+
+import java.io.File;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -35,8 +38,10 @@ import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.annotations.AppTest;
-import com.automation.seletest.core.services.properties.CoreProperties;
+
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.PerformanceUtils;
+import com.automation.seletest.core.services.annotations.SeleniumTest;
 
 @Slf4j
 public class InitListener implements IInvokedMethodListener{
@@ -45,19 +50,12 @@ public class InitListener implements IInvokedMethodListener{
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
         log.debug("Specify browser type by finding custom annotation on class level!!!");
-        AppTest appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), AppTest.class);
-
-        //Set parameter for specifying Application Type
-        if(method.getTestMethod().isBeforeSuiteConfiguration()){
-            if(appTest!=null){
-                testResult.getTestContext().getCurrentXmlTest().addParameter(CoreProperties.APPLICATION_TYPE.get(), CoreProperties.WEBTYPE.get());
-            }
-        }
+        SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
 
         //Set assertion type (Hard / Soft) for this test method
         if(method.getTestMethod().isTest()){
-            appTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), AppTest.class);
-            SessionControl.verifyController().setAssertionType(appTest.assertion());
+            seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
+            SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
         }
 
     }
@@ -65,12 +63,16 @@ public class InitListener implements IInvokedMethodListener{
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         if(method.getTestMethod().isTest()){
+            PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
+
+            //Performance collection data
+            if(perf!=null){
+                perf.getPerformanceData(perf.getServer());
+                perf.writePerformanceData(new File("./target/surefire-reports/logs/"+testResult.getName()+".har").getAbsolutePath(), perf.getHar());
+                perf.stopServer(perf.getServer());
+                log.info("Performance data collected for test: {} !!!",testResult.getName());
+            }
         }
     }
-
-
-
-
-
 }

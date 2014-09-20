@@ -2,17 +2,32 @@
 <suite name="Google Search Demo" verbose="2" parallel="methods" thread-count="2">
 
  
- <parameter name="profileDriver" value="chrome" />
-  <parameter name="hostURL" value="http://www.google.gr/" />
- 
+
+ <parameter name="hostURL" value="http://www.google.gr/" />
+ <parameter name="gridHost" value="http://localhost" />
+ <parameter name="gridPort" value="4444" />
+   
  <listeners>
   <listener class-name="org.uncommons.reportng.HTMLReporter"/>
   <listener class-name="com.automation.seletest.core.listeners.TestListener"/>
+  <listener class-name="com.automation.seletest.core.listeners.AnnotationTransformer"/>
 </listeners>
 
 
 <test
- name="Google Search">
+ name="Google Search on Selenium Grid">
+   <parameter name="profileDriver" value="seleniumGrid" />
+   <parameter name="browserType" value="chrome" />  
+  <classes>
+   <class
+    name="DemoTest.GoogleTest">
+   </class>
+  </classes>
+  </test>
+  
+<test
+ name="Google Search on local environment">
+     <parameter name="profileDriver" value="chrome" />
   <classes>
    <class
     name="DemoTest.GoogleTest">

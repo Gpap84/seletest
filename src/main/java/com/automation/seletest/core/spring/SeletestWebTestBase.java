@@ -1,3 +1,4 @@
+
 /*
 This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
 
@@ -79,7 +80,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
 
     @BeforeSuite(alwaysRun = true)
     protected void suiteSettings(ITestContext ctx) throws Exception {
-
+        log.debug("Suite : "+ctx.getCurrentXmlTest().getSuite().getName()+" started at: {}",ctx.getStartDate());
     }
 
     @BeforeTest(alwaysRun = true)
@@ -152,9 +153,9 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     /**Prepare initialization*/
     private void initializeSession(ITestContext ctx){
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
-        if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.WEBTYPE.get())==0){
+        if(!ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
             publisher.publishInitializationEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
-        } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.APPLICATION_TYPE.get()).compareTo(CoreProperties.MOBILETYPE.get())==0){
+        } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
             publisher.publishInitializationEvent(INIT_APPIUM, null,false,ctx,false);
         } else {
             throw new RuntimeException(TEST_TYPE);

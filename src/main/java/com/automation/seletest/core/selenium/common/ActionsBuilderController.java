@@ -33,14 +33,14 @@ public interface ActionsBuilderController {
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
      * @param locator
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder click(Object locator);
 
     /**
      * Moves the mouse to the middle of the element
      * @param locator
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder mouseOver(Object locator);
 
@@ -48,7 +48,7 @@ public interface ActionsBuilderController {
      * Performs a modifier key release.
      * Releasing a non-depressed modifier key will yield undefined behaviour.
      * @param key
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder mouseUp(Keys key);
 
@@ -58,7 +58,7 @@ public interface ActionsBuilderController {
      * Note that the modifier key is never released implicitly - either keyUp(theKey) or sendKeys(Keys.NULL)
      *  must be called to release the modifier.
      * @param key
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder mouseDown(Keys key);
 
@@ -66,7 +66,7 @@ public interface ActionsBuilderController {
      * Move to element first and then perform mouseDown
      * @param locator
      * @param key
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder mouseDown(Object locator, Keys key);
 
@@ -74,21 +74,75 @@ public interface ActionsBuilderController {
      * Move to element and then perform mouseUp
      * @param locator
      * @param key
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder mouseUp(Object locator, Keys key);
 
     /**
      * Clicks (without releasing) in the middle of the given element. This is equivalent to: Actions.moveToElement(onElement).clickAndHold()
-     * @param locator
-     * @return
+     * @param locator of WebElement to click and hold
+     * @return instance of ActionBuilder
      */
     ActionsBuilder clickAndHold(Object locator);
 
     /**
      * Performs the sequence of actions represented by this instance
-     * @return
+     * @return instance of ActionBuilder
      */
     ActionsBuilder performActions();
+
+    /**
+     * Performs the sequence of TouchAction represented by this instance
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder performTouchActions();
+
+    /**
+     * Tap on WebElement in native apps
+     * @param locator element to tap
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder tap(Object locator);
+
+    /**
+     * Tap an element, offset from upper left corner
+     * @param locator locator element to tap
+     * @param x x offset
+     * @param y y offset
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder tap(Object locator,int x, int y);
+
+    /**
+     * Tap on specific location in screen
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder tap(int x, int y);
+
+    /**
+     * Press on an absolute position on the screen
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return ActionsBuilder
+     */
+    ActionsBuilder press(int x, int y);
+
+    /**
+     * Press on WebElement in native apps
+     * @param locator element to press
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder press(Object locator);
+
+    /**
+     * Press an element, offset from upper left corner
+     * @param locator locator element to press
+     * @param x x offset
+     * @param y y offset
+     * @return instance of ActionBuilder
+     */
+    ActionsBuilder press(Object locator, int x, int y);
 
 }

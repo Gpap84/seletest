@@ -31,7 +31,6 @@ import io.appium.java_client.TouchAction;
 
 import java.util.HashMap;
 
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ScreenOrientation;
 
 
@@ -176,13 +175,6 @@ public interface AppiumController<T> {
      */
     T swipe(int startx, int starty, int endx, int endy, int duration);
 
-
-    /**
-     * Get the Dimensions of the screen
-     * @return Dimensions
-     */
-    Dimension getScreenDimensions();
-
     /**
      * Executes javascript
      * @param driverCommand
@@ -190,12 +182,6 @@ public interface AppiumController<T> {
      * @return
      */
     T executeScript(String driverCommand, HashMap<String, ?> parameters);
-
-    /**
-     * Navigate Back
-     * @return
-     */
-    T navigateBack();
 
     /**
      * Gets the currently focused activity

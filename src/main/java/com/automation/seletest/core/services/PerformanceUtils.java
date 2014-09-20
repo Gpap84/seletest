@@ -76,8 +76,9 @@ public class PerformanceUtils {
      * @return
      * @throws Exception
      */
-    public Proxy proxy(ProxyServer server) throws Exception{
-        Proxy proxy = server.seleniumProxy();
+    public Proxy proxy(int port) throws Exception{
+        Proxy proxy = new Proxy();
+        proxy.setHttpProxy("localhost:"+port+"");
         return proxy;
     }
 
@@ -98,7 +99,7 @@ public class PerformanceUtils {
      * @param harFile
      * @throws IOException
      */
-    public void writePerformanceData(String path, Har harFile) throws IOException{
+    public void writePerformanceData(String path, Har harFile){
         try{
             FileOutputStream fos = new FileOutputStream(path);
             harFile.writeTo(fos);}
@@ -113,8 +114,12 @@ public class PerformanceUtils {
      * @return
      * @throws Exception
      */
-    public PerformanceUtils stopServer(ProxyServer server) throws Exception{
-        server.stop();
+    public PerformanceUtils stopServer(ProxyServer server){
+        try {
+            server.stop();
+        } catch (Exception e) {
+           log.error("Server cannot be stopped!!"+e);
+        }
         return this;
     }
 

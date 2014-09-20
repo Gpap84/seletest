@@ -26,16 +26,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.services;
 
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.testng.Reporter;
-
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 
 /**
  * Methods for logging
@@ -123,10 +119,6 @@ public class LogUtils {
             beforeSplitMessage=message;
         }
         Reporter.log("<b><p class=\"testOutput\" style=\"color:red; font-size:1em;\" onclick=\"javascript:alert('"+alertmessage+"');\">"+beforeSplitMessage+"</p></b>");
-        try {
-            SessionControl.webController().takeScreenShot();
-        } catch (IOException ioe ) {
-        }
     }
 
 

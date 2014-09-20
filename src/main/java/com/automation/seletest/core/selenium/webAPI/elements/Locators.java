@@ -105,6 +105,15 @@ public enum Locators {
             return ByJQuerySelector.ByJQuery(findLocatorSubstring(locator));
         }
     },
+
+    /** The Constant CLASSNAME. */
+    CLASSNAME("className"){
+
+        @Override
+        public By setLocator(String locator) {
+            return By.className(findLocatorSubstring(locator));
+        }
+    },
    ;
     public abstract By setLocator(String locator);
 

@@ -36,10 +36,10 @@ public enum CoreProperties {
 
     /**************************Parameters XML**********************/
     /** The parameter that determines the browser type to be used. */
-    BROWSERTYPE("BrowserType"),
+    BROWSERTYPE("browserType"),
 
     /** The parameter that determines the type of Application under Test. */
-    APPLICATION_TYPE("ApplicationType"),
+    APPLICATION_TYPE("applicationType"),
 
     /** The parameter that determines that application is Web based. */
     WEBTYPE("web"),
