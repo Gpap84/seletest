@@ -40,8 +40,8 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -62,6 +62,9 @@ public class ActionsHandler extends SuperAspect {
     /**Wait Strategy*/
     @Autowired
     StrategyFactory<?> factoryStrategy;
+
+    @Autowired
+    WebController<?> webControl;
 
     private final String takeScreencap="Take screenshot after exception: ";
 
@@ -87,7 +90,7 @@ public class ActionsHandler extends SuperAspect {
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
         if(ex instanceof WebDriverException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-            SessionControl.webController().takeScreenShot();
+            webControl.takeScreenShot();
         } else {
             log.error(unknownException+ex.getMessage());
         }

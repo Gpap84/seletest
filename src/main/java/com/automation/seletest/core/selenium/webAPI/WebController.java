@@ -32,7 +32,6 @@ import java.util.Set;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -40,7 +39,6 @@ import org.openqa.selenium.WebElement;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-@SuppressWarnings("hiding")
 public interface WebController<T> {
 
     /**
@@ -48,7 +46,7 @@ public interface WebController<T> {
      * @param locator
      * @return
      */
-    WebElement findElement(String locator);
+    WebElement findElement(Object locator);
 
     /**
      * Click function
@@ -81,11 +79,6 @@ public interface WebController<T> {
      */
     public enum CloseSession{QUIT,CLOSE};
 
-    /**
-     * Gets the driver instance
-     * @return
-     */
-    <T extends WebDriver> T driverInstance();
 
     /**
      * Gets URL

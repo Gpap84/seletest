@@ -35,7 +35,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -59,7 +59,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @return T the type of object
      */
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
+        T page = PageFactory.initElements(SessionContext.getSession().getWebDriver(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
         waitForPageToLoad(pageLoadCondition);
         return page;
@@ -76,7 +76,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @param pageLoadCondition
      */
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionControl.webController().driverInstance())
+        Wait wait = new FluentWait(SessionContext.getSession().getWebDriver())
                 .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 

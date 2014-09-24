@@ -33,7 +33,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 
@@ -51,7 +50,7 @@ public abstract class AbstractBase {
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    public static abstract class WaitBase extends SessionControl implements ActionsSync{
+    public static abstract class WaitBase implements ActionsSync{
 
         private final String webDriverWait="wdWait";
         private final String fluentWait="fwWait";
@@ -70,7 +69,7 @@ public abstract class AbstractBase {
          * @return
          */
         public WebDriverWait wfExpected(){
-            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{super.webController().driverInstance()});
+            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
 
         /**
@@ -80,7 +79,7 @@ public abstract class AbstractBase {
          * @return
          */
         public Wait<WebDriver> fluentWait(String msg){
-            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{super.webController().driverInstance(), msg});
+            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
 
         /**

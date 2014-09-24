@@ -35,9 +35,6 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
@@ -45,17 +42,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.FilesUtils;
-import com.automation.seletest.core.services.actions.AbstractBase;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
@@ -64,16 +57,15 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
- * This class contains the implementation of webwebDriver API
+ * This class contains the implementation of WebDriver 2 API
  * for interaction with UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  *
  */
-@SuppressWarnings({"unchecked","rawtypes"})
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase implements WebController<WebDriverController>{
+@SuppressWarnings("rawtypes")
+public class WebDriverController<T extends RemoteWebDriver> implements WebController<WebController<T>>{
 
     @Autowired
     FilesUtils fileService;
@@ -81,13 +73,14 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    /**The remoteWebwebDriver object*/
-    @Getter @Setter
-    T webDriver;
+    /**
+     * RemoteWebDriver
+     * @return RemoteWebDriver instance per thread
+     */
+    private RemoteWebDriver webDriver(){
+        return SessionContext.getSession().getWebDriver();
+    }
 
-    /**The Javascript executor*/
-    @Getter @Setter
-    JavascriptExecutor jsExec;
 
     /**
      * Gets the selenium instance.
@@ -95,30 +88,26 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
      * @return the selenium instance
      */
     public Selenium getSeleniumInstance(String baseUrl) {
-        return new WebDriverBackedSelenium(webDriver, baseUrl);
+        return new WebDriverBackedSelenium(webDriver(), baseUrl);
     }
 
     @Override
     public void goToTargetHost(String url) {
-        webDriver.get(url);
+        webDriver().get(url);
     }
 
-    @Override
-    public WebDriver driverInstance() {
-        return getWebDriver();
-    }
 
     @Override
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
-            webDriver.quit();
+            webDriver().quit();
             break;
         case CLOSE:
-            webDriver.close();
+            webDriver().close();
             break;
         default:
-            webDriver.quit();
+            webDriver().quit();
             break;
         }
     }
@@ -131,7 +120,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
     @Override
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
-    public WebDriverController clickTo(Object locator) {
+    public WebController clickTo(Object locator) {
         SessionContext.getSession().getWebElement().click();
         return this;
     }
@@ -139,14 +128,15 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
     @Override
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
-    public WebDriverController enterTo(Object locator, String text) {
+    public WebController enterTo(Object locator, String text) {
         SessionContext.getSession().getWebElement().sendKeys(text);
         return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public WebDriverController changeStyle(Object locator, String attribute, String attributevalue) {
+    public WebController changeStyle(Object locator, String attribute, String attributevalue) {
+        JavascriptExecutor jsExec=webDriver();
         jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
         return this;
     }
@@ -157,7 +147,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
      */
     @Override
     public void takeScreenShot() throws IOException{
-        File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
+        File scrFile = ((TakesScreenshot) webDriver()).getScreenshotAs(OutputType.FILE);
         File file = fileService.createScreenshotFile();
         FileUtils.copyFile(scrFile, file);
         fileService.reportScreenshot(file);
@@ -166,7 +156,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public void takeScreenShotOfElement(Object locator) throws IOException {
-        File screenshot = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
+        File screenshot = ((TakesScreenshot)webDriver()).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
         WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
@@ -185,12 +175,12 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
      */
     @Override
     public WebDriverController switchToLatestWindow() {
-        Iterator<String> iterator = webDriver.getWindowHandles().iterator();
+        Iterator<String> iterator = webDriver().getWindowHandles().iterator();
         String lastWindow = null;
         while (iterator.hasNext()) {
             lastWindow = iterator.next();
         }
-        webDriver.switchTo().window(lastWindow);
+        webDriver().switchTo().window(lastWindow);
         return this;
     }
 
@@ -208,36 +198,36 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
      */
     @Override
     public WebDriverController deleteCookieByName(String name) {
-        webDriver.manage().deleteCookieNamed(name);
+        webDriver().manage().deleteCookieNamed(name);
         return this;
     }
 
     @Override
     public WebDriverController deleteAllCookies() {
-        webDriver.manage().deleteAllCookies();
+        webDriver().manage().deleteAllCookies();
         return this;
     }
 
     @Override
     public WebDriverController addCookie(Cookie cookie) {
-        webDriver.manage().addCookie(cookie);
+        webDriver().manage().addCookie(cookie);
         return this;
     }
 
     @Override
     public Set<Cookie> getCookies() {
-        Set<Cookie> cookies=webDriver.manage().getCookies();
+        Set<Cookie> cookies=webDriver().manage().getCookies();
         return cookies;
     }
 
     @Override
     public WebDriverController deleteCookie(Cookie cookie) {
-        webDriver.manage().deleteCookie(cookie);
+        webDriver().manage().deleteCookie(cookie);
         return this;
     }
 
     @Override
-    public WebElement findElement(String locator) {
+    public WebElement findElement(Object locator) {
         return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
     }
 
@@ -276,7 +266,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends AbstractBase
 
     @Override
     public String getPageSource() {
-        return webDriver.getPageSource();
+        return webDriver().getPageSource();
     }
 
     /**************************************

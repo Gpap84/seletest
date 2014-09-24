@@ -26,18 +26,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.threads;
 
+import io.appium.java_client.AppiumDriver;
+
 import java.util.Stack;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 
-import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.mobileAPI.AppiumDriverController;
-import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 
@@ -47,12 +46,12 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
  *
  */
 @Slf4j
+@SuppressWarnings("rawtypes")
 public class SessionContext {
-
 
     /**
      * Get the thread in parallel execution from a target Source
-     * @return
+     * @return SessionProperties instance
      */
     public static SessionProperties getSession(){
         return (SessionProperties) innerContext("threadLocalTargetSource").getTarget();
@@ -60,7 +59,7 @@ public class SessionContext {
     /**
      * Return the ThreadLocalTargetSource
      * @param targetBean
-     * @return
+     * @return ThreadLocalTargetSource instance
      */
     protected static ThreadLocalTargetSource innerContext(String targetBean) {
         return (ThreadLocalTargetSource) ApplicationContextProvider.getApplicationContext().getBean(targetBean);
@@ -83,14 +82,13 @@ public class SessionContext {
      * @param sessionObjects
      * @throws Exception
      */
-    @SuppressWarnings("rawtypes")
     public static void setSessionProperties(){
         threadStack.push(getSession());//push instanse of Session to stack
         String driver="";
-        if(getSession().controllers.get(WebController.class)!=null) {
-            driver=((WebDriverController)getSession().controllers.get(WebController.class)).getWebDriver().toString().split(":")[0];
-        } else if(getSession().controllers.get(AppiumController.class)!=null) {
-            driver=((AppiumDriverController)getSession().controllers.get(AppiumController.class)).getAppiumDriver().toString().split(":")[0];
+        if(getSession().getWebDriver() instanceof RemoteWebDriver) {
+            driver="Web test type: "+getSession().getWebDriver().toString().split(":")[0];
+        } else if(getSession().getWebDriver() instanceof AppiumDriver) {
+            driver="Mobile test type: "+getSession().getWebDriver().toString().split(":")[0];
         }
         log.info("Session started with type of driver: {}", driver);
         Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);

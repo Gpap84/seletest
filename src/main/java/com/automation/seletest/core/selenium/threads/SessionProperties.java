@@ -35,6 +35,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.webAPI.WebController;
@@ -44,10 +46,13 @@ import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 /**
  * Custom objects per session
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ * @param <T>
  */
 @Slf4j
-@SuppressWarnings("rawtypes")
-public class SessionProperties {
+public class SessionProperties<T extends RemoteWebDriver> {
+
+    @Autowired
+    WebController<?> webControl;
 
     /**Map with various controllers for test session*/
     @Getter @Setter
@@ -61,6 +66,10 @@ public class SessionProperties {
     @Getter @Setter
     int waitUntil = 5;
 
+    /**The remoteWebDriver object*/
+    @Getter @Setter
+    T webDriver;
+
     /** Wait Strategy*/
     @Getter @Setter
     String waitStrategy="DEFAULT";
@@ -72,8 +81,8 @@ public class SessionProperties {
     public void cleanSession(){
 
         //Quits driver
-        if(controllers.get(WebController.class)!=null){
-            ((WebController) controllers.get(WebController.class)).quit(CloseSession.QUIT);
+        if(webDriver!=null){
+            webControl.quit(CloseSession.QUIT);
         }
 
         //Initialize Controllers Array List

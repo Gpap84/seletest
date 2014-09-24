@@ -26,9 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.configuration;
 
-import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
+import io.appium.java_client.TouchAction;
+
+import org.openqa.selenium.interactions.Actions;
+
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 /**
@@ -37,29 +39,30 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
  *
  */
 public class SessionControl {
-
-    /**
-     * webController for this test instance
-     * @return WebController<?>
-     */
-    public static <T> WebController<?> webController(){
-        return (WebController<?>) SessionContext.getSession().getControllers().get(WebController.class);
-    }
-
-    /**
-     * appiumController for this test instance
-     * @return AppiumController<?>
-     */
-    public static <T> AppiumController<?> appiumController(){
-        return (AppiumController<?>) SessionContext.getSession().getControllers().get(AppiumController.class);
-    }
-
     /**
      * verifyController for this test instance
      * @return AssertTest instance
      */
     public static <T> AssertTest<?> verifyController(){
         return (AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class);
+    }
+
+
+    /**
+     * Actions builder
+     * @return Actions instance
+     */
+    public static Actions actionsBuilder(){
+        return ((Actions) SessionContext.getSession().getControllers().get(Actions.class));
+    }
+
+
+    /**
+     * TouchAction builder
+     * @return TouchAction instance
+     */
+    public static TouchAction touchactionsBuilder(){
+        return ((TouchAction) SessionContext.getSession().getControllers().get(TouchAction.class));
     }
 
 }

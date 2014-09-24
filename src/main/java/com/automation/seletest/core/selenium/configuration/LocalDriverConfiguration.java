@@ -192,7 +192,6 @@ public class LocalDriverConfiguration {
             return new InternetExplorerDriver(capabilities.merge(cap()));
         }
 
-        //Internet Explorer capabilities for security bypass
         private DesiredCapabilities cap(){
             DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
             capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
@@ -270,7 +269,6 @@ public class LocalDriverConfiguration {
             return new PhantomJSDriver(capabilities.merge(securityCap()));
         }
 
-        //PhantomJS for security bypass and executable file
         private DesiredCapabilities securityCap(){
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,new File(env.getProperty("PhantomJSDriverPath")).getAbsolutePath());

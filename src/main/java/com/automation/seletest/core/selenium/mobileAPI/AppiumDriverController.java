@@ -33,145 +33,145 @@ import io.appium.java_client.TouchAction;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.openqa.selenium.ScreenOrientation;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.services.actions.AbstractBase;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 
 
 /**
- * AppiumDriverController api for iOS-Android native app interaction
+ * driver()Controller api for iOS-Android native app interaction
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings("rawtypes")
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AppiumDriverController extends AbstractBase implements AppiumController<AppiumDriverController>{
+public class AppiumDriverController implements AppiumController<AppiumController>{
 
-    @Getter @Setter
-    AppiumDriver appiumDriver;
+    /**
+     *Appium Driver
+     * @return AppiumDriver instance per thread
+     */
+    private AppiumDriver driver(){
+        return (AppiumDriver) SessionContext.getSession().getWebDriver();
+    }
 
     @Override
-    public AppiumDriverController launchApp() {
-        appiumDriver.launchApp();
+    public AppiumController launchApp() {
+        driver().launchApp();
         return this;
     }
 
     @Override
-    public AppiumDriverController resetApp() {
-        appiumDriver.resetApp();
+    public AppiumController resetApp() {
+        driver().resetApp();
         return this;
     }
 
     @Override
-    public AppiumDriverController runAppinBackground(int sec) {
-        appiumDriver.runAppInBackground(sec);
+    public AppiumController runAppinBackground(int sec) {
+        driver().runAppInBackground(sec);
         return this;
     }
 
     @Override
-    public AppiumDriverController closeApp() {
-        appiumDriver.closeApp();
+    public AppiumController closeApp() {
+        driver().closeApp();
         return this;
     }
 
     @Override
-    public AppiumDriverController installApp(String bundleId, String appPath) {
+    public AppiumController installApp(String bundleId, String appPath) {
         Map<String, String> args = new HashMap<String, String>();
         args.put("appPath", appPath);
-        appiumDriver.installApp(appPath);
+        driver().installApp(appPath);
         return this;
     }
 
     @Override
-    public AppiumDriverController performTouchAction(TouchAction e) {
-        appiumDriver.performTouchAction(e);
+    public AppiumController performTouchAction(TouchAction e) {
+        driver().performTouchAction(e);
         return this;
     }
 
     @Override
-    public AppiumDriverController performMultiTouchAction(MultiTouchAction e) {
-        appiumDriver.performMultiTouchAction(e);
+    public AppiumController performMultiTouchAction(MultiTouchAction e) {
+        driver().performMultiTouchAction(e);
         return this;
     }
 
     @Override
-    public AppiumDriverController hideKeyboard() {
-        appiumDriver.hideKeyboard();
+    public AppiumController hideKeyboard() {
+        driver().hideKeyboard();
         return this;
     }
 
     @Override
-    public AppiumDriverController rotate(ScreenOrientation e) {
-        appiumDriver.rotate(e);
+    public AppiumController rotate(ScreenOrientation e) {
+        driver().rotate(e);
         return this;
     }
 
     @Override
     public ScreenOrientation getscreen() {
-        return appiumDriver.getOrientation();
+        return driver().getOrientation();
     }
 
     @Override
     public MultiTouchAction getMultiTouchAction() {
-        return new MultiTouchAction(appiumDriver);
+        return new MultiTouchAction(driver());
     }
 
     @Override
     public boolean isAppInstalled(String bundleId) {
-        return appiumDriver.isAppInstalled(bundleId);
+        return driver().isAppInstalled(bundleId);
     }
 
     @Override
-    public AppiumDriverController pinch(int x, int y) {
-        appiumDriver.pinch(x, y);
+    public AppiumController pinch(int x, int y) {
+        driver().pinch(x, y);
         return this;
     }
 
     @Override
-    public AppiumDriverController lockScreen(int sec) {
-        appiumDriver.lockScreen(sec);
+    public AppiumController lockScreen(int sec) {
+        driver().lockScreen(sec);
         return this;
     }
 
     @Override
-    public AppiumDriverController tap(int finger, int y, int z, int duration) {
-        appiumDriver.tap(finger,y,z,duration);
+    public AppiumController tap(int finger, int y, int z, int duration) {
+        driver().tap(finger,y,z,duration);
         return this;
     }
 
     @Override
-    public AppiumDriverController shake() {
-        appiumDriver.shake();
+    public AppiumController shake() {
+        driver().shake();
         return this;
     }
 
     @Override
-    public AppiumDriverController zoom(int x, int y) {
-        appiumDriver.zoom(x, y);
+    public AppiumController zoom(int x, int y) {
+        driver().zoom(x, y);
         return this;
     }
 
     @Override
-    public AppiumDriverController swipe(int startx, int starty, int endx, int endy,
+    public AppiumController swipe(int startx, int starty, int endx, int endy,
             int duration) {
-        appiumDriver.swipe(startx, starty, endx, endy, duration);
+        driver().swipe(startx, starty, endx, endy, duration);
         return this;
     }
 
     @Override
-    public AppiumDriverController executeScript(String driverCommand, HashMap<String, ?> parameters) {
-        appiumDriver.execute(driverCommand, parameters);
+    public AppiumController executeScript(String driverCommand, HashMap<String, ?> parameters) {
+        driver().execute(driverCommand, parameters);
         return this;
     }
 
     @Override
     public String getCurrentActivity() {
-        return appiumDriver.currentActivity();
+        return driver().currentActivity();
     }
 }

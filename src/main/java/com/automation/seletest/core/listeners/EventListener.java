@@ -36,12 +36,13 @@ import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -54,10 +55,8 @@ import com.automation.seletest.core.selenium.configuration.LocalDriverConfigurat
 import com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.mobileAPI.AppiumDriverController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
@@ -87,33 +86,28 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     }
 
     /**
-     * Initializa class
+     * Initialization class
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
+    @Configurable
     static class Initialize {
+
+        @Autowired
+        WebController<?> webControl;
+
+        @Autowired
+        AppiumController<?> mobileControl;
+
         /**
          * Initialize Web or Mobile session
          * @param event
          * @throws Exception
          */
         public void initializeSession(ApplicationEvent event) throws Exception{
-
-            WebDriverController wdController=null;
-            AppiumDriverController adController=null;
             WebDriver driver=null;
             SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
-
-            if(((InitializationEvent) event).isWeb()){
-                wdController = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
-                SessionContext.getSession().getControllers().put(WebController.class,wdController);
-
-            } else {
-                adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
-                SessionContext.getSession().getControllers().put(AppiumController.class,adController);
-            }
-
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
             /*************************
@@ -158,14 +152,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(((InitializationEvent) event).isWeb()) {
-                wdController.setWebDriver((RemoteWebDriver) driver);
-                wdController.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
-                wdController.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
-
+                SessionContext.getSession().setWebDriver((RemoteWebDriver)driver);
+                webControl.goToTargetHost(((InitializationEvent) event).getHostUrl());
             } else {
-                adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
-                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction(adController.getAppiumDriver()));
-                adController.installApp(bundleId,appPath).launchApp();//install .app or .apk file in mobile device and launch native app
+                SessionContext.getSession().setWebDriver((AppiumDriver)driver);
+                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
+                mobileControl.installApp(bundleId,appPath);
+                mobileControl.launchApp();
             }
 
             //Set objects for this test instance

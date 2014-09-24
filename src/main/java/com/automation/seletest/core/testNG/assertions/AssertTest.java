@@ -37,8 +37,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -63,6 +63,9 @@ public class AssertTest<T extends Assertion> {
 
     @Autowired
     StrategyFactory<?> waitFor;
+
+    @Autowired
+    WebController<?> webControl;
 
     /**
      * Specify the type of assertion (Hard or Soft) for this test
@@ -94,7 +97,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator", screenShot = false)
     public AssertTest elementPresent(String locator) {
-        assertion.assertTrue(SessionControl.webController().isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
+        assertion.assertTrue(webControl.isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
         return this;
     }
 
@@ -105,7 +108,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
     public AssertTest elementVisible(String locator) {
-        assertion.assertTrue(SessionControl.webController().isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
+        assertion.assertTrue(webControl.isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
         return this;
     }
 

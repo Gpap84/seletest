@@ -36,8 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
@@ -61,6 +61,9 @@ public class ExceptionHandler extends SuperAspect {
     /** Environment instance*/
     @Autowired
     Environment env;
+
+    @Autowired
+    WebController<?> webControl;
 
     /**
      * Handle Exceptions...
@@ -119,7 +122,7 @@ public class ExceptionHandler extends SuperAspect {
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+                webControl.changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -151,7 +154,7 @@ public class ExceptionHandler extends SuperAspect {
         catch(AssertionError ex) {
             log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                SessionControl.webController().takeScreenShot();
+                webControl.takeScreenShot();
             }
             throw ex;
         }
