@@ -29,6 +29,7 @@ package com.automation.seletest.core.selenium.webAPI;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -36,7 +37,7 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
  *
  */
 @SuppressWarnings("unchecked")
-public abstract class DriverBaseController<T extends RemoteWebDriver> {
+public abstract class DriverBaseController<T extends RemoteWebDriver> extends SeletestWebTestBase{
 
     /**
      * WebDriver object

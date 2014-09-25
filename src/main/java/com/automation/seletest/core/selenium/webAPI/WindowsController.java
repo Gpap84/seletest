@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI;
 
-import com.automation.seletest.core.selenium.webAPI.ElementWDController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.ElementController.CloseSession;
 
 
 /**

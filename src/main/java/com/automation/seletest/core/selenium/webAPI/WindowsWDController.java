@@ -32,7 +32,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.webAPI.ElementWDController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.ElementController.CloseSession;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**

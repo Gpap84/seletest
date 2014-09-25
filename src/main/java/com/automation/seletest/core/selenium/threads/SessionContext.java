@@ -54,15 +54,24 @@ public class SessionContext {
      * @return SessionProperties instance
      */
     public static SessionProperties getSession(){
-        return (SessionProperties) innerContext("threadLocalTargetSource").getTarget();
+        return (SessionProperties) innerContext(ThreadLocalTargetSource.class).getTarget();
     }
     /**
      * Return the ThreadLocalTargetSource
      * @param targetBean
      * @return ThreadLocalTargetSource instance
      */
-    protected static ThreadLocalTargetSource innerContext(String targetBean) {
+    protected static ThreadLocalTargetSource innerContext(Class<?> targetBean) {
         return (ThreadLocalTargetSource) ApplicationContextProvider.getApplicationContext().getBean(targetBean);
+    }
+
+
+    /**
+     * Starts a new thread from threadLocalTargetSource on demand (used if thread is necessery inside @Test)
+     * @return
+     */
+    public static SessionProperties<?> getSessionOnDemand(){
+        return (SessionProperties) ApplicationContextProvider.getApplicationContext().getBean("engineThread");
     }
 
     /**
@@ -73,8 +82,8 @@ public class SessionContext {
         threadStack.removeElement(getSession());//remove element from thread stack
         log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
         getSession().cleanSession();
-        innerContext("threadLocalTargetSource").releaseTarget(getSession());
-        innerContext("threadLocalTargetSource").destroy();
+        innerContext(ThreadLocalTargetSource.class).releaseTarget(getSession());
+        innerContext(ThreadLocalTargetSource.class).destroy();
     }
 
     /**
@@ -110,7 +119,7 @@ public class SessionContext {
      */
     public static void stopSession(int index) throws Exception {
         threadStack.get(index).cleanSession();
-        innerContext("threadLocalTargetSource").destroy();
+        innerContext(ThreadLocalTargetSource.class).destroy();
         threadStack.removeElement(threadStack.get(index));
         log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
     }

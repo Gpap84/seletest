@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementWDController;
+import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -65,7 +65,7 @@ public class AssertTest<T extends Assertion> {
     StrategyFactory<?> waitFor;
 
     @Autowired
-    ElementWDController webControl;
+    ElementController webControl;
 
     /**
      * Specify the type of assertion (Hard or Soft) for this test

@@ -37,7 +37,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementWDController;
+import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
@@ -63,7 +63,7 @@ public class ExceptionHandler extends SuperAspect {
     Environment env;
 
     @Autowired
-    ElementWDController webControl;
+    ElementController webControl;
 
     /**
      * Handle Exceptions...

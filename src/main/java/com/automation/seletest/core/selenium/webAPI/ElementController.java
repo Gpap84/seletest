@@ -26,184 +26,133 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.webAPI;
 
-
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.FilesUtils;
-import com.automation.seletest.core.services.annotations.RetryFailure;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
- * This class contains the implementation of WebDriver 2 API
- * for interaction with UI
+ * This interface is for all methods used by webdriver to interact with app UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
- *
  */
-@Component
-public class ElementController<T extends RemoteWebDriver> extends DriverBaseController<T> implements ElementWDController{
-
-    @Autowired
-    FilesUtils fileService;
-
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
+public interface ElementController {
 
     /**
-     * Gets the selenium instance.
-     * @param baseUrl the base url
-     * @return the selenium instance
+     * Finds a web element
+     * @param locator
+     * @return
      */
-    public Selenium getSeleniumInstance(String baseUrl) {
-        return new WebDriverBackedSelenium(webDriver(), baseUrl);
-    }
+    WebElement findElement(Object locator);
 
-    @Override
-    public void goToTargetHost(String url) {
-        webDriver().get(url);
-    }
-
-    /*************************************************************
-     ************************ACTIONS SECTION*********************
-     *************************************************************
+    /**
+     * Click function
+     * @param locator
+     * @param timeout
+     * @return
      */
+    void click(Object locator);
 
-    @Override
-    @WaitCondition(waitFor.CLICKABLE)
-    @RetryFailure(retryCount=1)
-    public void click(Object locator) {
-        SessionContext.getSession().getWebElement().click();
-    }
-
-    @Override
-    @WaitCondition(waitFor.VISIBILITY)
-    @RetryFailure(retryCount=1)
-    public void type(Object locator, String text) {
-        SessionContext.getSession().getWebElement().sendKeys(text);
-    }
-
-    @WaitCondition(waitFor.VISIBILITY)
-    @Override
-    public void changeStyle(Object locator, String attribute, String attributevalue) {
-        JavascriptExecutor jsExec=webDriver();
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
-    }
-
-    /*************************************************************
-     ************************SCREENSHOTS SECTION******************
-     *************************************************************
+    /**
+     * Enter function
+     * @param locator
+     * @param text
+     * @param timeout
+     * @return
      */
-    @Override
-    public void takeScreenShot() throws IOException{
-        File scrFile = ((TakesScreenshot) webDriver()).getScreenshotAs(OutputType.FILE);
-        File file = fileService.createScreenshotFile();
-        FileUtils.copyFile(scrFile, file);
-        fileService.reportScreenshot(file);
-    }
-
-    @WaitCondition(waitFor.VISIBILITY)
-    @Override
-    public void takeScreenShotOfElement(Object locator) throws IOException {
-        File screenshot = ((TakesScreenshot)webDriver()).getScreenshotAs(OutputType.FILE);
-        BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=SessionContext.getSession().getWebElement();
-        Point point = element.getLocation();
-        int eleWidth = element.getSize().getWidth();
-        int eleHeight = element.getSize().getHeight();
-        BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), eleWidth, eleHeight);
-        ImageIO.write(eleScreenshot, "png", screenshot);
-        File file = fileService.createScreenshotFile();
-        FileUtils.copyFile(screenshot, file);
-        fileService.reportScreenshot(file);
-    }
-
-    @Override
-    public WebElement findElement(Object locator) {
-        return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
-    }
+    void type(Object locator, String text);
 
 
-    /**************************************
-     **Returning type methods**************
-     **************************************/
-
-    @Override
-    @WaitCondition(waitFor.PRESENCE)
-    @RetryFailure(retryCount=1)
-    public String getText(Object locator) {
-        return SessionContext.getSession().getWebElement().getText();
-    }
-
-    @Override
-    @WaitCondition(waitFor.PRESENCE)
-    @RetryFailure(retryCount=1)
-    public String getTagName(Object locator) {
-        return SessionContext.getSession().getWebElement().getTagName();
-    }
-
-    @Override
-    @WaitCondition(waitFor.PRESENCE)
-    @RetryFailure(retryCount=1)
-    public Point getLocation(Object locator) {
-        return SessionContext.getSession().getWebElement().getLocation();
-    }
-
-    @Override
-    @WaitCondition(waitFor.PRESENCE)
-    @RetryFailure(retryCount=1)
-    public Dimension getElementDimensions(Object locator) {
-        return SessionContext.getSession().getWebElement().getSize();
-    }
-
-    @Override
-    public String getPageSource() {
-        return webDriver().getPageSource();
-    }
-
-    /**************************************
-     *Verification type methods************
-     **************************************/
-
-    @Override
-    public boolean isWebElementPresent(String locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
-        return true;
-    }
-
-    @Override
-    public boolean isTextPresent(String text) {
-        if(getPageSource().contains(text)){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isWebElementVisible(Object locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
-        return true;
-    }
+    /**
+     * Quit browser type
+     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    public enum CloseSession{QUIT,CLOSE};
 
 
+    /**
+     * Gets URL
+     * @param url
+     */
+    void goToTargetHost(String url);
+
+    /**
+     * Change style of specific element
+     * @param attribute
+     * @param locator
+     * @param attributevalue
+     * @return
+     */
+    void changeStyle(Object locator, String attribute, String attributevalue);
+
+    /**
+     * Takes screenshot
+     * @throws IOException
+     */
+    void takeScreenShot() throws IOException;
+
+    /**
+     * Take screenshot of an element
+     * @param locator
+     * @throws IOException
+     */
+    void takeScreenShotOfElement(Object locator) throws IOException;
+
+
+    /**
+     * Returns text of element
+     * @param locator
+     * @return
+     */
+    String getText(Object locator);
+
+    /**
+     * Gets the tagName of the element
+     * @param locator
+     * @return tagName
+     */
+    String getTagName(Object locator);
+
+    /**
+     * Gets the element Location
+     * @param locator
+     * @return Point Location of element
+     */
+    Point getLocation(Object locator);
+
+    /**
+     * Gets the element Dimensions
+     * @param locator
+     * @return Dimension for Element Dimensions
+     */
+    Dimension getElementDimensions(Object locator);
+
+    /**
+     * Returns the source of the current page
+     * @return html source
+     */
+    String getPageSource();
+
+    /**
+     * Defines if a web element is present
+     * @param locator
+     * @return true if a web element is present
+     */
+    boolean isWebElementPresent(String locator);
+
+    /**
+     * Defines if text is present in source
+     * @param text
+     * @return false if not text present in page source
+     */
+    boolean isTextPresent(String text);
+
+    /**
+     * Defines if a web element is visible
+     * @param locator
+     * @return true if a web element is visible
+     */
+    boolean isWebElementVisible(Object locator);
 }

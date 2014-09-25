@@ -56,7 +56,7 @@ import com.automation.seletest.core.selenium.configuration.RemoteDriverConfigura
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementWDController;
+import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
@@ -95,7 +95,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     static class Initialize {
 
         @Autowired
-        ElementWDController webControl;
+        ElementController webControl;
 
         @Autowired
         AppiumController mobileControl;
