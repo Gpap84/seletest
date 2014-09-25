@@ -34,144 +34,120 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 
 
 /**
- * driver()Controller api for iOS-Android native app interaction
+ * (AppiumDriverController api for iOS-Android native app interaction
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("rawtypes")
 @Component
-public class AppiumDriverController implements AppiumController<AppiumController>{
+public class AppiumDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements AppiumController{
 
-    /**
-     *Appium Driver
-     * @return AppiumDriver instance per thread
-     */
-    private AppiumDriver driver(){
-        return (AppiumDriver) SessionContext.getSession().getWebDriver();
+    @Override
+    public void launchApp() {
+        ((AppiumDriver)webDriver()).launchApp();
     }
 
     @Override
-    public AppiumController launchApp() {
-        driver().launchApp();
-        return this;
+    public void resetApp() {
+        ((AppiumDriver)webDriver()).resetApp();
     }
 
     @Override
-    public AppiumController resetApp() {
-        driver().resetApp();
-        return this;
+    public void runAppinBackground(int sec) {
+        ((AppiumDriver)webDriver()).runAppInBackground(sec);
     }
 
     @Override
-    public AppiumController runAppinBackground(int sec) {
-        driver().runAppInBackground(sec);
-        return this;
+    public void closeApp() {
+        ((AppiumDriver)webDriver()).closeApp();
     }
 
     @Override
-    public AppiumController closeApp() {
-        driver().closeApp();
-        return this;
-    }
-
-    @Override
-    public AppiumController installApp(String bundleId, String appPath) {
+    public void installApp(String bundleId, String appPath) {
         Map<String, String> args = new HashMap<String, String>();
         args.put("appPath", appPath);
-        driver().installApp(appPath);
-        return this;
+        ((AppiumDriver)webDriver()).installApp(appPath);
     }
 
     @Override
-    public AppiumController performTouchAction(TouchAction e) {
-        driver().performTouchAction(e);
-        return this;
+    public void performTouchAction(TouchAction e) {
+        ((AppiumDriver)webDriver()).performTouchAction(e);
     }
 
     @Override
-    public AppiumController performMultiTouchAction(MultiTouchAction e) {
-        driver().performMultiTouchAction(e);
-        return this;
+    public void performMultiTouchAction(MultiTouchAction e) {
+        ((AppiumDriver)webDriver()).performMultiTouchAction(e);
     }
 
     @Override
-    public AppiumController hideKeyboard() {
-        driver().hideKeyboard();
-        return this;
+    public void hideKeyboard() {
+        ((AppiumDriver)webDriver()).hideKeyboard();
     }
 
     @Override
-    public AppiumController rotate(ScreenOrientation e) {
-        driver().rotate(e);
-        return this;
+    public void rotate(ScreenOrientation e) {
+        ((AppiumDriver)webDriver()).rotate(e);
     }
 
     @Override
     public ScreenOrientation getscreen() {
-        return driver().getOrientation();
+        return ((AppiumDriver)webDriver()).getOrientation();
     }
 
     @Override
     public MultiTouchAction getMultiTouchAction() {
-        return new MultiTouchAction(driver());
+        return new MultiTouchAction(((AppiumDriver)webDriver()));
     }
 
     @Override
     public boolean isAppInstalled(String bundleId) {
-        return driver().isAppInstalled(bundleId);
+        return ((AppiumDriver)webDriver()).isAppInstalled(bundleId);
     }
 
     @Override
-    public AppiumController pinch(int x, int y) {
-        driver().pinch(x, y);
-        return this;
+    public void pinch(int x, int y) {
+        ((AppiumDriver)webDriver()).pinch(x, y);
     }
 
     @Override
-    public AppiumController lockScreen(int sec) {
-        driver().lockScreen(sec);
-        return this;
+    public void lockScreen(int sec) {
+        ((AppiumDriver)webDriver()).lockScreen(sec);
     }
 
     @Override
-    public AppiumController tap(int finger, int y, int z, int duration) {
-        driver().tap(finger,y,z,duration);
-        return this;
+    public void tap(int finger, int y, int z, int duration) {
+        ((AppiumDriver)webDriver()).tap(finger,y,z,duration);
     }
 
     @Override
-    public AppiumController shake() {
-        driver().shake();
-        return this;
+    public void shake() {
+        ((AppiumDriver)webDriver()).shake();
     }
 
     @Override
-    public AppiumController zoom(int x, int y) {
-        driver().zoom(x, y);
-        return this;
+    public void zoom(int x, int y) {
+        ((AppiumDriver)webDriver()).zoom(x, y);
     }
 
     @Override
-    public AppiumController swipe(int startx, int starty, int endx, int endy,
+    public void swipe(int startx, int starty, int endx, int endy,
             int duration) {
-        driver().swipe(startx, starty, endx, endy, duration);
-        return this;
+        ((AppiumDriver)webDriver()).swipe(startx, starty, endx, endy, duration);
     }
 
     @Override
-    public AppiumController executeScript(String driverCommand, HashMap<String, ?> parameters) {
-        driver().execute(driverCommand, parameters);
-        return this;
+    public void executeScript(String driverCommand, HashMap<String, ?> parameters) {
+        ((AppiumDriver)webDriver()).execute(driverCommand, parameters);
     }
 
     @Override
     public String getCurrentActivity() {
-        return driver().currentActivity();
+        return ((AppiumDriver)webDriver()).currentActivity();
     }
 }

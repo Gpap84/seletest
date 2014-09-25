@@ -57,7 +57,7 @@ import com.automation.seletest.core.services.properties.CoreProperties;
 @ContextConfiguration(locations={
         "classpath*:META-INF/spring/app-context.xml",
         "classpath*:META-INF/spring/mail-context.xml",
-        "classpath*:META-INF/spring/thread-pool-context.xml" })
+        "classpath*:META-INF/spring/thread-pool-context.xml"})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
 

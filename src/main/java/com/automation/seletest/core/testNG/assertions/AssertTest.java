@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.selenium.webAPI.ElementWDController;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -65,7 +65,7 @@ public class AssertTest<T extends Assertion> {
     StrategyFactory<?> waitFor;
 
     @Autowired
-    WebController<?> webControl;
+    ElementWDController webControl;
 
     /**
      * Specify the type of assertion (Hard or Soft) for this test
@@ -134,7 +134,7 @@ public class AssertTest<T extends Assertion> {
      * @return AssertTest instance
      */
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
-    public AssertTest textPresentinValueAttribute(Object locator, String text) {
+    public AssertTest textPresentValueAttribute(Object locator, String text) {
         assertion.assertTrue(
                 waitFor.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).
                 waitForTextPresentinValue(locator, text),

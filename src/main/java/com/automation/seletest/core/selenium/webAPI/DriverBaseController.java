@@ -24,60 +24,34 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.pagecomponents.pageObjects;
+package com.automation.seletest.core.selenium.webAPI;
 
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
- * Abstract super class serves as base page object
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- *
  * @param <T>
+ *
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public abstract class AbstractPage<T> extends SeletestWebTestBase{
-
-    /**Timeout to load a page*/
-    private static final int LOAD_TIMEOUT = 30;
-
-    /**Polling time*/
-    private static final int REFRESH_RATE = 2;
+@SuppressWarnings("unchecked")
+public abstract class DriverBaseController<T extends RemoteWebDriver> {
 
     /**
-     * Opens a page object
-     * @param clazz
-     * @return T the type of object
+     * WebDriver object
+     * @return WebDriver instance per thread
      */
-    public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionContext.getSession().getWebDriver(), clazz);
-        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
-        waitForPageToLoad(pageLoadCondition);
-        return page;
+    public T webDriver(){
+        return (T) SessionContext.getSession().getWebDriver();
     }
 
-    /**
-     * Condition for loading a page object
-     * @return ExpectedCondition<?> condition to load a page
-     */
-    protected abstract ExpectedCondition<?> getPageLoadCondition();
 
     /**
-     * Wait for page to load
-     * @param pageLoadCondition
+     * Gets the strategy for Wait<WebDriver>
+     * @return Alias for Wait Strategy
      */
-    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionContext.getSession().getWebDriver())
-                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
-                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
-
-        wait.until(pageLoadCondition);
+    public String getWait(){
+        return SessionContext.getSession().getWaitStrategy();
     }
 }

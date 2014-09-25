@@ -56,7 +56,7 @@ import com.automation.seletest.core.selenium.configuration.RemoteDriverConfigura
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.selenium.webAPI.ElementWDController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
@@ -81,7 +81,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
         }
         catch (Exception e) {
-            log.error("Error in Test Initialization phase "+e);
+            log.error("Error in Test Initialization phase with exception: "+e.getMessage());
         }
     }
 
@@ -95,10 +95,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     static class Initialize {
 
         @Autowired
-        WebController<?> webControl;
+        ElementWDController webControl;
 
         @Autowired
-        AppiumController<?> mobileControl;
+        AppiumController mobileControl;
 
         /**
          * Initialize Web or Mobile session

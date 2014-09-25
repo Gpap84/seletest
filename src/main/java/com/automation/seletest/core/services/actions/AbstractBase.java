@@ -28,6 +28,8 @@ package com.automation.seletest.core.services.actions;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Wait;
@@ -42,6 +44,7 @@ import com.automation.seletest.core.selenium.webAPI.elements.Locators;
  *
  */
 @SuppressWarnings("unchecked")
+@Slf4j
 public abstract class AbstractBase {
 
 
@@ -55,12 +58,14 @@ public abstract class AbstractBase {
         private final String webDriverWait="wdWait";
         private final String fluentWait="fwWait";
 
-        public final String NOT_PRESENT="Element not present in DOM";
-        public final String NOT_VISIBLE="Element not visible in Screen";
-        public final String NOT_CLICKABLE="Element cannot be clicked";
-        public final String ALERT_NOT_PRESENT="Alert not present";
-        public final String TEXT_NOT_PRESENT="Text not present in Element";
-        public final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+        protected final String NOT_PRESENT="Element not present in DOM";
+        protected final String NOT_VISIBLE="Element not visible in screen";
+        protected final String NOT_CLICKABLE="Element cannot be clicked";
+        protected final String ALERT_NOT_PRESENT="Alert not present";
+        protected final String TEXT_NOT_PRESENT="Text not present in element";
+        protected final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+        protected final String PAGE_LOADED="Page is loaded";
+        protected final String AJAX_COMPLETE="Ajax call is completed";
 
 
         /**
@@ -68,7 +73,7 @@ public abstract class AbstractBase {
          * @param timeOutInSeconds
          * @return
          */
-        public WebDriverWait wfExpected(){
+        protected WebDriverWait wfExpected(){
             return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
 
@@ -78,7 +83,7 @@ public abstract class AbstractBase {
          * @param msg
          * @return
          */
-        public Wait<WebDriver> fluentWait(String msg){
+        protected Wait<WebDriver> fluentWait(String msg){
             return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
 
@@ -88,7 +93,7 @@ public abstract class AbstractBase {
          * @param locator the locator of the WebElement
          * @return WebElement
          */
-        public WebElement elementToWait(WebDriver driver, Object locator){
+        protected WebElement elementToWait(WebDriver driver, Object locator){
             WebElement element=null;
             if(locator instanceof String){
                 element=driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
@@ -104,10 +109,23 @@ public abstract class AbstractBase {
          * @param locator
          * @return List<WebElement>
          */
-        public List<WebElement> elementsToWait(WebDriver driver, String locator){
-            List<WebElement> elements=null;
-            elements=driver.findElements(Locators.findByLocator(locator).setLocator(locator));
+        protected List<WebElement> elementsToWait(WebDriver driver, String locator){
+            List<WebElement> elements=driver.findElements(Locators.findByLocator(locator).setLocator(locator));
             return elements;
+        }
+
+
+        /**
+         * Sleeps a thread
+         * @param timeout
+         */
+        protected void threadSleep(final long timeout){
+            try {
+                Thread.sleep(timeout);
+            }
+            catch (InterruptedException e) {
+                log.error("Interrupted exception occured trying to sleep thread for: "+timeout);
+            }
         }
 
     }

@@ -52,7 +52,7 @@ public abstract class SuperAspect {
     protected void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.ElementController.takeScreenShot*(..))")
     protected void takeScreenCap() {}
 
     /**Methods for wait conditions*/
@@ -60,19 +60,19 @@ public abstract class SuperAspect {
     protected void waitConditions() {}
 
     /**Methods that are returning objects*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.*.get*(..))")
     protected void getReturningValue() {}
 
     /**Methods for sending email*/
     @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
     protected void sendMail() {}
 
-    /** Pointcut for boolean methods inside WebController*/
-    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebController.*(..))")
+    /** Pointcut for boolean methods inside WebAPI*/
+    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.*.*(..))")
     protected void componentsStatus() {}
 
     /** Pointcut for reexecuting metthods*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.*(..)) && @annotation(retry)")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.*.*(..)) && @annotation(retry)")
     protected void retryExecution(RetryFailure retry) {}
 
     /** Pointcut for logging in Custom Verify methods*/

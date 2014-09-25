@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.common.ActionsBuilder;
-import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.selenium.webAPI.ElementWDController;
 
 @Component
 @Configurable
@@ -54,11 +54,11 @@ public class GooglePage extends AbstractPage<GooglePage>{
     ActionsBuilder action;
 
     @Autowired
-    WebController<?> webControl;
+    ElementWDController webControl;
 
     public GooglePage typeSearch(String text){
         webControl.getLocation(search);
-        webControl.enterTo(search, text);
+        webControl.type(search, text);
         return this;
     }
 

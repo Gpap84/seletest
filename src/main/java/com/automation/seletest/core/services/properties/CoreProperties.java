@@ -35,6 +35,10 @@ package com.automation.seletest.core.services.properties;
 public enum CoreProperties {
 
     /**************************Parameters XML**********************/
+
+    /** The parameter that determines if client logs are enabled. */
+    CLIENTLOGS("clientLogs"),
+
     /** The parameter that determines the browser type to be used. */
     BROWSERTYPE("browserType"),
 

@@ -30,13 +30,10 @@ package com.automation.seletest.core.selenium.webAPI;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
@@ -64,23 +61,13 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  *
  */
 @Component
-@SuppressWarnings("rawtypes")
-public class WebDriverController<T extends RemoteWebDriver> implements WebController<WebController<T>>{
+public class ElementController<T extends RemoteWebDriver> extends DriverBaseController<T> implements ElementWDController{
 
     @Autowired
     FilesUtils fileService;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
-
-    /**
-     * RemoteWebDriver
-     * @return RemoteWebDriver instance per thread
-     */
-    private RemoteWebDriver webDriver(){
-        return SessionContext.getSession().getWebDriver();
-    }
-
 
     /**
      * Gets the selenium instance.
@@ -96,22 +83,6 @@ public class WebDriverController<T extends RemoteWebDriver> implements WebContro
         webDriver().get(url);
     }
 
-
-    @Override
-    public void quit(CloseSession type) {
-        switch (type) {
-        case QUIT:
-            webDriver().quit();
-            break;
-        case CLOSE:
-            webDriver().close();
-            break;
-        default:
-            webDriver().quit();
-            break;
-        }
-    }
-
     /*************************************************************
      ************************ACTIONS SECTION*********************
      *************************************************************
@@ -120,29 +91,26 @@ public class WebDriverController<T extends RemoteWebDriver> implements WebContro
     @Override
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
-    public WebController clickTo(Object locator) {
+    public void click(Object locator) {
         SessionContext.getSession().getWebElement().click();
-        return this;
     }
 
     @Override
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
-    public WebController enterTo(Object locator, String text) {
+    public void type(Object locator, String text) {
         SessionContext.getSession().getWebElement().sendKeys(text);
-        return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public WebController changeStyle(Object locator, String attribute, String attributevalue) {
+    public void changeStyle(Object locator, String attribute, String attributevalue) {
         JavascriptExecutor jsExec=webDriver();
         jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
-        return this;
     }
 
     /*************************************************************
-     ************************SCREENSHOTS SECTION*********************
+     ************************SCREENSHOTS SECTION******************
      *************************************************************
      */
     @Override
@@ -167,63 +135,6 @@ public class WebDriverController<T extends RemoteWebDriver> implements WebContro
         File file = fileService.createScreenshotFile();
         FileUtils.copyFile(screenshot, file);
         fileService.reportScreenshot(file);
-    }
-
-    /*************************************************************
-     ************************WINDOWS SECTION*********************
-     *************************************************************
-     */
-    @Override
-    public WebDriverController switchToLatestWindow() {
-        Iterator<String> iterator = webDriver().getWindowHandles().iterator();
-        String lastWindow = null;
-        while (iterator.hasNext()) {
-            lastWindow = iterator.next();
-        }
-        webDriver().switchTo().window(lastWindow);
-        return this;
-    }
-
-    /**
-     * Gets the strategy for Wait<WebwebDriver>
-     * @return
-     */
-    private String getWait(){
-        return SessionContext.getSession().getWaitStrategy();
-    }
-
-    /*************************************************************
-     ************************COOKIES SECTION*********************
-     *************************************************************
-     */
-    @Override
-    public WebDriverController deleteCookieByName(String name) {
-        webDriver().manage().deleteCookieNamed(name);
-        return this;
-    }
-
-    @Override
-    public WebDriverController deleteAllCookies() {
-        webDriver().manage().deleteAllCookies();
-        return this;
-    }
-
-    @Override
-    public WebDriverController addCookie(Cookie cookie) {
-        webDriver().manage().addCookie(cookie);
-        return this;
-    }
-
-    @Override
-    public Set<Cookie> getCookies() {
-        Set<Cookie> cookies=webDriver().manage().getCookies();
-        return cookies;
-    }
-
-    @Override
-    public WebDriverController deleteCookie(Cookie cookie) {
-        webDriver().manage().deleteCookie(cookie);
-        return this;
     }
 
     @Override
@@ -293,5 +204,6 @@ public class WebDriverController<T extends RemoteWebDriver> implements WebContro
         factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
         return true;
     }
+
 
 }

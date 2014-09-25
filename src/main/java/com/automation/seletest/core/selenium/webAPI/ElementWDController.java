@@ -27,9 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI;
 
 import java.io.IOException;
-import java.util.Set;
 
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -39,7 +37,7 @@ import org.openqa.selenium.WebElement;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-public interface WebController<T> {
+public interface ElementWDController {
 
     /**
      * Finds a web element
@@ -54,7 +52,7 @@ public interface WebController<T> {
      * @param timeout
      * @return
      */
-    T clickTo(Object locator);
+    void click(Object locator);
 
     /**
      * Enter function
@@ -63,14 +61,8 @@ public interface WebController<T> {
      * @param timeout
      * @return
      */
-    T enterTo(Object locator, String text);
+    void type(Object locator, String text);
 
-
-    /**
-     * Quit session
-     * @param type
-     */
-    void quit(CloseSession type);
 
     /**
      * Quit browser type
@@ -93,7 +85,7 @@ public interface WebController<T> {
      * @param attributevalue
      * @return
      */
-    T changeStyle(Object locator, String attribute, String attributevalue);
+    void changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
@@ -107,47 +99,6 @@ public interface WebController<T> {
      * @throws IOException
      */
     void takeScreenShotOfElement(Object locator) throws IOException;
-
-    /**
-     * switch to latest window
-     * @return
-     */
-    T switchToLatestWindow();
-
-    /**
-     * Deletes a cookie by name
-     * @param name
-     * @param value
-     * @return
-     */
-    T deleteCookieByName(String name);
-
-    /**
-     * Deletes a cookie
-     * @param cookie
-     * @return
-     */
-    T deleteCookie(Cookie cookie);
-
-    /**
-     * Delete all cookies
-     * @return
-     */
-    T deleteAllCookies();
-
-    /**
-     * Create a cookie
-     * @param name
-     * @param value
-     * @return
-     */
-    T addCookie(Cookie cookie);
-
-    /**
-     * Gets all cookies
-     * @return
-     */
-    Set<Cookie> getCookies();
 
 
     /**

@@ -24,80 +24,66 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.automation.seletest.core.selenium.webAPI;
 
-package com.automation.seletest.core.selenium.threads;
+import java.util.Iterator;
 
-
-import java.util.Map;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.ElementWDController.CloseSession;
-import com.automation.seletest.core.selenium.webAPI.WindowsController;
-
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
- * Custom objects per session
- * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- * @param <T>
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+ *
  */
-@Slf4j
-public class SessionProperties<T extends RemoteWebDriver> {
+@Component
+public class WindowsWDController<T extends RemoteWebDriver> extends DriverBaseController<T> implements WindowsController{
 
-    /**The session controller*/
     @Autowired
-    WindowsController sessionControl;
+    StrategyFactory<?> factoryStrategy;
 
-    /**Map with various controllers for test session*/
-    @Getter @Setter
-    Map<Class<?>,Object> controllers;
-
-    /**The web driver context*/
-    @Getter @Setter
-    AnnotationConfigApplicationContext driverContext;
-
-    /**Timeout for waiting until condition fullfilled */
-    @Getter @Setter
-    int waitUntil = 5;
-
-    /**The remoteWebDriver object*/
-    @Getter @Setter
-    T webDriver;
-
-    /** Wait Strategy*/
-    @Getter @Setter
-    String waitStrategy="DEFAULT";
-
-    /**WebElement per session*/
-    @Getter @Setter
-    WebElement webElement;
-
-    /**
-     * Initialize objects per session and close session!!!
-     */
-    public void cleanSession(){
-
-        //Quits driver
-        if(webDriver!=null){
-            sessionControl.quit(CloseSession.QUIT);
+    @Override
+    public void switchToLatestWindow() {
+        Iterator<String> iterator = webDriver().getWindowHandles().iterator();
+        String lastWindow = null;
+        while (iterator.hasNext()) {
+            lastWindow = iterator.next();
         }
-
-        //Initialize Controllers Array List
-        controllers.clear();
-
-        //Destroy the webdriver application context
-        driverContext.destroy();
-
-        //Turn waitStrategy to default after closing a session
-        waitStrategy="DEFAULT";
-
-        log.info("Session closed!!!");
+        webDriver().switchTo().window(lastWindow);
     }
+
+    @Override
+    public void acceptAlert() {
+        factoryStrategy.getWaitStrategy(getWait()).waitForAlert().accept();
+    }
+
+
+    @Override
+    public void dismissAlert() {
+        factoryStrategy.getWaitStrategy(getWait()).waitForAlert().dismiss();
+    }
+
+    @Override
+    public int getNumberOfOpenedWindows() {
+        return webDriver().getWindowHandles().size();
+    }
+
+    @Override
+    public void quit(CloseSession type) {
+        switch (type) {
+        case QUIT:
+            webDriver().quit();
+            break;
+        case CLOSE:
+            webDriver().close();
+            break;
+        default:
+            webDriver().quit();
+            break;
+        }
+    }
+
 }

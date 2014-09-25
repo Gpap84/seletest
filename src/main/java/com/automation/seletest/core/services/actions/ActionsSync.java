@@ -100,4 +100,15 @@ public interface ActionsSync {
      */
     List<WebElement> waitForVisibilityofAllElements(String locator);
 
+    /**
+     * Waits for a page to load
+     */
+    void waitForPageLoaded();
+
+    /**
+     * Waits for ajax call to be completed
+     * @param timeout the timeout to wait
+     */
+    void waitForAjaxCallCompleted(final long timeout);
+
 }

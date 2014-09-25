@@ -41,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.selenium.webAPI.ElementWDController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -64,7 +64,7 @@ public class ActionsHandler extends SuperAspect {
     StrategyFactory<?> factoryStrategy;
 
     @Autowired
-    WebController<?> webControl;
+    ElementWDController webControl;
 
     private final String takeScreencap="Take screenshot after exception: ";
 

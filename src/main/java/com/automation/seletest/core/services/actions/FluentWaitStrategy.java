@@ -29,6 +29,7 @@ package com.automation.seletest.core.services.actions;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
@@ -133,13 +134,47 @@ public class FluentWaitStrategy extends AbstractBase.WaitBase{
             public List<WebElement> apply(WebDriver driver) {
                 List<WebElement> elements = elementsToWait(driver, locator);
                 for(WebElement element : elements){
-                  if(!element.isDisplayed()){
-                    return null;
-                  }
+                    if(!element.isDisplayed()){
+                        return null;
+                    }
                 }
                 return elements.size() > 0 ? elements : null;
             }
         });
     }
 
+
+    @Override
+    public void waitForPageLoaded() {
+        fluentWait(NOT_VISIBLE).until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
+            }
+        });
+
+    }
+
+    @Override
+    public void waitForAjaxCallCompleted(final long timeout) {
+        fluentWait(AJAX_COMPLETE).until(new Function<WebDriver,Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                final long startTime = System.currentTimeMillis();
+                final JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+
+                while ((startTime + timeout) <= System.currentTimeMillis()) {
+
+                    final Boolean scriptResult = (Boolean) javascriptExecutor.executeScript("return jQuery.active == 0");
+
+                    if (scriptResult) {
+                        return true;
+                    }
+
+                    threadSleep(timeout);
+                }
+                return false;
+            }
+        });
+    }
 }
