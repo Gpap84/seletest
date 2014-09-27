@@ -123,7 +123,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-            app.getEnvironment().setActiveProfiles(new String[]{profileDriver,profileAppium});
+
+            if(profileAppium!=null) {
+                app.getEnvironment().setActiveProfiles(new String[]{profileDriver,profileAppium});
+            } else {
+                app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
+            }
+
 
             //register Configuration classes
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
@@ -168,8 +174,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             } else {
                 SessionContext.getSession().setWebDriver((AppiumDriver)driver);
                 SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
-//                mobileControl.installApp(appPath);
-//                mobileControl.launchApp();
+                //                mobileControl.installApp(appPath);
+                //                mobileControl.launchApp();
             }
 
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
