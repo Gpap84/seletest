@@ -7,6 +7,9 @@ com.automation.seletest.core.selenium.mobileAPI
 com.automation.seletest.core.selenium.threads
 com.automation.seletest.core.selenium.webAPI
 com.automation.seletest.core.selenium.webAPI.elements
+com.automation.seletest.core.selenium.webAPI.interfaces
+com.automation.seletest.core.selenium.webAPI.remoteWebDriver
+com.automation.seletest.core.selenium.webAPI.selenium
 com.automation.seletest.core.services
 com.automation.seletest.core.services.actions
 com.automation.seletest.core.services.annotations
