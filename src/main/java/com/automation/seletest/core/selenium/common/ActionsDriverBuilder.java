@@ -30,6 +30,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.stereotype.Component;
 
@@ -43,33 +44,33 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
+@Component("webDriverActions")
 @SuppressWarnings("unchecked")
-public class ActionsBuilder implements ActionsBuilderController{
+public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDriverBuilder>{
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsBuilder mouseOver(Object locator) {
+    public ActionsDriverBuilder mouseOver(Object locator) {
         SessionControl.actionsBuilder().moveToElement(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
-    public ActionsBuilder mouseUp(Keys key) {
+    public ActionsDriverBuilder mouseUp(Keys key) {
         SessionControl.actionsBuilder().keyUp(key);
         return this;
 
     }
 
     @Override
-    public ActionsBuilder mouseDown(Keys key) {
+    public ActionsDriverBuilder mouseDown(Keys key) {
         SessionControl.actionsBuilder().keyDown(key);
         return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsBuilder mouseDown(Object locator, Keys key) {
+    public ActionsDriverBuilder mouseDown(Object locator, Keys key) {
         SessionControl.actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key);
         return this;
 
@@ -77,75 +78,75 @@ public class ActionsBuilder implements ActionsBuilderController{
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsBuilder mouseUp(Object locator, Keys key) {
+    public ActionsDriverBuilder mouseUp(Object locator, Keys key) {
         SessionControl.actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key);
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder clickAndHold(Object locator) {
+    public ActionsDriverBuilder clickAndHold(Object locator) {
         SessionControl.actionsBuilder().clickAndHold(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder click(Object locator) {
+    public ActionsDriverBuilder click(Object locator) {
         SessionControl.actionsBuilder().click(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
-    public ActionsBuilder performActions() {
+    public ActionsDriverBuilder performActions() {
         SessionControl.actionsBuilder().build().perform();
         SessionContext.getSession().getControllers().remove(Actions.class);
-        SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionContext.getSession().getWebDriver()));
+        SessionContext.getSession().getControllers().put(Actions.class, new Actions((WebDriver) SessionContext.getSession().getWebDriver()));
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder tap(Object locator) {
+    public ActionsDriverBuilder tap(Object locator) {
         SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement());
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder tap(Object locator, int x, int y) {
+    public ActionsDriverBuilder tap(Object locator, int x, int y) {
         SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement(),x,y);
         return null;
     }
 
     @Override
-    public ActionsBuilder tap(int x, int y) {
+    public ActionsDriverBuilder tap(int x, int y) {
         SessionControl.touchactionsBuilder().tap(x,y);
         return this;
     }
 
     @Override
-    public ActionsBuilder press(int x, int y) {
+    public ActionsDriverBuilder press(int x, int y) {
         SessionControl.touchactionsBuilder().press(x,y);
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder press(Object locator) {
+    public ActionsDriverBuilder press(Object locator) {
         SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement());
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsBuilder press(Object locator, int x, int y) {
+    public ActionsDriverBuilder press(Object locator, int x, int y) {
         SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement(),x,y);
         return this;
     }
 
     @Override
-    public ActionsBuilder performTouchActions() {
+    public ActionsDriverBuilder performTouchActions() {
         SessionControl.touchactionsBuilder().perform();
         SessionContext.getSession().getControllers().remove(TouchAction.class);
         SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) SessionContext.getSession().getWebDriver()));

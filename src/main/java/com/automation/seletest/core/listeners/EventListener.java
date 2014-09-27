@@ -40,7 +40,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationEvent;
@@ -56,11 +55,12 @@ import com.automation.seletest.core.selenium.configuration.RemoteDriverConfigura
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.PerformanceUtils;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * ApplicationListener for event handling
@@ -94,8 +94,9 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     @Configurable
     static class Initialize {
 
+        /**Factories Strategy*/
         @Autowired
-        ElementController webControl;
+        StrategyFactory<?> factoryStrategy;
 
         @Autowired
         AppiumController mobileControl;
@@ -107,6 +108,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
          */
         public void initializeSession(ApplicationEvent event) throws Exception{
             WebDriver driver=null;
+            Selenium selenium=null;
             SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
@@ -152,10 +154,12 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(((InitializationEvent) event).isWeb()) {
-                SessionContext.getSession().setWebDriver((RemoteWebDriver)driver);
-                webControl.goToTargetHost(((InitializationEvent) event).getHostUrl());
+                SessionContext.getSession().setWebDriver(driver);
+                selenium=(Selenium)app.getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
+                SessionContext.getSession().setSelenium(selenium);
+                factoryStrategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy()).goToTargetHost(((InitializationEvent) event).getHostUrl());
             } else {
-                SessionContext.getSession().setWebDriver((AppiumDriver)driver);
+                SessionContext.getSession().setWebDriver(driver);
                 SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
                 mobileControl.installApp(bundleId,appPath);
                 mobileControl.launchApp();

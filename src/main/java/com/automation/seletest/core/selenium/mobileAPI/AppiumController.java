@@ -51,11 +51,8 @@ public interface AppiumController {
      */
     void resetApp();
 
-
     /**
      * This method resets application in mobile device
-     *
-     *
      **/
     void runAppinBackground(int sec);
 

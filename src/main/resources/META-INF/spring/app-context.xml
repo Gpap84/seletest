@@ -35,9 +35,21 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <!-- Aliases for better mapping -->
  <alias alias="Expected" name="expectedWait"/>
  <alias alias="Fluent" name="fluentWait"/>
+ <alias alias="SeleniumWait" name="seleniumWait"/>
  <alias alias="DEFAULT" name="expectedWait"/>
  
+ <!-- Alias for element strategy -->
+  <alias alias="SeleniumElement" name="seleniumElement"/>
+  <alias alias="WebDriverElement" name="webDriverElement"/>
  
+ <!-- Alias for options strategy -->
+  <alias alias="SeleniumOptions" name="seleniumOptions"/>
+  <alias alias="WebDriverOptions" name="webDriverOptions"/>
+ 
+ <!-- Alias for windows strategy -->
+  <alias alias="SeleniumWindows" name="seleniumWindows"/>
+  <alias alias="WebDriverWindows" name="webDriverWindows"/>
+
  <!-- Import test beans -->
  <import resource="classpath:/META-INF/spring/test-beans*.xml" />
 

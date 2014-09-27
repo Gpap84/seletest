@@ -35,12 +35,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.automation.seletest.core.selenium.webAPI.ElementController.CloseSession;
-import com.automation.seletest.core.selenium.webAPI.WindowsController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 
 /**
@@ -49,11 +48,11 @@ import com.automation.seletest.core.selenium.webAPI.WindowsController;
  * @param <T>
  */
 @Slf4j
-public class SessionProperties<T extends RemoteWebDriver> {
+public class SessionProperties<T> {
 
-    /**The session controller*/
+    /**Factories Strategy*/
     @Autowired
-    WindowsController sessionControl;
+    StrategyFactory<?> factoryStrategy;
 
     /**Map with various controllers for test session*/
     @Getter @Setter
@@ -71,9 +70,25 @@ public class SessionProperties<T extends RemoteWebDriver> {
     @Getter @Setter
     T webDriver;
 
+    /**The selenium object*/
+    @Getter @Setter
+    T selenium;
+
     /** Wait Strategy*/
     @Getter @Setter
     String waitStrategy="DEFAULT";
+
+    /** WebDriver-Selenium element strategy*/
+    @Getter @Setter
+    String elementStrategy="webDriverElement";
+
+    /** WebDriver-Selenium options strategy*/
+    @Getter @Setter
+    String optionsStrategy="webDriverOptions";
+
+    /** WebDriver-Selenium windows strategy*/
+    @Getter @Setter
+    String windowsStrategy="webDriverWindows";
 
     /**WebElement per session*/
     @Getter @Setter
@@ -86,7 +101,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
         //Quits driver
         if(webDriver!=null){
-            sessionControl.quit(CloseSession.QUIT);
+            factoryStrategy.getWindowsControllerStrategy(windowsStrategy).quit(CloseSession.QUIT);
         }
 
         //Initialize Controllers Array List

@@ -72,7 +72,6 @@ import com.opera.core.systems.OperaDriver;
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class LocalDriverConfiguration {
 
-
     @Configuration
     @Profile({"chrome"})
     public abstract static class ProfileChrome implements ProfileDriver{

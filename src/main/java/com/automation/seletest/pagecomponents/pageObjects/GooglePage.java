@@ -26,39 +26,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilder;
-import com.automation.seletest.core.selenium.webAPI.ElementController;
-
 @Component
 @Configurable
-public class GooglePage extends AbstractPage<GooglePage>{
+@SuppressWarnings("rawtypes")
+public class GooglePage<T> extends AbstractPage<GooglePage>{
 
     @FindBy(name = "q")
-    @CacheLookup
-    private WebElement search;
+    private T search;
 
     @FindBy(name = "btnG")
-    @CacheLookup
-    private WebElement submit;
-
-    @Autowired
-    ActionsBuilder action;
-
-    @Autowired
-    ElementController webControl;
+    private T submit;
 
     public GooglePage typeSearch(String text){
-        webControl.getLocation(search);
-        webControl.type(search, text);
+        element().getLocation(getWebElementLocator(GooglePage.class,"search"));
+        element().type(getWebElementLocator(GooglePage.class, "search"), text);
         return this;
     }
 
@@ -67,24 +52,7 @@ public class GooglePage extends AbstractPage<GooglePage>{
      * @return
      */
     public GooglePage buttonSearch(){
-        action.click(submit).performActions();
+        element().click(getWebElementLocator(GooglePage.class,"submit"));
         return this;
     }
-
-    /**
-     * Expected Condition for loading this page object
-     */
-    @Override
-    protected ExpectedCondition<?> getPageLoadCondition() {
-        return ExpectedConditions.visibilityOf(search);
-    }
-
-    /**
-     * Opens this page object
-     * @return
-     */
-    public GooglePage open() {
-        return openPage(GooglePage.class);
-    }
-
 }

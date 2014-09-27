@@ -28,21 +28,21 @@ package com.automation.seletest.core.selenium.common;
 
 import org.openqa.selenium.Keys;
 
-public interface ActionsBuilderController {
+public interface ActionsBuilderController<T> {
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
      * @param locator
      * @return instance of ActionBuilder
      */
-    ActionsBuilder click(Object locator);
+    T click(Object locator);
 
     /**
      * Moves the mouse to the middle of the element
      * @param locator
      * @return instance of ActionBuilder
      */
-    ActionsBuilder mouseOver(Object locator);
+    T mouseOver(Object locator);
 
     /**
      * Performs a modifier key release.
@@ -50,7 +50,7 @@ public interface ActionsBuilderController {
      * @param key
      * @return instance of ActionBuilder
      */
-    ActionsBuilder mouseUp(Keys key);
+    T mouseUp(Keys key);
 
     /**
      * Performs a modifier key press.
@@ -60,7 +60,7 @@ public interface ActionsBuilderController {
      * @param key
      * @return instance of ActionBuilder
      */
-    ActionsBuilder mouseDown(Keys key);
+    T mouseDown(Keys key);
 
     /**
      * Move to element first and then perform mouseDown
@@ -68,7 +68,7 @@ public interface ActionsBuilderController {
      * @param key
      * @return instance of ActionBuilder
      */
-    ActionsBuilder mouseDown(Object locator, Keys key);
+    T mouseDown(Object locator, Keys key);
 
     /**
      * Move to element and then perform mouseUp
@@ -76,33 +76,33 @@ public interface ActionsBuilderController {
      * @param key
      * @return instance of ActionBuilder
      */
-    ActionsBuilder mouseUp(Object locator, Keys key);
+    T mouseUp(Object locator, Keys key);
 
     /**
      * Clicks (without releasing) in the middle of the given element. This is equivalent to: Actions.moveToElement(onElement).clickAndHold()
      * @param locator of WebElement to click and hold
      * @return instance of ActionBuilder
      */
-    ActionsBuilder clickAndHold(Object locator);
+    T clickAndHold(Object locator);
 
     /**
      * Performs the sequence of actions represented by this instance
      * @return instance of ActionBuilder
      */
-    ActionsBuilder performActions();
+    T performActions();
 
     /**
      * Performs the sequence of TouchAction represented by this instance
      * @return instance of ActionBuilder
      */
-    ActionsBuilder performTouchActions();
+    T performTouchActions();
 
     /**
      * Tap on WebElement in native apps
      * @param locator element to tap
      * @return instance of ActionBuilder
      */
-    ActionsBuilder tap(Object locator);
+    T tap(Object locator);
 
     /**
      * Tap an element, offset from upper left corner
@@ -111,7 +111,7 @@ public interface ActionsBuilderController {
      * @param y y offset
      * @return instance of ActionBuilder
      */
-    ActionsBuilder tap(Object locator,int x, int y);
+    T tap(Object locator,int x, int y);
 
     /**
      * Tap on specific location in screen
@@ -119,7 +119,7 @@ public interface ActionsBuilderController {
      * @param y y coordinate
      * @return instance of ActionBuilder
      */
-    ActionsBuilder tap(int x, int y);
+    T tap(int x, int y);
 
     /**
      * Press on an absolute position on the screen
@@ -127,14 +127,14 @@ public interface ActionsBuilderController {
      * @param y y coordinate
      * @return ActionsBuilder
      */
-    ActionsBuilder press(int x, int y);
+    T press(int x, int y);
 
     /**
      * Press on WebElement in native apps
      * @param locator element to press
      * @return instance of ActionBuilder
      */
-    ActionsBuilder press(Object locator);
+    T press(Object locator);
 
     /**
      * Press an element, offset from upper left corner
@@ -143,7 +143,7 @@ public interface ActionsBuilderController {
      * @param y y offset
      * @return instance of ActionBuilder
      */
-    ActionsBuilder press(Object locator, int x, int y);
+    T press(Object locator, int x, int y);
 
 
 }

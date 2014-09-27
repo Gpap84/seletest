@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.selenium.webAPI;
+package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 
 import java.util.Iterator;
 
@@ -32,15 +32,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.webAPI.ElementController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
+ * WindowsWDController class.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
-public class WindowsWDController<T extends RemoteWebDriver> extends DriverBaseController<T> implements WindowsController{
+@Component("webDriverWindows")
+public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements WindowsController{
 
     @Autowired
     StrategyFactory<?> factoryStrategy;

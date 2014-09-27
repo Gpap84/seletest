@@ -64,9 +64,13 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     @Value("${performance}")
     private String performance;
 
-    private final String INIT_WEB="Event for initializing Web Session occured at: {} !!!";
-    private final String INIT_APPIUM="Event for initializing Mobile Session occured at: {} !!!";
+    /**Μessage initialize new session*/
+    private final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
+
+    /**Message for exception during application context load*/
     private final String ERROR_IOC="Error during initializing spring container ";
+
+    /**Message for not defined test type (Web-Mobile)*/
     private final String TEST_TYPE="The test type is not defined!!!";
 
     @BeforeSuite(alwaysRun = true)
@@ -111,7 +115,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     protected void beforeMethod(
             ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-
             log.debug("*********************************************************************");
             log.debug("**** Initialize session upon parallel level <<\"{}\">>***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*********************************************************************");
@@ -122,7 +125,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     @AfterClass(alwaysRun = true)
     protected void cleanSessionOnClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-            log.debug("************* Clean session after test class ************************");
+            log.debug("************* Clean session on @AfterClass ************************");
             SessionContext.cleanSession();
         }
     }
@@ -131,7 +134,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     public void cleanSessionOnTest(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
                 ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
-            log.debug("************* Clean session after test ***************************");
+            log.debug("************* Clean session on @AfterTest ***************************");
             SessionContext.cleanSession();
         }
     }
@@ -139,7 +142,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     @AfterMethod(alwaysRun = true)
     public void cleanSessionOnMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-            log.debug("************* Clean session after test method *********************");
+            log.debug("************* Clean session on @AfterMethod *********************");
             SessionContext.cleanSession();
         }
     }
@@ -153,9 +156,9 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     private void initializeSession(ITestContext ctx){
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
         if(!ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
-            publisher.publishInitializationEvent(INIT_WEB, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
+            publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
         } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
-            publisher.publishInitializationEvent(INIT_APPIUM, null,false,ctx,false);
+            publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),false,ctx,false);
         } else {
             throw new RuntimeException(TEST_TYPE);
         }

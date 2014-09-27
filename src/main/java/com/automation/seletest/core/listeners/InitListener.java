@@ -33,33 +33,51 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
+import org.testng.IInvokedMethodListener2;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
+import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 @Slf4j
-public class InitListener implements IInvokedMethodListener{
+public class InitListener implements IInvokedMethodListener2{
 
     @Override
-    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-
-        log.debug("Specify browser type by finding custom annotation on class level!!!");
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
         SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
 
-        //Set assertion type (Hard / Soft) for this test method
+        //Set assertion type (Hard / Soft) and amount of time to wait for conditions () for this test method
         if(method.getTestMethod().isTest()){
+            log.debug("Set assertion type and waitFor parameter for test method: {}!!!",method.getTestMethod().getMethodName());
             seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
             SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
+            SessionContext.getSession().setWaitUntil(seleniumTest.waitFor());
+
+            if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
+                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using WebDriver for this @Test", "color:blue");
+                SessionContext.getSession().setElementStrategy("webDriverElement");
+                SessionContext.getSession().setOptionsStrategy("webDriverOptions");
+                SessionContext.getSession().setWindowsStrategy("webDriverWindows");
+
+            } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
+                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
+                SessionContext.getSession().setElementStrategy("seleniumElement");
+                SessionContext.getSession().setWaitStrategy("seleniumWait");
+                SessionContext.getSession().setOptionsStrategy("seleniumOptions");
+                SessionContext.getSession().setWindowsStrategy("seleniumWindows");
+            }
         }
 
     }
 
     @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
 
         if(method.getTestMethod().isTest()){
             PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
@@ -67,11 +85,26 @@ public class InitListener implements IInvokedMethodListener{
 
             //Performance collection data
             if(perf!=null){
+
                 perf.getPerformanceData(perf.getServer());
                 perf.writePerformanceData(new File("./target/surefire-reports/logs/"+testResult.getName()+".har").getAbsolutePath(), perf.getHar());
                 perf.stopServer(perf.getServer());
-                log.info("Performance data collected for test: {} !!!",testResult.getName());
+                log.debug("Performance data collected for test method: {} !!!",method.getTestMethod().getMethodName());
             }
         }
     }
+
+
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

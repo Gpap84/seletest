@@ -26,10 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -37,16 +34,23 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
  *
  */
 @SuppressWarnings("unchecked")
-public abstract class DriverBaseController<T extends RemoteWebDriver> extends SeletestWebTestBase{
+public abstract class DriverBaseController<T> {
 
     /**
-     * WebDriver object
+     * Gets the WebDriver instance
      * @return WebDriver instance per thread
      */
     public T webDriver(){
         return (T) SessionContext.getSession().getWebDriver();
     }
 
+    /**
+     * Gets the selenium instance
+     * @return
+     */
+    public T selenium(){
+        return (T) SessionContext.getSession().getSelenium();
+    }
 
     /**
      * Gets the strategy for Wait<WebDriver>

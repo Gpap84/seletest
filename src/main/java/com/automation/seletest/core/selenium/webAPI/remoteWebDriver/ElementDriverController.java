@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.selenium.webAPI;
+package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 
 
 import java.awt.image.BufferedImage;
@@ -45,13 +45,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
  * This class contains the implementation of WebDriver 2 API
@@ -60,23 +60,14 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  * @param <T>
  *
  */
-@Component
-public class ElementWDController<T extends RemoteWebDriver> extends DriverBaseController<T> implements ElementController{
+@Component("webDriverElement")
+public class ElementDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements ElementController{
 
     @Autowired
     FilesUtils fileService;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
-
-    /**
-     * Gets the selenium instance.
-     * @param baseUrl the base url
-     * @return the selenium instance
-     */
-    public Selenium getSeleniumInstance(String baseUrl) {
-        return new WebDriverBackedSelenium(webDriver(), baseUrl);
-    }
 
     @Override
     public void goToTargetHost(String url) {

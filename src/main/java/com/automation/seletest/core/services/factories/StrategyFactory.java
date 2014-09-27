@@ -27,7 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.services.factories;
 
 
-import com.automation.seletest.core.services.actions.ActionsSync;
+import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.services.actions.WaitFor;
 
 /**
  * WaitStrategyFactory
@@ -38,7 +41,16 @@ import com.automation.seletest.core.services.actions.ActionsSync;
 public interface StrategyFactory<T> {
 
     /**Gets the strategy for waiting for conditions*/
-    ActionsSync getWaitStrategy(String strategyName);
+    WaitFor getWaitStrategy(String strategyName);
+
+    /**Gets the elementController type*/
+    ElementController getElementControllerStrategy(String elementController);
+
+    /**Gets the optionsController type*/
+    OptionsController getOptionsControllerStrategy(String optionsController);
+
+    /**Gets the windowsController type*/
+    WindowsController getWindowsControllerStrategy(String windowsController);
 
 }
 

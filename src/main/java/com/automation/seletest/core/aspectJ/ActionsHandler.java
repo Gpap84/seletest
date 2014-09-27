@@ -41,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -59,15 +58,15 @@ public class ActionsHandler extends SuperAspect {
     @Autowired
     LogUtils log;
 
-    /**Wait Strategy*/
+    /**Factories Strategy*/
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    @Autowired
-    ElementController webControl;
 
+    /**Constant for taking screenshot*/
     private final String takeScreencap="Take screenshot after exception: ";
 
+    /**Constant for unknown exception*/
     private final String unknownException="Unknown exception occured: ";
 
     /**
@@ -90,7 +89,7 @@ public class ActionsHandler extends SuperAspect {
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
         if(ex instanceof WebDriverException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-            webControl.takeScreenShot();
+            element().takeScreenShot();
         } else {
             log.error(unknownException+ex.getMessage());
         }
@@ -105,16 +104,12 @@ public class ActionsHandler extends SuperAspect {
 
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
-
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
-
-
-
 }

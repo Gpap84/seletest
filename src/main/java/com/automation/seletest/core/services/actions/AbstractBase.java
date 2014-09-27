@@ -37,6 +37,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * AbstractBase contains all static abstract classes used
@@ -51,22 +52,56 @@ public abstract class AbstractBase {
     /**
      * Abstract class for Waiting Conditions
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     * @param <T>
      *
      */
-    public static abstract class WaitBase implements ActionsSync{
+    public static abstract class WaitBase implements WaitFor{
 
+        /**Component name for WebDriverWait*/
         private final String webDriverWait="wdWait";
+
+        /**Component name for FluentWait*/
         private final String fluentWait="fwWait";
 
+        /**Constant for text not present*/
         protected final String NOT_PRESENT="Element not present in DOM";
+
+        /**Constant for element not visible*/
         protected final String NOT_VISIBLE="Element not visible in screen";
+
+        /**Consatnt for element not clickable*/
         protected final String NOT_CLICKABLE="Element cannot be clicked";
+
+        /**Constant for alert not present*/
         protected final String ALERT_NOT_PRESENT="Alert not present";
+
+        /**Constant for text not present*/
         protected final String TEXT_NOT_PRESENT="Text not present in element";
+
+        /**Constant for text not present in value*/
         protected final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+
+        /**Constant for page loaded*/
         protected final String PAGE_LOADED="Page is loaded";
+
+        /**Constant for completed ajax call*/
         protected final String AJAX_COMPLETE="Ajax call is completed";
 
+        /**
+         * Timeout before any action
+         * @return amount of time to wait for condition
+         */
+        protected int waitTime() {
+            return SessionContext.getSession().getWaitUntil();
+        }
+
+        /**
+         * Gets the selenium instance
+         * @return
+         */
+        protected Selenium selenium(){
+            return (Selenium) SessionContext.getSession().getSelenium();
+        }
 
         /**
          * Returns a new WebDriverWait instance
@@ -122,8 +157,7 @@ public abstract class AbstractBase {
         protected void threadSleep(final long timeout){
             try {
                 Thread.sleep(timeout);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 log.error("Interrupted exception occured trying to sleep thread for: "+timeout);
             }
         }

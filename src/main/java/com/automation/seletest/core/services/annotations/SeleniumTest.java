@@ -51,8 +51,28 @@ public @interface  SeleniumTest {
     public enum AssertionType{SOFT,HARD};
 
     /**
+     * DriverType to specify if selenium 1 or webdriver api are used for @Test
+     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    public enum DriverType{SELENIUM,WEBDRIVER};
+
+    /**
+     * driver
+     * @return the type of driver
+     */
+    DriverType driver() default DriverType.WEBDRIVER;
+
+    /**
      * AssertioType
      * @return AssertionType the type of assertion to apply to @Test
      */
     AssertionType assertion() default AssertionType.SOFT;
+
+    /**
+     * Wait for condition
+     * @return integer the amount of time to wait for element
+     */
+    int waitFor() default 5;
+
 }

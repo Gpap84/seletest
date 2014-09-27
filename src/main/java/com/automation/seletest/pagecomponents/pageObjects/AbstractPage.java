@@ -26,14 +26,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Field;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -42,14 +46,10 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
  *
  * @param <T>
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
-    /**Timeout to load a page*/
-    private static final int LOAD_TIMEOUT = 30;
-
-    /**Polling time*/
-    private static final int REFRESH_RATE = 2;
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
 
     /**
      * Opens a page object
@@ -57,27 +57,65 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @return T the type of object
      */
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionContext.getSession().getWebDriver(), clazz);
-        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
-        waitForPageToLoad(pageLoadCondition);
+        T page = PageFactory.initElements((WebDriver) SessionContext.getSession().getWebDriver(), clazz);
         return page;
     }
 
-    /**
-     * Condition for loading a page object
-     * @return ExpectedCondition<?> condition to load a page
-     */
-    protected abstract ExpectedCondition<?> getPageLoadCondition();
 
     /**
-     * Wait for page to load
-     * @param pageLoadCondition
+     * Interact with element based on factory strategy
+     * @return ElementController
      */
-    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionContext.getSession().getWebDriver())
-                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
-                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
-
-        wait.until(pageLoadCondition);
+    public ElementController element() {
+        return factoryStrategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy());
     }
+
+    /**
+     * OptionsController
+     * @return OptionsController
+     */
+    public OptionsController options() {
+        return factoryStrategy.getOptionsControllerStrategy(SessionContext.getSession().getOptionsStrategy());
+    }
+
+    /**
+     * Windows interaction
+     * @return WindowsController
+     */
+    public WindowsController windows() {
+        return factoryStrategy.getWindowsControllerStrategy(SessionContext.getSession().getWindowsStrategy());
+    }
+
+
+    /**
+     * get String locator for @FindBy
+     * @param clazz
+     * @param element
+     * @return String locator
+     */
+    public String getWebElementLocator(Class<?> clazz, String element){
+        Field[] fields=clazz.getDeclaredFields();
+        for(Field field:fields){
+            if(field.getAnnotation(FindBy.class)!=null){
+                if(field.getName().equals(element)){
+                    if(!field.getAnnotation(FindBy.class).className().isEmpty()){
+                        return "class="+field.getAnnotation(FindBy.class).className();
+                    } else if(!field.getAnnotation(FindBy.class).id().isEmpty()){
+                        return "id="+field.getAnnotation(FindBy.class).id();
+                    } else if(!field.getAnnotation(FindBy.class).css().isEmpty()){
+                        return "css="+field.getAnnotation(FindBy.class).css();
+                    } else if(!field.getAnnotation(FindBy.class).linkText().isEmpty()){
+                        return "link="+field.getAnnotation(FindBy.class).linkText();
+                    } else if(!field.getAnnotation(FindBy.class).name().isEmpty()){
+                        return "name="+field.getAnnotation(FindBy.class).name();
+                    } else if(!field.getAnnotation(FindBy.class).xpath().isEmpty()){
+                        return "xpath="+field.getAnnotation(FindBy.class).xpath();
+                    }
+
+                }
+            }
+        }
+        return null;
+    }
+
 }

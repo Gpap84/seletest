@@ -41,6 +41,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
  * Configuration class for instantiating various beans from WebDriver API
@@ -75,6 +77,15 @@ public class WebDriverConfiguration {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         return capabilities;
     }
+
+    @Lazy(true)
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public Selenium selenium(WebDriver driver, String baseUrl){
+        return new WebDriverBackedSelenium(driver, baseUrl);
+    }
+
+
 
 
 }

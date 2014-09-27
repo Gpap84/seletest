@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.selenium.webAPI;
+package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -36,12 +36,15 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
+
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component
-public class OptionsWDController<T extends RemoteWebDriver> extends DriverBaseController<T> implements OptionsController {
+@Component("webDriverOptions")
+public class OptionsDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements OptionsController {
 
     /*************************************************************
      ************************COOKIES SECTION*********************

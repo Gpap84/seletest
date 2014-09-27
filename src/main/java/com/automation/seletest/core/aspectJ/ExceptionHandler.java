@@ -37,13 +37,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.ElementController;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Error Handling Aspect
@@ -62,8 +63,9 @@ public class ExceptionHandler extends SuperAspect {
     @Autowired
     Environment env;
 
+    /**Factories Strategy*/
     @Autowired
-    ElementController webControl;
+    StrategyFactory<?> factoryStrategy;
 
     /**
      * Handle Exceptions...
@@ -80,7 +82,7 @@ public class ExceptionHandler extends SuperAspect {
                 log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
             }
         } catch (Exception ex) {
-            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
+            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException) {
                 log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             } else{
@@ -122,7 +124,7 @@ public class ExceptionHandler extends SuperAspect {
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                webControl.changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+                element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -150,15 +152,12 @@ public class ExceptionHandler extends SuperAspect {
                     log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
                 }
             }
-        }
-        catch(AssertionError ex) {
+        } catch(AssertionError ex) {
             log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                webControl.takeScreenShot();
-            }
-            throw ex;
-        }
-        return returnValue;
+                element().takeScreenShot();
+            } throw ex;
+        } return returnValue;
     }
 
     /**
@@ -170,7 +169,7 @@ public class ExceptionHandler extends SuperAspect {
      * @throws Throwable
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
+        if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
             throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);
@@ -193,7 +192,7 @@ public class ExceptionHandler extends SuperAspect {
      * @throws Throwable
      */
     private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException ){
+        if (ex instanceof TimeoutException || ex instanceof SeleniumException ){
             MethodSignature signature = (MethodSignature ) pjp.getSignature();
             Class<?> returnType = signature.getReturnType();
             if(returnType.getName().compareTo("int")==0){
@@ -203,8 +202,7 @@ public class ExceptionHandler extends SuperAspect {
             } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
                 return true;
             }
-        }
-        return null;
+        } return null;
     }
 
 

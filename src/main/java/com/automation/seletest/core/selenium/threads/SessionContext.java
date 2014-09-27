@@ -65,15 +65,6 @@ public class SessionContext {
         return (ThreadLocalTargetSource) ApplicationContextProvider.getApplicationContext().getBean(targetBean);
     }
 
-
-    /**
-     * Starts a new thread from threadLocalTargetSource on demand (used if thread is necessery inside @Test)
-     * @return
-     */
-    public static SessionProperties<?> getSessionOnDemand(){
-        return (SessionProperties) ApplicationContextProvider.getApplicationContext().getBean("engineThread");
-    }
-
     /**
      * Destroy instances of the thread
      * @throws Exception
