@@ -513,11 +513,11 @@
  <!-- Shared version number properties -->
  <properties>
   <org.springframework.version>4.0.3.RELEASE</org.springframework.version>
-  <selenium.version>2.42.2</selenium.version>
+  <selenium.version>2.43.0</selenium.version>
   <aspectj.version>1.6.11</aspectj.version>
   <testng.version>6.8.8</testng.version>
   <groovy.version>1.8.8</groovy.version>
-  <appium.version>1.5.0</appium.version>
+  <appium.version>1.7.0</appium.version>
   <phantomjs.version>1.0.4</phantomjs.version>
   <gmaven.version>1.5</gmaven.version>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

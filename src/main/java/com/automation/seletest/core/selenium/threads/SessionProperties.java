@@ -35,11 +35,13 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.thoughtworks.selenium.Selenium;
 
 
 /**
@@ -48,7 +50,8 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  * @param <T>
  */
 @Slf4j
-public class SessionProperties<T> {
+@SuppressWarnings("deprecation")
+public class SessionProperties<T extends RemoteWebDriver> {
 
     /**Factories Strategy*/
     @Autowired
@@ -72,7 +75,7 @@ public class SessionProperties<T> {
 
     /**The selenium object*/
     @Getter @Setter
-    T selenium;
+    Selenium selenium;
 
     /** Wait Strategy*/
     @Getter @Setter

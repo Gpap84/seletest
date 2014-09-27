@@ -31,10 +31,10 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.openqa.selenium.interactions.Actions;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener2;
-import org.testng.ITestContext;
+import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
@@ -44,17 +44,21 @@ import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 @Slf4j
-public class InitListener implements IInvokedMethodListener2{
+@SuppressWarnings("unchecked")
+public class InitListener implements IInvokedMethodListener{
 
     @Override
-    public void beforeInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
 
         //Set assertion type (Hard / Soft) and amount of time to wait for conditions () for this test method
         if(method.getTestMethod().isTest()){
             log.debug("Set assertion type and waitFor parameter for test method: {}!!!",method.getTestMethod().getMethodName());
+            SessionContext.getSession().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+            SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionContext.getSession().getWebDriver()));
             seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
             SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
             SessionContext.getSession().setWaitUntil(seleniumTest.waitFor());
@@ -77,7 +81,7 @@ public class InitListener implements IInvokedMethodListener2{
     }
 
     @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 
         if(method.getTestMethod().isTest()){
             PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
@@ -92,19 +96,6 @@ public class InitListener implements IInvokedMethodListener2{
                 log.debug("Performance data collected for test method: {} !!!",method.getTestMethod().getMethodName());
             }
         }
-    }
-
-
-    @Override
-    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        // TODO Auto-generated method stub
-
     }
 
 }

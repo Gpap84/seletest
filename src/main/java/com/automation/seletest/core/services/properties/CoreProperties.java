@@ -51,11 +51,17 @@ public enum CoreProperties {
     /** The parameter that determines that application is Mobile based (Android-iOS). */
     MOBILETYPE("mobile"),
 
-    /** The parameter that determines the profile that will be used to start a new WebDriver object. */
+    /** The parameter that determines the capabilities that will be used to start a new WebDriver object. */
     CAPABILITIES("capabilities"),
 
-    /** The parameter that determines the capabilities to start a new WebDriver object. */
+    /** The parameter that determines the android capabilities that will be used to start a new AppiumDriver object. */
+    ANDROIDCAPABILITIES("androidcapabilities"),
+
+    /** The parameter that determines the profile to start a new WebDriver object. */
     PROFILEDRIVER("profileDriver"),
+
+    /** The parameter that determines the appium profile to start a new AppiumDriver object. */
+    PROFILEAPPIUMDRIVER("profileAppium"),
 
     /** The parameter that determines the performance measures. */
     PERFORMANCE("performance"),
@@ -71,14 +77,14 @@ public enum CoreProperties {
 
 
     /*************************MOBILE PROPERTIES*************************************************/
-    /** The parameter that determines the mobile app name*/
-    BUNDLEID("bundleId"),
+    /** The parameter that determines the app path*/
+    APP("app"),
 
-    /** The parameter that determines if an application is to be launched*/
-    APP_LAUNCH("applaunch"),
+    /** The parameter that determines appActivity*/
+    APP_ACTIVITY("appActivity"),
 
-    /** The parameter that determines local path to app file*/
-    APP_PATH("apppath"),
+    /** The parameter that determines appPackage*/
+    APP_PACKAGE("appPackage"),
 
     /*************************************CoreProperties used for test status-actions on UI*****************************************************/
     PASS_COLOR("Chartreuse"),

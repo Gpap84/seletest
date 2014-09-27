@@ -55,6 +55,7 @@ public abstract class AbstractBase {
      * @param <T>
      *
      */
+    @SuppressWarnings("deprecation")
     public static abstract class WaitBase implements WaitFor{
 
         /**Component name for WebDriverWait*/

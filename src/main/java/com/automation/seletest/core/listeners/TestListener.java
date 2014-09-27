@@ -53,7 +53,6 @@ public class TestListener implements ITestListener{
     @Override
     public void onStart(ITestContext testContext) {
         log.info("Suite: "+testContext.getSuite().getName()+" started at: "+testContext.getStartDate());
-
         createDirectory(screenShots);
         createDirectory(logs);
     }
@@ -64,7 +63,9 @@ public class TestListener implements ITestListener{
 
         //Remove the passed configuration methods from the report
         for(ITestNGMethod m:context.getPassedConfigurations().getAllMethods()){
+            if(!m.isBeforeMethodConfiguration()) {
             context.getPassedConfigurations().removeResult(m);
+            }
         }
 
         //Remove the skipped configuration methods from the report

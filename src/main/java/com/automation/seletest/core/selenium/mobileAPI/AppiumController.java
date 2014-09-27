@@ -62,11 +62,11 @@ public interface AppiumController {
     void closeApp();
 
     /**
-     * This method installs an app or ipa file to mobile device
+     * This method installs an apk or ipa file to mobile device
      * @param appPath
      * @param remoteWebDriver
      */
-    void installApp(String bundleId, String appPath);
+    void installApp(String appPath);
 
 
     /**

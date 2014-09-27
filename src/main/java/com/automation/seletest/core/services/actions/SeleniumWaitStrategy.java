@@ -39,6 +39,7 @@ import com.thoughtworks.selenium.SeleniumException;
  *
  */
 @Component("seleniumWait")
+@SuppressWarnings("deprecation")
 public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
 
     /* (non-Javadoc)
