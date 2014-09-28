@@ -32,11 +32,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   </property>
   </bean>
  
- <!-- Aliases for better mapping -->
+ <!-- Aliases for wait strategy -->
  <alias alias="Expected" name="expectedWait"/>
  <alias alias="Fluent" name="fluentWait"/>
  <alias alias="SeleniumWait" name="seleniumWait"/>
  <alias alias="DEFAULT" name="expectedWait"/>
+ 
+ <!-- Aliases for actions strategy -->
+ <alias alias="WebDriverActions" name="webDriverActions"/>
+ <alias alias="SeleniumActions" name="seleniumActions"/>
  
  <!-- Alias for element strategy -->
   <alias alias="SeleniumElement" name="seleniumElement"/>

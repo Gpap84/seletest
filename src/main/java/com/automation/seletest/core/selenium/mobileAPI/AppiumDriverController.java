@@ -69,10 +69,12 @@ public class AppiumDriverController<T extends RemoteWebDriver> extends DriverBas
     }
 
     @Override
-    public void installApp(String appPath) {
-        Map<String, String> args = new HashMap<String, String>();
-        args.put("appPath", appPath);
-        ((AppiumDriver)webDriver()).installApp(appPath);
+    public void installApp(String appPath, String bundleId) {
+        if(!isAppInstalled(bundleId)) {
+            Map<String, String> args = new HashMap<String, String>();
+            args.put("appPath", appPath);
+            ((AppiumDriver)webDriver()).installApp(appPath);
+        }
     }
 
     @Override

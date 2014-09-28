@@ -118,8 +118,8 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
         BufferedImage  fullImg = ImageIO.read(screenshot);
         WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
-        int eleWidth = element.getSize().getWidth();
-        int eleHeight = element.getSize().getHeight();
+        int eleWidth = element.getSize().getWidth()+10;
+        int eleHeight = element.getSize().getHeight()+10;
         Rectangle elementScreen=new Rectangle(eleWidth, eleHeight);
         BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), elementScreen.width, elementScreen.height);
         ImageIO.write(eleScreenshot, "png", screenshot);

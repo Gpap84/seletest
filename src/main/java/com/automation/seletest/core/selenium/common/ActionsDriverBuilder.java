@@ -29,8 +29,6 @@ package com.automation.seletest.core.selenium.common;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.stereotype.Component;
 
@@ -56,30 +54,30 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
     }
 
     @Override
-    public ActionsDriverBuilder mouseUp(Keys key) {
-        SessionControl.actionsBuilder().keyUp(key);
+    public ActionsDriverBuilder mouseUp(KeyInfo key) {
+        SessionControl.actionsBuilder().keyUp(key.getKey());
         return this;
 
     }
 
     @Override
-    public ActionsDriverBuilder mouseDown(Keys key) {
-        SessionControl.actionsBuilder().keyDown(key);
+    public ActionsDriverBuilder mouseDown(KeyInfo key) {
+        SessionControl.actionsBuilder().keyDown(key.getKey());
         return this;
-    }
-
-    @WaitCondition(waitFor.VISIBILITY)
-    @Override
-    public ActionsDriverBuilder mouseDown(Object locator, Keys key) {
-        SessionControl.actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key);
-        return this;
-
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsDriverBuilder mouseUp(Object locator, Keys key) {
-        SessionControl.actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key);
+    public ActionsDriverBuilder mouseDown(Object locator, KeyInfo key) {
+        SessionControl.actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key.getKey());
+        return this;
+
+    }
+
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsDriverBuilder mouseUp(Object locator, KeyInfo key) {
+        SessionControl.actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key.getKey());
         return this;
     }
 
@@ -101,7 +99,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
     public ActionsDriverBuilder performActions() {
         SessionControl.actionsBuilder().build().perform();
         SessionContext.getSession().getControllers().remove(Actions.class);
-        SessionContext.getSession().getControllers().put(Actions.class, new Actions((WebDriver) SessionContext.getSession().getWebDriver()));
+        SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionContext.getSession().getWebDriver()));
         return this;
     }
 

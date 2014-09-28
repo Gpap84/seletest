@@ -26,7 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.common;
 
-import org.openqa.selenium.Keys;
 
 public interface ActionsBuilderController<T> {
 
@@ -50,7 +49,7 @@ public interface ActionsBuilderController<T> {
      * @param key
      * @return instance of ActionBuilder
      */
-    T mouseUp(Keys key);
+    T mouseUp(KeyInfo key);
 
     /**
      * Performs a modifier key press.
@@ -60,7 +59,7 @@ public interface ActionsBuilderController<T> {
      * @param key
      * @return instance of ActionBuilder
      */
-    T mouseDown(Keys key);
+    T mouseDown(KeyInfo key);
 
     /**
      * Move to element first and then perform mouseDown
@@ -68,7 +67,7 @@ public interface ActionsBuilderController<T> {
      * @param key
      * @return instance of ActionBuilder
      */
-    T mouseDown(Object locator, Keys key);
+    T mouseDown(Object locator, KeyInfo key);
 
     /**
      * Move to element and then perform mouseUp
@@ -76,7 +75,7 @@ public interface ActionsBuilderController<T> {
      * @param key
      * @return instance of ActionBuilder
      */
-    T mouseUp(Object locator, Keys key);
+    T mouseUp(Object locator, KeyInfo key);
 
     /**
      * Clicks (without releasing) in the middle of the given element. This is equivalent to: Actions.moveToElement(onElement).clickAndHold()

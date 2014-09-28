@@ -93,6 +93,10 @@ public class SessionProperties<T extends RemoteWebDriver> {
     @Getter @Setter
     String windowsStrategy="webDriverWindows";
 
+    /** WebDriver-Selenium actions strategy*/
+    @Getter @Setter
+    String actionsStrategy="webDriverActions";
+
     /**WebElement per session*/
     @Getter @Setter
     WebElement webElement;

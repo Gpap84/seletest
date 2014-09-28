@@ -117,10 +117,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
     public AssertTest textPresentinElement(Object locator, String text) {
-        assertion.assertTrue(
-                strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).
-                waitForTextPresentinElement(locator, text),
-                env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinElement(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return this;
     }
 
@@ -132,10 +129,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
     public AssertTest textPresentValueAttribute(Object locator, String text) {
-        assertion.assertTrue(
-                strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).
-                waitForTextPresentinValue(locator, text),
-                env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinValue(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return this;
     }
 }

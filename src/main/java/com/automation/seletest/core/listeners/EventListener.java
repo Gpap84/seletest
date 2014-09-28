@@ -120,6 +120,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
             String profileAppium=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEAPPIUMDRIVER.get());
             String appPath = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP.get());
+            String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
@@ -143,7 +144,6 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
             if(profileAppium!=null && profileAppium.compareTo("android")==0) {
                 String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
-                String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
                 DesiredCapabilities appiumcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage});
                 cap.merge(appiumcap);
             }
@@ -173,8 +173,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             } else {
                 SessionContext.getSession().setWebDriver((AppiumDriver)driver);
                 SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
-                //                mobileControl.installApp(appPath);
-                //                mobileControl.launchApp();
+                mobileControl.installApp(appPath,appPackage);
+//                mobileControl.launchApp();
             }
 
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver

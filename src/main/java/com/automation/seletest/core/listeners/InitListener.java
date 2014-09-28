@@ -68,13 +68,14 @@ public class InitListener implements IInvokedMethodListener{
                 SessionContext.getSession().setElementStrategy("webDriverElement");
                 SessionContext.getSession().setOptionsStrategy("webDriverOptions");
                 SessionContext.getSession().setWindowsStrategy("webDriverWindows");
-
+                SessionContext.getSession().setActionsStrategy("webDriverActions");
             } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
                 ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
                 SessionContext.getSession().setElementStrategy("seleniumElement");
                 SessionContext.getSession().setWaitStrategy("seleniumWait");
                 SessionContext.getSession().setOptionsStrategy("seleniumOptions");
                 SessionContext.getSession().setWindowsStrategy("seleniumWindows");
+                SessionContext.getSession().setActionsStrategy("seleniumActions");
             }
         }
 
