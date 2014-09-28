@@ -142,8 +142,10 @@ public class OptionsSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public Point getWindowPosition() {
-        // TODO Auto-generated method stub
-        return null;
+        int width = Integer.parseInt(selenium().getEval("screen.width"));
+        int height = Integer.parseInt(selenium().getEval("screen.height"));
+        Point p=new Point(width, height);
+        return p;
     }
 
     /* (non-Javadoc)

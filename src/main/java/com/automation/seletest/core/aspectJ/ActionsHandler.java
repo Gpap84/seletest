@@ -43,7 +43,6 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * Aspect that handles logging,screenshots etc.
@@ -57,11 +56,6 @@ public class ActionsHandler extends SuperAspect {
     /**Log service*/
     @Autowired
     LogUtils log;
-
-    /**Factories Strategy*/
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
-
 
     /**Constant for taking screenshot*/
     private final String takeScreencap="Take screenshot after exception: ";

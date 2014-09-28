@@ -47,7 +47,7 @@ import org.testng.SkipException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-import com.automation.seletest.core.services.annotations.DataDriven;
+import com.automation.seletest.core.services.annotations.DataSource;
 
 /**
  * This class operates as a service for reading properties from various input types
@@ -134,13 +134,13 @@ public class FilesUtils {
     public Map<String, String> readData(final Method method) {
 
         String inputFile=null;
-        DataDriven testData=null;
+        DataSource testData=null;
         Map<String, String> data = new HashMap<String, String>();
 
-        if(method.isAnnotationPresent(DataDriven.class) && method.getAnnotation(DataDriven.class).filePath() !=""){
-            testData=method.getAnnotation(DataDriven.class);
-        } else if(method.getDeclaringClass().isAnnotationPresent(DataDriven.class) && method.getDeclaringClass().getAnnotation(DataDriven.class).filePath()!=""){
-            testData=method.getDeclaringClass().getAnnotation(DataDriven.class);
+        if(method.isAnnotationPresent(DataSource.class) && method.getAnnotation(DataSource.class).filePath() !=""){
+            testData=method.getAnnotation(DataSource.class);
+        } else if(method.getDeclaringClass().isAnnotationPresent(DataSource.class) && method.getDeclaringClass().getAnnotation(DataSource.class).filePath()!=""){
+            testData=method.getDeclaringClass().getAnnotation(DataSource.class);
         } else {
             throw new SkipException("The path to the file is undefined!!!");
         }

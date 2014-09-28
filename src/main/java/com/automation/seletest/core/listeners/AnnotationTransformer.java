@@ -38,7 +38,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.ITestAnnotation;
 
-import com.automation.seletest.core.services.annotations.DataDriven;
+import com.automation.seletest.core.services.annotations.DataSource;
 import com.automation.seletest.core.testNG.DataSources;
 
 /**
@@ -56,7 +56,7 @@ public class AnnotationTransformer implements IAnnotationTransformer{
     @SuppressWarnings("rawtypes")
     public void transform(final ITestAnnotation test, final Class testClass, final Constructor testConstructor,
             final Method testMethod) {
-        //Set DataProvider for the test i
+        //Set DataProvider for the test
         if (testMethod != null && usesDataSource(testMethod)) {
             test.setDataProviderClass(DataSources.class);
             test.setDataProvider(dataSource);
@@ -70,8 +70,8 @@ public class AnnotationTransformer implements IAnnotationTransformer{
     }
 
     private boolean usesDataSource(final Method testMethod) {
-        return testMethod.getAnnotation(DataDriven.class) != null
-                || testMethod.getDeclaringClass().getAnnotation(DataDriven.class) != null;
+        return testMethod.getAnnotation(DataSource.class) != null
+                || testMethod.getDeclaringClass().getAnnotation(DataSource.class) != null;
     }
 
 

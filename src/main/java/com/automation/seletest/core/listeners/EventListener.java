@@ -130,7 +130,6 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
             }
 
-
             //register Configuration classes
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
 

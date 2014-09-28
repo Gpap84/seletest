@@ -40,7 +40,6 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
@@ -62,10 +61,6 @@ public class ExceptionHandler extends SuperAspect {
     /** Environment instance*/
     @Autowired
     Environment env;
-
-    /**Factories Strategy*/
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
 
     /**
      * Handle Exceptions...
@@ -124,6 +119,7 @@ public class ExceptionHandler extends SuperAspect {
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
+                element().takeScreenShotOfElement(methodArguments(pjp)[0]);
                 element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {

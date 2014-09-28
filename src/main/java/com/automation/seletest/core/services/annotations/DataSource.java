@@ -24,61 +24,30 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.selenium.webAPI.interfaces;
+package com.automation.seletest.core.services.annotations;
 
-import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Windows interface
+ * DataDriven custom annotation
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-public interface WindowsController {
+@Retention(RUNTIME)
+@Target({CONSTRUCTOR, METHOD, TYPE})
+public @interface DataSource {
 
     /**
-     * Switch to latest window
+     * The filePath
+     * @return filePath the File Path in order to load properties
      */
-    void switchToLatestWindow();
-
-    /**
-     * Gets the number of opened windows
-     * @return Integer the number of opened windows
-     */
-    int getNumberOfOpenedWindows();
-
-    /**
-     * Accept alert
-     */
-    void acceptAlert();
-
-    /**
-     * Dismiss Alert
-     */
-    void dismissAlert();
-
-    /**
-     * Quit session or close latest window
-     * @param type
-     */
-    void quit(CloseSession type);
-
-    /**
-     * Switch control to frame located by name or id
-     * @param frameId
-     */
-    void switchToFrame(String frameId);
-
-    /**
-     * Go back in browser
-     */
-    void goBack();
-
-    /**
-     * Go forward in browser
-     */
-    void goForward();
-
+    String filePath() default "";
 
 
 }

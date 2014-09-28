@@ -29,13 +29,11 @@ package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 import java.util.Iterator;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
 import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * WindowsWDController class.
@@ -44,9 +42,6 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @Component("webDriverWindows")
 public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements WindowsController{
-
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
 
     @Override
     public void switchToLatestWindow() {
@@ -60,13 +55,13 @@ public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBa
 
     @Override
     public void acceptAlert() {
-        factoryStrategy.getWaitStrategy(getWait()).waitForAlert().accept();
+        waitController().waitForAlert().accept();
     }
 
 
     @Override
     public void dismissAlert() {
-        factoryStrategy.getWaitStrategy(getWait()).waitForAlert().dismiss();
+        waitController().waitForAlert().dismiss();
     }
 
     @Override
@@ -87,6 +82,32 @@ public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBa
             webDriver().quit();
             break;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
+     */
+    @Override
+    public void switchToFrame(String frameId) {
+        webDriver().switchTo().frame(frameId);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
+     */
+    @Override
+    public void goBack() {
+        webDriver().navigate().back();
+        waitController().waitForPageLoaded();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goForward()
+     */
+    @Override
+    public void goForward() {
+        webDriver().navigate().forward();
+        waitController().waitForPageLoaded();
     }
 
 }

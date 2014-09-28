@@ -82,14 +82,12 @@ public class InitListener implements IInvokedMethodListener{
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-
         if(method.getTestMethod().isTest()){
             PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
 
             //Performance collection data
             if(perf!=null){
-
                 perf.getPerformanceData(perf.getServer());
                 perf.writePerformanceData(new File("./target/surefire-reports/logs/"+testResult.getName()+".har").getAbsolutePath(), perf.getHar());
                 perf.stopServer(perf.getServer());

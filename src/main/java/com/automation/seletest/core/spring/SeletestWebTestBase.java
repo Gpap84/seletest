@@ -93,7 +93,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
                 ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
 
             log.debug("*****************************************");
-            log.debug("**** Initialize session upon parallel level: <<{}>>***********", ctx.getCurrentXmlTest().getParallel());
+            log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
             initializeSession(ctx);
         }
@@ -103,9 +103,8 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     protected void beforeClass(
             ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-
             log.debug("******************************************************************");
-            log.debug("**** Initialize session upon parallel level: <<\"{}\">>***********", ctx.getCurrentXmlTest().getParallel());
+            log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("******************************************************************");
             initializeSession(ctx);
         }
@@ -116,7 +115,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
             ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
             log.debug("*********************************************************************");
-            log.debug("**** Initialize session upon parallel level <<\"{}\">>***************", ctx.getCurrentXmlTest().getParallel());
+            log.debug("**** Initialize session: <<\"parallel={}\">>***************", ctx.getCurrentXmlTest().getParallel());
             log.debug("*********************************************************************");
             initializeSession(ctx);
         }

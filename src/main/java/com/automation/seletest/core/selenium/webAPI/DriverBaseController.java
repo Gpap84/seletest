@@ -26,7 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -35,6 +39,9 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
  */
 @SuppressWarnings("unchecked")
 public abstract class DriverBaseController<T> {
+
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
 
     /**
      * Gets the WebDriver instance
@@ -58,5 +65,13 @@ public abstract class DriverBaseController<T> {
      */
     public String getWait(){
         return SessionContext.getSession().getWaitStrategy();
+    }
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    public WaitFor waitController() {
+        return factoryStrategy.getWaitStrategy(getWait());
     }
 }

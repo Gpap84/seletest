@@ -102,4 +102,30 @@ public class WindowsSeleniumController <T extends DefaultSelenium> extends Drive
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
+     */
+    @Override
+    public void switchToFrame(String frameId) {
+        selenium().selectFrame(frameId);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
+     */
+    @Override
+    public void goBack() {
+        selenium().goBack();
+        waitController().waitForPageLoaded();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goForward()
+     */
+    @Deprecated
+    @Override
+    public void goForward() {
+
+    }
+
 }

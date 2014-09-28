@@ -47,7 +47,6 @@ import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 /**
@@ -60,13 +59,9 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
     @Autowired
     FilesUtils fileService;
 
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
-
-    @Deprecated
     @Override
     public WebElement findElement(Object locator) {
-        return null;
+        throw new UnsupportedOperationException("findElements method is not supported for DefaultSelenium");
     }
 
     /* (non-Javadoc)
@@ -212,7 +207,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public boolean isWebElementPresent(String locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
+        waitController().waitForElementPresence(locator);
         return true;
     }
 
@@ -233,8 +228,16 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public boolean isWebElementVisible(Object locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        waitController().waitForElementVisibility(locator);
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.Object, java.lang.String)
+     */
+    @Override
+    public void uploadFile(Object locator, String path) {
+        selenium().attachFile((String)locator, path);
     }
 
 }

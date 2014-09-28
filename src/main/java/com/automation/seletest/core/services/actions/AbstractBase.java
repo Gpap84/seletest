@@ -44,7 +44,7 @@ import com.thoughtworks.selenium.Selenium;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 @Slf4j
 public abstract class AbstractBase {
 
@@ -55,7 +55,6 @@ public abstract class AbstractBase {
      * @param <T>
      *
      */
-    @SuppressWarnings("deprecation")
     public static abstract class WaitBase implements WaitFor{
 
         /**Component name for WebDriverWait*/
@@ -101,7 +100,7 @@ public abstract class AbstractBase {
          * @return
          */
         protected Selenium selenium(){
-            return (Selenium) SessionContext.getSession().getSelenium();
+            return SessionContext.getSession().getSelenium();
         }
 
         /**

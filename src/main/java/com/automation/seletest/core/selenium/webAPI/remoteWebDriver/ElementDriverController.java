@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,9 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +54,6 @@ import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * This class contains the implementation of WebDriver 2 API
@@ -65,9 +67,6 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
 
     @Autowired
     FilesUtils fileService;
-
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
 
     @Override
     public void goToTargetHost(String url) {
@@ -121,7 +120,8 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();
-        BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), eleWidth, eleHeight);
+        Rectangle elementScreen=new Rectangle(eleWidth, eleHeight);
+        BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), elementScreen.width, elementScreen.height);
         ImageIO.write(eleScreenshot, "png", screenshot);
         File file = fileService.createScreenshotFile();
         FileUtils.copyFile(screenshot, file);
@@ -130,7 +130,7 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
 
     @Override
     public WebElement findElement(Object locator) {
-        return factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        return waitController().waitForElementVisibility(locator);
     }
 
 
@@ -177,7 +177,7 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
 
     @Override
     public boolean isWebElementPresent(String locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementPresence(locator);
+        waitController().waitForElementPresence(locator);
         return true;
     }
 
@@ -192,8 +192,20 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
 
     @Override
     public boolean isWebElementVisible(Object locator) {
-        factoryStrategy.getWaitStrategy(getWait()).waitForElementVisibility(locator);
+        waitController().waitForElementVisibility(locator);
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.String, org.openqa.selenium.WebElement)
+     */
+    @WaitCondition(waitFor.PRESENCE)
+    @Override
+    public void uploadFile(Object locator, String path) {
+        LocalFileDetector detector = new LocalFileDetector();
+        File localFile = detector.getLocalFile(path);
+        ((RemoteWebElement)SessionContext.getSession().getWebElement()).setFileDetector(detector);
+        SessionContext.getSession().getWebElement().sendKeys(localFile.getAbsolutePath());
     }
 
 

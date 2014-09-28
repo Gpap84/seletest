@@ -155,4 +155,13 @@ public interface ElementController {
      * @return true if a web element is visible
      */
     boolean isWebElementVisible(Object locator);
+
+    /**
+     * Upload a file in dialog box
+     * @param path
+     * @param element
+     */
+    void uploadFile(Object locator, String path);
+
+
 }
