@@ -80,7 +80,10 @@ public enum CoreProperties {
     /** The parameter that determines the app path*/
     APP("app"),
 
-    /** The parameter that determines appActivity*/
+    /** The parameter that determines of the app will be launched automatically*/
+    AUTO_LAUNCH("autoLaunch"),
+
+    /** The parameter that determines app launch*/
     APP_ACTIVITY("appActivity"),
 
     /** The parameter that determines appPackage*/

@@ -44,6 +44,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -95,8 +96,7 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public void changeStyle(Object locator, String attribute, String attributevalue) {
-        JavascriptExecutor jsExec=webDriver();
-        jsExec.executeScript("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
+        executeJS("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
     }
 
     /*************************************************************
@@ -118,8 +118,8 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
         BufferedImage  fullImg = ImageIO.read(screenshot);
         WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
-        int eleWidth = element.getSize().getWidth()+10;
-        int eleHeight = element.getSize().getHeight()+10;
+        int eleWidth = element.getSize().getWidth();
+        int eleHeight = element.getSize().getHeight();
         Rectangle elementScreen=new Rectangle(eleWidth, eleHeight);
         BufferedImage eleScreenshot= fullImg.getSubimage(point.getX(), point.getY(), elementScreen.width, elementScreen.height);
         ImageIO.write(eleScreenshot, "png", screenshot);
@@ -206,6 +206,34 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
         File localFile = detector.getLocalFile(path);
         ((RemoteWebElement)SessionContext.getSession().getWebElement()).setFileDetector(detector);
         SessionContext.getSession().getWebElement().sendKeys(localFile.getAbsolutePath());
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#executeJS(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public Object executeJS(String script, Object... args) {
+        JavascriptExecutor jsExec=webDriver();
+        return jsExec.executeScript(script,args);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByValue(java.lang.String)
+     */
+    @WaitCondition(waitFor.PRESENCE)
+    @Override
+    public void selectByValue(String locator, String value) {
+        new Select(SessionContext.getSession().getWebElement()).selectByValue(value);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByLabel(java.lang.String, java.lang.String)
+     */
+    @WaitCondition(waitFor.PRESENCE)
+    @Override
+    public void selectByVisibleText(String locator, String text) {
+        new Select(SessionContext.getSession().getWebElement()).selectByVisibleText(text);
+
     }
 
 

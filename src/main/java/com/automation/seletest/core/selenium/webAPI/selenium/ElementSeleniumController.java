@@ -61,7 +61,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
 
     @Override
     public WebElement findElement(Object locator) {
-        throw new UnsupportedOperationException("findElements method is not supported for DefaultSelenium");
+        throw new UnsupportedOperationException("findElements method is not supported for Selenium 1");
     }
 
     /* (non-Javadoc)
@@ -238,6 +238,31 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
     @Override
     public void uploadFile(Object locator, String path) {
         selenium().attachFile((String)locator, path);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#executeJS(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public Object executeJS(String script, Object... args) {
+        return selenium().getEval(script);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByValue(java.lang.String, java.lang.String)
+     */
+    @WaitCondition(waitFor.PRESENCE)
+    @Override
+    public void selectByValue(String locator, String value) {
+        selenium().select(locator,"value="+value);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByVisibleText(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void selectByVisibleText(String locator, String text) {
+        selenium().select(locator,"label="+text);
     }
 
 }

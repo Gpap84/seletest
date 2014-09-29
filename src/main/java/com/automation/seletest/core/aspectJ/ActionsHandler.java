@@ -95,7 +95,6 @@ public class ActionsHandler extends SuperAspect {
      */
     @Before(value="waitAnnotation()")
     public void waitFor(final JoinPoint pjp) {
-
         /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {

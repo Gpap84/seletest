@@ -163,5 +163,26 @@ public interface ElementController {
      */
     void uploadFile(Object locator, String path);
 
+    /**
+     * Executes JavaScript on browser
+     * @param script
+     * @param args
+     * @return
+     */
+    Object executeJS(String script, Object... args);
+
+    /**
+     * Select option from drop down by value
+     * @param value
+     */
+    void selectByValue(String locator, String value);
+
+    /**
+     * Select option from drop down by visible text
+     * @param locator
+     * @param text
+     */
+    void selectByVisibleText(String locator, String text);
+
 
 }

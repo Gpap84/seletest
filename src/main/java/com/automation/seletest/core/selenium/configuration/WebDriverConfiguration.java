@@ -93,15 +93,17 @@ public class WebDriverConfiguration {
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public DesiredCapabilities androidcapabilities(String appPath, String appActivity, String appPackage){
+    public DesiredCapabilities androidcapabilities(String appPath, String appActivity, String appPackage, String autolaunch){
         File app=new File(appPath);
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(CapabilityType.PLATFORM, "android");
-        capabilities.setCapability("newCommandTimeout", "300");//ow long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
+        capabilities.setCapability("newCommandTimeout", "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
         capabilities.setCapability("app", app.getAbsolutePath());
-        capabilities.setCapability("autoLaunch", true);
+        capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
         capabilities.setCapability("appActivity",appActivity);
         capabilities.setCapability("appPackage", appPackage);
+        capabilities.setCapability("platformName", "android");
+        capabilities.setCapability("deviceName", "emulator");
         return capabilities;
     }
 

@@ -98,7 +98,6 @@ public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBa
     @Override
     public void goBack() {
         webDriver().navigate().back();
-        waitController().waitForPageLoaded();
     }
 
     /* (non-Javadoc)
@@ -107,7 +106,6 @@ public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBa
     @Override
     public void goForward() {
         webDriver().navigate().forward();
-        waitController().waitForPageLoaded();
     }
 
 }

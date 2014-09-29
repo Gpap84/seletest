@@ -119,7 +119,6 @@ public class ExceptionHandler extends SuperAspect {
             try {
                 returnValue = pjp.proceed();
                 log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                element().takeScreenShotOfElement(methodArguments(pjp)[0]);
                 element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {

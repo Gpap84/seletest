@@ -112,15 +112,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
-            /*************************
-             **XML PARAMETERS*********
-             *************************/
             String gridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
             String gridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
             String profileAppium=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEAPPIUMDRIVER.get());
             String appPath = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP.get());
             String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
+            String autoLaunch=textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
@@ -131,24 +129,20 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
             }
 
-            //register Configuration classes
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
-
-            //start Container for bean initialization
             app.refresh();
-
-            //register a bean post processor for merging capabilities
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
 
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
+            /**Capabilities for android appium*/
             if(profileAppium!=null && profileAppium.compareTo("android")==0) {
                 String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
-                DesiredCapabilities appiumcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage});
+                DesiredCapabilities appiumcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
                 cap.merge(appiumcap);
             }
 
-            //If performance is enabled
+            /**Performance with browser-mob proxy */
             if(((InitializationEvent) event).isPerformance()){
                 PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
                 int proxyPort=new Random().nextInt(5000);
@@ -158,7 +152,6 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 SessionContext.getSession().getControllers().put(PerformanceUtils.class,perf);
             }
 
-            //start a driver object with capabilities
             if(profileDriver.contains("Grid")) {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{gridHost+":"+gridPort+"/wd/hub",cap});
             } else {
@@ -174,9 +167,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 SessionContext.getSession().setWebDriver((AppiumDriver)driver);
                 SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
                 mobileControl.installApp(appPath,appPackage);
-//                mobileControl.launchApp();
+                if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get()))){
+                    mobileControl.launchApp();
+                }
             }
-
             SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 
