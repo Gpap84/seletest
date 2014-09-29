@@ -27,8 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.elements;
 
 
+import io.appium.java_client.MobileBy;
+
 import org.openqa.selenium.By;
 
+@SuppressWarnings("unchecked")
 public enum Locators {
 
     //--------------------------------------------------    CoreProperties for Locators --------------------->>>>>>>>>>>>>>>>>
@@ -114,8 +117,26 @@ public enum Locators {
             return By.className(findLocatorSubstring(locator));
         }
     },
+
+    /** The Constant ANDROIDUIAUTOMATOR. */
+    ANDROIDUIAUTOMATOR("androidUIAutomator"){
+
+        @Override
+        public MobileBy setLocator(String locator) {
+            return (MobileBy) MobileBy.AndroidUIAutomator(findLocatorSubstring(locator));
+        }
+    },
+
+    /** The Constant IOSUIAUTOMATOR. */
+    IOSUIAUTOMATOR("iOSUIAutomator"){
+
+        @Override
+        public MobileBy setLocator(String locator) {
+            return (MobileBy) MobileBy.IosUIAutomation(findLocatorSubstring(locator));
+        }
+    },
    ;
-    public abstract By setLocator(String locator);
+    public abstract <T extends By> T setLocator(String locator);
 
     /**The value of enum type*/
     private String value;

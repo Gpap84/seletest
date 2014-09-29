@@ -26,6 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.configuration;
 
+import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.remote.MobilePlatform;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -97,13 +100,13 @@ public class WebDriverConfiguration {
         File app=new File(appPath);
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(CapabilityType.PLATFORM, "android");
-        capabilities.setCapability("newCommandTimeout", "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
-        capabilities.setCapability("app", app.getAbsolutePath());
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
+        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
         capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
-        capabilities.setCapability("appActivity",appActivity);
-        capabilities.setCapability("appPackage", appPackage);
-        capabilities.setCapability("platformName", "android");
-        capabilities.setCapability("deviceName", "emulator");
+        capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,appActivity);
+        capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, appPackage);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator");
         return capabilities;
     }
 
