@@ -134,10 +134,6 @@ public interface AppiumController {
      */
     void tap(int fingers, int y, int z, int duration);
 
-    /**
-     * Shake the screen
-     */
-    void shake();
 
     /**
      * Zoom to element with coordinates
@@ -157,18 +153,36 @@ public interface AppiumController {
     void swipe(int startx, int starty, int endx, int endy, int duration);
 
     /**
-     * Executes javascript
+     * Executes script on mobile device
      * @param driverCommand
      * @param parameters
      */
     void executeScript(String driverCommand, HashMap<String, ?> parameters);
 
     /**
-     * Gets the currently focused activity
-     * @return String CurrentActivity
+     * Gets the current activity
+     * @return
      */
     String getCurrentActivity();
 
+    /**
+     * Scroll forward to the element which has a description or name which contains the input text.
+     * @param text
+     */
+    void scrollTo(String text);
 
+    /**
+     * Scroll forward to the element which has a description or name which contains the input text.
+     * @param text
+     */
+    void scrollToExact(String text);
+
+    /**
+     * Sets NetworkConnectionSettings
+     * @param airplaneMode
+     * @param wifi
+     * @param data
+     */
+    void setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data);
 
 }

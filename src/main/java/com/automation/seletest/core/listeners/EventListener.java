@@ -29,6 +29,8 @@ package com.automation.seletest.core.listeners;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 
 import java.sql.Time;
 import java.util.HashMap;
@@ -115,20 +117,13 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             String gridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
             String gridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
-            String profileAppium=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEAPPIUMDRIVER.get());
             String appPath = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP.get());
             String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
             String autoLaunch=textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
-
-            if(profileAppium!=null) {
-                app.getEnvironment().setActiveProfiles(new String[]{profileDriver,profileAppium});
-            } else {
-                app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
-            }
-
+            app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
             app.refresh();
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
@@ -136,7 +131,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
             /**Capabilities for android appium*/
-            if(profileAppium!=null && profileAppium.compareTo("android")==0) {
+            if(profileDriver.contains("Android")) {
                 String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
                 DesiredCapabilities appiumcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
                 cap.merge(appiumcap);
@@ -164,7 +159,11 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 SessionContext.getSession().setSelenium(selenium);
                 factoryStrategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy()).goToTargetHost(((InitializationEvent) event).getHostUrl());
             } else {
-                SessionContext.getSession().setWebDriver((AppiumDriver)driver);
+                if(profileDriver.contains("Android")) {
+                    SessionContext.getSession().setWebDriver((AndroidDriver)driver);
+                } else if(profileDriver.contains("IOS")){
+                    SessionContext.getSession().setWebDriver((IOSDriver)driver);
+                }
                 SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
                 mobileControl.installApp(appPath,appPackage);
                 if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get()))){

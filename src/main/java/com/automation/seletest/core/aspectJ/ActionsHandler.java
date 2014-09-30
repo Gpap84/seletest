@@ -35,7 +35,8 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Aspect that handles logging,screenshots etc.
@@ -81,7 +83,7 @@ public class ActionsHandler extends SuperAspect {
      */
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
-        if(ex instanceof WebDriverException){
+        if(ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
             element().takeScreenShot();
         } else {
@@ -95,7 +97,6 @@ public class ActionsHandler extends SuperAspect {
      */
     @Before(value="waitAnnotation()")
     public void waitFor(final JoinPoint pjp) {
-        /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
             SessionContext.getSession().setWebElement(waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));

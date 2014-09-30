@@ -68,7 +68,7 @@ public class ExceptionHandler extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
+    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail() || appiumCommands()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         try {

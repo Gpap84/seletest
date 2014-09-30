@@ -92,14 +92,14 @@ public class WebDriverConfiguration {
         return new WebDriverBackedSelenium(driver, baseUrl);
     }
 
-    @Profile("android")
+    @Profile("appiumAndroidGrid")
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities androidcapabilities(String appPath, String appActivity, String appPackage, String autolaunch){
         File app=new File(appPath);
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(CapabilityType.PLATFORM, "android");
+        capabilities.setCapability(CapabilityType.PLATFORM, MobilePlatform.ANDROID);
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
         capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
@@ -110,5 +110,22 @@ public class WebDriverConfiguration {
         return capabilities;
     }
 
+    @Profile("appiumIOSGrid")
+    @Lazy(true)
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public DesiredCapabilities iOScapabilities(String appPath, String udid, String bundleId, String autolaunch){
+        File app=new File(appPath);
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(CapabilityType.PLATFORM, MobilePlatform.IOS);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
+        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+        capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.IOS);
+        capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, bundleId);
+        capabilities.setCapability("udid", udid);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator");
+        return capabilities;
+    }
 
 }

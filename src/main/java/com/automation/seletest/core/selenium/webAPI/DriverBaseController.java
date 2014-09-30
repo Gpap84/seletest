@@ -45,7 +45,7 @@ public abstract class DriverBaseController<T> {
 
     /**
      * Gets the WebDriver instance
-     * @return WebDriver instance per thread
+     * @return WebDriver instance
      */
     public T webDriver(){
         return (T) SessionContext.getSession().getWebDriver();
@@ -74,4 +74,14 @@ public abstract class DriverBaseController<T> {
     public WaitFor waitController() {
         return factoryStrategy.getWaitStrategy(getWait());
     }
+
+    /**
+     * UiScrollable locator for android
+     * @param uiSelector
+     * @return UIScrollable locator
+     */
+    public String uiScrollable(String uiSelector) {
+        return "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" + uiSelector + ".instance(0));";
+    }
+
 }
