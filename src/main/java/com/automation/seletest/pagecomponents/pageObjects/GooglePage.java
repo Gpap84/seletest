@@ -26,20 +26,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.stereotype.Component;
 
 @Component
-@Configurable
-@SuppressWarnings("rawtypes")
-public class GooglePage<T> extends AbstractPage<GooglePage>{
+public class GooglePage extends AbstractPage<GooglePage>{
 
     @FindBy(name = "q")
-    private T search;
+    private WebElement search;
 
     @FindBy(name = "btnG")
-    private T submit;
+    private WebElement submit;
 
     public GooglePage typeSearch(String text){
         element().getLocation(getWebElementLocator(GooglePage.class,"search"));
@@ -54,5 +54,21 @@ public class GooglePage<T> extends AbstractPage<GooglePage>{
     public GooglePage buttonSearch(){
         element().click(getWebElementLocator(GooglePage.class,"submit"));
         return this;
+    }
+
+    /**
+     * Expected Condition for loading this page object
+     */
+    @Override
+    protected ExpectedCondition<?> getPageLoadCondition() {
+        return ExpectedConditions.visibilityOf(search);
+    }
+
+    /**
+     * Opens this page object
+     * @return
+     */
+    public GooglePage open() {
+        return openPage(GooglePage.class);
     }
 }

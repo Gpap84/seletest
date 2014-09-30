@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.mobileAPI;
 
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 
@@ -161,21 +162,23 @@ public interface AppiumController {
 
     /**
      * Gets the current activity
-     * @return
+     * @return the current activity
      */
     String getCurrentActivity();
 
     /**
      * Scroll forward to the element which has a description or name which contains the input text.
      * @param text
+     * @return mobileElement after scrollTo location that contains text
      */
-    void scrollTo(String text);
+    MobileElement scrollTo(String text);
 
     /**
      * Scroll forward to the element which has a description or name which contains the input text.
      * @param text
+     * @return mobileElement after scrollTo location with text
      */
-    void scrollToExact(String text);
+    MobileElement scrollToExact(String text);
 
     /**
      * Sets NetworkConnectionSettings

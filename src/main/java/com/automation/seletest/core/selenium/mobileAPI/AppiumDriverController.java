@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.mobileAPI;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.NetworkConnectionSetting;
 import io.appium.java_client.TouchAction;
@@ -158,28 +159,28 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollTo(java.lang.String)
      */
     @Override
-    public void scrollTo(String text) {
+    public MobileElement scrollTo(String text) {
         if(webDriver() instanceof AndroidDriver) {
-            String locator = uiScrollable("new UiSelector().descriptionContains(\"" + text + "\")") + uiScrollable("new UiSelector().textContains(\"" + text + "\")");
+            String locator = "androidUIAutomator="+uiScrollable("new UiSelector().descriptionContains(\"" + text + "\")") + uiScrollable("new UiSelector().textContains(\"" + text + "\")");
             waitController().waitForElementPresence(locator);
         } else {
             waitController().waitForElementPresence("class=\"UIATableView\"");
         }
-        webDriver().scrollTo(text);
+        return webDriver().scrollTo(text);
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollToExact(java.lang.String)
      */
     @Override
-    public void scrollToExact(String text) {
+    public MobileElement scrollToExact(String text) {
         if(webDriver() instanceof AndroidDriver) {
-            String locator = uiScrollable("new UiSelector().descriptionContains(\"" + text + "\")") + uiScrollable("new UiSelector().textContains(\"" + text + "\")");
+            String locator = "androidUIAutomator="+uiScrollable("new UiSelector().description(\"" + text + "\")") + uiScrollable("new UiSelector().text(\"" + text + "\")");
             waitController().waitForElementPresence(locator);
         } else {
             waitController().waitForElementPresence("class=\"UIATableView\"");
         }
-        webDriver().scrollToExact(text);
+        return webDriver().scrollToExact(text);
     }
 
     /* (non-Javadoc)

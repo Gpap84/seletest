@@ -85,6 +85,7 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.phantomjs());
                 }
             }
+
         }
         return bean;
     }

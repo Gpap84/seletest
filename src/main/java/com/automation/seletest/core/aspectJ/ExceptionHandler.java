@@ -68,14 +68,18 @@ public class ExceptionHandler extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail() || appiumCommands()")
+    @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail() || appiumCommands()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         try {
             returnValue = pjp.proceed();
+            String arguments=arguments(pjp).isEmpty() ? "" : "for["+arguments(pjp)+"]";
             if(!pjp.getTarget().toString().contains("WaitStrategy") || invokedMethod(pjp).getName().contains("takeScreen")) {
-                log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
-            }
+                if(pjp.getSignature().toString().contains("pageObjects")) {
+                    log.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
+                } else {
+                    log.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully");
+                }}
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException) {
                 log.error("Exception: "+ex.getMessage().split("Build")[0].trim());

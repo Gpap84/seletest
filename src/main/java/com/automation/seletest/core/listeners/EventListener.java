@@ -58,7 +58,6 @@ import com.automation.seletest.core.selenium.configuration.WebDriverConfiguratio
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.PerformanceUtils;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.thoughtworks.selenium.Selenium;
@@ -96,10 +95,6 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     @Configurable
     static class Initialize {
 
-        /**Factories Strategy*/
-        @Autowired
-        StrategyFactory<?> factoryStrategy;
-
         @Autowired
         AppiumController mobileControl;
 
@@ -120,6 +115,8 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             String appPath = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP.get());
             String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
             String autoLaunch=textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get());
+            String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
+            String udid = textcontext.getCurrentXmlTest().getParameter(CoreProperties.UDID.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
@@ -127,18 +124,19 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
             app.refresh();
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
-
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
             /**Capabilities for android appium*/
             if(profileDriver.contains("Android")) {
-                String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
-                DesiredCapabilities appiumcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
-                cap.merge(appiumcap);
+                DesiredCapabilities androidcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
+                cap.merge(androidcap);
+            } else if (profileDriver.contains("IOS")) {
+                DesiredCapabilities ioscap =  (DesiredCapabilities) app.getBean(CoreProperties.IOSCAPABILITIES.get(),new Object[] {appPath,udid,appPackage,autoLaunch});
+                cap.merge(ioscap);
             }
 
-            /**Performance with browser-mob proxy */
-            if(((InitializationEvent) event).isPerformance()){
+            /**Performance with browser-mob proxy for local environment*/
+            if(((InitializationEvent) event).isPerformance() && !profileDriver.contains("Grid")){
                 PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
                 int proxyPort=new Random().nextInt(5000);
                 perf.proxyServer(proxyPort);
@@ -153,18 +151,18 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
             }
 
-            if(((InitializationEvent) event).isWeb()) {
+            if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
                 SessionContext.getSession().setWebDriver((RemoteWebDriver)driver);
                 selenium=(Selenium)app.getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
                 SessionContext.getSession().setSelenium(selenium);
-                factoryStrategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy()).goToTargetHost(((InitializationEvent) event).getHostUrl());
+                driver.get(((InitializationEvent) event).getHostUrl());
             } else {
-                if(profileDriver.contains("Android")) {
+                if(driver instanceof AndroidDriver) {
                     SessionContext.getSession().setWebDriver((AndroidDriver)driver);
-                } else if(profileDriver.contains("IOS")){
+                } else if(driver instanceof IOSDriver){
                     SessionContext.getSession().setWebDriver((IOSDriver)driver);
                 }
-                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver)SessionContext.getSession().getWebDriver()));
+                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) driver));
                 mobileControl.installApp(appPath,appPackage);
                 if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get()))){
                     mobileControl.launchApp();

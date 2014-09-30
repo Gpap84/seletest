@@ -70,9 +70,6 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     /**Message for exception during application context load*/
     private final String ERROR_IOC="Error during initializing spring container ";
 
-    /**Message for not defined test type (Web-Mobile)*/
-    private final String TEST_TYPE="The test type is not defined!!!";
-
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
     @BeforeTest(alwaysRun = true)
@@ -154,14 +151,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     /**Prepare initialization*/
     private void initializeSession(ITestContext ctx){
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
-        if(!ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
-            publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx,true);
-        } else if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get()).contains("appium")){
-            publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),false,ctx,false);
-        } else {
-            throw new RuntimeException(TEST_TYPE);
-        }
-
+        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx);
     }
 
     /**Starts the Spring container*/

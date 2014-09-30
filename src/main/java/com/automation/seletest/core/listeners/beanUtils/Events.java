@@ -64,10 +64,6 @@ public class Events extends ApplicationEvent{
         /**TestContext interface*/
         @Getter @Setter private ITestContext testcontext;
 
-        /**If the test is against Web App*/
-        @Getter @Setter private boolean isWeb;
-
-
         private static final long serialVersionUID = -5308299518665062983L;
 
         /**
@@ -84,14 +80,12 @@ public class Events extends ApplicationEvent{
                 String msg,
                 String hostUrl,
                 boolean performance,
-                ITestContext context,
-                boolean isWeb) {
+                ITestContext context) {
             super(source);
             this.message=msg;
             this.hostUrl=hostUrl;
             this.performance=performance;
             this.testcontext=context;
-            this.isWeb=isWeb;
         }
     }
 }

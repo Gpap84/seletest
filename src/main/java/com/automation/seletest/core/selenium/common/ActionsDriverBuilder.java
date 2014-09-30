@@ -29,6 +29,7 @@ package com.automation.seletest.core.selenium.common;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.stereotype.Component;
 
@@ -148,6 +149,16 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
         SessionControl.touchactionsBuilder().perform();
         SessionContext.getSession().getControllers().remove(TouchAction.class);
         SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) SessionContext.getSession().getWebDriver()));
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#dragndrop(java.lang.String, java.lang.String)
+     */
+    @WaitCondition(waitFor.VISIBILITY)
+    @Override
+    public ActionsDriverBuilder dragndrop(Object draglocator, Object droplocator) {
+        SessionControl.actionsBuilder().dragAndDrop(SessionContext.getSession().getWebElement(), (WebElement)droplocator);
         return this;
     }
 

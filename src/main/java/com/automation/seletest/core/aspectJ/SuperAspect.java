@@ -92,6 +92,10 @@ public abstract class SuperAspect {
     @Pointcut("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
     protected void logVerify(VerifyLog verify) {}
 
+    /** Pointcut for logging PO methods*/
+    @Pointcut("execution(* com.automation.seletest.pagecomponents.pageObjects..*(..))")
+    protected void logPOs() {}
+
 
     /**
      * Type of arguments of an executed method
@@ -110,7 +114,7 @@ public abstract class SuperAspect {
             }
             arguments.append("("+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+") ");
         } if(arguments.toString().isEmpty()){
-            return "NONE";
+            return "";
         } else {
             return arguments.toString().trim();
         }

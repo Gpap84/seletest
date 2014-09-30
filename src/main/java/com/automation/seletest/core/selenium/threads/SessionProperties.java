@@ -117,9 +117,6 @@ public class SessionProperties<T extends RemoteWebDriver> {
         //Destroy the webdriver application context
         driverContext.destroy();
 
-        //Turn waitStrategy to default after closing a session
-        waitStrategy="DEFAULT";
-
         log.info("Session closed!!!");
     }
 }

@@ -135,6 +135,15 @@ public enum Locators {
             return (MobileBy) MobileBy.IosUIAutomation(findLocatorSubstring(locator));
         }
     },
+
+    /** The Constant ACCESSIBILITYID. */
+    ACCESSIBILITYID("accessibilityId"){
+
+        @Override
+        public MobileBy setLocator(String locator) {
+            return (MobileBy) MobileBy.AccessibilityId(findLocatorSubstring(locator));
+        }
+    },
    ;
     public abstract <T extends By> T setLocator(String locator);
 

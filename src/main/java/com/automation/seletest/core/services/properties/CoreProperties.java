@@ -57,6 +57,9 @@ public enum CoreProperties {
     /** The parameter that determines the android capabilities that will be used to start a new AppiumDriver object. */
     ANDROIDCAPABILITIES("androidcapabilities"),
 
+    /** The parameter that determines the iOS capabilities that will be used to start a new AppiumDriver object. */
+    IOSCAPABILITIES("ioscapabilities"),
+
     /** The parameter that determines the profile to start a new WebDriver object. */
     PROFILEDRIVER("profileDriver"),
 
@@ -85,6 +88,9 @@ public enum CoreProperties {
 
     /** The parameter that determines app launch*/
     APP_ACTIVITY("appActivity"),
+
+    /** The parameter that determines udid for iOS real device*/
+    UDID("udid"),
 
     /** The parameter that determines appPackage*/
     APP_PACKAGE("appPackage"),

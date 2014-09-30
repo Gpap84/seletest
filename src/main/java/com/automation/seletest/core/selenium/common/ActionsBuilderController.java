@@ -144,5 +144,13 @@ public interface ActionsBuilderController<T> {
      */
     T press(Object locator, int x, int y);
 
+    /**
+     * Drags elements from one location to another
+     * @param draglocator
+     * @param droplocator
+     * @return instance of ActionBuilder
+     */
+    T dragndrop(Object draglocator,Object droplocator);
+
 
 }

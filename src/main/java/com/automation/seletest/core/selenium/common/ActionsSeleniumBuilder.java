@@ -43,6 +43,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#click(java.lang.Object)
      */
+    @Deprecated
     @Override
     public ActionsSeleniumBuilder click(Object locator) {
         return null;
@@ -185,6 +186,15 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
     public ActionsSeleniumBuilder press(Object locator, int x, int y) {
         SessionContext.getSession().getSelenium().mouseDownAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
         SessionContext.getSession().getSelenium().mouseUpAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#dragndrop(java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public ActionsSeleniumBuilder dragndrop(Object draglocator, Object droplocator) {
+        SessionContext.getSession().getSelenium().dragAndDropToObject((String)draglocator, (String) droplocator);
         return this;
     }
 

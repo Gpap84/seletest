@@ -27,10 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.pagecomponents.pageObjects;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
@@ -46,7 +49,14 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
  *
  * @param <T>
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class AbstractPage<T> extends SeletestWebTestBase{
+
+    /**Timeout to load a page*/
+    private static final int LOAD_TIMEOUT = 30;
+
+    /**Polling time*/
+    private static final int REFRESH_RATE = 2;
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
@@ -57,9 +67,30 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @return T the type of object
      */
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements((WebDriver) SessionContext.getSession().getWebDriver(), clazz);
+        T page = PageFactory.initElements(SessionContext.getSession().getWebDriver(), clazz);
+        ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
+        waitForPageToLoad(pageLoadCondition);
         return page;
     }
+
+    /**
+     * Condition for loading a page object
+     * @return ExpectedCondition<?> condition to load a page
+     */
+    protected abstract ExpectedCondition<?> getPageLoadCondition();
+
+    /**
+     * Wait for page to load
+     * @param pageLoadCondition
+     */
+    private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
+        Wait wait = new FluentWait(SessionContext.getSession().getWebDriver())
+                .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
+                .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
+
+        wait.until(pageLoadCondition);
+    }
+
 
 
     /**
