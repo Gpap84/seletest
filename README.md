@@ -63,8 +63,8 @@ argLine<br>
 <b>Steps for running Demo</b>
 *******************************************
 
-1] Download project into your local environment
-2] IDE: Using your favorite IDE you need to register it to lombok project first. Locate artifact <MavenRepo>\org\projectlombok\lombok\ and double click to jar. In the window you must specify the location where STS.exe or eclipse.exe is located and press Install. After this step you can import the project to IDE and run the testng.xml as usual.
+1] Download project into your local environment<br>
+2] IDE: Using your favorite IDE you need to register it to lombok project first. <br>Locate artifact <MavenRepo>\org\projectlombok\lombok\ and double click to jar. <br>In the window you must specify the location where STS.exe or eclipse.exe is located and press Install.<br> After this step you can import the project to IDE and run the testng.xml as usual.
 
 
 
