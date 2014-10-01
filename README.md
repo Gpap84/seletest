@@ -14,7 +14,7 @@ Tests supported:<br>
 a] Web End to End functional <b>Supported</b><br>
 b] DB transactions tests <b>Not supported yet...</b><br>
 c] Client performance Tests <b>Supported...</b><br>
-d] Mobile End to End functional <b>Not fully supported yet</b><br>
+d] Mobile End to End functional <b>Partially supported (Android)</b><br>
 
 
 Tools used:<br>
@@ -28,11 +28,11 @@ Tools used:<br>
 <b>* Browsermob-proxy</b><br>
 
 
-Current Drivers supported<br>
+Current Drivers supported:<br>
 a] ChromeDriver<br>
 b] InternetExplorerDriver for IE9<br>
 c] FirefoxDriver<br>
-d] PhantomJSDrive<br>
+d] PhantomJSDriver<br>
 e] AppiumDriver<br>
 
 
