@@ -89,7 +89,7 @@ public class ActionsHandler extends SuperAspect {
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
             element().takeScreenShot();
         } else {
-            log.error(unknownException+ex.getMessage());
+            log.error(unknownException+ex);
         }
     }
 

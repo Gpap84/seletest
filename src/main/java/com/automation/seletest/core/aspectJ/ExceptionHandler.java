@@ -193,17 +193,16 @@ public class ExceptionHandler extends SuperAspect {
      * @throws Throwable
      */
     private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof SeleniumException ){
-            MethodSignature signature = (MethodSignature ) pjp.getSignature();
-            Class<?> returnType = signature.getReturnType();
-            if(returnType.getName().compareTo("int")==0){
-                return 0;
-            } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
-                return false;
-            } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
-                return true;
-            }
-        } return null;
+        MethodSignature signature = (MethodSignature ) pjp.getSignature();
+        Class<?> returnType = signature.getReturnType();
+        if(returnType.getName().compareTo("int")==0){
+            return 0;
+        } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+            return false;
+        } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
+            return true;
+        }
+        return null;
     }
 
 

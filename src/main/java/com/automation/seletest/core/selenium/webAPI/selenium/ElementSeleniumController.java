@@ -197,8 +197,8 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public Dimension getElementDimensions(Object locator) {
-        int height = (int) selenium().getElementHeight((String)locator);
-        int width = (int) selenium().getElementWidth((String)locator);
+        int height = (Integer) (selenium().getElementHeight((String)locator));
+        int width = (Integer) selenium().getElementWidth((String)locator);
         return new Dimension(width, height);
     }
 
@@ -219,7 +219,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
         return true;
     }
 
-    /* (non-Javadoc)
+    /* (non-Java0doc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#isTextPresent(java.lang.String)
      */
     @Override

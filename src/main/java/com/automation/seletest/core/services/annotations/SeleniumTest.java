@@ -55,7 +55,7 @@ public @interface  SeleniumTest {
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */
-    public enum DriverType{SELENIUM,WEBDRIVER};
+    public enum DriverType{SELENIUM,WEBDRIVER,APPIUMDRIVER};
 
     /**
      * driver
