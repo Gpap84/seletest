@@ -56,7 +56,7 @@ public class ExceptionHandler extends SuperAspect {
 
     /**The log service*/
     @Autowired
-    LogUtils log;
+    LogUtils report;
 
     /** Environment instance*/
     @Autowired
@@ -76,22 +76,24 @@ public class ExceptionHandler extends SuperAspect {
             String arguments=arguments(pjp).isEmpty() ? "" : "for["+arguments(pjp)+"]";
             if(!pjp.getTarget().toString().contains("WaitStrategy") || invokedMethod(pjp).getName().contains("takeScreen")) {
                 if(pjp.getSignature().toString().contains("pageObjects")) {
-                    log.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
+                    report.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
                 } else {
-                    log.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully");
-                }}
+                    report.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:black; font-weight: 500;\"");
+                }
+            }
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException) {
-                log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
+                report.error("Exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             } else{
-                log.error(String.format("%s: Failed with exception '%s'",
+                report.error(String.format("%s: Failed with exception '%s'",
                         pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
                         ex.getMessage().split("Build")[0].trim()));
             }
         }
         return returnValue;
     }
+
     /**
      * Around Advice for
      * @param pjp
@@ -122,7 +124,7 @@ public class ExceptionHandler extends SuperAspect {
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
-                log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
+                report.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully","\"color:black; font-weight: 500;\"");
                 element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
@@ -146,13 +148,13 @@ public class ExceptionHandler extends SuperAspect {
             returnValue = pjp.proceed();
             if(!(((AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
                 if((pjp).getArgs().length==1){
-                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
+                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                 } else {
-                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
+                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
                 }
             }
         } catch(AssertionError ex) {
-            log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
+            report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
                 element().takeScreenShot();
             } throw ex;
@@ -173,7 +175,7 @@ public class ExceptionHandler extends SuperAspect {
         } if (attemptCount == 1 + retry.retryCount()) {
             throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);
         } else {
-            log.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
+            report.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
                     pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
                     attemptCount,
                     retry.retryCount(),

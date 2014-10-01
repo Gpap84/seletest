@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
 import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
@@ -56,6 +57,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
 @Component("seleniumElement")
 public class ElementSeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements ElementController{
 
+    /**The FileUtils*/
     @Autowired
     FilesUtils fileService;
 
@@ -68,6 +70,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#click(java.lang.Object)
      */
     @Override
+    @Monitor
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
     public void click(Object locator) {
@@ -78,6 +81,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#type(java.lang.Object, java.lang.String)
      */
     @Override
+    @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
     public void type(Object locator, String text) {
@@ -88,6 +92,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#goToTargetHost(java.lang.String)
      */
     @Override
+    @Monitor
     public void goToTargetHost(String url) {
         selenium().open(url);
     }
@@ -96,8 +101,8 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#changeStyle(java.lang.Object, java.lang.String, java.lang.String)
      */
     @Override
-    public void changeStyle(Object locator, String attribute,
-            String attributevalue) {
+    @WaitCondition(waitFor.VISIBILITY)
+    public void changeStyle(Object locator, String attribute, String attributevalue) {
         selenium().highlight((String)locator);
     }
 
@@ -105,7 +110,7 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#takeScreenShot()
      */
     @Override
-    @RetryFailure(retryCount=1)
+    @Monitor
     public void takeScreenShot() throws IOException {
         String base64Screenshot = selenium().captureEntirePageScreenshotToString("");
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
@@ -127,8 +132,8 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#takeScreenShotOfElement(java.lang.Object)
      */
     @Override
+    @Monitor
     @WaitCondition(waitFor.VISIBILITY)
-    @RetryFailure(retryCount=1)
     public void takeScreenShotOfElement(Object locator) throws IOException {
         String base64Screenshot = selenium().captureEntirePageScreenshotToString("");
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
@@ -168,6 +173,8 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#getTagName(java.lang.Object)
      */
     @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public String getTagName(Object locator) {
         return selenium().getAttribute((String)locator+"@tagName");
     }
@@ -190,8 +197,9 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public Dimension getElementDimensions(Object locator) {
-        // TODO Auto-generated method stub
-        return null;
+        int height = (int) selenium().getElementHeight((String)locator);
+        int width = (int) selenium().getElementWidth((String)locator);
+        return new Dimension(width, height);
     }
 
     /* (non-Javadoc)
@@ -236,6 +244,9 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.Object, java.lang.String)
      */
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void uploadFile(Object locator, String path) {
         selenium().attachFile((String)locator, path);
     }
@@ -251,8 +262,10 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByValue(java.lang.String, java.lang.String)
      */
-    @WaitCondition(waitFor.PRESENCE)
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void selectByValue(String locator, String value) {
         selenium().select(locator,"value="+value);
     }
@@ -261,6 +274,9 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByVisibleText(java.lang.String, java.lang.String)
      */
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void selectByVisibleText(String locator, String text) {
         selenium().select(locator,"label="+text);
     }

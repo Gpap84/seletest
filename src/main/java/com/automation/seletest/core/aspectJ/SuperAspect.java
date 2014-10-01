@@ -54,7 +54,11 @@ public abstract class SuperAspect {
 
     /**Methods in classpath that have @WaitCondition*/
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
-    protected void waitAnnotation() {}
+    protected void waitElement() {}
+
+    /**Methods in classpath that have @Monitor*/
+    @Pointcut("execution(@com.automation.seletest.core.services.annotations.Monitor * *(..))")
+    protected void monitor() {}
 
     /**All methods in ActionsBuilderController*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")

@@ -31,8 +31,10 @@ import java.io.IOException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.openqa.selenium.NoSuchElementException;
@@ -95,7 +97,7 @@ public class ActionsHandler extends SuperAspect {
      * Wait for elements before any action....
      * @param pjp
      */
-    @Before(value="waitAnnotation()")
+    @Before(value="waitElement()")
     public void waitFor(final JoinPoint pjp) {
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
@@ -106,4 +108,33 @@ public class ActionsHandler extends SuperAspect {
             SessionContext.getSession().setWebElement(waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
+
+    /**Report execution for method @Monitor*/
+    @Around(value="monitor()")
+    public Object monitorLogs(ProceedingJoinPoint pjp) throws Throwable {
+        Object returnValue = null;
+        long start = System.currentTimeMillis();
+        try {
+            returnValue = pjp.proceed();
+        } catch (Exception ex) {
+            //Do not log because the handle is done in another advice
+        }
+        long elapsedTime = System.currentTimeMillis() - start;
+        log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
+        return returnValue;
+    }
+
+
+    /**Log memory usage before execution of method*/
+    @Before("monitor()")
+    public void memoryBefore(final JoinPoint pjp) {
+        log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " before executing method: "+pjp.getSignature().getName());
+    }
+
+    /**Log memory usage after execution of method*/
+    @After("monitor()")
+    public void memoryAfter(final JoinPoint pjp) {
+        log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " after executing method: "+pjp.getSignature().getName());
+    }
+
 }

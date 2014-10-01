@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
 import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.services.annotations.Monitor;
 
 /**
  * WindowsWDController class.
@@ -70,6 +71,7 @@ public class WindowsDriverController<T extends RemoteWebDriver> extends DriverBa
     }
 
     @Override
+    @Monitor
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:

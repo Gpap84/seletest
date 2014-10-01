@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
+import com.automation.seletest.core.services.annotations.Monitor;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 /**
@@ -50,6 +51,7 @@ public class OptionsSeleniumController<T extends DefaultSelenium> extends Driver
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteCookieByName(java.lang.String)
      */
+    @Monitor
     @Override
     public void deleteCookieByName(String name) {
         selenium().deleteCookie(name, "");
@@ -67,6 +69,7 @@ public class OptionsSeleniumController<T extends DefaultSelenium> extends Driver
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteAllCookies()
      */
     @Override
+    @Monitor
     public void deleteAllCookies() {
         selenium().deleteAllVisibleCookies();
     }
@@ -133,7 +136,6 @@ public class OptionsSeleniumController<T extends DefaultSelenium> extends Driver
      */
     @Override
     public void setWindowDimension(Dimension dimension) {
-        // TODO Auto-generated method stub
 
     }
 

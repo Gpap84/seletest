@@ -52,6 +52,7 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
 import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
@@ -66,10 +67,12 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 @Component("webDriverElement")
 public class ElementDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements ElementController{
 
+    /**FileUtils*/
     @Autowired
     FilesUtils fileService;
 
     @Override
+    @Monitor
     public void goToTargetHost(String url) {
         webDriver().get(url);
     }
@@ -80,6 +83,7 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
      */
 
     @Override
+    @Monitor
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
     public void click(Object locator) {
@@ -87,14 +91,15 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
     }
 
     @Override
+    @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
     public void type(Object locator, String text) {
         SessionContext.getSession().getWebElement().sendKeys(text);
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
+    @WaitCondition(waitFor.VISIBILITY)
     public void changeStyle(Object locator, String attribute, String attributevalue) {
         executeJS("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
     }
@@ -104,6 +109,7 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
      *************************************************************
      */
     @Override
+    @Monitor
     public void takeScreenShot() throws IOException{
         File scrFile = ((TakesScreenshot) webDriver()).getScreenshotAs(OutputType.FILE);
         File file = fileService.createScreenshotFile();
@@ -111,8 +117,9 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
         fileService.reportScreenshot(file);
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
+    @Monitor
+    @WaitCondition(waitFor.VISIBILITY)
     public void takeScreenShotOfElement(Object locator) throws IOException {
         File screenshot = ((TakesScreenshot)webDriver()).getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
@@ -199,8 +206,9 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.String, org.openqa.selenium.WebElement)
      */
-    @WaitCondition(waitFor.PRESENCE)
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
     public void uploadFile(Object locator, String path) {
         LocalFileDetector detector = new LocalFileDetector();
         File localFile = detector.getLocalFile(path);
@@ -220,8 +228,9 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByValue(java.lang.String)
      */
-    @WaitCondition(waitFor.PRESENCE)
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
     public void selectByValue(String locator, String value) {
         new Select(SessionContext.getSession().getWebElement()).selectByValue(value);
     }
@@ -229,8 +238,9 @@ public class ElementDriverController<T extends RemoteWebDriver> extends DriverBa
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#selectByLabel(java.lang.String, java.lang.String)
      */
-    @WaitCondition(waitFor.PRESENCE)
     @Override
+    @Monitor
+    @WaitCondition(waitFor.PRESENCE)
     public void selectByVisibleText(String locator, String text) {
         new Select(SessionContext.getSession().getWebElement()).selectByVisibleText(text);
 

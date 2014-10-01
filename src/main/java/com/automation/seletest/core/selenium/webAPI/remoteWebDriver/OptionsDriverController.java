@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
+import com.automation.seletest.core.services.annotations.Monitor;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -51,27 +52,32 @@ public class OptionsDriverController<T extends RemoteWebDriver> extends DriverBa
      *************************************************************
      */
     @Override
+    @Monitor
     public void deleteCookieByName(String name) {
         webDriver().manage().deleteCookieNamed(name);
     }
 
     @Override
+    @Monitor
     public void deleteAllCookies() {
         webDriver().manage().deleteAllCookies();
     }
 
     @Override
+    @Monitor
     public void addCookie(Cookie cookie) {
         webDriver().manage().addCookie(cookie);
     }
 
     @Override
+    @Monitor
     public Set<Cookie> getCookies() {
         Set<Cookie> cookies=webDriver().manage().getCookies();
         return cookies;
     }
 
     @Override
+    @Monitor
     public void deleteCookie(Cookie cookie) {
         webDriver().manage().deleteCookie(cookie);
     }

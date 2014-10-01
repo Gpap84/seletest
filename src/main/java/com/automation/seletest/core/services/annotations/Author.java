@@ -37,7 +37,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This interface serves as for reporting author and mail of author of the test
+ * This interface serves reporting author and mail of author of the test
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */

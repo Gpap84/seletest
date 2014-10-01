@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
 import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.thoughtworks.selenium.DefaultSelenium;
@@ -88,6 +89,7 @@ public class WindowsSeleniumController <T extends DefaultSelenium> extends Drive
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#quit(com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession)
      */
     @Override
+    @Monitor
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
