@@ -42,10 +42,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.properties.CoreProperties;
 import com.thoughtworks.selenium.SeleniumException;
 
 /**
@@ -63,9 +65,6 @@ public class ActionsHandler extends SuperAspect {
 
     /**Constant for taking screenshot*/
     private final String takeScreencap="Take screenshot after exception: ";
-
-    /**Constant for unknown exception*/
-    private final String unknownException="Unknown exception occured: ";
 
     /**
      * Log returning value for get** methods
@@ -88,8 +87,6 @@ public class ActionsHandler extends SuperAspect {
         if(ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
             element().takeScreenShot();
-        } else {
-            log.error(unknownException+ex);
         }
     }
 
@@ -120,7 +117,10 @@ public class ActionsHandler extends SuperAspect {
             //Do not log because the handle is done in another advice
         }
         long elapsedTime = System.currentTimeMillis() - start;
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get()))) {
         log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
+        }
         return returnValue;
     }
 
@@ -128,13 +128,19 @@ public class ActionsHandler extends SuperAspect {
     /**Log memory usage before execution of method*/
     @Before("monitor()")
     public void memoryBefore(final JoinPoint pjp) {
-        log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " before executing method: "+pjp.getSignature().getName());
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " before executing method: "+pjp.getSignature().getName());
+        }
     }
 
     /**Log memory usage after execution of method*/
     @After("monitor()")
     public void memoryAfter(final JoinPoint pjp) {
-        log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " after executing method: "+pjp.getSignature().getName());
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " after executing method: "+pjp.getSignature().getName());
+        }
     }
 
 }

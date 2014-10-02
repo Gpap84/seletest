@@ -36,6 +36,12 @@ public enum CoreProperties {
 
     /**************************Parameters XML**********************/
 
+    /** The parameter that determines if JVM logs are enabled. */
+    JVMLOGS("JVMLogs"),
+
+    /** The parameter that determines if API logs are enabled. */
+    APILOGS("APILogs"),
+
     /** The parameter that determines if client logs are enabled. */
     CLIENTLOGS("clientLogs"),
 
