@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
+ * ExceptionHandlingAsyncTaskExecutor class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  *
@@ -80,6 +81,11 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
         return executor.submit(createCallable(task));
     }
 
+    /**
+     * Create callable task
+     * @param task
+     * @return
+     */
     private Callable createCallable(final Callable task) {
         return new Callable() {
             @Override
@@ -95,6 +101,11 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
     }
 
 
+    /**
+     * Create runnable task
+     * @param task
+     * @return
+     */
     private Runnable createWrappedRunnable(final Runnable task) {
         return new Runnable() {
             @Override
@@ -108,6 +119,10 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
         };
     }
 
+    /**
+     * Handle exception for asynchronous execution method
+     * @param ex
+     */
     private void handle(Exception ex) {
         log.error("Error during @Async execution: " + ex);
     }

@@ -47,7 +47,6 @@ public class SessionControl {
         return (AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class);
     }
 
-
     /**
      * Actions builder
      * @return Actions instance

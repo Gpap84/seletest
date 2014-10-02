@@ -26,17 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.thoughtworks.selenium.Selenium;
 
 /**
@@ -44,7 +38,7 @@ import com.thoughtworks.selenium.Selenium;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings({ "unchecked", "deprecation" })
+@SuppressWarnings({"deprecation" })
 @Slf4j
 public abstract class AbstractBase {
 
@@ -58,10 +52,7 @@ public abstract class AbstractBase {
     public static abstract class WaitBase implements WaitFor{
 
         /**Component name for WebDriverWait*/
-        private final String webDriverWait="wdWait";
-
-        /**Component name for FluentWait*/
-        private final String fluentWait="fwWait";
+        private final String webDriverWait="webdriverwait";
 
         /**Constant for text not present*/
         protected final String NOT_PRESENT="Element not present in DOM";
@@ -111,44 +102,6 @@ public abstract class AbstractBase {
         protected WebDriverWait wfExpected(){
             return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
-
-        /**
-         * Returns a new FluentWait instance
-         * @param timeOutInSeconds
-         * @param msg
-         * @return
-         */
-        protected Wait<WebDriver> fluentWait(String msg){
-            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{SessionContext.getSession().getWebDriver()});
-        }
-
-        /**
-         * Element to wait for condition
-         * @param driver the WebDriver instance
-         * @param locator the locator of the WebElement
-         * @return WebElement
-         */
-        protected WebElement elementToWait(WebDriver driver, Object locator){
-            WebElement element=null;
-            if(locator instanceof String){
-                element=driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
-            } else{
-                element=(WebElement)locator;
-            }
-            return element;
-        }
-
-        /**
-         * Elements to wait for condition
-         * @param driver
-         * @param locator
-         * @return List<WebElement>
-         */
-        protected List<WebElement> elementsToWait(WebDriver driver, String locator){
-            List<WebElement> elements=driver.findElements(Locators.findByLocator(locator).setLocator(locator));
-            return elements;
-        }
-
 
         /**
          * Sleeps a thread

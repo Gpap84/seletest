@@ -30,19 +30,25 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
@@ -54,8 +60,9 @@ import com.thoughtworks.selenium.DefaultSelenium;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component("seleniumElement")
-public class ElementSeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements ElementController{
+@Component("seleniumControl")
+@Slf4j
+public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements MainController{
 
     /**The FileUtils*/
     @Autowired
@@ -280,5 +287,217 @@ public class ElementSeleniumController<T extends DefaultSelenium> extends Driver
     public void selectByVisibleText(String locator, String text) {
         selenium().select(locator,"label="+text);
     }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteCookieByName(java.lang.String)
+     */
+    @Monitor
+    @Override
+    public void deleteCookieByName(String name) {
+        selenium().deleteCookie(name, "");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteCookie(org.openqa.selenium.Cookie)
+     */
+    @Deprecated
+    @Override
+    public void deleteCookie(Cookie cookie) {
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteAllCookies()
+     */
+    @Override
+    @Monitor
+    public void deleteAllCookies() {
+        selenium().deleteAllVisibleCookies();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#addCookie(org.openqa.selenium.Cookie)
+     */
+    @Deprecated
+    @Override
+    public void addCookie(Cookie cookie) {
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getCookies()
+     */
+    @Override
+    @Deprecated
+    public Set<Cookie> getCookies() {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#implicitlyWait(long, java.util.concurrent.TimeUnit)
+     */
+    @Override
+    public void implicitlyWait(long timeout, TimeUnit timeunit) {
+        // TODO Auto-generated method stub
+        //HttpCommandProcessor command = new  HttpCommandProcessor();
+        //command.doCommand("setImplicitWaitLocator", new String[] {"10000",});
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#pageLoadTimeout(long, java.util.concurrent.TimeUnit)
+     */
+    @Override
+    public void pageLoadTimeout(long timeout, TimeUnit timeunit) {
+        selenium().setTimeout(String.valueOf(timeout));
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#scriptLoadTimeout(long, java.util.concurrent.TimeUnit)
+     */
+    @Deprecated
+    @Override
+    public void scriptLoadTimeout(long timeout, TimeUnit timeunit) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#setWindowPosition(org.openqa.selenium.Point)
+     */
+    @Override
+    public void setWindowPosition(Point point) {
+        int x=point.getX();
+        int y=point.getY();
+        selenium().getEval("window.resizeTo(" + x + ", " + y + "); window.moveTo(0,0);");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#setWindowDimension(org.openqa.selenium.Dimension)
+     */
+    @Override
+    public void setWindowDimension(Dimension dimension) {
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getWindowPosition()
+     */
+    @Override
+    public Point getWindowPosition() {
+        int width = Integer.parseInt(selenium().getEval("screen.width"));
+        int height = Integer.parseInt(selenium().getEval("screen.height"));
+        Point p=new Point(width, height);
+        return p;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getWindowDimension()
+     */
+    @Override
+    public Dimension getWindowDimension() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#maximizeWindow()
+     */
+    @Override
+    public void maximizeWindow() {
+       selenium().windowMaximize();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#logs(java.lang.String)
+     */
+    @Deprecated
+    @Override
+    public LogEntries logs(String logtype) {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToLatestWindow()
+     */
+    @Override
+    public void switchToLatestWindow() {
+        String[] windows = selenium().getAllWindowIds();
+        String[] windowsTitles = selenium().getAllWindowTitles();
+        selenium().selectWindow(windows[windows.length - 1]);
+        log.info("Window with title: " + windowsTitles[windowsTitles.length - 1] + " selected");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#getNumberOfOpenedWindows()
+     */
+    @Override
+    public int getNumberOfOpenedWindows() {
+        String[] windows=selenium().getAllWindowIds();
+        return windows.length;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#acceptAlert()
+     */
+    @Override
+    @WaitCondition(waitFor.ALERT)
+    public void acceptAlert() {
+        selenium().getEval("window.confirm = function(msg) { return true; }");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#dismissAlert()
+     */
+    @Override
+    @WaitCondition(waitFor.ALERT)
+    public void dismissAlert() {
+        selenium().getEval("window.confirm = function(msg) { return false; }");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#quit(com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession)
+     */
+    @Override
+    @Monitor
+    public void quit(CloseSession type) {
+        switch (type) {
+        case QUIT:
+            selenium().stop();
+            break;
+        case CLOSE:
+            selenium().close();
+            break;
+        default:
+            selenium().stop();
+            break;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
+     */
+    @Override
+    public void switchToFrame(String frameId) {
+        selenium().selectFrame(frameId);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
+     */
+    @Override
+    public void goBack() {
+        selenium().goBack();
+        waitController().waitForPageLoaded();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goForward()
+     */
+    @Deprecated
+    @Override
+    public void goForward() {
+
+    }
+
 
 }

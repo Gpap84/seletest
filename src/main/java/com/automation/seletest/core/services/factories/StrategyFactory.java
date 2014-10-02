@@ -28,9 +28,7 @@ package com.automation.seletest.core.services.factories;
 
 
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.actions.WaitFor;
 
 /**
@@ -45,13 +43,7 @@ public interface StrategyFactory<T> {
     WaitFor getWaitStrategy(String waitController);
 
     /**Gets the elementController type*/
-    ElementController getElementControllerStrategy(String elementController);
-
-    /**Gets the optionsController type*/
-    OptionsController getOptionsControllerStrategy(String optionsController);
-
-    /**Gets the windowsController type*/
-    WindowsController getWindowsControllerStrategy(String windowsController);
+    MainController getControllerStrategy(String elementController);
 
     /**Gets the actionsController type*/
     ActionsBuilderController<?> getActionsStrategy(String actionsController);

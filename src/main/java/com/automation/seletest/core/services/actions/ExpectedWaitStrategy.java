@@ -45,7 +45,7 @@ import com.automation.seletest.core.selenium.webAPI.elements.Locators;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component("expectedWait")
+@Component("webDriverWait")
 public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 
     @Override

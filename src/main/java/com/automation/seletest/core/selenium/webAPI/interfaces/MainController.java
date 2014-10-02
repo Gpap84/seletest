@@ -27,17 +27,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.interfaces;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
 
 /**
  * This interface is for all methods used by webdriver to interact with app UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-public interface ElementController {
+public interface MainController {
 
     /**
      * Finds a web element
@@ -183,6 +187,142 @@ public interface ElementController {
      * @param text
      */
     void selectByVisibleText(String locator, String text);
+
+    /**
+     * Deletes a cookie by name
+     * @param name
+     * @param value
+     * @return
+     */
+    void deleteCookieByName(String name);
+
+    /**
+     * Deletes a cookie
+     * @param cookie
+     * @return
+     */
+    void deleteCookie(Cookie cookie);
+
+    /**
+     * Delete all cookies
+     * @return
+     */
+    void deleteAllCookies();
+
+    /**
+     * Create a cookie
+     * @param name
+     * @param value
+     * @return
+     */
+    void addCookie(Cookie cookie);
+
+    /**
+     * Gets all cookies
+     * @return
+     */
+    Set<Cookie> getCookies();
+
+
+    /**
+     * Implicitly wait
+     * @param timeout
+     * @param timeunit
+     */
+    void implicitlyWait(long timeout,TimeUnit timeunit);
+
+    /**
+     * Timeout waiting for page to load
+     * @param timeout
+     * @param timeunit
+     */
+    void pageLoadTimeout(long timeout,TimeUnit timeunit);
+
+    /**
+     * Timeout waiting for script to finish
+     * @param timeout
+     * @param timeunit
+     */
+    void scriptLoadTimeout(long timeout,TimeUnit timeunit);
+
+    /**
+     * Set window position
+     * @param point
+     */
+    void setWindowPosition(Point point);
+
+    /**
+     * Set window size
+     * @param dimension
+     */
+    void setWindowDimension(Dimension dimension);
+
+    /**
+     * Gets window position
+     * @return
+     */
+    Point getWindowPosition();
+
+    /**
+     * Gets window dimension
+     * @return
+     */
+    Dimension getWindowDimension();
+
+    /**
+     * Maximize window
+     */
+    void maximizeWindow();
+
+    /**
+     * Get logs (client,server,performance....etc.)
+     * @param logtype
+     * @return LogEntries the log entries
+     */
+    LogEntries logs(String logtype);
+
+    /**
+     * Switch to latest window
+     */
+    void switchToLatestWindow();
+
+    /**
+     * Gets the number of opened windows
+     * @return Integer the number of opened windows
+     */
+    int getNumberOfOpenedWindows();
+
+    /**
+     * Accept alert
+     */
+    void acceptAlert();
+
+    /**
+     * Dismiss Alert
+     */
+    void dismissAlert();
+
+    /**
+     * Quit session or close latest window
+     * @param type
+     */
+    void quit(CloseSession type);
+
+    /**
+     * Switch control to frame located by name or id
+     * @param frameId
+     */
+    void switchToFrame(String frameId);
+
+    /**
+     * Go back in browser
+     */
+    void goBack();
+
+    /**
+     * Go forward in browser
+     */
+    void goForward();
 
 
 }

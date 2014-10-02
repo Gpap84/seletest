@@ -15,7 +15,6 @@ import com.automation.seletest.pagecomponents.pageObjects.GooglePage;
 
 @DataSource(filePath="./target/test-classes/DataSources/demoTest.properties")
 @SeleniumTest
-@SuppressWarnings({"rawtypes"})
 public class GoogleTest extends SeletestWebTestBase{
 
     @Autowired

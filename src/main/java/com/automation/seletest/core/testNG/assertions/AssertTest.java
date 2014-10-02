@@ -60,6 +60,7 @@ public class AssertTest<T extends Assertion> {
     @Getter @Setter
     private T assertion;
 
+    /**The strategy used*/
     @Autowired
     StrategyFactory<?> strategy;
 
@@ -94,7 +95,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator", screenShot = false)
     public AssertTest elementPresent(String locator) {
-        assertion.assertTrue(strategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy()).isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
         return this;
     }
 
@@ -105,7 +106,7 @@ public class AssertTest<T extends Assertion> {
      */
     @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
     public AssertTest elementVisible(String locator) {
-        assertion.assertTrue(strategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy()).isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
         return this;
     }
 

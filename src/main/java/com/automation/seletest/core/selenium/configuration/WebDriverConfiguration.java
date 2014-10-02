@@ -30,13 +30,10 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -61,21 +58,12 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 public class WebDriverConfiguration {
 
     @Lazy(true)
-    @Bean
+    @Bean(name="webdriverwait")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WebDriverWait wdWait(WebDriver driver){
+    public WebDriverWait wait(WebDriver driver){
         return new WebDriverWait(driver, SessionContext.getSession().getWaitUntil());
     }
 
-    @Lazy(true)
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Wait<WebDriver> fwWait(WebDriver driver, String msg){
-        return new FluentWait<WebDriver>(driver).
-                withTimeout(SessionContext.getSession().getWaitUntil(), TimeUnit.SECONDS).
-                pollingEvery(100,TimeUnit.MILLISECONDS).
-                withMessage(msg);
-    }
 
     @Lazy(true)
     @Bean

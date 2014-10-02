@@ -39,7 +39,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController.CloseSession;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.thoughtworks.selenium.Selenium;
 
@@ -79,19 +79,11 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
     /** Wait Strategy*/
     @Getter @Setter
-    String waitStrategy="DEFAULT";
+    String waitStrategy="webDriverWait";
 
-    /** WebDriver-Selenium element strategy*/
+    /** WebDriver-Selenium controller strategy*/
     @Getter @Setter
-    String elementStrategy="webDriverElement";
-
-    /** WebDriver-Selenium options strategy*/
-    @Getter @Setter
-    String optionsStrategy="webDriverOptions";
-
-    /** WebDriver-Selenium windows strategy*/
-    @Getter @Setter
-    String windowsStrategy="webDriverWindows";
+    String controllerStrategy="webDriverElement";
 
     /** WebDriver-Selenium actions strategy*/
     @Getter @Setter
@@ -108,7 +100,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
         //Quits driver
         if(webDriver!=null){
-            factoryStrategy.getWindowsControllerStrategy(windowsStrategy).quit(CloseSession.QUIT);
+            factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
 
         //Initialize Controllers Array List

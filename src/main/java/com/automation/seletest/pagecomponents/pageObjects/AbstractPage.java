@@ -37,9 +37,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.interfaces.ElementController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
@@ -97,25 +95,10 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * Interact with element based on factory strategy
      * @return ElementController
      */
-    public ElementController element() {
-        return factoryStrategy.getElementControllerStrategy(SessionContext.getSession().getElementStrategy());
+    public MainController element() {
+        return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 
-    /**
-     * OptionsController
-     * @return OptionsController
-     */
-    public OptionsController options() {
-        return factoryStrategy.getOptionsControllerStrategy(SessionContext.getSession().getOptionsStrategy());
-    }
-
-    /**
-     * Windows interaction
-     * @return WindowsController
-     */
-    public WindowsController windows() {
-        return factoryStrategy.getWindowsControllerStrategy(SessionContext.getSession().getWindowsStrategy());
-    }
 
 
     /**
