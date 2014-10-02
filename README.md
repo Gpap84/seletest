@@ -42,29 +42,16 @@ Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. T
 
 
 *******************************************
-<b>Inject beans to non Spring classes</b>
-*******************************************
-
-To actually get the injection working to domain objects (non Spring classes) you need to weave some Spring aspects in your domain class. While you could do this by compile time weaving, i chose load time weaving as it is much simpler to set up in development environment. The cruicial part is to activate a Java agent for your runtime that now weaves the aspects into the domain class during class loading.
-
-<b>Eclipse:</b><br>
-Run with JVM arguments:<br>
--javaagent:${localMavenRepository}\org\springframework\spring-agent\2.5.6\spring-agent-2.5.6.jar<br>
--noverify<br>
-
-<b>Maven:</b><br>
-Surefire argument:<br>
-argLine<br>
-       -javaagent:${settings.localRepository}/org/springframework/spring-agent/2.5.6/spring-agent-2.5.6.jar<br>
-/argLine<br>
-
-
-*******************************************
 <b>Steps for running Demo</b>
 *******************************************
 
 1] Download project into your local environment<br>
-2] IDE: Using your favorite IDE you need to register it to lombok project first. <br>Locate artifact <MavenRepo>\org\projectlombok\lombok\ and double click to jar. <br>In the window you must specify the location where STS.exe or eclipse.exe is located and press Install.<br> After this step you can import the project to IDE and run the testng.xml as usual.
+2] IDE: Using your favorite IDE you need to register it to lombok project first. <br>Locate artifact <b><LocalMavenRepo>\org\projectlombok\lombok\</b> and double click to jar. <br>In the window you must specify the location where STS.exe or eclipse.exe is located and press Install.<br> After this step you can import the project to IDE and compile it.<br>
+3] You can run a test suite by running the corresponding xml file from eclipse or using maven commands specifying the suite (see the wiki for further details)<br>
 
+<b>Upcoming:</b>
+* Set up appium server on Windows 7 and run test against android emulator
+* Set up Selenium Grid server and register a node 
+* Use released jar of Seletest and create your own test project in IDE
 
 
