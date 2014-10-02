@@ -119,7 +119,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @Monitor
     public void takeScreenShot() throws IOException {
-        String base64Screenshot = selenium().captureEntirePageScreenshotToString("");
+        String base64Screenshot = selenium().captureScreenshotToString();
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
         FileOutputStream fos = null;
         File screenShotFrame = fileService.createScreenshotFile();
