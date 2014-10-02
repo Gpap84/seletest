@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.aop.target.ThreadLocalTargetSource;
+import org.testng.Reporter;
 
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
@@ -53,9 +54,18 @@ public class SessionContext {
      * Get the thread in parallel execution from a target Source
      * @return SessionProperties instance
      */
-    public static SessionProperties getSession(){
+    public static SessionProperties session(){
         return (SessionProperties) innerContext(ThreadLocalTargetSource.class).getTarget();
     }
+
+    /**
+     * Session object
+     * @return SessionProperties instance
+     */
+    public static SessionProperties getSession(){
+        return (SessionProperties) Reporter.getCurrentTestResult().getAttribute("session");
+    }
+
     /**
      * Return the ThreadLocalTargetSource
      * @param targetBean
@@ -83,12 +93,12 @@ public class SessionContext {
      * @throws Exception
      */
     public static void setSessionProperties(){
-        threadStack.push(getSession());//push instanse of Session to stack
+        threadStack.push(session());//push instanse of Session to stack
         String driver="";
-        if(getSession().getWebDriver() instanceof RemoteWebDriver) {
-            driver=getSession().getWebDriver().toString().split(":")[0];
-        } else if(getSession().getWebDriver() instanceof AppiumDriver) {
-            driver=getSession().getWebDriver().toString().split(":")[0];
+        if(session().getWebDriver() instanceof RemoteWebDriver) {
+            driver=session().getWebDriver().toString().split(":")[0];
+        } else if(session().getWebDriver() instanceof AppiumDriver) {
+            driver=session().getWebDriver().toString().split(":")[0];
         }
         log.info("Session started with type of driver: {}", driver);
         Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);

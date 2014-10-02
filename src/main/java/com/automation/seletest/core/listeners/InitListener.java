@@ -57,22 +57,35 @@ public class InitListener implements IInvokedMethodListener{
         //Set assertion type (Hard / Soft) and amount of time to wait for conditions () for this test method
         if(method.getTestMethod().isTest()){
             log.debug("Set assertion type and waitFor parameter for test method: {}!!!",method.getTestMethod().getMethodName());
-            SessionContext.getSession().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-            SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionContext.getSession().getWebDriver()));
+
+            //Set session objects as testNG attribute
+            testResult.setAttribute("session", SessionContext.session());
+
+            SessionContext.session().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+            SessionContext.session().getControllers().put(Actions.class, new Actions(SessionContext.session().getWebDriver()));
+
             seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
             SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
-            SessionContext.getSession().setWaitUntil(seleniumTest.waitFor());
+            SessionContext.session().setWaitUntil(seleniumTest.waitFor());
 
             if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
                 ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using WebDriver for this @Test", "color:blue");
-                SessionContext.getSession().setControllerStrategy("webDriverControl");
-                SessionContext.getSession().setActionsStrategy("webDriverActions");
+                SessionContext.session().setControllerStrategy("webDriverControl");
+                SessionContext.session().setActionsStrategy("webDriverActions");
             } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
                 ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
-                SessionContext.getSession().setControllerStrategy("seleniumControl");
-                SessionContext.getSession().setWaitStrategy("seleniumWait");
-                SessionContext.getSession().setActionsStrategy("seleniumActions");
+                SessionContext.session().setControllerStrategy("seleniumControl");
+                SessionContext.session().setWaitStrategy("seleniumWait");
+                SessionContext.session().setActionsStrategy("seleniumActions");
             }
+        }
+
+        if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isAfterTestConfiguration()) {
+            testResult.setAttribute("session", SessionContext.session());
+        } else if(method.getTestMethod().isAfterClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
+            testResult.setAttribute("session", SessionContext.session());
+        } else if (method.getTestMethod().isAfterMethodConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("methods")==0) {
+            testResult.setAttribute("session", SessionContext.session());
         }
 
     }
@@ -80,7 +93,7 @@ public class InitListener implements IInvokedMethodListener{
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         if(method.getTestMethod().isTest()){
-            PerformanceUtils perf=(PerformanceUtils) SessionContext.getSession().getControllers().get(PerformanceUtils.class);
+            PerformanceUtils perf=(PerformanceUtils) SessionContext.session().getControllers().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
 
             //Performance collection data
@@ -90,6 +103,14 @@ public class InitListener implements IInvokedMethodListener{
                 perf.stopServer(perf.getServer());
                 log.debug("Performance data collected for test method: {} !!!",method.getTestMethod().getMethodName());
             }
+        }
+
+        if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isBeforeTestConfiguration()) {
+            testResult.setAttribute("session", SessionContext.session());
+        } else if(method.getTestMethod().isBeforeClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
+            testResult.setAttribute("session", SessionContext.session());
+        } else if (method.getTestMethod().isBeforeMethodConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("methods")==0) {
+            testResult.setAttribute("session", SessionContext.session());
         }
     }
 

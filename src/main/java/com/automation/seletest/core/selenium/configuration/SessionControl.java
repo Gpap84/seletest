@@ -44,7 +44,7 @@ public class SessionControl {
      * @return AssertTest instance
      */
     public static <T> AssertTest<?> verifyController(){
-        return (AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class);
+        return (AssertTest<?>) SessionContext.session().getControllers().get(AssertTest.class);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SessionControl {
      * @return Actions instance
      */
     public static Actions actionsBuilder(){
-        return ((Actions) SessionContext.getSession().getControllers().get(Actions.class));
+        return ((Actions) SessionContext.session().getControllers().get(Actions.class));
     }
 
 
@@ -61,7 +61,7 @@ public class SessionControl {
      * @return TouchAction instance
      */
     public static TouchAction touchactionsBuilder(){
-        return ((TouchAction) SessionContext.getSession().getControllers().get(TouchAction.class));
+        return ((TouchAction) SessionContext.session().getControllers().get(TouchAction.class));
     }
 
 }

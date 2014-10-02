@@ -1,6 +1,7 @@
 package DemoTest;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -22,16 +23,16 @@ public class GoogleTest extends SeletestWebTestBase{
 
     @SeleniumTest(assertion=AssertionType.HARD, driver=DriverType.SELENIUM)
     @Test
-    public void googleSearch(Map<String, String> map){
+    public void googleSearch(Map<String, String> map) throws InterruptedException, ExecutionException{
         googlePage.typeSearch(map.get("GoogleSearch")).buttonSearch();
-        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult")).get();
     }
 
     @SeleniumTest(assertion=AssertionType.SOFT)
     @Test
-    public void googleSearch2(Map<String, String> map){
+    public void googleSearch2(Map<String, String> map) throws InterruptedException, ExecutionException{
         googlePage.typeSearch(map.get("GoogleSearch2")).buttonSearch();
-        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult")).get();
     }
 
 }

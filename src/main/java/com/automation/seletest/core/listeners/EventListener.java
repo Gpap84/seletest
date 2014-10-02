@@ -106,7 +106,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
         public void initializeSession(ApplicationEvent event) throws Exception{
             WebDriver driver=null;
             Selenium selenium=null;
-            SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
+            SessionContext.session().setControllers(new HashMap<Class<?>, Object>());
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
             String gridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
@@ -142,7 +142,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
                 perf.proxyServer(proxyPort);
                 perf.newHar("Har created at: "+ new Time(event.getTimestamp()));
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(proxyPort));
-                SessionContext.getSession().getControllers().put(PerformanceUtils.class,perf);
+                SessionContext.session().getControllers().put(PerformanceUtils.class,perf);
             }
 
             if(profileDriver.contains("Grid")) {
@@ -152,23 +152,23 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
-                SessionContext.getSession().setWebDriver((RemoteWebDriver)driver);
+                SessionContext.session().setWebDriver((RemoteWebDriver)driver);
                 selenium=(Selenium)app.getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
-                SessionContext.getSession().setSelenium(selenium);
+                SessionContext.session().setSelenium(selenium);
                 driver.get(((InitializationEvent) event).getHostUrl());
             } else {
                 if(driver instanceof AndroidDriver) {
-                    SessionContext.getSession().setWebDriver((AndroidDriver)driver);
+                    SessionContext.session().setWebDriver((AndroidDriver)driver);
                 } else if(driver instanceof IOSDriver){
-                    SessionContext.getSession().setWebDriver((IOSDriver)driver);
+                    SessionContext.session().setWebDriver((IOSDriver)driver);
                 }
-                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) driver));
+                SessionContext.session().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) driver));
                 mobileControl.installApp(appPath,appPackage);
                 if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get()))){
                     mobileControl.launchApp();
                 }
             }
-            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
+            SessionContext.session().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 
         }

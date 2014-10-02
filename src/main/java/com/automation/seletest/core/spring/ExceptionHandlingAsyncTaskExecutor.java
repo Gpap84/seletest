@@ -43,6 +43,7 @@ import org.springframework.core.task.AsyncTaskExecutor;
 @SuppressWarnings({"rawtypes","unchecked","hiding"})
 public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor {
 
+    /**The AsyncTaskExecutor*/
     private final AsyncTaskExecutor executor;
 
     public ExceptionHandlingAsyncTaskExecutor(AsyncTaskExecutor executor) {
@@ -84,7 +85,7 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
     /**
      * Create callable task
      * @param task
-     * @return
+     * @return Callable
      */
     private Callable createCallable(final Callable task) {
         return new Callable() {
@@ -104,7 +105,7 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
     /**
      * Create runnable task
      * @param task
-     * @return
+     * @return Runnable
      */
     private Runnable createWrappedRunnable(final Runnable task) {
         return new Runnable() {

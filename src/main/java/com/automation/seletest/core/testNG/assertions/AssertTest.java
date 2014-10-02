@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.automation.seletest.core.testNG.assertions;
 
+import java.util.concurrent.Future;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
@@ -93,10 +97,11 @@ public class AssertTest<T extends Assertion> {
      * @param locator
      * @return AssertTest instance
      */
+    @Async
     @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator", screenShot = false)
-    public AssertTest elementPresent(String locator) {
+    public Future<Boolean> elementPresent(String locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
-        return this;
+        return new AsyncResult<>(true);
     }
 
     /**
@@ -104,10 +109,11 @@ public class AssertTest<T extends Assertion> {
      * @param locator
      * @return AssertTest instance
      */
+    @Async
     @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
-    public AssertTest elementVisible(String locator) {
+    public Future<Boolean> elementVisible(String locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
-        return this;
+        return new AsyncResult<>(true);
     }
 
     /**
@@ -116,10 +122,11 @@ public class AssertTest<T extends Assertion> {
      * @param text
      * @return AssertTest instance
      */
+    @Async
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
-    public AssertTest textPresentinElement(Object locator, String text) {
+    public Future<Boolean> textPresentinElement(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinElement(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
-        return this;
+        return new AsyncResult<>(true);
     }
 
     /**
@@ -128,9 +135,10 @@ public class AssertTest<T extends Assertion> {
      * @param text
      * @return AssertTest instance
      */
+    @Async
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
-    public AssertTest textPresentValueAttribute(Object locator, String text) {
+    public Future<Boolean> textPresentValueAttribute(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinValue(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
-        return this;
+        return new AsyncResult<>(true);
     }
 }

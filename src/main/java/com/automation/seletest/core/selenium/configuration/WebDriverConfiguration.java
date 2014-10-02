@@ -61,7 +61,7 @@ public class WebDriverConfiguration {
     @Bean(name="webdriverwait")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriverWait wait(WebDriver driver){
-        return new WebDriverWait(driver, SessionContext.getSession().getWaitUntil());
+        return new WebDriverWait(driver, SessionContext.session().getWaitUntil());
     }
 
 
