@@ -42,16 +42,34 @@ Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. T
 
 
 *******************************************
-<b>Steps for running Demo</b>
+<b>Released version 0.0.1</b>
 *******************************************
 
-1] Download project into your local environment<br>
-2] IDE: Using your favorite IDE you need to register it to lombok project first. <br>Locate artifact LocalMavenRepo\org\projectlombok\lombok\ and double click to jar. <br>In the window you must specify the location where STS.exe or eclipse.exe is located and press Install.<br> After this step you can import the project to IDE and compile it.<br>
-3] You can run a test suite by running the corresponding xml file from eclipse or using maven commands specifying the suite (see the wiki for further details)<br>
+Seletest has been uploaded in sonatype nexus.<br>
+
+Add this to your pom.xml:<br>
+
+Under \<project\> tag <br>
+
+\<repositories\><br>
+    \<repository\><br>
+      \<id\>oss.sonatype.org\</id\><br>
+      \<url\>https://oss.sonatype.org/content/groups/public/\</url\><br>
+   \</repository\><br>
+ \</repositories\><br>
+ 
+Under \<dependencies\> tag:<br>
+
+\<dependency\><br>
+			\<groupId\>com.github.giannispapadakis\</groupId\><br>
+			\<artifactId\>Seletest\</artifactId\><br>
+			\<version\>0.0.1\</version\><br>
+\</dependency\><br>
+
+See wiki for setting up Spring Maven Project and running first test<br>
 
 <b>Upcoming:</b>
-* Set up appium server on Windows 7 and run test against android emulator
-* Set up Selenium Grid server and register a node 
-* Use released jar of Seletest and create your own test project in IDE
+* Set up Appium Server on Windows 7 and run test against android emulator
+* Set up Selenium Grid server and register a node
 
 
