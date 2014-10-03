@@ -49,24 +49,15 @@ Seletest has been uploaded in sonatype nexus.<br>
 
 Add this to your pom.xml:<br>
 
-Under \<project\> tag <br>
+<b>Under \<project\> tag</b> <br>
 
-\<repositories\><br>
-    \<repository\><br>
-      \<id\>oss.sonatype.org\</id\><br>
-      \<url\>https://oss.sonatype.org/content/groups/public/\</url\><br>
-   \</repository\><br>
- \</repositories\><br>
+![repo](https://cloud.githubusercontent.com/assets/3785668/4512733/cb9308ba-4b43-11e4-8101-905376c28c6e.png)
  
-Under \<dependencies\> tag:<br>
+<b>Under \<dependencies\> tag:</b><br>
 
-\<dependency\><br>
-			\<groupId\>com.github.giannispapadakis\</groupId\><br>
-			\<artifactId\>Seletest\</artifactId\><br>
-			\<version\>0.0.1\</version\><br>
-\</dependency\><br>
+![seletest](https://cloud.githubusercontent.com/assets/3785668/4512750/02aa9048-4b44-11e4-9444-98ba48f35769.png)
 
-See wiki for setting up Spring Maven Project and running first test<br>
+See wiki for setting up Spring Maven Project and running first tests<br>
 
 <b>Upcoming:</b>
 * Set up Appium Server on Windows 7 and run test against android emulator
