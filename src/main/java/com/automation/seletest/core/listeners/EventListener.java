@@ -29,6 +29,8 @@ package com.automation.seletest.core.listeners;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 
 import java.sql.Time;
 import java.util.HashMap;
@@ -36,12 +38,12 @@ import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -54,20 +56,18 @@ import com.automation.seletest.core.selenium.configuration.LocalDriverConfigurat
 import com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration;
 import com.automation.seletest.core.selenium.configuration.WebDriverConfiguration;
 import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.mobileAPI.AppiumDriverController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.selenium.webAPI.WebDriverController;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.thoughtworks.selenium.Selenium;
 
 /*
  * ApplicationListener for event handling
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings("deprecation")
 @Component
 @Slf4j
 public class EventListener implements ApplicationListener<ApplicationEvent> {
@@ -82,96 +82,93 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
         }
         catch (Exception e) {
-            log.error("Error in Test Initialization phase "+e);
+            log.error("Error in Test Initialization phase with exception: "+e.getMessage());
         }
     }
 
     /**
-     * Initializa class
+     * Initialization class
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
+    @Configurable
     static class Initialize {
+
+        @Autowired
+        AppiumController mobileControl;
+
         /**
          * Initialize Web or Mobile session
          * @param event
          * @throws Exception
          */
         public void initializeSession(ApplicationEvent event) throws Exception{
-
-            WebDriverController wdController=null;
-            AppiumDriverController adController=null;
             WebDriver driver=null;
-            SessionContext.getSession().setControllers(new HashMap<Class<?>, Object>());
-
-            if(((InitializationEvent) event).isWeb()){
-                wdController = ApplicationContextProvider.getApplicationContext().getBean(WebDriverController.class);
-                SessionContext.getSession().getControllers().put(WebController.class,wdController);
-
-            } else {
-                adController = ApplicationContextProvider.getApplicationContext().getBean(AppiumDriverController.class);
-                SessionContext.getSession().getControllers().put(AppiumController.class,adController);
-            }
-
+            Selenium selenium=null;
+            SessionContext.session().setControllers(new HashMap<Class<?>, Object>());
             ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
-            /*************************
-             **XML PARAMETERS*********
-             *************************/
             String gridHost=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_HOST.get());
             String gridPort=textcontext.getCurrentXmlTest().getParameter(CoreProperties.GRID_PORT.get());
             String profileDriver=textcontext.getCurrentXmlTest().getParameter(CoreProperties.PROFILEDRIVER.get());
-            String bundleId=textcontext.getCurrentXmlTest().getParameter(CoreProperties.BUNDLEID.get());
-            String appPath=textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PATH.get());
+            String appPath = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP.get());
+            String appPackage = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_PACKAGE.get());
+            String autoLaunch=textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get());
+            String appActivity = textcontext.getCurrentXmlTest().getParameter(CoreProperties.APP_ACTIVITY.get());
+            String udid = textcontext.getCurrentXmlTest().getParameter(CoreProperties.UDID.get());
 
             //Create Application Context for initializing driver based on specified @Profile
             AnnotationConfigApplicationContext app=new AnnotationConfigApplicationContext();
             app.getEnvironment().setActiveProfiles(new String[]{profileDriver});
-
-            //register Configuration classes
             app.register(LocalDriverConfiguration.class,WebDriverConfiguration.class,RemoteDriverConfiguration.class);
-
-            //start Container for bean initialization
             app.refresh();
-
-            //register a bean post processor for merging capabilities
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
-
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
-            //If performance is enabled
-            if(((InitializationEvent) event).isPerformance()){
+            /**Capabilities for android appium*/
+            if(profileDriver.contains("Android")) {
+                DesiredCapabilities androidcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
+                cap.merge(androidcap);
+            } else if (profileDriver.contains("IOS")) {
+                DesiredCapabilities ioscap =  (DesiredCapabilities) app.getBean(CoreProperties.IOSCAPABILITIES.get(),new Object[] {appPath,udid,appPackage,autoLaunch});
+                cap.merge(ioscap);
+            }
+
+            /**Performance with browser-mob proxy for local environment*/
+            if(((InitializationEvent) event).isPerformance() && !profileDriver.contains("Grid")){
                 PerformanceUtils perf = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
                 int proxyPort=new Random().nextInt(5000);
                 perf.proxyServer(proxyPort);
                 perf.newHar("Har created at: "+ new Time(event.getTimestamp()));
                 cap.setCapability(CapabilityType.PROXY, perf.proxy(proxyPort));
-                SessionContext.getSession().getControllers().put(PerformanceUtils.class,perf);
+                SessionContext.session().getControllers().put(PerformanceUtils.class,perf);
             }
 
-            //start a driver object with capabilities
             if(profileDriver.contains("Grid")) {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{gridHost+":"+gridPort+"/wd/hub",cap});
             } else {
                 driver=(WebDriver) app.getBean(CoreProperties.PROFILEDRIVER.get(), new Object[]{cap});
             }
 
-            if(((InitializationEvent) event).isWeb()) {
-                wdController.setWebDriver((RemoteWebDriver) driver);
-                wdController.setJsExec((JavascriptExecutor)driver);//sets the Javascript executor
-                wdController.goToTargetHost(((InitializationEvent) event).getHostUrl());//Open URL
-
+            if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
+                SessionContext.session().setWebDriver((RemoteWebDriver)driver);
+                selenium=(Selenium)app.getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
+                SessionContext.session().setSelenium(selenium);
+                driver.get(((InitializationEvent) event).getHostUrl());
             } else {
-                adController.setAppiumDriver((AppiumDriver)driver);//set the appium driver object for this session
-                SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction(adController.getAppiumDriver()));
-                adController.installApp(bundleId,appPath).launchApp();//install .app or .apk file in mobile device and launch native app
+                if(driver instanceof AndroidDriver) {
+                    SessionContext.session().setWebDriver((AndroidDriver)driver);
+                } else if(driver instanceof IOSDriver){
+                    SessionContext.session().setWebDriver((IOSDriver)driver);
+                }
+                SessionContext.session().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) driver));
+                mobileControl.installApp(appPath,appPackage);
+                if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(CoreProperties.AUTO_LAUNCH.get()))){
+                    mobileControl.launchApp();
+                }
             }
-
-            //Set objects for this test instance
-            SessionContext.getSession().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-            SessionContext.getSession().getControllers().put(Actions.class, new Actions(driver));
-            SessionContext.getSession().setDriverContext(app);//set the new application context for WebDriver
+            SessionContext.session().setDriverContext(app);//set the new application context for WebDriver
             SessionContext.setSessionProperties();
 
         }

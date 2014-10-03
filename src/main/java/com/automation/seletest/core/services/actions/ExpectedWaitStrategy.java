@@ -31,7 +31,10 @@ package com.automation.seletest.core.services.actions;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +45,7 @@ import com.automation.seletest.core.selenium.webAPI.elements.Locators;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Component("expectedWait")
+@Component("webDriverWait")
 public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 
     @Override
@@ -123,6 +126,41 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
     }
 
+    @Override
+    public void waitForPageLoaded() {
+        ExpectedCondition<Boolean> pageLoadedExpectation = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
+            }
+        };
 
+        wfExpected().until(pageLoadedExpectation);
+    }
+
+    @Override
+    public void waitForAjaxCallCompleted(final long timeout) {
+        ExpectedCondition<Boolean> ajaxCallExpectation = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                final long startTime = System.currentTimeMillis();
+                final JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+
+                while ((startTime + timeout) <= System.currentTimeMillis()) {
+
+                    final Boolean scriptResult = (Boolean) javascriptExecutor.executeScript("return jQuery.active == 0");
+
+                    if (scriptResult) {
+                        return true;
+                    }
+
+                    threadSleep(timeout);
+                }
+                return false;
+            }
+        };
+
+        wfExpected().until(ajaxCallExpectation);
+    }
 
 }

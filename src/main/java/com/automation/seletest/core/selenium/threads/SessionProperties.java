@@ -36,20 +36,27 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController.CloseSession;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.thoughtworks.selenium.Selenium;
 
 
 /**
  * Custom objects per session
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ * @param <T>
  */
 @Slf4j
-@SuppressWarnings("rawtypes")
-public class SessionProperties {
+@SuppressWarnings("deprecation")
+public class SessionProperties<T extends RemoteWebDriver> {
 
+    /**Factories Strategy*/
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
 
     /**Map with various controllers for test session*/
     @Getter @Setter
@@ -64,20 +71,38 @@ public class SessionProperties {
     @Getter @Setter
     int waitUntil = 5;
 
+    /**The remoteWebDriver object*/
+    @Getter @Setter
+    T webDriver;
+
+    /**The selenium object*/
+    @Getter @Setter
+    Selenium selenium;
+
     /** Wait Strategy*/
     @Getter @Setter
-    String waitStrategy="DEFAULT";
+    String waitStrategy="webDriverWait";
+
+    /** WebDriver-Selenium controller strategy*/
+    @Getter @Setter
+    String controllerStrategy="webDriverElement";
+
+    /** WebDriver-Selenium actions strategy*/
+    @Getter @Setter
+    String actionsStrategy="webDriverActions";
 
     /**WebElement per session*/
     @Getter @Setter
     WebElement webElement;
 
-
+    /**
+     * Initialize objects per session and close session!!!
+     */
     public void cleanSession(){
 
         //Quits driver
-        if(controllers.get(WebController.class)!=null){
-            ((WebController) controllers.get(WebController.class)).quit(CloseSession.QUIT);
+        if(webDriver!=null){
+            factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
 
         //Initialize Controllers Array List
@@ -85,9 +110,6 @@ public class SessionProperties {
 
         //Destroy the webdriver application context
         driverContext.destroy();
-
-        //Turn waitStrategy to default after closing a session
-        waitStrategy="DEFAULT";
 
         log.info("Session closed!!!");
     }

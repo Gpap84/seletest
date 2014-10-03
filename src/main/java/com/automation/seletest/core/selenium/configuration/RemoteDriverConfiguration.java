@@ -26,7 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.configuration;
 
-import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -81,17 +82,38 @@ public class RemoteDriverConfiguration {
     }
 
     @Configuration
-    @Profile({"appiumGrid"})
-    public abstract static class ProfileAppium implements ProfileDriver{
+    @Profile({"appiumAndroidGrid"})
+    public abstract static class ProfileAppiumAndroid implements ProfileDriver{
 
-        private final String beanDescription="Appium Session on Selenium Grid 2 is about to execute!!";
+        private final String beanDescription="Appium session for Android on Selenium Grid 2 is about to execute!!";
 
         @Override
         @Lazy(true)
         @Bean
         @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
         public WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException{
-            return new AppiumDriver(new URL(url),cap);
+            return new AndroidDriver(new URL(url),cap);
+        }
+
+        @PostConstruct
+        public void init(){
+            log.info(beanDescription);
+        }
+
+    }
+
+    @Configuration
+    @Profile({"appiumIOSGrid"})
+    public abstract static class ProfileAppiumIOS implements ProfileDriver{
+
+        private final String beanDescription="Appium session for IOS on Selenium Grid 2 is about to execute!!";
+
+        @Override
+        @Lazy(true)
+        @Bean
+        @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+        public WebDriver profileDriver(String url, DesiredCapabilities cap) throws MalformedURLException{
+            return new IOSDriver(new URL(url),cap);
         }
 
         @PostConstruct

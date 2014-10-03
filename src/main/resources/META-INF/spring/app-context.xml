@@ -14,11 +14,23 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+<context:property-placeholder location="BrowserSettings/browser.properties" order="1" ignore-unresolvable="true" /> 
 <context:spring-configured />
 <context:load-time-weaver />
 <context:annotation-config />
 
-<context:property-placeholder location="BrowserSettings/browser.properties" order="1" ignore-unresolvable="true" />
+<!-- To enable both @Scheduled and @Async annotations. -->
+<task:annotation-driven executor="exceptionHandlingTaskExecutor" />
+<task:executor id="defaultTaskExecutor"/>
+<bean id="defaultTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <property name="corePoolSize" value="5" />
+    <property name="maxPoolSize" value="10" />
+    <property name="queueCapacity" value="25" />
+</bean>
+<bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
+<constructor-arg ref="defaultTaskExecutor" />
+</bean>
+
 
 
  <!-- scan components and services -->
@@ -33,11 +45,13 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   </property>
   </bean>
  
- <!-- Aliases for better mapping -->
- <alias alias="Expected" name="expectedWait"/>
- <alias alias="Fluent" name="fluentWait"/>
- <alias alias="DEFAULT" name="expectedWait"/>
+ <!-- Aliases for wait strategy -->
+ <alias alias="WebDriverWait" name="webDriverWait"/>
+ <alias alias="SeleniumWait" name="seleniumWait"/>
  
+ <!-- Aliases for controller strategy -->
+ <alias alias="WebDriverAPI" name="webDriverControl"/>
+ <alias alias="SeleniumAPI" name="seleniumControl"/>
  
  <!-- Import test beans -->
  <import resource="classpath:/META-INF/spring/test-beans*.xml" />

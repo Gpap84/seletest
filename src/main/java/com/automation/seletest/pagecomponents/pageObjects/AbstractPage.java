@@ -34,8 +34,11 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -53,13 +56,16 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
     /**Polling time*/
     private static final int REFRESH_RATE = 2;
 
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
+
     /**
      * Opens a page object
      * @param clazz
      * @return T the type of object
      */
     public T openPage(Class<T> clazz) {
-        T page = PageFactory.initElements(SessionControl.webController().driverInstance(), clazz);
+        T page = PageFactory.initElements(SessionContext.getSession().getWebDriver(), clazz);
         ExpectedCondition<?>  pageLoadCondition = ((AbstractPage) page).getPageLoadCondition();
         waitForPageToLoad(pageLoadCondition);
         return page;
@@ -76,7 +82,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @param pageLoadCondition
      */
     private void waitForPageToLoad(ExpectedCondition<?> pageLoadCondition) {
-        Wait wait = new FluentWait(SessionControl.webController().driverInstance())
+        Wait wait = new FluentWait(SessionContext.getSession().getWebDriver())
                 .withTimeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
                 .pollingEvery(REFRESH_RATE, TimeUnit.SECONDS);
 
@@ -84,20 +90,42 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
     }
 
 
+
     /**
-     * Find String locator of WebElement
+     * Interact with element based on factory strategy
+     * @return ElementController
+     */
+    public MainController element() {
+        return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
+    }
+
+
+
+    /**
+     * get String locator for @FindBy
      * @param clazz
      * @param element
-     * @return
+     * @return String locator
      */
     public String getWebElementLocator(Class<?> clazz, String element){
-        Field[] fields=clazz.getFields();
+        Field[] fields=clazz.getDeclaredFields();
         for(Field field:fields){
             if(field.getAnnotation(FindBy.class)!=null){
                 if(field.getName().equals(element)){
-                    if(field.getAnnotation(FindBy.class).className()!=null){
-                        return "className="+field.getAnnotation(FindBy.class).className();
+                    if(!field.getAnnotation(FindBy.class).className().isEmpty()){
+                        return "class="+field.getAnnotation(FindBy.class).className();
+                    } else if(!field.getAnnotation(FindBy.class).id().isEmpty()){
+                        return "id="+field.getAnnotation(FindBy.class).id();
+                    } else if(!field.getAnnotation(FindBy.class).css().isEmpty()){
+                        return "css="+field.getAnnotation(FindBy.class).css();
+                    } else if(!field.getAnnotation(FindBy.class).linkText().isEmpty()){
+                        return "link="+field.getAnnotation(FindBy.class).linkText();
+                    } else if(!field.getAnnotation(FindBy.class).name().isEmpty()){
+                        return "name="+field.getAnnotation(FindBy.class).name();
+                    } else if(!field.getAnnotation(FindBy.class).xpath().isEmpty()){
+                        return "xpath="+field.getAnnotation(FindBy.class).xpath();
                     }
+
                 }
             }
         }

@@ -26,21 +26,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.configuration;
 
-import java.util.concurrent.TimeUnit;
+import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.remote.MobilePlatform;
+
+import java.io.File;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
  * Configuration class for instantiating various beans from WebDriver API
@@ -49,30 +54,65 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
  */
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass=true)
+@SuppressWarnings("deprecation")
 public class WebDriverConfiguration {
 
     @Lazy(true)
-    @Bean
+    @Bean(name="webdriverwait")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WebDriverWait wdWait(WebDriver driver){
-        return new WebDriverWait(driver, SessionContext.getSession().getWaitUntil());
+    public WebDriverWait wait(WebDriver driver){
+        return new WebDriverWait(driver, SessionContext.session().getWaitUntil());
     }
 
-    @Lazy(true)
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Wait<WebDriver> fwWait(WebDriver driver, String msg){
-        return new FluentWait<WebDriver>(driver).
-                withTimeout(SessionContext.getSession().getWaitUntil(), TimeUnit.SECONDS).
-                pollingEvery(100,TimeUnit.MILLISECONDS).
-                withMessage(msg);
-    }
 
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities capabilities(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
+        return capabilities;
+    }
+
+    @Lazy(true)
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public Selenium selenium(WebDriver driver, String baseUrl){
+        return new WebDriverBackedSelenium(driver, baseUrl);
+    }
+
+    @Profile("appiumAndroidGrid")
+    @Lazy(true)
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public DesiredCapabilities androidcapabilities(String appPath, String appActivity, String appPackage, String autolaunch){
+        File app=new File(appPath);
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(CapabilityType.PLATFORM, MobilePlatform.ANDROID);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
+        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+        capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
+        capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,appActivity);
+        capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, appPackage);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator");
+        return capabilities;
+    }
+
+    @Profile("appiumIOSGrid")
+    @Lazy(true)
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public DesiredCapabilities iOScapabilities(String appPath, String udid, String bundleId, String autolaunch){
+        File app=new File(appPath);
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(CapabilityType.PLATFORM, MobilePlatform.IOS);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "300");//how long (in seconds) Appium will wait for a new command from the client before assuming the client quit and ending the session
+        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+        capabilities.setCapability("autoLaunch", Boolean.parseBoolean(autolaunch));
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.IOS);
+        capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, bundleId);
+        capabilities.setCapability("udid", udid);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator");
         return capabilities;
     }
 

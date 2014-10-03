@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.mobileAPI;
 
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 
@@ -36,83 +37,71 @@ import org.openqa.selenium.ScreenOrientation;
 
 
 /**
- * Appium Controller interface
+ * Appium interface
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- * @param <T>
- *
  */
-public interface AppiumController<T> {
+public interface AppiumController {
 
     /**
      * This method launch application in mobile device
-     * @param <T>
-     * @param remoteWebDriver
      */
-    T launchApp();
+    void launchApp();
 
     /**
      * This method resets application in mobile device
-     * @return
      */
-    T resetApp();
-
+    void resetApp();
 
     /**
      * This method resets application in mobile device
-     * @return
-     */
-    T runAppinBackground(int sec);
+     **/
+    void runAppinBackground(int sec);
 
     /**
      * This method closes application in mobile device
-     * @return
      */
-    T closeApp();
+    void closeApp();
 
     /**
-     * This method installs an app or ipa file to mobile device
+     * This method installs an apk or ipa file to mobile device if it not already installed
      * @param appPath
-     * @param remoteWebDriver
+     * @param bundleId (also appPackage for android)
      */
-    T installApp(String bundleId, String appPath);
+    void installApp(String appPath, String bundleId);
 
 
     /**
      * Performs a touch action
      * @param e
-     * @return
      */
-    T performTouchAction(TouchAction e);
+    void performTouchAction(TouchAction e);
 
     /**
      * Performs multitouch action
      * @param e
-     * @return
      */
-    T performMultiTouchAction(MultiTouchAction e);
+    void performMultiTouchAction(MultiTouchAction e);
 
     /**
      * Hide the kieyboard
-     * @return
      */
-    T hideKeyboard();
+    void hideKeyboard();
 
     /**
      * rotate screen of mobile device
      * @param e
-     * @return
      */
-    T rotate(ScreenOrientation e);
+    void rotate(ScreenOrientation e);
 
     /**
      * gets the screen orientation
-     * @return
+     * @return ScreenOrientation
      */
     ScreenOrientation getscreen();
 
     /**
      * Gets multi touch action
-     * @return
+     * @return MultiTouchAction
      */
     MultiTouchAction getMultiTouchAction();
 
@@ -120,7 +109,6 @@ public interface AppiumController<T> {
     /**
      * checks if application is installed in device
      * @param bundleId
-     * @return
      */
     boolean isAppInstalled(String bundleId);
 
@@ -128,16 +116,14 @@ public interface AppiumController<T> {
      * Pinch to specific coordinates
      * @param x
      * @param y
-     * @return
      */
-    T pinch(int x,int y);
+    void pinch(int x,int y);
 
     /**
      * Locks the screen for specific amount of time
      * @param sec
-     * @return
      */
-    T lockScreen(int sec);
+    void lockScreen(int sec);
 
 
     /**
@@ -146,23 +132,16 @@ public interface AppiumController<T> {
      * @param y
      * @param z
      * @param duration
-     * @return
      */
-    T tap(int fingers, int y, int z, int duration);
+    void tap(int fingers, int y, int z, int duration);
 
-    /**
-     * Shake the screen
-     * @return
-     */
-    T shake();
 
     /**
      * Zoom to element with coordinates
      * @param x
      * @param y
-     * @return
      */
-    T zoom(int x, int y);
+    void zoom(int x, int y);
 
     /**
      * swipe gesture
@@ -171,24 +150,42 @@ public interface AppiumController<T> {
      * @param endx
      * @param endy
      * @param duration
-     * @return
      */
-    T swipe(int startx, int starty, int endx, int endy, int duration);
+    void swipe(int startx, int starty, int endx, int endy, int duration);
 
     /**
-     * Executes javascript
+     * Executes script on mobile device
      * @param driverCommand
      * @param parameters
-     * @return
      */
-    T executeScript(String driverCommand, HashMap<String, ?> parameters);
+    void executeScript(String driverCommand, HashMap<String, ?> parameters);
 
     /**
-     * Gets the currently focused activity
-     * @return String CurrentActivity
+     * Gets the current activity
+     * @return the current activity
      */
     String getCurrentActivity();
 
+    /**
+     * Scroll forward to the element which has a description or name which contains the input text.
+     * @param text
+     * @return mobileElement after scrollTo location that contains text
+     */
+    MobileElement scrollTo(String text);
 
+    /**
+     * Scroll forward to the element which has a description or name which contains the input text.
+     * @param text
+     * @return mobileElement after scrollTo location with text
+     */
+    MobileElement scrollToExact(String text);
+
+    /**
+     * Sets NetworkConnectionSettings
+     * @param airplaneMode
+     * @param wifi
+     * @param data
+     */
+    void setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data);
 
 }

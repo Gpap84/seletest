@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.RetryFailure;
@@ -44,6 +43,7 @@ import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Error Handling Aspect
@@ -56,7 +56,7 @@ public class ExceptionHandler extends SuperAspect {
 
     /**The log service*/
     @Autowired
-    LogUtils log;
+    LogUtils report;
 
     /** Environment instance*/
     @Autowired
@@ -68,26 +68,32 @@ public class ExceptionHandler extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value="actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
+    @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail() || appiumCommands()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         try {
             returnValue = pjp.proceed();
+            String arguments=arguments(pjp).isEmpty() ? "" : "for["+arguments(pjp)+"]";
             if(!pjp.getTarget().toString().contains("WaitStrategy") || invokedMethod(pjp).getName().contains("takeScreen")) {
-                log.info("Command: "+pjp.getSignature().getName()+" for["+arguments(pjp)+"] executed successfully");
+                if(pjp.getSignature().toString().contains("pageObjects")) {
+                    report.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
+                } else {
+                    report.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:black; font-weight: 500;\"");
+                }
             }
         } catch (Exception ex) {
-            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
-                log.error("Exception: "+ex.getMessage().split("Build")[0].trim());
+            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException) {
+                report.error("Exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             } else{
-                log.error(String.format("%s: Failed with exception '%s'",
+                report.error(String.format("%s: Failed with exception '%s'",
                         pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
                         ex.getMessage().split("Build")[0].trim()));
             }
         }
         return returnValue;
     }
+
     /**
      * Around Advice for
      * @param pjp
@@ -118,8 +124,8 @@ public class ExceptionHandler extends SuperAspect {
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
-                log.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully");
-                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+                report.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully","\"color:black; font-weight: 500;\"");
+                element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -142,20 +148,17 @@ public class ExceptionHandler extends SuperAspect {
             returnValue = pjp.proceed();
             if(!(((AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
                 if((pjp).getArgs().length==1){
-                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
+                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                 } else {
-                    log.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
+                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
                 }
             }
-        }
-        catch(AssertionError ex) {
-            log.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
+        } catch(AssertionError ex) {
+            report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                SessionControl.webController().takeScreenShot();
-            }
-            throw ex;
-        }
-        return returnValue;
+                element().takeScreenShot();
+            } throw ex;
+        } return returnValue;
     }
 
     /**
@@ -167,12 +170,12 @@ public class ExceptionHandler extends SuperAspect {
      * @throws Throwable
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException) {
+        if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
             throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);
         } else {
-            log.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
+            report.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
                     pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
                     attemptCount,
                     retry.retryCount(),
@@ -190,16 +193,14 @@ public class ExceptionHandler extends SuperAspect {
      * @throws Throwable
      */
     private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
-        if (ex instanceof TimeoutException || ex instanceof NoSuchElementException ){
-            MethodSignature signature = (MethodSignature ) pjp.getSignature();
-            Class<?> returnType = signature.getReturnType();
-            if(returnType.getName().compareTo("int")==0){
-                return 0;
-            } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
-                return false;
-            } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
-                return true;
-            }
+        MethodSignature signature = (MethodSignature ) pjp.getSignature();
+        Class<?> returnType = signature.getReturnType();
+        if(returnType.getName().compareTo("int")==0){
+            return 0;
+        } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+            return false;
+        } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
+            return true;
         }
         return null;
     }

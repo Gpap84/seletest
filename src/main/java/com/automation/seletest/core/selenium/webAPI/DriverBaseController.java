@@ -24,29 +24,64 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.services.factories;
+package com.automation.seletest.core.selenium.webAPI;
 
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilderController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
- * WaitStrategyFactory
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  * @param <T>
  *
  */
-public interface StrategyFactory<T> {
+@SuppressWarnings("unchecked")
+public abstract class DriverBaseController<T> {
 
-    /**Gets the strategy for waiting for conditions*/
-    WaitFor getWaitStrategy(String waitController);
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
 
-    /**Gets the elementController type*/
-    MainController getControllerStrategy(String elementController);
+    /**
+     * Gets the WebDriver instance
+     * @return WebDriver instance
+     */
+    public T webDriver(){
+        return (T) SessionContext.getSession().getWebDriver();
+    }
 
-    /**Gets the actionsController type*/
-    ActionsBuilderController<?> getActionsStrategy(String actionsController);
+    /**
+     * Gets the selenium instance
+     * @return
+     */
+    public T selenium(){
+        return (T) SessionContext.getSession().getSelenium();
+    }
+
+    /**
+     * Gets the strategy for Wait<WebDriver>
+     * @return Alias for Wait Strategy
+     */
+    public String getWait(){
+        return SessionContext.getSession().getWaitStrategy();
+    }
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    public WaitFor waitController() {
+        return factoryStrategy.getWaitStrategy(getWait());
+    }
+
+    /**
+     * UiScrollable locator for android
+     * @param uiSelector
+     * @return UIScrollable locator
+     */
+    public String uiScrollable(String uiSelector) {
+        return "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" + uiSelector + ".instance(0));";
+    }
 
 }
-

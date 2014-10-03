@@ -27,151 +27,180 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.mobileAPI;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
+import io.appium.java_client.NetworkConnectionSetting;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.openqa.selenium.ScreenOrientation;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.services.actions.AbstractBase;
+import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 
 
 /**
- * AppiumDriverController api for iOS-Android native app interaction
+ * (AppiumDriverController api for iOS-Android native app interaction
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AppiumDriverController extends AbstractBase implements AppiumController<AppiumDriverController>{
-
-    @Getter @Setter
-    AppiumDriver appiumDriver;
+public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseController<T> implements AppiumController{
 
     @Override
-    public AppiumDriverController launchApp() {
-        appiumDriver.launchApp();
-        return this;
+    public void launchApp() {
+        webDriver().launchApp();
     }
 
     @Override
-    public AppiumDriverController resetApp() {
-        appiumDriver.resetApp();
-        return this;
+    public void resetApp() {
+        webDriver().resetApp();
     }
 
     @Override
-    public AppiumDriverController runAppinBackground(int sec) {
-        appiumDriver.runAppInBackground(sec);
-        return this;
+    public void runAppinBackground(int sec) {
+        webDriver().runAppInBackground(sec);
     }
 
     @Override
-    public AppiumDriverController closeApp() {
-        appiumDriver.closeApp();
-        return this;
+    public void closeApp() {
+        webDriver().closeApp();
     }
 
     @Override
-    public AppiumDriverController installApp(String bundleId, String appPath) {
-        Map<String, String> args = new HashMap<String, String>();
-        args.put("appPath", appPath);
-        appiumDriver.installApp(appPath);
-        return this;
+    public void installApp(String appPath, String bundleId) {
+        if(!isAppInstalled(bundleId)) {
+            Map<String, String> args = new HashMap<String, String>();
+            args.put("appPath", appPath);
+            webDriver().installApp(appPath);
+        }
     }
 
     @Override
-    public AppiumDriverController performTouchAction(TouchAction e) {
-        appiumDriver.performTouchAction(e);
-        return this;
+    public void performTouchAction(TouchAction e) {
+        webDriver().performTouchAction(e);
     }
 
     @Override
-    public AppiumDriverController performMultiTouchAction(MultiTouchAction e) {
-        appiumDriver.performMultiTouchAction(e);
-        return this;
+    public void performMultiTouchAction(MultiTouchAction e) {
+        webDriver().performMultiTouchAction(e);
     }
 
     @Override
-    public AppiumDriverController hideKeyboard() {
-        appiumDriver.hideKeyboard();
-        return this;
+    public void hideKeyboard() {
+        webDriver().hideKeyboard();
     }
 
     @Override
-    public AppiumDriverController rotate(ScreenOrientation e) {
-        appiumDriver.rotate(e);
-        return this;
+    public void rotate(ScreenOrientation e) {
+        webDriver().rotate(e);
     }
 
     @Override
     public ScreenOrientation getscreen() {
-        return appiumDriver.getOrientation();
+        return webDriver().getOrientation();
     }
 
     @Override
     public MultiTouchAction getMultiTouchAction() {
-        return new MultiTouchAction(appiumDriver);
+        return new MultiTouchAction((webDriver()));
     }
 
     @Override
     public boolean isAppInstalled(String bundleId) {
-        return appiumDriver.isAppInstalled(bundleId);
+        return webDriver().isAppInstalled(bundleId);
     }
 
     @Override
-    public AppiumDriverController pinch(int x, int y) {
-        appiumDriver.pinch(x, y);
-        return this;
+    public void pinch(int x, int y) {
+        webDriver().pinch(x, y);
     }
 
     @Override
-    public AppiumDriverController lockScreen(int sec) {
-        appiumDriver.lockScreen(sec);
-        return this;
+    public void lockScreen(int sec) {
+        webDriver().lockScreen(sec);
     }
 
     @Override
-    public AppiumDriverController tap(int finger, int y, int z, int duration) {
-        appiumDriver.tap(finger,y,z,duration);
-        return this;
+    public void tap(int finger, int y, int z, int duration) {
+        webDriver().tap(finger,y,z,duration);
+    }
+
+
+    @Override
+    public void zoom(int x, int y) {
+        webDriver().zoom(x, y);
     }
 
     @Override
-    public AppiumDriverController shake() {
-        appiumDriver.shake();
-        return this;
-    }
-
-    @Override
-    public AppiumDriverController zoom(int x, int y) {
-        appiumDriver.zoom(x, y);
-        return this;
-    }
-
-    @Override
-    public AppiumDriverController swipe(int startx, int starty, int endx, int endy,
+    public void swipe(int startx, int starty, int endx, int endy,
             int duration) {
-        appiumDriver.swipe(startx, starty, endx, endy, duration);
-        return this;
+        webDriver().swipe(startx, starty, endx, endy, duration);
     }
 
     @Override
-    public AppiumDriverController executeScript(String driverCommand, HashMap<String, ?> parameters) {
-        appiumDriver.execute(driverCommand, parameters);
-        return this;
+    public void executeScript(String driverCommand, HashMap<String, ?> parameters) {
+        webDriver().execute(driverCommand, parameters);
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#getCurrentActivity()
+     */
     @Override
     public String getCurrentActivity() {
-        return appiumDriver.currentActivity();
+        return  ((AndroidDriver)webDriver()).currentActivity();
     }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollTo(java.lang.String)
+     */
+    @Override
+    public MobileElement scrollTo(String text) {
+        if(webDriver() instanceof AndroidDriver) {
+            String locator = "androidUIAutomator="+uiScrollable("new UiSelector().descriptionContains(\"" + text + "\")") + uiScrollable("new UiSelector().textContains(\"" + text + "\")");
+            waitController().waitForElementPresence(locator);
+        } else {
+            waitController().waitForElementPresence("class=\"UIATableView\"");
+        }
+        return webDriver().scrollTo(text);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollToExact(java.lang.String)
+     */
+    @Override
+    public MobileElement scrollToExact(String text) {
+        if(webDriver() instanceof AndroidDriver) {
+            String locator = "androidUIAutomator="+uiScrollable("new UiSelector().description(\"" + text + "\")") + uiScrollable("new UiSelector().text(\"" + text + "\")");
+            waitController().waitForElementPresence(locator);
+        } else {
+            waitController().waitForElementPresence("class=\"UIATableView\"");
+        }
+        return webDriver().scrollToExact(text);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#setNetworkConnection(boolean, boolean, boolean)
+     */
+    @Override
+    public void setNetworkConnection(boolean airplaneMode, boolean wifi,
+            boolean data) {
+        if(webDriver() instanceof AndroidDriver) {
+            NetworkConnectionSetting network=new NetworkConnectionSetting(false, true, true);
+            network.setAirplaneMode(airplaneMode);
+            network.setData(data);
+            network.setWifi(wifi);
+            ((AndroidDriver)webDriver()).setNetworkConnection(network);
+        } else {
+            throw new UnsupportedCommandException("The command setNetworkConnection is not used with IOSDriver");
+        }
+
+    }
+
+
+
 }

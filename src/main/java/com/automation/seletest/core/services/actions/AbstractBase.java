@@ -26,92 +26,93 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.WebDriver;
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * AbstractBase contains all static abstract classes used
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"deprecation" })
+@Slf4j
 public abstract class AbstractBase {
 
 
     /**
      * Abstract class for Waiting Conditions
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     * @param <T>
      *
      */
-    public static abstract class WaitBase extends SessionControl implements ActionsSync{
+    public static abstract class WaitBase implements WaitFor{
 
-        private final String webDriverWait="wdWait";
-        private final String fluentWait="fwWait";
+        /**Component name for WebDriverWait*/
+        private final String webDriverWait="webdriverwait";
 
-        public final String NOT_PRESENT="Element not present in DOM";
-        public final String NOT_VISIBLE="Element not visible in Screen";
-        public final String NOT_CLICKABLE="Element cannot be clicked";
-        public final String ALERT_NOT_PRESENT="Alert not present";
-        public final String TEXT_NOT_PRESENT="Text not present in Element";
-        public final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+        /**Constant for text not present*/
+        protected final String NOT_PRESENT="Element not present in DOM";
 
+        /**Constant for element not visible*/
+        protected final String NOT_VISIBLE="Element not visible in screen";
+
+        /**Consatnt for element not clickable*/
+        protected final String NOT_CLICKABLE="Element cannot be clicked";
+
+        /**Constant for alert not present*/
+        protected final String ALERT_NOT_PRESENT="Alert not present";
+
+        /**Constant for text not present*/
+        protected final String TEXT_NOT_PRESENT="Text not present in element";
+
+        /**Constant for text not present in value*/
+        protected final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
+
+        /**Constant for page loaded*/
+        protected final String PAGE_LOADED="Page is loaded";
+
+        /**Constant for completed ajax call*/
+        protected final String AJAX_COMPLETE="Ajax call is completed";
+
+        /**
+         * Timeout before any action
+         * @return amount of time to wait for condition
+         */
+        protected int waitTime() {
+            return SessionContext.getSession().getWaitUntil();
+        }
+
+        /**
+         * Gets the selenium instance
+         * @return
+         */
+        protected Selenium selenium(){
+            return SessionContext.getSession().getSelenium();
+        }
 
         /**
          * Returns a new WebDriverWait instance
          * @param timeOutInSeconds
          * @return
          */
-        public WebDriverWait wfExpected(){
-            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{super.webController().driverInstance()});
+        protected WebDriverWait wfExpected(){
+            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver()});
         }
 
         /**
-         * Returns a new FluentWait instance
-         * @param timeOutInSeconds
-         * @param msg
-         * @return
+         * Sleeps a thread
+         * @param timeout
          */
-        public Wait<WebDriver> fluentWait(String msg){
-            return (Wait<WebDriver>) SessionContext.getSession().getDriverContext().getBean(fluentWait, new Object[]{super.webController().driverInstance(), msg});
-        }
-
-
-        /**
-         * Element to wait for condition
-         * @param driver the WebDriver instance
-         * @param locator the locator of the WebElement
-         * @return WebElement
-         */
-        public WebElement elementToWait(WebDriver driver, Object locator){
-            WebElement element=null;
-            if(locator instanceof String){
-                element=driver.findElement(Locators.findByLocator((String)locator).setLocator((String)locator));
-            } else{
-                element=(WebElement)locator;
+        protected void threadSleep(final long timeout){
+            try {
+                Thread.sleep(timeout);
+            } catch (InterruptedException e) {
+                log.error("Interrupted exception occured trying to sleep thread for: "+timeout);
             }
-            return element;
-        }
-
-        /**
-         * Elements to wait for condition
-         * @param driver
-         * @param locator
-         * @return List<WebElement>
-         */
-        public List<WebElement> elementsToWait(WebDriver driver, String locator){
-            List<WebElement> elements=null;
-            elements=driver.findElements(Locators.findByLocator(locator).setLocator(locator));
-            return elements;
         }
 
     }

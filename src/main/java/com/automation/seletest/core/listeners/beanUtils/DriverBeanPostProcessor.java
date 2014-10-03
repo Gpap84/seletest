@@ -26,6 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.listeners.beanUtils;
 
+import java.util.logging.Level;
+
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -55,10 +60,21 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
         String browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.BROWSERTYPE.get());
+        String clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.CLIENTLOGS.get());
 
-        /** Set browser capabilities */
         if(bean instanceof DesiredCapabilities) {
-            if(browserType!=null){
+
+            /**Collect Javascript console errors*/
+            if(clientLogs!=null && Boolean.parseBoolean(clientLogs)) {
+                LoggingPreferences loggingprefs = new LoggingPreferences();
+                loggingprefs.enable(LogType.BROWSER, Level.ALL);// Javascript console errors
+                DesiredCapabilities logCaps=new DesiredCapabilities();
+                logCaps.setCapability(CapabilityType.LOGGING_PREFS,loggingprefs);
+                ((DesiredCapabilities) bean).merge(logCaps);
+            }
+
+            /**Defines browser capability for selenium grid requests*/
+            if(browserType!=null) {
                 if(browserType.compareTo("chrome") == 0) {
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.chrome());
                 } else if(browserType.compareTo("firefox") == 0) {
@@ -69,6 +85,7 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
                     ((DesiredCapabilities) bean).merge(DesiredCapabilities.phantomjs());
                 }
             }
+
         }
         return bean;
     }

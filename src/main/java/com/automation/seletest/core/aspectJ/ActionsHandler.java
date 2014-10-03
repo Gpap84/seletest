@@ -31,20 +31,24 @@ import java.io.IOException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testng.Reporter;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.services.properties.CoreProperties;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Aspect that handles logging,screenshots etc.
@@ -59,13 +63,8 @@ public class ActionsHandler extends SuperAspect {
     @Autowired
     LogUtils log;
 
-    /**Wait Strategy*/
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
-
+    /**Constant for taking screenshot*/
     private final String takeScreencap="Take screenshot after exception: ";
-
-    private final String unknownException="Unknown exception occured: ";
 
     /**
      * Log returning value for get** methods
@@ -85,11 +84,9 @@ public class ActionsHandler extends SuperAspect {
      */
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
-        if(ex instanceof WebDriverException){
+        if(ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-            SessionControl.webController().takeScreenShot();
-        } else {
-            log.error(unknownException+ex.getMessage());
+            element().takeScreenShot();
         }
     }
 
@@ -97,21 +94,53 @@ public class ActionsHandler extends SuperAspect {
      * Wait for elements before any action....
      * @param pjp
      */
-    @Before(value="waitAnnotation()")
+    @Before(value="waitElement()")
     public void waitFor(final JoinPoint pjp) {
-
-        /**Determine the WebDriverWait condition*/
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
-
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElement(factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
 
+    /**Report execution for method @Monitor*/
+    @Around(value="monitor()")
+    public Object monitorLogs(ProceedingJoinPoint pjp) throws Throwable {
+        Object returnValue = null;
+        long start = System.currentTimeMillis();
+        try {
+            returnValue = pjp.proceed();
+        } catch (Exception ex) {
+            //Do not log because the handle is done in another advice
+        }
+        long elapsedTime = System.currentTimeMillis() - start;
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get()))) {
+        log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
+        }
+        return returnValue;
+    }
 
+
+    /**Log memory usage before execution of method*/
+    @Before("monitor()")
+    public void memoryBefore(final JoinPoint pjp) {
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " before executing method: "+pjp.getSignature().getName());
+        }
+    }
+
+    /**Log memory usage after execution of method*/
+    @After("monitor()")
+    public void memoryAfter(final JoinPoint pjp) {
+        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
+                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " after executing method: "+pjp.getSignature().getName());
+        }
+    }
 
 }

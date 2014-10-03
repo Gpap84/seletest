@@ -7,9 +7,9 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
+ * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
+ * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
@@ -23,7 +23,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.automation.seletest.core.aspectJ;
 
 import java.lang.reflect.Method;
@@ -32,9 +32,14 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
  * Super class with common functions
@@ -43,16 +48,24 @@ import com.automation.seletest.core.services.annotations.VerifyLog;
  */
 public abstract class SuperAspect {
 
+    /**Factories Strategy*/
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
+
     /**Methods in classpath that have @WaitCondition*/
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
-    protected void waitAnnotation() {}
+    protected void waitElement() {}
+
+    /**Methods in classpath that have @Monitor*/
+    @Pointcut("execution(@com.automation.seletest.core.services.annotations.Monitor * *(..))")
+    protected void monitor() {}
 
     /**All methods in ActionsBuilderController*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
     protected void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.interfaces.MainController.takeScreenShot*(..))")
     protected void takeScreenCap() {}
 
     /**Methods for wait conditions*/
@@ -60,24 +73,32 @@ public abstract class SuperAspect {
     protected void waitConditions() {}
 
     /**Methods that are returning objects*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.get*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.*.get*(..))")
     protected void getReturningValue() {}
 
     /**Methods for sending email*/
     @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
     protected void sendMail() {}
 
-    /** Pointcut for boolean methods inside WebController*/
-    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI.WebController.*(..))")
+    /**Methods for appium commands*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.mobileAPI.AppiumController.*(..))")
+    protected void appiumCommands() {}
+
+    /** Pointcut for boolean methods inside WebAPI*/
+    @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI..*(..))")
     protected void componentsStatus() {}
 
-    /** Pointcut for reexecuting metthods*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.*(..)) && @annotation(retry)")
+    /** Pointcut for reexecuting methods*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI..*(..)) && @annotation(retry)")
     protected void retryExecution(RetryFailure retry) {}
 
     /** Pointcut for logging in Custom Verify methods*/
     @Pointcut("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
     protected void logVerify(VerifyLog verify) {}
+
+    /** Pointcut for logging PO methods*/
+    @Pointcut("execution(* com.automation.seletest.pagecomponents.pageObjects..*(..))")
+    protected void logPOs() {}
 
 
     /**
@@ -97,7 +118,7 @@ public abstract class SuperAspect {
             }
             arguments.append("("+sig.getParameterNames()[i].toString()+" ---> "+methodArgument+") ");
         } if(arguments.toString().isEmpty()){
-            return "NONE";
+            return "";
         } else {
             return arguments.toString().trim();
         }
@@ -121,5 +142,21 @@ public abstract class SuperAspect {
         MethodSignature ms = (MethodSignature) pjp.getSignature();
         Method m = ms.getMethod();
         return m;
+    }
+
+    /**
+     * Wait Strategy
+     * @return ActionsSync
+     */
+    public WaitFor waitFor() {
+        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
+    }
+
+    /**
+     * Element Controller
+     * @return ElementController
+     */
+    public MainController element() {
+        return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 }

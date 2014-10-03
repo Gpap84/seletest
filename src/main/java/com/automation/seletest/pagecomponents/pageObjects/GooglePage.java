@@ -27,35 +27,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.pagecomponents.pageObjects;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilder;
-import com.automation.seletest.core.selenium.configuration.SessionControl;
-
 @Component
-@Configurable
 public class GooglePage extends AbstractPage<GooglePage>{
 
     @FindBy(name = "q")
-    @CacheLookup
     private WebElement search;
 
     @FindBy(name = "btnG")
-    @CacheLookup
     private WebElement submit;
 
-    @Autowired
-    ActionsBuilder action;
-
     public GooglePage typeSearch(String text){
-        SessionControl.webController().getLocation(search);
-        SessionControl.webController().enterTo(search, text);
+        element().getLocation(getWebElementLocator(GooglePage.class,"search"));
+        element().type(getWebElementLocator(GooglePage.class, "search"), text);
         return this;
     }
 
@@ -64,7 +52,7 @@ public class GooglePage extends AbstractPage<GooglePage>{
      * @return
      */
     public GooglePage buttonSearch(){
-        action.click(submit).performActions();
+        element().click(getWebElementLocator(GooglePage.class,"submit"));
         return this;
     }
 
@@ -83,5 +71,4 @@ public class GooglePage extends AbstractPage<GooglePage>{
     public GooglePage open() {
         return openPage(GooglePage.class);
     }
-
 }

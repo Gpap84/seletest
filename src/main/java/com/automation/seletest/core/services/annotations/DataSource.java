@@ -24,29 +24,30 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.services.factories;
+package com.automation.seletest.core.services.annotations;
 
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilderController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
-import com.automation.seletest.core.services.actions.WaitFor;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * WaitStrategyFactory
+ * DataDriven custom annotation
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- * @param <T>
  *
  */
-public interface StrategyFactory<T> {
+@Retention(RUNTIME)
+@Target({CONSTRUCTOR, METHOD, TYPE})
+public @interface DataSource {
 
-    /**Gets the strategy for waiting for conditions*/
-    WaitFor getWaitStrategy(String waitController);
+    /**
+     * The filePath
+     * @return filePath the File Path in order to load properties
+     */
+    String filePath() default "";
 
-    /**Gets the elementController type*/
-    MainController getControllerStrategy(String elementController);
-
-    /**Gets the actionsController type*/
-    ActionsBuilderController<?> getActionsStrategy(String actionsController);
 
 }
-
