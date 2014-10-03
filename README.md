@@ -35,6 +35,14 @@ c] FirefoxDriver<br>
 d] PhantomJSDriver<br>
 e] AppiumDriver<br>
 
+Features:
+ * Interaction with Page Objects and Page Facades using hard or soft assertions (with hard assertions, exception is thrown, thus preventing any further execution and with soft assertions, exceptions are stored to Map and verification of @Test is done only when the test finished)
+ * All the verification methods are done asynchronously using Spring Task Executors thus are done in parallel covering dynamic pages
+ * Appium support with custom TouchAction API for interaction with Android using parallelism mechanism for parallel execution against multiple android devices - emulators
+ * JS errors collections during execution of tests
+ * JVM memory usage 
+ * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
+
 
 <b>Tips for IEDriver</b><br>
 On IE 7 or higher on Windows Vista or Windows 7, you must set the Protected Mode settings for each zone to be the same value. The value can be on or off, as long as it is the same for every zone. To set the Protected Mode settings, choose "Internet Options..." from the Tools menu, and click on the Security tab. For each zone, there will be a check box at the bottom of the tab labeled "Enable Protected Mode".<br>
