@@ -35,6 +35,14 @@ c] FirefoxDriver<br>
 d] PhantomJSDriver<br>
 e] AppiumDriver<br>
 
+Features:
+ * Interaction with Page Objects and Page Facades using hard or soft assertions (with hard assertions, exception is thrown, thus preventing any further execution and with soft assertions, exceptions are stored to Map and verification of @Test is done only when the test finished)
+ * All the verification methods are done asynchronously using Spring Task Executors thus are done in parallel covering dynamic pages
+ * Appium support with custom TouchAction API for interaction with Android using parallelism mechanism for parallel execution against multiple android devices - emulators
+ * JS errors collections during execution of tests
+ * JVM memory usage 
+ * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
+
 
 <b>Tips for IEDriver</b><br>
 On IE 7 or higher on Windows Vista or Windows 7, you must set the Protected Mode settings for each zone to be the same value. The value can be on or off, as long as it is the same for every zone. To set the Protected Mode settings, choose "Internet Options..." from the Tools menu, and click on the Security tab. For each zone, there will be a check box at the bottom of the tab labeled "Enable Protected Mode".<br>
@@ -42,16 +50,25 @@ Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. T
 
 
 *******************************************
-<b>Steps for running Demo</b>
+<b>Released version 0.0.1</b>
 *******************************************
 
-1] Download project into your local environment<br>
-2] IDE: Using your favorite IDE you need to register it to lombok project first. <br>Locate artifact LocalMavenRepo\org\projectlombok\lombok\ and double click to jar. <br>In the window you must specify the location where STS.exe or eclipse.exe is located and press Install.<br> After this step you can import the project to IDE and compile it.<br>
-3] You can run a test suite by running the corresponding xml file from eclipse or using maven commands specifying the suite (see the wiki for further details)<br>
+Seletest has been uploaded in sonatype nexus.<br>
+
+Add this to your pom.xml:<br>
+
+<b>Under \<project\> tag</b> <br>
+
+![repo](https://cloud.githubusercontent.com/assets/3785668/4512733/cb9308ba-4b43-11e4-8101-905376c28c6e.png)
+ 
+<b>Under \<dependencies\> tag:</b><br>
+
+![seletest](https://cloud.githubusercontent.com/assets/3785668/4512750/02aa9048-4b44-11e4-9444-98ba48f35769.png)
+
+See wiki for setting up Spring Maven Project and running first tests<br>
 
 <b>Upcoming:</b>
-* Set up appium server on Windows 7 and run test against android emulator
-* Set up Selenium Grid server and register a node 
-* Use released jar of Seletest and create your own test project in IDE
+* Set up Appium Server on Windows 7 and run test against android emulator
+* Set up Selenium Grid server and register a node
 
 
