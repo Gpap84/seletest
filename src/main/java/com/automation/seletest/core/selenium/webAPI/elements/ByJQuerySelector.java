@@ -31,7 +31,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public abstract class ByJQuerySelector extends By {
@@ -58,9 +57,6 @@ public abstract class ByJQuerySelector extends By {
     @SuppressWarnings("unchecked")
     @Override
     public List<WebElement> findElements(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         Object o= ((JavascriptExecutor) context)
                 .executeScript("return $('" + ownSelector+ "');");
     return (List<WebElement>) o;
@@ -68,9 +64,6 @@ public abstract class ByJQuerySelector extends By {
 
     @Override
     public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         Object o=((JavascriptExecutor) context)
                 .executeScript("return $('" + ownSelector+ "').get(0);");
     	return (WebElement) o;

@@ -152,5 +152,12 @@ public interface ActionsBuilderController<T> {
      */
     T dragndrop(Object draglocator,Object droplocator);
 
+    /**
+     * Press a keyboard key
+     * @param key
+     * @return instance of ActionBuilder
+     */
+    T press(KeyInfo key);
+
 
 }

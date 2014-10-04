@@ -198,4 +198,13 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(com.automation.seletest.core.selenium.common.KeyInfo)
+     */
+    @Override
+    public ActionsSeleniumBuilder press(KeyInfo key) {
+        SessionContext.getSession().getSelenium().keyPressNative(key.getEvent());
+        return this;
+    }
+
 }

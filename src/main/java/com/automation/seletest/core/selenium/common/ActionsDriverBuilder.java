@@ -162,4 +162,13 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(com.automation.seletest.core.selenium.common.KeyInfo)
+     */
+    @Override
+    public ActionsDriverBuilder press(KeyInfo key) {
+        SessionControl.actionsBuilder().sendKeys(key.getKey());
+        return this;
+    }
+
 }
