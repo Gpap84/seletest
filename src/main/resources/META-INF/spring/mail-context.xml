@@ -9,15 +9,14 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
 
  <!-- Mail Service -->
- <context:property-placeholder location="BrowserSettings/mail.properties"/>
  <context:component-scan base-package="com.automation.seletest.core.services.MailService" />
 
  <!-- SET default mail properties -->
  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
   <property name="host" value="smtp.gmail.com" />
   <property name="port" value="587" />
-  <property name="username" value="${user.name}" />
-  <property name="password" value="${user.password}" />
+  <property name="username" value="${email.name}" />
+  <property name="password" value="${email.password}" />
   <property name="javaMailProperties">
    <props>
     <prop key="mail.transport.protocol">smtp</prop>

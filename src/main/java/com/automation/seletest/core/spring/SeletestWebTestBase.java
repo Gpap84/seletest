@@ -29,7 +29,6 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -61,9 +60,6 @@ import com.automation.seletest.core.services.properties.CoreProperties;
         "classpath*:META-INF/spring/thread-pool-context.xml"})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
-
-    @Value("${performance}")
-    private String performance;
 
     /**Μessage initialize new session*/
     private final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
@@ -151,8 +147,12 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
 
     /**Prepare initialization*/
     private void initializeSession(ITestContext ctx){
+        boolean performance=false;
+        if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get())!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get()))) {
+            performance=true;
+        }
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
-        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),Boolean.parseBoolean(performance),ctx);
+        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),performance,ctx);
     }
 
     /**Starts the Spring container*/
