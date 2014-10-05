@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.interfaces;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -323,6 +324,43 @@ public interface MainController {
      * Go forward in browser
      */
     void goForward();
+
+    /**
+     * Find all child elements of parent
+     * @param parent
+     * @param child
+     * @return List<WebElement> with all child elements
+     */
+    List<WebElement> findChildElements(Object parent, String child);
+
+    /**
+     *
+     * @param tableLocator
+     * @return int the number of rows of a table
+     */
+    int getrowsTable(Object tableLocator);
+
+    /**
+     * Get the total columns of a table
+     * @param tableLocator
+     * @return
+     */
+    int getcolumnsTable(Object tableLocator);
+
+
+    /**
+     * Gets the selected option's text from drop down menu
+     * @param locator
+     * @return String the selected option's text
+     */
+    String getFirstSelectedOptionText(Object locator);
+
+    /**
+     * Gets the text of all options of drop down menu
+     * @param locator
+     * @return List<String> with all the options's text
+     */
+    List<String> getAllOptionsText(Object locator);
 
 
 }

@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.common;
 
 
-public interface ActionsBuilderController<T> {
+public interface ActionsBuilderController<T extends ActionsBuilderController<T>> {
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
@@ -150,7 +150,7 @@ public interface ActionsBuilderController<T> {
      * @param droplocator
      * @return instance of ActionBuilder
      */
-    T dragndrop(Object draglocator,Object droplocator);
+    T dragndrop(Object draglocator, Object droplocator);
 
     /**
      * Press a keyboard key

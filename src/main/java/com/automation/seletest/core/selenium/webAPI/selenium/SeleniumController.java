@@ -30,6 +30,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +72,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
 
     @Override
     public WebElement findElement(Object locator) {
-        throw new UnsupportedOperationException("findElements method is not supported for Selenium 1");
+        throw new UnsupportedOperationException("findElements(object locator) method is not supported for Selenium 1");
     }
 
     /* (non-Javadoc)
@@ -100,6 +102,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void goToTargetHost(String url) {
         selenium().open(url);
     }
@@ -142,7 +145,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     public void takeScreenShotOfElement(Object locator) throws IOException {
-        String base64Screenshot = selenium().captureEntirePageScreenshotToString("");
+        String base64Screenshot = selenium().captureScreenshotToString();
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
         FileOutputStream fos = null;
         File screenShotFrame = fileService.createScreenshotFile();
@@ -203,6 +206,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#getElementDimensions(java.lang.Object)
      */
     @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public Dimension getElementDimensions(Object locator) {
         int height = (Integer) (selenium().getElementHeight((String)locator));
         int width = (Integer) selenium().getElementWidth((String)locator);
@@ -213,6 +218,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#getPageSource()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public String getPageSource() {
         return selenium().getHtmlSource();
     }
@@ -262,6 +268,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#executeJS(java.lang.String, java.lang.Object[])
      */
     @Override
+    @RetryFailure(retryCount=1)
     public Object executeJS(String script, Object... args) {
         return selenium().getEval(script);
     }
@@ -291,8 +298,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteCookieByName(java.lang.String)
      */
-    @Monitor
+
     @Override
+    @RetryFailure(retryCount=1)
+    @Monitor
     public void deleteCookieByName(String name) {
         selenium().deleteCookie(name, "");
     }
@@ -310,6 +319,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void deleteAllCookies() {
         selenium().deleteAllVisibleCookies();
     }
@@ -347,6 +357,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#pageLoadTimeout(long, java.util.concurrent.TimeUnit)
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void pageLoadTimeout(long timeout, TimeUnit timeunit) {
         selenium().setTimeout(String.valueOf(timeout));
     }
@@ -365,6 +376,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#setWindowPosition(org.openqa.selenium.Point)
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void setWindowPosition(Point point) {
         int x=point.getX();
         int y=point.getY();
@@ -383,6 +395,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getWindowPosition()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public Point getWindowPosition() {
         int width = Integer.parseInt(selenium().getEval("screen.width"));
         int height = Integer.parseInt(selenium().getEval("screen.height"));
@@ -403,6 +416,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#maximizeWindow()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void maximizeWindow() {
        selenium().windowMaximize();
     }
@@ -420,6 +434,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToLatestWindow()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void switchToLatestWindow() {
         String[] windows = selenium().getAllWindowIds();
         String[] windowsTitles = selenium().getAllWindowTitles();
@@ -431,6 +446,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#getNumberOfOpenedWindows()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public int getNumberOfOpenedWindows() {
         String[] windows=selenium().getAllWindowIds();
         return windows.length;
@@ -441,6 +457,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @WaitCondition(waitFor.ALERT)
+    @RetryFailure(retryCount=1)
     public void acceptAlert() {
         selenium().getEval("window.confirm = function(msg) { return true; }");
     }
@@ -450,6 +467,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @WaitCondition(waitFor.ALERT)
+    @RetryFailure(retryCount=1)
     public void dismissAlert() {
         selenium().getEval("window.confirm = function(msg) { return false; }");
     }
@@ -459,6 +477,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
@@ -477,6 +496,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void switchToFrame(String frameId) {
         selenium().selectFrame(frameId);
     }
@@ -485,6 +505,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void goBack() {
         selenium().goBack();
         waitController().waitForPageLoaded();
@@ -497,6 +518,70 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     public void goForward() {
 
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#findChildElements(java.lang.Object, java.lang.String)
+     */
+    @Override
+    public List<WebElement> findChildElements(Object parent, String child) {
+        throw new UnsupportedOperationException("Method findChildElements(Object parent, String child) is not supported with Selenium 1");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#rowsTable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public int getrowsTable(Object tableLocator) {
+        int rows = 0;
+        String locator=(String)tableLocator;
+        if (locator.startsWith("xpath=") || locator.startsWith("//")) {
+            rows = selenium().getXpathCount(locator + "//tbody//tr").intValue();
+        } else if (locator.startsWith("css=") || locator.startsWith("jquery=")) {
+            rows = selenium().getCssCount(locator + " tbody tr").intValue();
+        } return rows;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#columnsTable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public int getcolumnsTable(Object tableLocator) {
+        int columns = 0;
+        String locator=(String)tableLocator;
+        if (locator.startsWith("xpath=") || locator.startsWith("//")) {
+            columns = selenium().getXpathCount(locator + "//tbody//tr[1]/td").intValue();
+        } else if (locator.startsWith("css=") || locator.startsWith("jquery=")) {
+            columns = selenium().getCssCount(locator + " tbody tr:nth-child(1) td").intValue();
+        } return columns;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getFirstSelectedOption(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getFirstSelectedOptionText(Object locator) {
+        String selectedText=selenium().getSelectedLabel((String)locator);
+        return selectedText;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getAllOptionsText(java.lang.Object)
+     */
+    @Override
+    public List<String> getAllOptionsText(Object locator) {
+        List<String> optionValues = new ArrayList<String>();
+        String [] options=selenium().getSelectOptions((String)locator);
+        for (String option:options) {
+            optionValues.add(option);
+        }
+        return optionValues;
     }
 
 

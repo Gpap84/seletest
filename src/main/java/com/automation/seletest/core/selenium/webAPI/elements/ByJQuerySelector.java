@@ -33,6 +33,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+/**
+ * ByJQuerySelector class
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ *
+ */
 public abstract class ByJQuerySelector extends By {
 
 
@@ -42,9 +47,17 @@ public abstract class ByJQuerySelector extends By {
      * @return
      */
     public static By ByJQuery(final String selector) {
+        if (selector == null) {
+            throw new IllegalArgumentException(
+                "Cannot find elements when the jquery expression is null.");
+        }
         return new ByJQuerySelectorExtended(selector);
     }
 
+    /**
+     * ByJQuerySelectorExtended class.
+     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+     */
    public static class ByJQuerySelectorExtended extends ByJQuerySelector{
 
        private final String ownSelector;

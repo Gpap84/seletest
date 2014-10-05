@@ -95,7 +95,7 @@ public class AssertTest<T extends Assertion> {
     /**
      * Verify that element is present in Screen
      * @param locator
-     * @return AssertTest instance
+     * @return AsyncResult
      */
     @Async
     @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator", screenShot = false)
@@ -108,7 +108,7 @@ public class AssertTest<T extends Assertion> {
     /**
      * Verify that element is visible in Screen
      * @param locator
-     * @return AssertTest instance
+     * @return AsyncResult
      */
     @Async
     @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
@@ -121,10 +121,10 @@ public class AssertTest<T extends Assertion> {
      * Verify that text is present in element
      * @param locator
      * @param text
-     * @return AssertTest instance
+     * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
+    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textPresentinElement(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinElement(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
@@ -134,12 +134,26 @@ public class AssertTest<T extends Assertion> {
      * Verify that text is present in value attribute of element
      * @param locator
      * @param text
-     * @return AssertTest instance
+     * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = false)
+    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textPresentValueAttribute(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinValue(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
     }
+
+    /**
+     * Veirfy the text of the selected option in list
+     * @param locator
+     * @param text
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
+    public Future<Boolean> textOfSelectedOption(Object locator, String text) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).getFirstSelectedOptionText(locator),text,env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        return new AsyncResult<>(true);
+    }
+
 }

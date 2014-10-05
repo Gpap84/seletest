@@ -31,13 +31,16 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -55,6 +58,8 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
+import com.automation.seletest.core.selenium.webAPI.elements.ByJQuerySelector;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.Monitor;
@@ -78,6 +83,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void goToTargetHost(String url) {
         webDriver().get(url);
     }
@@ -179,6 +185,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public String getPageSource() {
         return webDriver().getPageSource();
     }
@@ -214,6 +221,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void uploadFile(Object locator, String path) {
         LocalFileDetector detector = new LocalFileDetector();
         File localFile = detector.getLocalFile(path);
@@ -236,6 +244,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void selectByValue(String locator, String value) {
         new Select(SessionContext.getSession().getWebElement()).selectByValue(value);
     }
@@ -246,6 +255,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public void selectByVisibleText(String locator, String text) {
         new Select(SessionContext.getSession().getWebElement()).selectByVisibleText(text);
 
@@ -257,24 +267,28 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void deleteCookieByName(String name) {
         webDriver().manage().deleteCookieNamed(name);
     }
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void deleteAllCookies() {
         webDriver().manage().deleteAllCookies();
     }
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void addCookie(Cookie cookie) {
         webDriver().manage().addCookie(cookie);
     }
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public Set<Cookie> getCookies() {
         Set<Cookie> cookies=webDriver().manage().getCookies();
         return cookies;
@@ -282,6 +296,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void deleteCookie(Cookie cookie) {
         webDriver().manage().deleteCookie(cookie);
     }
@@ -291,16 +306,19 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      *************************************************************
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void implicitlyWait(long timeout,TimeUnit timeunit) {
         webDriver().manage().timeouts().implicitlyWait(timeout, timeunit);
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void pageLoadTimeout(long timeout, TimeUnit timeunit) {
         webDriver().manage().timeouts().pageLoadTimeout(timeout, timeunit);
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void scriptLoadTimeout(long timeout, TimeUnit timeunit) {
         webDriver().manage().timeouts().setScriptTimeout(timeout, timeunit);
     }
@@ -310,11 +328,13 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      *************************************************************
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void setWindowPosition(Point point) {
         webDriver().manage().window().setPosition(point);
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void setWindowDimension(Dimension dimension) {
         webDriver().manage().window().setSize(dimension);
     }
@@ -325,11 +345,13 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public Dimension getWindowDimension() {
         return webDriver().manage().window().getSize();
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void maximizeWindow() {
         webDriver().manage().window().maximize();
     }
@@ -339,11 +361,13 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      *************************************************************
      */
     @Override
+    @RetryFailure(retryCount=1)
     public LogEntries logs(String logtype) {
         return webDriver().manage().logs().get(logtype);
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void switchToLatestWindow() {
         Iterator<String> iterator = webDriver().getWindowHandles().iterator();
         String lastWindow = null;
@@ -354,23 +378,27 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public void acceptAlert() {
         waitController().waitForAlert().accept();
     }
 
 
     @Override
+    @RetryFailure(retryCount=1)
     public void dismissAlert() {
         waitController().waitForAlert().dismiss();
     }
 
     @Override
+    @RetryFailure(retryCount=1)
     public int getNumberOfOpenedWindows() {
         return webDriver().getWindowHandles().size();
     }
 
     @Override
     @Monitor
+    @RetryFailure(retryCount=1)
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
@@ -389,6 +417,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void switchToFrame(String frameId) {
         webDriver().switchTo().frame(frameId);
     }
@@ -397,6 +426,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void goBack() {
         webDriver().navigate().back();
     }
@@ -405,8 +435,65 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goForward()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public void goForward() {
         webDriver().navigate().forward();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#findChildElements(java.lang.Object, java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    public List<WebElement> findChildElements(Object parent, String child) {
+        List<WebElement> children=SessionContext.getSession().getWebElement().findElements(Locators.findByLocator(child).setLocator(child));
+        return children;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#rowsTable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public int getrowsTable(Object tableLocator) {
+        return SessionContext.getSession().getWebElement().findElements(By.cssSelector("tbody tr")).size();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#columnsTable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public int getcolumnsTable(Object tableLocator) {
+        return SessionContext.getSession().getWebElement().findElements(ByJQuerySelector.ByJQuery("tbody tr:nth-child(1) td")).size();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getFirstSelectedOption(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public String getFirstSelectedOptionText(Object locator) {
+        String selectedText=new Select(SessionContext.getSession().getWebElement()).getFirstSelectedOption().getText();
+        return selectedText;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getAllOptionsText(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public List<String> getAllOptionsText(Object locator) {
+        List<String> optionValues = new ArrayList<String>();
+        List<WebElement> list=new Select(SessionContext.getSession().getWebElement()).getAllSelectedOptions();
+        for (WebElement element:list) {
+            optionValues.add(element.getText());
+        }
+        return optionValues;
     }
 
 }
