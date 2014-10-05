@@ -42,6 +42,7 @@ Features:
  * JS errors collections during execution of tests
  * JVM memory usage 
  * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
+ * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver
 
 
 <b>Tips for IEDriver</b><br>
