@@ -477,7 +477,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
-    @RetryFailure(retryCount=1)
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:

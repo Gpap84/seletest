@@ -398,7 +398,6 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     @Monitor
-    @RetryFailure(retryCount=1)
     public void quit(CloseSession type) {
         switch (type) {
         case QUIT:
