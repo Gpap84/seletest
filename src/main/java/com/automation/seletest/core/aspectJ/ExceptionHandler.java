@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
+import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.properties.CoreProperties;
@@ -88,7 +89,7 @@ public class ExceptionHandler extends SuperAspect {
             } else{
                 report.error(String.format("%s: Failed with exception '%s'",
                         pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
-                        ex.getMessage().split("Build")[0].trim()));
+                        ex));
             }
         }
         return returnValue;
@@ -125,13 +126,29 @@ public class ExceptionHandler extends SuperAspect {
             try {
                 returnValue = pjp.proceed();
                 report.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully","\"color:black; font-weight: 500;\"");
-                element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
             }
         }
         return returnValue;
+    }
+
+
+    /**
+     * Around advice for performing JS scripts
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
+    @Around("jsHandle(js)")
+    public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
+        Object returnValue = null;
+        try {
+            returnValue = pjp.proceed();
+            element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+            element().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+        } catch (Exception ex) {} return returnValue;
     }
 
 

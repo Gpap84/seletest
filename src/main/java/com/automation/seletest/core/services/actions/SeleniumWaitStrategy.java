@@ -233,4 +233,40 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
         selenium().waitForCondition("selenium.browserbot.getCurrentWindow().jQuery.active == 0",String.valueOf(timeout));
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
+     */
+    @Override
+    public boolean waitForElementNotPresent(String locator) {
+        long startTime = System.currentTimeMillis();
+        do {
+            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+                return false;
+            } try {
+                if (!selenium().isElementPresent(locator)) {
+                    return true;
+                }
+            } catch (Exception e) {
+            } threadSleep(100);
+        } while (true);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
+     */
+    @Override
+    public boolean waitForElementInvisble(String locator) {
+        long startTime = System.currentTimeMillis();
+        do {
+            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+             return false;
+            } try {
+                if (!selenium().isVisible(locator)) {
+                    return true;
+                }
+            } catch (Exception e) {
+            } threadSleep(100);
+        } while (true);
+    }
+
 }

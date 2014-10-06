@@ -54,30 +54,6 @@ public abstract class AbstractBase {
         /**Component name for WebDriverWait*/
         private final String webDriverWait="webdriverwait";
 
-        /**Constant for text not present*/
-        protected final String NOT_PRESENT="Element not present in DOM";
-
-        /**Constant for element not visible*/
-        protected final String NOT_VISIBLE="Element not visible in screen";
-
-        /**Consatnt for element not clickable*/
-        protected final String NOT_CLICKABLE="Element cannot be clicked";
-
-        /**Constant for alert not present*/
-        protected final String ALERT_NOT_PRESENT="Alert not present";
-
-        /**Constant for text not present*/
-        protected final String TEXT_NOT_PRESENT="Text not present in element";
-
-        /**Constant for text not present in value*/
-        protected final String TEXT_NOT_PRESENT_VALUE="Text not present in value";
-
-        /**Constant for page loaded*/
-        protected final String PAGE_LOADED="Page is loaded";
-
-        /**Constant for completed ajax call*/
-        protected final String AJAX_COMPLETE="Ajax call is completed";
-
         /**
          * Timeout before any action
          * @return amount of time to wait for condition

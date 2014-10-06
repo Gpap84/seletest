@@ -105,6 +105,7 @@ public enum CoreProperties {
     PASS_COLOR("Chartreuse"),
     FAIL_COLOR("FireBrick"),
     ACTION_COLOR("BurlyWood"),
+    DOTTED_BORDER("dotted"),
 
     /*************************************CoreProperties used for initialization phase*****************************************************/
 

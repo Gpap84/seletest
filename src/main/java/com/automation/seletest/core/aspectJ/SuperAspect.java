@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.factories.StrategyFactory;
@@ -100,6 +101,10 @@ public abstract class SuperAspect {
     @Pointcut("execution(* com.automation.seletest.pagecomponents.pageObjects..*(..))")
     protected void logPOs() {}
 
+    /**PointCut for executing JS scripts*/
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI..*(..)) && @annotation(jshandle)")
+    protected void jsHandle(JSHandle jshandle) {}
+
 
     /**
      * Type of arguments of an executed method
@@ -156,7 +161,7 @@ public abstract class SuperAspect {
      * Element Controller
      * @return ElementController
      */
-    public MainController element() {
+    public MainController<?> element() {
         return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 }

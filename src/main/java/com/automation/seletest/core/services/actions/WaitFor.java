@@ -111,4 +111,18 @@ public interface WaitFor {
      */
     void waitForAjaxCallCompleted(final long timeout);
 
+
+    /**
+     * Waits for element not to be present on screen
+     * @param locator
+     * @return true if element is not persent or false if element present
+     */
+    boolean waitForElementNotPresent(String locator);
+
+    /**
+     * Waits for element to become invisible
+     * @param locator
+     */
+    boolean waitForElementInvisble(String locator);
+
 }

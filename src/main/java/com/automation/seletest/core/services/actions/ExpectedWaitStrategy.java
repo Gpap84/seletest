@@ -163,4 +163,20 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         wfExpected().until(ajaxCallExpectation);
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
+     */
+    @Override
+    public boolean waitForElementNotPresent(String locator) {
+        return wfExpected().until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator))));
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
+     */
+    @Override
+    public boolean waitForElementInvisble(String locator) {
+        return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+    }
+
 }

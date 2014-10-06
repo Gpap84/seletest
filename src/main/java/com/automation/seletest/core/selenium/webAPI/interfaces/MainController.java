@@ -42,7 +42,7 @@ import org.openqa.selenium.logging.LogEntries;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-public interface MainController {
+public interface MainController<T extends MainController<T>>{
 
     /**
      * Finds a web element
@@ -57,7 +57,7 @@ public interface MainController {
      * @param timeout
      * @return
      */
-    void click(Object locator);
+    T click(Object locator);
 
     /**
      * Enter function
@@ -66,7 +66,7 @@ public interface MainController {
      * @param timeout
      * @return
      */
-    void type(Object locator, String text);
+    T type(Object locator, String text);
 
 
     /**
@@ -81,29 +81,28 @@ public interface MainController {
      * Gets URL
      * @param url
      */
-    void goToTargetHost(String url);
+    T goToTargetHost(String url);
 
     /**
      * Change style of specific element
      * @param attribute
      * @param locator
      * @param attributevalue
-     * @return
      */
-    void changeStyle(Object locator, String attribute, String attributevalue);
+    T changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
      * @throws IOException
      */
-    void takeScreenShot() throws IOException;
+    T takeScreenShot() throws IOException;
 
     /**
      * Take screenshot of an element
      * @param locator
      * @throws IOException
      */
-    void takeScreenShotOfElement(Object locator) throws IOException;
+    T takeScreenShotOfElement(Object locator) throws IOException;
 
 
     /**
@@ -166,7 +165,7 @@ public interface MainController {
      * @param path
      * @param element
      */
-    void uploadFile(Object locator, String path);
+    T uploadFile(Object locator, String path);
 
     /**
      * Executes JavaScript on browser
@@ -180,14 +179,14 @@ public interface MainController {
      * Select option from drop down by value
      * @param value
      */
-    void selectByValue(String locator, String value);
+    T selectByValue(String locator, String value);
 
     /**
      * Select option from drop down by visible text
      * @param locator
      * @param text
      */
-    void selectByVisibleText(String locator, String text);
+    T selectByVisibleText(String locator, String text);
 
     /**
      * Deletes a cookie by name
@@ -195,20 +194,20 @@ public interface MainController {
      * @param value
      * @return
      */
-    void deleteCookieByName(String name);
+    T deleteCookieByName(String name);
 
     /**
      * Deletes a cookie
      * @param cookie
      * @return
      */
-    void deleteCookie(Cookie cookie);
+    T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return
      */
-    void deleteAllCookies();
+    T deleteAllCookies();
 
     /**
      * Create a cookie
@@ -216,7 +215,7 @@ public interface MainController {
      * @param value
      * @return
      */
-    void addCookie(Cookie cookie);
+    T addCookie(Cookie cookie);
 
     /**
      * Gets all cookies
@@ -230,33 +229,33 @@ public interface MainController {
      * @param timeout
      * @param timeunit
      */
-    void implicitlyWait(long timeout,TimeUnit timeunit);
+    T implicitlyWait(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for page to load
      * @param timeout
      * @param timeunit
      */
-    void pageLoadTimeout(long timeout,TimeUnit timeunit);
+    T pageLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for script to finish
      * @param timeout
      * @param timeunit
      */
-    void scriptLoadTimeout(long timeout,TimeUnit timeunit);
+    T scriptLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Set window position
      * @param point
      */
-    void setWindowPosition(Point point);
+    T setWindowPosition(Point point);
 
     /**
      * Set window size
      * @param dimension
      */
-    void setWindowDimension(Dimension dimension);
+    T setWindowDimension(Dimension dimension);
 
     /**
      * Gets window position
@@ -273,7 +272,7 @@ public interface MainController {
     /**
      * Maximize window
      */
-    void maximizeWindow();
+    T maximizeWindow();
 
     /**
      * Get logs (client,server,performance....etc.)
@@ -285,7 +284,7 @@ public interface MainController {
     /**
      * Switch to latest window
      */
-    void switchToLatestWindow();
+    T switchToLatestWindow();
 
     /**
      * Gets the number of opened windows
@@ -296,34 +295,37 @@ public interface MainController {
     /**
      * Accept alert
      */
-    void acceptAlert();
+    T acceptAlert();
 
     /**
      * Dismiss Alert
      */
-    void dismissAlert();
+    T dismissAlert();
 
     /**
      * Quit session or close latest window
      * @param type
      */
-    void quit(CloseSession type);
+    T quit(CloseSession type);
 
     /**
      * Switch control to frame located by name or id
      * @param frameId
      */
-    void switchToFrame(String frameId);
+    T switchToFrame(String frameId);
 
     /**
-     * Go back in browser
+     *  Go backward
+     * @return MainController
      */
-    void goBack();
+    T goBack();
 
     /**
-     * Go forward in browser
+     * Go forward
+     * @return MainController
      */
-    void goForward();
+
+    T goForward();
 
     /**
      * Find all child elements of parent
@@ -336,16 +338,16 @@ public interface MainController {
     /**
      *
      * @param tableLocator
-     * @return int the number of rows of a table
+     * @return int number of Rows of a table
      */
-    int getrowsTable(Object tableLocator);
+    int getRowsTable(Object tableLocator);
 
     /**
      * Get the total columns of a table
      * @param tableLocator
-     * @return
+     * @return int number of Columns of a table
      */
-    int getcolumnsTable(Object tableLocator);
+    int getColumnsTable(Object tableLocator);
 
 
     /**
@@ -361,6 +363,14 @@ public interface MainController {
      * @return List<String> with all the options's text
      */
     List<String> getAllOptionsText(Object locator);
+
+    /**
+     * Clear selected option in drop down by text
+     * @param locator
+     * @param text
+     * @return MainController
+     */
+    T clearSelectedOptionByText(Object locator, String text);
 
 
 }

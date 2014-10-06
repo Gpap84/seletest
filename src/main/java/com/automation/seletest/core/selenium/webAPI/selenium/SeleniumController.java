@@ -64,7 +64,8 @@ import com.thoughtworks.selenium.DefaultSelenium;
  */
 @Component("seleniumControl")
 @Slf4j
-public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements MainController{
+@SuppressWarnings("rawtypes")
+public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements MainController<SeleniumController<T>>{
 
     /**The FileUtils*/
     @Autowired
@@ -82,8 +83,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
-    public void click(Object locator) {
+    public SeleniumController click(Object locator) {
         selenium().click((String)locator);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -93,8 +95,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
-    public void type(Object locator, String text) {
+    public SeleniumController type(Object locator, String text) {
         selenium().typeKeys((String)locator, text);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -103,8 +106,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @Monitor
     @RetryFailure(retryCount=1)
-    public void goToTargetHost(String url) {
+    public SeleniumController goToTargetHost(String url) {
         selenium().open(url);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -112,8 +116,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @WaitCondition(waitFor.VISIBILITY)
-    public void changeStyle(Object locator, String attribute, String attributevalue) {
+    public SeleniumController changeStyle(Object locator, String attribute, String attributevalue) {
         selenium().highlight((String)locator);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -121,7 +126,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
-    public void takeScreenShot() throws IOException {
+    public SeleniumController takeScreenShot() throws IOException {
         String base64Screenshot = selenium().captureScreenshotToString();
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
         FileOutputStream fos = null;
@@ -134,8 +139,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
                 fos.close();
             }
             fileService.reportScreenshot(screenShotFrame);
-        }
 
+        }
+        return this;
     }
 
     /* (non-Javadoc)
@@ -144,7 +150,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
-    public void takeScreenShotOfElement(Object locator) throws IOException {
+    public SeleniumController takeScreenShotOfElement(Object locator) throws IOException {
         String base64Screenshot = selenium().captureScreenshotToString();
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
         FileOutputStream fos = null;
@@ -167,6 +173,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
             FileUtils.copyFile(screenShotFrame, file);
             fileService.reportScreenshot(file);
         }
+        return this;
     }
 
     /* (non-Javadoc)
@@ -260,8 +267,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public void uploadFile(Object locator, String path) {
+    public SeleniumController uploadFile(Object locator, String path) {
         selenium().attachFile((String)locator, path);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -280,8 +288,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public void selectByValue(String locator, String value) {
+    public SeleniumController selectByValue(String locator, String value) {
         selenium().select(locator,"value="+value);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -291,8 +300,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public void selectByVisibleText(String locator, String text) {
+    public SeleniumController selectByVisibleText(String locator, String text) {
         selenium().select(locator,"label="+text);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -302,8 +312,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @RetryFailure(retryCount=1)
     @Monitor
-    public void deleteCookieByName(String name) {
+    public SeleniumController deleteCookieByName(String name) {
         selenium().deleteCookie(name, "");
+        return this;
     }
 
     /* (non-Javadoc)
@@ -311,7 +322,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Deprecated
     @Override
-    public void deleteCookie(Cookie cookie) {
+    public SeleniumController deleteCookie(Cookie cookie) {
+        return this;
     }
 
     /* (non-Javadoc)
@@ -320,8 +332,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @Monitor
     @RetryFailure(retryCount=1)
-    public void deleteAllCookies() {
+    public SeleniumController deleteAllCookies() {
         selenium().deleteAllVisibleCookies();
+        return this;
     }
 
     /* (non-Javadoc)
@@ -329,8 +342,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Deprecated
     @Override
-    public void addCookie(Cookie cookie) {
-
+    public SeleniumController addCookie(Cookie cookie) {
+        return this;
     }
 
     /* (non-Javadoc)
@@ -346,10 +359,11 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#implicitlyWait(long, java.util.concurrent.TimeUnit)
      */
     @Override
-    public void implicitlyWait(long timeout, TimeUnit timeunit) {
+    public SeleniumController implicitlyWait(long timeout, TimeUnit timeunit) {
         // TODO Auto-generated method stub
         //HttpCommandProcessor command = new  HttpCommandProcessor();
         //command.doCommand("setImplicitWaitLocator", new String[] {"10000",});
+        return this;
 
     }
 
@@ -358,8 +372,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void pageLoadTimeout(long timeout, TimeUnit timeunit) {
+    public SeleniumController pageLoadTimeout(long timeout, TimeUnit timeunit) {
         selenium().setTimeout(String.valueOf(timeout));
+        return this;
     }
 
     /* (non-Javadoc)
@@ -367,8 +382,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Deprecated
     @Override
-    public void scriptLoadTimeout(long timeout, TimeUnit timeunit) {
+    public SeleniumController scriptLoadTimeout(long timeout, TimeUnit timeunit) {
         // TODO Auto-generated method stub
+        return this;
 
     }
 
@@ -377,18 +393,19 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void setWindowPosition(Point point) {
+    public SeleniumController setWindowPosition(Point point) {
         int x=point.getX();
         int y=point.getY();
         selenium().getEval("window.resizeTo(" + x + ", " + y + "); window.moveTo(0,0);");
+        return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#setWindowDimension(org.openqa.selenium.Dimension)
      */
     @Override
-    public void setWindowDimension(Dimension dimension) {
-
+    public SeleniumController setWindowDimension(Dimension dimension) {
+        return this;
     }
 
     /* (non-Javadoc)
@@ -417,8 +434,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void maximizeWindow() {
+    public SeleniumController maximizeWindow() {
        selenium().windowMaximize();
+       return this;
     }
 
     /* (non-Javadoc)
@@ -435,11 +453,12 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void switchToLatestWindow() {
+    public SeleniumController switchToLatestWindow() {
         String[] windows = selenium().getAllWindowIds();
         String[] windowsTitles = selenium().getAllWindowTitles();
         selenium().selectWindow(windows[windows.length - 1]);
         log.info("Window with title: " + windowsTitles[windowsTitles.length - 1] + " selected");
+        return this;
     }
 
     /* (non-Javadoc)
@@ -458,8 +477,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.ALERT)
     @RetryFailure(retryCount=1)
-    public void acceptAlert() {
+    public SeleniumController acceptAlert() {
         selenium().getEval("window.confirm = function(msg) { return true; }");
+        return this;
     }
 
     /* (non-Javadoc)
@@ -468,8 +488,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.ALERT)
     @RetryFailure(retryCount=1)
-    public void dismissAlert() {
+    public SeleniumController dismissAlert() {
         selenium().getEval("window.confirm = function(msg) { return false; }");
+        return this;
     }
 
     /* (non-Javadoc)
@@ -477,7 +498,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @Monitor
-    public void quit(CloseSession type) {
+    public SeleniumController quit(CloseSession type) {
         switch (type) {
         case QUIT:
             selenium().stop();
@@ -489,6 +510,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
             selenium().stop();
             break;
         }
+        return this;
     }
 
     /* (non-Javadoc)
@@ -496,8 +518,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void switchToFrame(String frameId) {
+    public SeleniumController switchToFrame(String frameId) {
         selenium().selectFrame(frameId);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -505,9 +528,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     @RetryFailure(retryCount=1)
-    public void goBack() {
+    public SeleniumController goBack() {
         selenium().goBack();
         waitController().waitForPageLoaded();
+        return this;
     }
 
     /* (non-Javadoc)
@@ -515,8 +539,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Deprecated
     @Override
-    public void goForward() {
-
+    public SeleniumController goForward() {
+        return this;
     }
 
     /* (non-Javadoc)
@@ -533,7 +557,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public int getrowsTable(Object tableLocator) {
+    public int getRowsTable(Object tableLocator) {
         int rows = 0;
         String locator=(String)tableLocator;
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
@@ -549,7 +573,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public int getcolumnsTable(Object tableLocator) {
+    public int getColumnsTable(Object tableLocator) {
         int columns = 0;
         String locator=(String)tableLocator;
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
@@ -581,6 +605,19 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
             optionValues.add(option);
         }
         return optionValues;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#clearSelectedOptionByText(java.lang.Object, java.lang.String)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public SeleniumController<T> clearSelectedOptionByText(Object locator, String text) {
+        if(selenium().isChecked((String)locator)){
+            selenium().select((String)locator,"label="+text);
+        }
+        return null;
     }
 
 
