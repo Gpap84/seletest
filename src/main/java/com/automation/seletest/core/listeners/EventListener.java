@@ -96,7 +96,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     static class Initialize {
 
         @Autowired
-        AppiumController mobileControl;
+        AppiumController<?> mobileControl;
 
         /**
          * Initialize Web or Mobile session
@@ -126,7 +126,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             app.getBeanFactory().addBeanPostProcessor(new DriverBeanPostProcessor());
             DesiredCapabilities cap = (DesiredCapabilities) app.getBean(CoreProperties.CAPABILITIES.get());
 
-            /**Capabilities for android appium*/
+            /**Capabilities for android-ios appium*/
             if(profileDriver.contains("Android")) {
                 DesiredCapabilities androidcap =  (DesiredCapabilities) app.getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
                 cap.merge(androidcap);

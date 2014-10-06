@@ -537,10 +537,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goForward()
      */
-    @Deprecated
     @Override
     public SeleniumController goForward() {
-        return this;
+        throw new UnsupportedOperationException("Method goForward() is not supported with Selenium 1");
     }
 
     /* (non-Javadoc)
@@ -603,8 +602,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         String [] options=selenium().getSelectOptions((String)locator);
         for (String option:options) {
             optionValues.add(option);
-        }
-        return optionValues;
+        } return optionValues;
     }
 
     /* (non-Javadoc)
@@ -614,10 +612,54 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public SeleniumController<T> clearSelectedOptionByText(Object locator, String text) {
-        if(selenium().isChecked((String)locator)){
+        if(selenium().isSomethingSelected((String)locator)){
             selenium().select((String)locator,"label="+text);
-        }
-        return null;
+        } return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#clearSelectedOption(java.lang.Object, java.lang.String)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public SeleniumController<T> clearSelectedOption(Object locator, String value) {
+        if(selenium().isSomethingSelected((String)locator)){
+            selenium().select((String)locator,"value="+value);
+        } return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldEditable(java.lang.Object)
+     */
+    @Override
+    public boolean isFieldEditable(Object locator) {
+        return selenium().isEditable((String)locator);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementClickable(Object locator) {
+        throw new UnsupportedOperationException("Method isElementClickable(Object locator) is not supported with Selenium 1");
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
+     */
+    @Override
+    public boolean isFieldNotEditable(Object locator) {
+        return !selenium().isEditable((String)locator);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementNotClickable(Object locator) {
+        throw new UnsupportedOperationException("Method isElementNotClickable(Object locator) is not supported with Selenium 1");
+
     }
 
 

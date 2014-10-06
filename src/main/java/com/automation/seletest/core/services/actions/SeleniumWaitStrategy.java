@@ -29,6 +29,7 @@ package com.automation.seletest.core.services.actions;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
@@ -87,19 +88,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
     @Override
     public WebElement waitForElementToBeClickable(Object locator) {
-        long startTime = System.currentTimeMillis();
-        do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " to be clickable");
-            } try {
-                if (selenium().isVisible((String)locator)) {
-                    break;
-                }
-            } catch (Exception e) {
-            } threadSleep(100);
-        } while (true);
-        selenium().highlight((String)locator);
-        return null;
+        throw new UnsupportedCommandException("waitForElementToBeClickable(Object locator) is not used by Selenium 1");
     }
 
     /* (non-Javadoc)
@@ -197,7 +186,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                 } else if(locator.startsWith("css=")) {
                     elements=selenium().getCssCount(locator).intValue();
                 }
-                if (elements > 0) {
+                if (elements > 1) {
                     break;
                 }
             } catch (Exception e) {
@@ -267,6 +256,33 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
+     */
+    @Override
+    public boolean waitForPageTitle(String title) {
+        long startTime = System.currentTimeMillis();
+        do {
+            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+             return false;
+            } try {
+                String [] windowTitles=selenium().getAllWindowTitles();
+                if (windowTitles[windowTitles.length - 1].contains(title)) {
+                    return true;
+                }
+            } catch (Exception e) {
+            } threadSleep(100);
+        } while (true);
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotClickable(java.lang.Object)
+     */
+    @Override
+    public boolean waitForElementNotClickable(Object locator) {
+      throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium 1");
     }
 
 }

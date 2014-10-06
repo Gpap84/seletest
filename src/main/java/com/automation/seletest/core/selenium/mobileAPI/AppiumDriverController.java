@@ -40,7 +40,12 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
+import com.automation.seletest.core.services.annotations.Monitor;
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 
 
 /**
@@ -49,108 +54,158 @@ import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
  *
  */
 @Component
-public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseController<T> implements AppiumController{
+@SuppressWarnings("rawtypes")
+public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseController<T> implements AppiumController<AppiumDriverController<T>>{
 
     @Override
-    public void launchApp() {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController launchApp() {
         webDriver().launchApp();
+        return this;
     }
 
     @Override
-    public void resetApp() {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController resetApp() {
         webDriver().resetApp();
+        return this;
     }
 
     @Override
-    public void runAppinBackground(int sec) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController runAppinBackground(int sec) {
         webDriver().runAppInBackground(sec);
+        return this;
     }
 
     @Override
-    public void closeApp() {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController closeApp() {
         webDriver().closeApp();
+        return this;
     }
 
     @Override
-    public void installApp(String appPath, String bundleId) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController installApp(String appPath, String bundleId) {
         if(!isAppInstalled(bundleId)) {
             Map<String, String> args = new HashMap<String, String>();
             args.put("appPath", appPath);
             webDriver().installApp(appPath);
-        }
+        } return this;
     }
 
     @Override
-    public void performTouchAction(TouchAction e) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController performTouchAction(TouchAction e) {
         webDriver().performTouchAction(e);
+        return this;
     }
 
     @Override
-    public void performMultiTouchAction(MultiTouchAction e) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController performMultiTouchAction(MultiTouchAction e) {
         webDriver().performMultiTouchAction(e);
+        return this;
     }
 
     @Override
-    public void hideKeyboard() {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController hideKeyboard() {
         webDriver().hideKeyboard();
+        return this;
     }
 
     @Override
-    public void rotate(ScreenOrientation e) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController rotate(ScreenOrientation e) {
         webDriver().rotate(e);
+        return this;
     }
 
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public ScreenOrientation getscreen() {
         return webDriver().getOrientation();
     }
 
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public MultiTouchAction getMultiTouchAction() {
         return new MultiTouchAction((webDriver()));
     }
 
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public boolean isAppInstalled(String bundleId) {
         return webDriver().isAppInstalled(bundleId);
     }
 
     @Override
-    public void pinch(int x, int y) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController pinch(int x, int y) {
         webDriver().pinch(x, y);
+        return this;
     }
 
     @Override
-    public void lockScreen(int sec) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController lockScreen(int sec) {
         webDriver().lockScreen(sec);
+        return this;
     }
 
     @Override
-    public void tap(int finger, int y, int z, int duration) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController tap(int finger, int y, int z, int duration) {
         webDriver().tap(finger,y,z,duration);
+        return this;
     }
 
 
     @Override
-    public void zoom(int x, int y) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController zoom(int x, int y) {
         webDriver().zoom(x, y);
+        return this;
     }
 
     @Override
-    public void swipe(int startx, int starty, int endx, int endy,
-            int duration) {
+    @Monitor
+    public AppiumDriverController swipe(int startx, int starty, int endx, int endy, int duration) {
         webDriver().swipe(startx, starty, endx, endy, duration);
+        return this;
     }
 
     @Override
-    public void executeScript(String driverCommand, HashMap<String, ?> parameters) {
-        webDriver().execute(driverCommand, parameters);
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public Object executeScript(String driverCommand, HashMap<String, ?> parameters) {
+        Object response=webDriver().execute(driverCommand, parameters);
+        return response;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#getCurrentActivity()
      */
     @Override
+    @RetryFailure(retryCount=1)
     public String getCurrentActivity() {
         return  ((AndroidDriver)webDriver()).currentActivity();
     }
@@ -159,6 +214,8 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollTo(java.lang.String)
      */
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public MobileElement scrollTo(String text) {
         if(webDriver() instanceof AndroidDriver) {
             String locator = "androidUIAutomator="+uiScrollable("new UiSelector().descriptionContains(\"" + text + "\")") + uiScrollable("new UiSelector().textContains(\"" + text + "\")");
@@ -173,6 +230,8 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#scrollToExact(java.lang.String)
      */
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public MobileElement scrollToExact(String text) {
         if(webDriver() instanceof AndroidDriver) {
             String locator = "androidUIAutomator="+uiScrollable("new UiSelector().description(\"" + text + "\")") + uiScrollable("new UiSelector().text(\"" + text + "\")");
@@ -187,8 +246,9 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#setNetworkConnection(boolean, boolean, boolean)
      */
     @Override
-    public void setNetworkConnection(boolean airplaneMode, boolean wifi,
-            boolean data) {
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data) {
         if(webDriver() instanceof AndroidDriver) {
             NetworkConnectionSetting network=new NetworkConnectionSetting(false, true, true);
             network.setAirplaneMode(airplaneMode);
@@ -198,7 +258,18 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
         } else {
             throw new UnsupportedCommandException("The command setNetworkConnection is not used with IOSDriver");
         }
+        return this;
+    }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#zoom(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController<T> zoom(Object locator) {
+        webDriver().zoom(SessionContext.getSession().getWebElement());
+        return this;
     }
 
 

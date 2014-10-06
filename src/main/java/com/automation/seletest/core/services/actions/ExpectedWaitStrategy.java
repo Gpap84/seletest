@@ -179,4 +179,26 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
+     */
+    @Override
+    public boolean waitForPageTitle(String title) {
+        return wfExpected().until(ExpectedConditions.titleContains(title));
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotClickable(java.lang.Object)
+     */
+    @Override
+    public boolean waitForElementNotClickable(Object locator) {
+        if(locator instanceof String){
+            return wfExpected().until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(Locators.findByLocator((String)locator).setLocator((String)locator))));
+        }
+        else if(locator instanceof WebElement){
+            return wfExpected().until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable((WebElement)locator)));
+        }
+        return false;
+    }
+
 }

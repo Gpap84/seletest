@@ -549,4 +549,54 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#clearSelectedOption(java.lang.Object, java.lang.String)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    @JSHandle
+    public WebDriverController clearSelectedOption(Object locator,String value) {
+        new Select(SessionContext.getSession().getWebElement()).deselectByValue(value);
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldEditable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public boolean isFieldEditable(Object locator) {
+        return SessionContext.getSession().getWebElement().isEnabled();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementClickable(Object locator) {
+        waitController().waitForElementToBeClickable(locator);
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
+    public boolean isFieldNotEditable(Object locator) {
+        return !SessionContext.getSession().getWebElement().isEnabled();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementNotClickable(Object locator) {
+        waitController().waitForElementNotClickable(locator);
+        return false;
+    }
+
 }
