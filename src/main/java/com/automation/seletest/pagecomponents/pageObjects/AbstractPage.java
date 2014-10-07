@@ -26,10 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -103,35 +101,5 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getActionsStrategy(SessionContext.getSession().getActionsStrategy());
     }
 
-    /**
-     * get String locator for @FindBy
-     * @param clazz
-     * @param element
-     * @return String locator
-     */
-    public String getWebElementLocator(Class<?> clazz, String element){
-        Field[] fields=clazz.getDeclaredFields();
-        for(Field field:fields){
-            if(field.getAnnotation(FindBy.class)!=null){
-                if(field.getName().equals(element)){
-                    if(!field.getAnnotation(FindBy.class).className().isEmpty()){
-                        return "class="+field.getAnnotation(FindBy.class).className();
-                    } else if(!field.getAnnotation(FindBy.class).id().isEmpty()){
-                        return "id="+field.getAnnotation(FindBy.class).id();
-                    } else if(!field.getAnnotation(FindBy.class).css().isEmpty()){
-                        return "css="+field.getAnnotation(FindBy.class).css();
-                    } else if(!field.getAnnotation(FindBy.class).linkText().isEmpty()){
-                        return "link="+field.getAnnotation(FindBy.class).linkText();
-                    } else if(!field.getAnnotation(FindBy.class).name().isEmpty()){
-                        return "name="+field.getAnnotation(FindBy.class).name();
-                    } else if(!field.getAnnotation(FindBy.class).xpath().isEmpty()){
-                        return "xpath="+field.getAnnotation(FindBy.class).xpath();
-                    }
-
-                }
-            }
-        }
-        return null;
-    }
 
 }

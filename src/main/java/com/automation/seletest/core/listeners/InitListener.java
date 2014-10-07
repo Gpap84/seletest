@@ -89,11 +89,11 @@ public class InitListener implements IInvokedMethodListener{
                 SessionContext.session().setWaitUntil(seleniumTest.waitFor());
 
                 //initialize controller's names in thread
-                if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
+                if(seleniumTest.driver().equals(DriverType.WEBDRIVER) && method.getTestMethod().getCurrentInvocationCount()==0) {
                     ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using WebDriver for this @Test", "color:blue");
                     SessionContext.session().setControllerStrategy("webDriverControl");
                     SessionContext.session().setActionsStrategy("webDriverActions");
-                } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
+                } else if(seleniumTest.driver().equals(DriverType.SELENIUM) && method.getTestMethod().getCurrentInvocationCount()==0) {
                     ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
                     SessionContext.session().setControllerStrategy("seleniumControl");
                     SessionContext.session().setWaitStrategy("seleniumWait");
