@@ -47,7 +47,7 @@ public interface MainController<T extends MainController<T>>{
     /**
      * Finds a web element
      * @param locator
-     * @return
+     * @return WebElement the element found
      */
     WebElement findElement(Object locator);
 
@@ -55,7 +55,7 @@ public interface MainController<T extends MainController<T>>{
      * Click function
      * @param locator
      * @param timeout
-     * @return
+     * @return MainController
      */
     T click(Object locator);
 
@@ -64,7 +64,7 @@ public interface MainController<T extends MainController<T>>{
      * @param locator
      * @param text
      * @param timeout
-     * @return
+     * @return MainController
      */
     T type(Object locator, String text);
 
@@ -108,7 +108,7 @@ public interface MainController<T extends MainController<T>>{
     /**
      * Returns text of element
      * @param locator
-     * @return
+     * @return String text of element
      */
     String getText(Object locator);
 
@@ -171,7 +171,7 @@ public interface MainController<T extends MainController<T>>{
      * Executes JavaScript on browser
      * @param script
      * @param args
-     * @return
+     * @return Object result of JS
      */
     Object executeJS(String script, Object... args);
 
@@ -192,20 +192,20 @@ public interface MainController<T extends MainController<T>>{
      * Deletes a cookie by name
      * @param name
      * @param value
-     * @return
+     * @return MainController
      */
     T deleteCookieByName(String name);
 
     /**
      * Deletes a cookie
      * @param cookie
-     * @return
+     * @return MainController
      */
     T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
-     * @return
+     * @return MainController
      */
     T deleteAllCookies();
 
@@ -213,13 +213,13 @@ public interface MainController<T extends MainController<T>>{
      * Create a cookie
      * @param name
      * @param value
-     * @return
+     * @return MainController
      */
     T addCookie(Cookie cookie);
 
     /**
      * Gets all cookies
-     * @return
+     * @return Set<Cookie>
      */
     Set<Cookie> getCookies();
 
@@ -259,7 +259,7 @@ public interface MainController<T extends MainController<T>>{
 
     /**
      * Gets window position
-     * @return
+     * @return Point for window position
      */
     Point getWindowPosition();
 
@@ -365,12 +365,48 @@ public interface MainController<T extends MainController<T>>{
     List<String> getAllOptionsText(Object locator);
 
     /**
-     * Clear selected option in drop down by text
+     * Deselect option  by text
      * @param locator
      * @param text
      * @return MainController
      */
     T clearSelectedOptionByText(Object locator, String text);
 
+
+    /**
+     * Deselect Option by Value
+     * @param locator
+     * @param value
+     * @return MainController
+     */
+    T clearSelectedOption(Object locator, String value);
+
+    /**
+     * If field editable
+     * @param locator
+     * @return true if a field is editable
+     */
+    boolean isFieldEditable(Object locator);
+
+    /**
+     * If element is clickable
+     * @param locator
+     * @return true if element is clickable
+     */
+    boolean isElementClickable(Object locator);
+
+    /**
+     * If field is not editable
+     * @param locator
+     * @return true if field is not editable
+     */
+    boolean isFieldNotEditable(Object locator);
+
+    /**
+     * If element is not clickable
+     * @param locator
+     * @return true if element is not clickable
+     */
+    boolean isElementNotClickable(Object locator);
 
 }

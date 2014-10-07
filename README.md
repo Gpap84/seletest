@@ -1,6 +1,9 @@
 Seletest
 ========
 
+<a href="https://buildhive.cloudbees.com/job/GiannisPapadakis/job/Seletest/">
+<img src="https://camo.githubusercontent.com/f35d0c52028b388ea9593c5fd2bf78a3b955c7af/68747470733a2f2f6275696c64686976652e636c6f7564626565732e636f6d2f6a6f622f6d696368616c2d6c6970736b692f6a6f622f706167652d6f626a656374732d7765626472697665722f62616467652f69636f6e" alt="Build Status" data-canonical-source="https://buildhive.cloudbees.com/job/michal-lipski/job/page-objects-webdriver/badge/icon" style="max-width:100%;">
+
 *****************************************************************************************
 Web and Mobile Automation testing framework based on Spring - Webdriver - Appium in Java.
 *****************************************************************************************
@@ -36,13 +39,14 @@ d] PhantomJSDriver<br>
 e] AppiumDriver<br>
 
 Features:
+ * Fluent logging mechanism using AspectJ support with advices
  * Interaction with Page Objects and Page Facades using hard or soft assertions (with hard assertions, exception is thrown, thus preventing any further execution and with soft assertions, exceptions are stored to Map and verification of @Test is done only when the test finished)
- * All the verification methods are done asynchronously using Spring Task Executors thus are done in parallel covering dynamic pages
- * Appium support with custom TouchAction API for interaction with Android using parallelism mechanism for parallel execution against multiple android devices - emulators
- * JS errors collections during execution of tests
- * JVM memory usage 
+ * All the verification methods are asynchronously executed using Spring Task Executor covering dynamic pages
+ * Appium support with custom TouchAction API for interaction with Android devices-emulators
+ * JS errors collection during execution of tests
+ * JVM memory usage
  * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
- * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver
+ * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver (:contains('')/nth-child)
 
 
 <b>Tips for IEDriver</b><br>

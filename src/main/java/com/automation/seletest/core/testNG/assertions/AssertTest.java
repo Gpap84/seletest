@@ -68,7 +68,6 @@ public class AssertTest<T extends Assertion> {
     @Autowired
     StrategyFactory<?> strategy;
 
-
     /**
      * Specify the type of assertion (Hard or Soft) for this test
      * @param assertionType
@@ -144,7 +143,7 @@ public class AssertTest<T extends Assertion> {
     }
 
     /**
-     * Veirfy the text of the selected option in list
+     * Verify the text of the selected option in list
      * @param locator
      * @param text
      * @return AsyncResult
@@ -153,6 +152,55 @@ public class AssertTest<T extends Assertion> {
     @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textOfSelectedOption(Object locator, String text) {
         assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).getFirstSelectedOptionText(locator),text,env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        return new AsyncResult<>(true);
+    }
+
+
+    /**
+     * Verify that field found editable
+     * @param locator
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "notFoundEditable" , messagePass = "foundEditable", message = "elementLocator", screenShot = true)
+    public Future<Boolean> fieldEditable(Object locator) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundEditable"));
+        return new AsyncResult<>(true);
+    }
+
+    /**
+     * Verify that field is not editable
+     * @param locator
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "foundEditable" , messagePass = "notFoundEditable", message = "elementLocator", screenShot = true)
+    public Future<Boolean> fieldNotEditable(Object locator) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldNotEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundEditable"));
+        return new AsyncResult<>(true);
+    }
+
+    /**
+     * Verify that element is clickable
+     * @param locator
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "notFoundClickable" , messagePass = "foundClickable", message = "elementLocator", screenShot = true)
+    public Future<Boolean> elementClickable(Object locator) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundClickable"));
+        return new AsyncResult<>(true);
+    }
+
+    /**
+     * Verify that element is not clickable
+     * @param locator
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "foundClickable" , messagePass = "notFoundClickable", message = "elementLocator", screenShot = true)
+    public Future<Boolean> elementNotClickable(Object locator) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementNotClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundClickable"));
         return new AsyncResult<>(true);
     }
 

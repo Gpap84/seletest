@@ -40,58 +40,58 @@ import org.openqa.selenium.ScreenOrientation;
  * Appium interface
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  */
-public interface AppiumController {
+public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * This method launch application in mobile device
      */
-    void launchApp();
+    T launchApp();
 
     /**
      * This method resets application in mobile device
      */
-    void resetApp();
+    T resetApp();
 
     /**
      * This method resets application in mobile device
      **/
-    void runAppinBackground(int sec);
+    T runAppinBackground(int sec);
 
     /**
      * This method closes application in mobile device
      */
-    void closeApp();
+    T closeApp();
 
     /**
      * This method installs an apk or ipa file to mobile device if it not already installed
      * @param appPath
      * @param bundleId (also appPackage for android)
      */
-    void installApp(String appPath, String bundleId);
+    T installApp(String appPath, String bundleId);
 
 
     /**
      * Performs a touch action
      * @param e
      */
-    void performTouchAction(TouchAction e);
+    T performTouchAction(TouchAction e);
 
     /**
      * Performs multitouch action
      * @param e
      */
-    void performMultiTouchAction(MultiTouchAction e);
+    T performMultiTouchAction(MultiTouchAction e);
 
     /**
      * Hide the kieyboard
      */
-    void hideKeyboard();
+    T hideKeyboard();
 
     /**
      * rotate screen of mobile device
      * @param e
      */
-    void rotate(ScreenOrientation e);
+    T rotate(ScreenOrientation e);
 
     /**
      * gets the screen orientation
@@ -117,13 +117,13 @@ public interface AppiumController {
      * @param x
      * @param y
      */
-    void pinch(int x,int y);
+    T pinch(int x,int y);
 
     /**
      * Locks the screen for specific amount of time
      * @param sec
      */
-    void lockScreen(int sec);
+    T lockScreen(int sec);
 
 
     /**
@@ -133,7 +133,7 @@ public interface AppiumController {
      * @param z
      * @param duration
      */
-    void tap(int fingers, int y, int z, int duration);
+    T tap(int fingers, int y, int z, int duration);
 
 
     /**
@@ -141,7 +141,7 @@ public interface AppiumController {
      * @param x
      * @param y
      */
-    void zoom(int x, int y);
+    T zoom(int x, int y);
 
     /**
      * swipe gesture
@@ -151,14 +151,14 @@ public interface AppiumController {
      * @param endy
      * @param duration
      */
-    void swipe(int startx, int starty, int endx, int endy, int duration);
+    T swipe(int startx, int starty, int endx, int endy, int duration);
 
     /**
      * Executes script on mobile device
      * @param driverCommand
      * @param parameters
      */
-    void executeScript(String driverCommand, HashMap<String, ?> parameters);
+    Object executeScript(String driverCommand, HashMap<String, ?> parameters);
 
     /**
      * Gets the current activity
@@ -186,6 +186,14 @@ public interface AppiumController {
      * @param wifi
      * @param data
      */
-    void setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data);
+    T setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data);
+
+
+    /**
+     * Zooms to element in device
+     * @param locator
+     * @return AppiumController
+     */
+    T zoom(Object locator);
 
 }

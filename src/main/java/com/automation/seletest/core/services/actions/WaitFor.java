@@ -122,7 +122,23 @@ public interface WaitFor {
     /**
      * Waits for element to become invisible
      * @param locator
+     * true if element is invisible
      */
     boolean waitForElementInvisble(String locator);
+
+    /**
+     *Wait for title of page
+     * @param title
+     * @return true if title is the one provided
+     */
+    boolean waitForPageTitle(String title);
+
+
+    /**
+     * Wait for element to become not clickable
+     * @param locator
+     * @return true if element is no more clickable
+     */
+    boolean waitForElementNotClickable(Object locator);
 
 }
