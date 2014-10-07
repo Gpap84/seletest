@@ -39,13 +39,14 @@ d] PhantomJSDriver<br>
 e] AppiumDriver<br>
 
 Features:
+ * Fluent logging mechanism using AspectJ support with advices
  * Interaction with Page Objects and Page Facades using hard or soft assertions (with hard assertions, exception is thrown, thus preventing any further execution and with soft assertions, exceptions are stored to Map and verification of @Test is done only when the test finished)
- * All the verification methods are done asynchronously using Spring Task Executors thus are done in parallel covering dynamic pages
- * Appium support with custom TouchAction API for interaction with Android using parallelism mechanism for parallel execution against multiple android devices - emulators
- * JS errors collections during execution of tests
- * JVM memory usage 
+ * All the verification methods are asynchronously executed using Spring Task Executor covering dynamic pages
+ * Appium support with custom TouchAction API for interaction with Android devices-emulators
+ * JS errors collection during execution of tests
+ * JVM memory usage
  * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
- * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver
+ * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver (:contains('')/nth-child)
 
 
 <b>Tips for IEDriver</b><br>
