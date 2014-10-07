@@ -34,11 +34,13 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.common.ActionsBuilderController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -48,6 +50,7 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
  * @param <T>
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
+@Component
 public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
     /**Timeout to load a page*/
@@ -55,9 +58,6 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
 
     /**Polling time*/
     private static final int REFRESH_RATE = 2;
-
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
 
     /**
      * Opens a page object
@@ -95,11 +95,13 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * Interact with element based on factory strategy
      * @return ElementController
      */
-    public MainController element() {
-        return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
+    public MainController webControl() {
+        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 
-
+    public ActionsBuilderController actionsControl() {
+        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getActionsStrategy(SessionContext.getSession().getActionsStrategy());
+    }
 
     /**
      * get String locator for @FindBy

@@ -48,10 +48,10 @@ import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 @Inherited
 public @interface PreConfiguration {
 
+    /**As class we have any Page Object that extends AbstarctPage*/
     Class<? extends AbstractPage<?>> classReference();
 
+    /**Define the method name to execute*/
     String method();
-
-    String[] arguments() default {""};
 
 }

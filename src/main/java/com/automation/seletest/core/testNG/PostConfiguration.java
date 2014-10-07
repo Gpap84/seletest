@@ -33,6 +33,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 /**
@@ -46,11 +47,10 @@ import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 @Inherited
 public @interface PostConfiguration {
 
-
+    /**As class we have any Page Object that extends AbstarctPage*/
     Class<? extends AbstractPage<?>> classReference();
 
+    /**Define the method name to execute*/
     String method();
-
-    String[] arguments() default {""};
 
 }

@@ -29,23 +29,30 @@ package com.automation.seletest.core.listeners;
 
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
+import org.testng.ITestClass;
 import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.SkipException;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.testNG.PostConfiguration;
+import com.automation.seletest.core.testNG.PreConfiguration;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 @Slf4j
@@ -54,34 +61,52 @@ public class InitListener implements IInvokedMethodListener{
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        PreConfiguration preconfigure = null;
+        ITestClass testClass=method.getTestMethod().getTestClass();
+        Class<?> webClass=testClass.getRealClass();
+
         SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
 
-        //Set assertion type (Hard / Soft) and amount of time to wait for conditions () for this test method
+        //Get preconfigure on Class level
+        if(testResult.getMethod().isBeforeClassConfiguration() && testResult.getMethod().getMethodName().equalsIgnoreCase("beforeClass")) {
+            preconfigure=webClass.getAnnotation(PreConfiguration.class);
+        }
+
         if(method.getTestMethod().isTest()){
-            log.debug("Set assertion type and waitFor parameter for test method: {}!!!",method.getTestMethod().getMethodName());
 
-            //Set session objects as testNG attribute
-            testResult.setAttribute("session", SessionContext.session());
+            //Set assertion type (Hard / Soft) and amount of time to wait for conditions () for this test method
+            if(method.getTestMethod().isTest()){
+                log.debug("Set assertion type and waitFor parameter for test method: {}!!!",method.getTestMethod().getMethodName());
 
-            SessionContext.session().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-            SessionContext.session().getControllers().put(Actions.class, new Actions(SessionContext.session().getWebDriver()));
+                //Set session objects as testNG attribute
+                testResult.setAttribute("session", SessionContext.session());
+                Reporter.setCurrentTestResult(testResult);
+                SessionContext.session().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+                SessionContext.session().getControllers().put(Actions.class, new Actions(SessionContext.session().getWebDriver()));
 
-            seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
-            SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
-            SessionContext.session().setWaitUntil(seleniumTest.waitFor());
+                seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
+                SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
+                SessionContext.session().setWaitUntil(seleniumTest.waitFor());
 
-            if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
-                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using WebDriver for this @Test", "color:blue");
-                SessionContext.session().setControllerStrategy("webDriverControl");
-                SessionContext.session().setActionsStrategy("webDriverActions");
-            } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
-                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
-                SessionContext.session().setControllerStrategy("seleniumControl");
-                SessionContext.session().setWaitStrategy("seleniumWait");
-                SessionContext.session().setActionsStrategy("seleniumActions");
+                //initialize controller's names in thread
+                if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
+                    ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using WebDriver for this @Test", "color:blue");
+                    SessionContext.session().setControllerStrategy("webDriverControl");
+                    SessionContext.session().setActionsStrategy("webDriverActions");
+                } else if(seleniumTest.driver().equals(DriverType.SELENIUM)) {
+                    ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Using Selenium for this @Test", "color:blue");
+                    SessionContext.session().setControllerStrategy("seleniumControl");
+                    SessionContext.session().setWaitStrategy("seleniumWait");
+                    SessionContext.session().setActionsStrategy("seleniumActions");
+                }
+
+                //Get preconfigure on @Test level
+                preconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PreConfiguration.class);
+
             }
         }
 
+        //Set session as testng attribute for after configuration methods
         if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isAfterTestConfiguration()) {
             testResult.setAttribute("session", SessionContext.session());
         } else if(method.getTestMethod().isAfterClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
@@ -90,6 +115,11 @@ public class InitListener implements IInvokedMethodListener{
             testResult.setAttribute("session", SessionContext.session());
         }
 
+        //Execute Method from Page Object or Page Facade prior to @Test execution
+        if(preconfigure!=null && method.getTestMethod().getCurrentInvocationCount()==0) {
+            log.debug("Preconfiguration steps will be executed now for @Test {} !!!",method.getTestMethod().getMethodName());
+            executionPreConfiguration(preconfigure);
+        }
     }
 
     @Override
@@ -107,6 +137,7 @@ public class InitListener implements IInvokedMethodListener{
             }
         }
 
+        //set session as testng attribute for BeforeConfiguration methods
         if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isBeforeTestConfiguration()) {
             testResult.setAttribute("session", SessionContext.session());
         } else if(method.getTestMethod().isBeforeClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
@@ -116,4 +147,35 @@ public class InitListener implements IInvokedMethodListener{
         }
     }
 
+    /**
+     * Execute PreConfiguration
+     * @param configure
+     * @throws SkipException
+     */
+    private void executionPreConfiguration(Object configure) throws SkipException{
+        try{
+            String method="";
+            Class<?>  classRef=null;
+            if(configure instanceof PreConfiguration){
+                method=((PreConfiguration)configure).method();
+                classRef=((PreConfiguration)configure).classReference();
+            } else if(configure instanceof PostConfiguration){
+                method=((PostConfiguration)configure).method();
+                classRef=((PostConfiguration)configure).classReference();
+            }
+            Class<?> invokedClass=ApplicationContextProvider.getApplicationContext().getBean(classRef).getClass();
+            Constructor<?> constructor = invokedClass.getDeclaredConstructors()[0];
+            constructor.setAccessible(true);
+            Object innerObject = constructor.newInstance();
+            for (Method m:invokedClass.getMethods()){
+                if(m.getName().equalsIgnoreCase(method)) {
+                    ReflectionUtils.invokeMethod(m,innerObject);
+                }
+            }
+            log.debug("Preconfiguration steps executed successfully for!!!");
+        } catch (Exception e) {
+        log.error("Skip the test because of failure to preconfiguration with exception "+e.getLocalizedMessage()+"!!");
+        throw new SkipException("Skip the test because of failure to configuration of test with message: "+e.getCause().toString()+"!!");
+    }
+}
 }
