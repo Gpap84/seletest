@@ -1,6 +1,9 @@
 Seletest
 ========
 
+<a href="https://buildhive.cloudbees.com/job/GiannisPapadakis/job/Seletest/">
+<img src="https://camo.githubusercontent.com/f35d0c52028b388ea9593c5fd2bf78a3b955c7af/68747470733a2f2f6275696c64686976652e636c6f7564626565732e636f6d2f6a6f622f6d696368616c2d6c6970736b692f6a6f622f706167652d6f626a656374732d7765626472697665722f62616467652f69636f6e" alt="Build Status" data-canonical-source="https://buildhive.cloudbees.com/job/michal-lipski/job/page-objects-webdriver/badge/icon" style="max-width:100%;">
+
 *****************************************************************************************
 Web and Mobile Automation testing framework based on Spring - Webdriver - Appium in Java.
 *****************************************************************************************
