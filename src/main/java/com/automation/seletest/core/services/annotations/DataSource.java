@@ -62,7 +62,7 @@ public @interface DataSource {
      * Data type to be used
      * @return enum data type (csv/ excel sheet/ properties)
      */
-    Data dataType();
+    Data dataType() default Data.PROPERTIES;
 
 
 
