@@ -37,7 +37,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ public class ActionsHandler extends SuperAspect {
      */
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
-        if(ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException){
+        if(ex instanceof TimeoutException || ex instanceof SeleniumException){
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
             element().takeScreenShot();
         }

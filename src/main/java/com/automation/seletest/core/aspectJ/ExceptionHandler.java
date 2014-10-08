@@ -69,7 +69,7 @@ public class ExceptionHandler extends SuperAspect {
      * @return
      * @throws Throwable
      */
-    @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail() || appiumCommands()")
+    @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
     public Object handleException(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         try {
@@ -87,9 +87,7 @@ public class ExceptionHandler extends SuperAspect {
                 report.error("Exception: "+ex.getMessage().split("Build")[0].trim());
                 throw ex;
             } else{
-                report.error(String.format("%s: Failed with exception '%s'",
-                        pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
-                        ex));
+                report.error(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex));
             }
         }
         return returnValue;

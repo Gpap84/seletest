@@ -81,10 +81,6 @@ public abstract class SuperAspect {
     @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
     protected void sendMail() {}
 
-    /**Methods for appium commands*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.mobileAPI.AppiumController.*(..))")
-    protected void appiumCommands() {}
-
     /** Pointcut for boolean methods inside WebAPI*/
     @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI..*(..))")
     protected void componentsStatus() {}

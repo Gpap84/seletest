@@ -84,7 +84,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=1)
     public SeleniumController click(Object locator) {
-        selenium().click((String)locator);
+        selenium().click(defineLocator(locator));
         return this;
     }
 
@@ -96,7 +96,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=1)
     public SeleniumController type(Object locator, String text) {
-        selenium().typeKeys((String)locator, text);
+        selenium().typeKeys(defineLocator(locator), text);
         return this;
     }
 
@@ -117,7 +117,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.VISIBILITY)
     public SeleniumController changeStyle(Object locator, String attribute, String attributevalue) {
-        selenium().highlight((String)locator);
+        selenium().highlight(defineLocator(locator));
         return this;
     }
 
@@ -183,7 +183,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public String getText(Object locator) {
-        return selenium().getText((String)locator);
+        return selenium().getText(defineLocator(locator));
     }
 
     /* (non-Javadoc)
@@ -193,7 +193,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public String getTagName(Object locator) {
-        return selenium().getAttribute((String)locator+"@tagName");
+        return selenium().getAttribute(defineLocator(locator)+"@tagName");
     }
 
     /* (non-Javadoc)
@@ -203,8 +203,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public Point getLocation(Object locator) {
-        int px =(Integer) selenium().getElementPositionLeft((String)locator);
-        int py=(Integer) selenium().getElementPositionTop((String)locator);
+        int px =(Integer) selenium().getElementPositionLeft(defineLocator(locator));
+        int py=(Integer) selenium().getElementPositionTop(defineLocator(locator));
         Point p=new Point(px, py);
         return p;
     }
@@ -216,8 +216,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public Dimension getElementDimensions(Object locator) {
-        int height = (Integer) (selenium().getElementHeight((String)locator));
-        int width = (Integer) selenium().getElementWidth((String)locator);
+        int height = (Integer) (selenium().getElementHeight(defineLocator(locator)));
+        int width = (Integer) selenium().getElementWidth(defineLocator(locator));
         return new Dimension(width, height);
     }
 
@@ -235,7 +235,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public boolean isWebElementPresent(String locator) {
-        waitController().waitForElementPresence(locator);
+        waitController().waitForElementPresence(defineLocator(locator));
         return true;
     }
 
@@ -256,7 +256,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public boolean isWebElementVisible(Object locator) {
-        waitController().waitForElementVisibility(locator);
+        waitController().waitForElementVisibility(defineLocator(locator));
         return true;
     }
 
@@ -268,7 +268,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public SeleniumController uploadFile(Object locator, String path) {
-        selenium().attachFile((String)locator, path);
+        selenium().attachFile(defineLocator(locator), path);
         return this;
     }
 
@@ -289,7 +289,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public SeleniumController selectByValue(String locator, String value) {
-        selenium().select(locator,"value="+value);
+        selenium().select(defineLocator(locator),"value="+value);
         return this;
     }
 
@@ -301,7 +301,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public SeleniumController selectByVisibleText(String locator, String text) {
-        selenium().select(locator,"label="+text);
+        selenium().select(defineLocator(locator),"label="+text);
         return this;
     }
 
@@ -475,6 +475,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#acceptAlert()
      */
     @Override
+    @Monitor
     @WaitCondition(waitFor.ALERT)
     @RetryFailure(retryCount=1)
     public SeleniumController acceptAlert() {
@@ -486,6 +487,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#dismissAlert()
      */
     @Override
+    @Monitor
     @WaitCondition(waitFor.ALERT)
     @RetryFailure(retryCount=1)
     public SeleniumController dismissAlert() {
@@ -517,6 +519,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#switchToFrame(java.lang.String)
      */
     @Override
+    @Monitor
     @RetryFailure(retryCount=1)
     public SeleniumController switchToFrame(String frameId) {
         selenium().selectFrame(frameId);
@@ -527,6 +530,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.WindowsController#goBack()
      */
     @Override
+    @Monitor
     @RetryFailure(retryCount=1)
     public SeleniumController goBack() {
         selenium().goBack();
@@ -558,10 +562,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @RetryFailure(retryCount=1)
     public int getRowsTable(Object tableLocator) {
         int rows = 0;
-        String locator=(String)tableLocator;
+        String locator=defineLocator(tableLocator);
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
             rows = selenium().getXpathCount(locator + "//tbody//tr").intValue();
-        } else if (locator.startsWith("css=") || locator.startsWith("jquery=")) {
+        } else if (locator.startsWith("css=")) {
             rows = selenium().getCssCount(locator + " tbody tr").intValue();
         } return rows;
     }
@@ -574,10 +578,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @RetryFailure(retryCount=1)
     public int getColumnsTable(Object tableLocator) {
         int columns = 0;
-        String locator=(String)tableLocator;
+        String locator=defineLocator(tableLocator);
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
             columns = selenium().getXpathCount(locator + "//tbody//tr[1]/td").intValue();
-        } else if (locator.startsWith("css=") || locator.startsWith("jquery=")) {
+        } else if (locator.startsWith("css=")) {
             columns = selenium().getCssCount(locator + " tbody tr:nth-child(1) td").intValue();
         } return columns;
     }
@@ -589,7 +593,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
     public String getFirstSelectedOptionText(Object locator) {
-        String selectedText=selenium().getSelectedLabel((String)locator);
+        String selectedText=selenium().getSelectedLabel(defineLocator(locator));
         return selectedText;
     }
 
@@ -597,9 +601,11 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getAllOptionsText(java.lang.Object)
      */
     @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @RetryFailure(retryCount=1)
     public List<String> getAllOptionsText(Object locator) {
         List<String> optionValues = new ArrayList<String>();
-        String [] options=selenium().getSelectOptions((String)locator);
+        String [] options=selenium().getSelectOptions(defineLocator(locator));
         for (String option:options) {
             optionValues.add(option);
         } return optionValues;
@@ -611,9 +617,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
+    @Monitor
     public SeleniumController<T> clearSelectedOptionByText(Object locator, String text) {
-        if(selenium().isSomethingSelected((String)locator)){
-            selenium().select((String)locator,"label="+text);
+        if(selenium().isSomethingSelected(defineLocator(locator))){
+            selenium().select(defineLocator(locator),"label="+text);
         } return this;
     }
 
@@ -623,9 +630,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
+    @Monitor
     public SeleniumController<T> clearSelectedOption(Object locator, String value) {
-        if(selenium().isSomethingSelected((String)locator)){
-            selenium().select((String)locator,"value="+value);
+        if(selenium().isSomethingSelected(defineLocator(locator))){
+            selenium().select(defineLocator(locator),"value="+value);
         } return this;
     }
 
@@ -633,8 +641,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldEditable(java.lang.Object)
      */
     @Override
+    @WaitCondition(waitFor.PRESENCE)
     public boolean isFieldEditable(Object locator) {
-        return selenium().isEditable((String)locator);
+        return selenium().isEditable(defineLocator(locator));
     }
 
     /* (non-Javadoc)
@@ -649,8 +658,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
      */
     @Override
+    @WaitCondition(waitFor.PRESENCE)
     public boolean isFieldNotEditable(Object locator) {
-        return !selenium().isEditable((String)locator);
+        return !selenium().isEditable(defineLocator(locator));
     }
 
     /* (non-Javadoc)
@@ -660,6 +670,19 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     public boolean isElementNotClickable(Object locator) {
         throw new UnsupportedOperationException("Method isElementNotClickable(Object locator) is not supported with Selenium 1");
 
+    }
+
+    /**
+     * Define locator
+     * @param locator
+     * @return String locator
+     */
+    private String defineLocator(Object locator){
+        if(((String)locator).startsWith("jquery=")){
+            return ((String)locator).replace("jquery=", "css=");
+        } else{
+            return (String)locator;
+        }
     }
 
 

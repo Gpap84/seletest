@@ -53,7 +53,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " presence");
             } try {
-                if (selenium().isElementPresent(locator)) {
+                if (selenium().isElementPresent(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
@@ -73,7 +73,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " visibility");
             } try {
-                if (selenium().isVisible((String)locator)) {
+                if (selenium().isVisible(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
@@ -120,13 +120,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " invisibility");
             } try {
-                if (!selenium().isVisible(locator)) {
+                if (!selenium().isVisible(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight(locator);
+        selenium().highlight(defineLocator(locator));
         return null;
     }
 
@@ -140,7 +140,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " to have text " + text + "");
             } try {
-                if (selenium().getText((String)locator).equalsIgnoreCase(text)) {
+                if (selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception e) {
@@ -160,7 +160,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
             } try {
-                if (selenium().getAttribute((String)locator+"@value").equalsIgnoreCase(text)) {
+                if (selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception e) {
@@ -182,9 +182,9 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } try {
                 int elements=0;
                 if(locator.startsWith("//") || locator.startsWith("xpath=")) {
-                    elements=selenium().getXpathCount(locator).intValue();
+                    elements=selenium().getXpathCount(defineLocator(locator)).intValue();
                 } else if(locator.startsWith("css=")) {
-                    elements=selenium().getCssCount(locator).intValue();
+                    elements=selenium().getCssCount(defineLocator(locator)).intValue();
                 }
                 if (elements > 1) {
                     break;
@@ -192,7 +192,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight(locator);
+        selenium().highlight(defineLocator(locator));
         return null;
     }
 
@@ -232,7 +232,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
                 return false;
             } try {
-                if (!selenium().isElementPresent(locator)) {
+                if (!selenium().isElementPresent(defineLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
@@ -250,7 +250,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
              return false;
             } try {
-                if (!selenium().isVisible(locator)) {
+                if (!selenium().isVisible(defineLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {

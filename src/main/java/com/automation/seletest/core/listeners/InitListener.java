@@ -118,13 +118,25 @@ public class InitListener implements IInvokedMethodListener{
         //Execute Method from Page Object or Page Facade prior to @Test execution
         if(preconfigure!=null && method.getTestMethod().getCurrentInvocationCount()==0) {
             log.debug("Preconfiguration steps will be executed now for @Test {} !!!",method.getTestMethod().getMethodName());
-            executionPreConfiguration(preconfigure);
+            executionConfiguration(preconfigure);
         }
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+        PostConfiguration postconfigure = null;
+        ITestClass testClass=method.getTestMethod().getTestClass();
+        Class<?> webClass=testClass.getRealClass();
+
+        //Get postconfigure on Class level
+        if(testResult.getMethod().isAfterClassConfiguration() && testResult.getMethod().getMethodName().equalsIgnoreCase("afterClass")) {
+            postconfigure=webClass.getAnnotation(PostConfiguration.class);
+        }
+
         if(method.getTestMethod().isTest()){
+            //Get preconfigure on @Test level
+            postconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PostConfiguration.class);
+
             PerformanceUtils perf=(PerformanceUtils) SessionContext.session().getControllers().get(PerformanceUtils.class);
             SessionControl.verifyController().assertAll();
 
@@ -145,6 +157,12 @@ public class InitListener implements IInvokedMethodListener{
         } else if (method.getTestMethod().isBeforeMethodConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("methods")==0) {
             testResult.setAttribute("session", SessionContext.session());
         }
+
+      //Execute Method from Page Object or Page Facade prior to @Test execution
+        if(postconfigure!=null && method.getTestMethod().getCurrentInvocationCount()==0) {
+            log.debug("Postconfiguration steps will be executed now for @Test {} !!!",method.getTestMethod().getMethodName());
+            executionConfiguration(postconfigure);
+        }
     }
 
     /**
@@ -152,7 +170,7 @@ public class InitListener implements IInvokedMethodListener{
      * @param configure
      * @throws SkipException
      */
-    private void executionPreConfiguration(Object configure) throws SkipException{
+    private void executionConfiguration(Object configure) throws SkipException{
         try{
             String method="";
             Class<?>  classRef=null;
@@ -172,7 +190,7 @@ public class InitListener implements IInvokedMethodListener{
                     ReflectionUtils.invokeMethod(m,innerObject);
                 }
             }
-            log.debug("Preconfiguration steps executed successfully for!!!");
+            log.debug("{} steps executed successfully for!!!",configure instanceof PreConfiguration ? "Preconfiguration" : "Postconfiguration");
         } catch (Exception e) {
         log.error("Skip the test because of failure to preconfiguration with exception "+e.getLocalizedMessage()+"!!");
         throw new SkipException("Skip the test because of failure to configuration of test with message: "+e.getCause().toString()+"!!");

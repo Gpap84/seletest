@@ -91,6 +91,19 @@ public abstract class AbstractBase {
             }
         }
 
+        /**
+         * Define locator
+         * @param locator
+         * @return String locator
+         */
+        protected String defineLocator(Object locator){
+            if(((String)locator).startsWith("jquery=")){
+                return ((String)locator).replace("jquery=", "css=");
+            } else{
+                return (String)locator;
+            }
+        }
+
     }
 
 

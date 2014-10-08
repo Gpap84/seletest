@@ -29,7 +29,6 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestContext;
@@ -58,7 +57,6 @@ import com.automation.seletest.core.services.properties.CoreProperties;
         "classpath*:META-INF/spring/app-context.xml",
         "classpath*:META-INF/spring/mail-context.xml",
         "classpath*:META-INF/spring/thread-pool-context.xml"})
-@EnableAspectJAutoProxy(proxyTargetClass=true)
 public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
 
     /**Μessage initialize new session*/

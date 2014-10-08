@@ -37,6 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
@@ -180,6 +183,41 @@ public class FilesUtils {
             throw new SkipException("Data not loaded for test execution!!!");
         }
         return map;
+    }
+
+    /**
+     * get Excel Sheet data
+     * @param xlFilePath
+     * @param sheetName
+     * @param tableName
+     * @return String[][] with excel data
+     */
+    public String[][] getTableArray(String xlFilePath, String sheetName, String tableName){
+        String[][] tabArray=null;
+        try{
+            Workbook workbook = Workbook.getWorkbook(new File(xlFilePath));
+            Sheet sheet = workbook.getSheet(sheetName);
+            int startRow,startCol, endRow, endCol,ci,cj;
+            Cell tableStart=sheet.findCell(tableName);
+            startRow=tableStart.getRow();
+            startCol=tableStart.getColumn();
+            Cell tableEnd= sheet.findCell(tableName, startCol+1,startRow+1, 100, 64000,  false);
+            endRow=tableEnd.getRow();
+            endCol=tableEnd.getColumn();
+            tabArray=new String[endRow-startRow-1][endCol-startCol-1];
+            ci=0;
+
+            for (int i=startRow+1;i<endRow;i++,ci++){
+                cj=0;
+                for (int j=startCol+1;j<endCol;j++,cj++){
+                    tabArray[ci][cj]=sheet.getCell(j,i).getContents();
+                }
+            }
+        }
+        catch (Exception e)    {
+            log.error("Exception occured: "+e);
+        }
+        return(tabArray);
     }
 
 

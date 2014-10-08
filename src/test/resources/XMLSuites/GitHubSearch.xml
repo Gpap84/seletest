@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Google Search Demo" verbose="2" parallel="tests">
+
+ <parameter name="hostURL" value="http://www.github.com/" />
+ <parameter name="gridHost" value="http://localhost" />
+ <parameter name="gridPort" value="4444" />
+   
+ <listeners>
+  <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+  <listener class-name="com.automation.seletest.core.listeners.TestListener"/>
+  <listener class-name="com.automation.seletest.core.listeners.AnnotationTransformer"/>
+</listeners>
+
+
+<test
+ name="GitHub Search on local environment">
+     <parameter name="profileDriver" value="chrome" />
+  <classes>
+   <class
+    name="DemoTest.GitHubSearch">
+   </class>
+  </classes>
+  </test>
+</suite>

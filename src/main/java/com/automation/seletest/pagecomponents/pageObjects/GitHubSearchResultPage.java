@@ -1,7 +1,7 @@
 /*
-This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
+This file is part of the Seletest by Giannis Papadakis <gpapadakis84@gmail.com>.
 
-Copyright (c) 2014, Papadakis Giannis <gpapadakis84@gmail.com>
+Copyright (c) 2014, Giannis Papadakis <gpapadakis84@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -30,37 +30,35 @@ import java.text.MessageFormat;
 
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.LogUtils;
 
+/**
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ *
+ */
 @Component
-public class GooglePage extends AbstractPage<GooglePage>{
+public class GitHubSearchResultPage extends AbstractPage<GitHubSearchResultPage>{
+    public enum GitHubSearchPageLocators {
 
-    @Autowired
-    LogUtils log;
-
-    public enum GooglePageLocators {
-
-        IPF_SEARCH("name=q") {
+        TXT_RESULT_HEADER("jquery=a:contains({0})") {
             @Override
             public String log() {
-                return "TextField \"Search\" used with locator: '" + IPF_SEARCH.get() + "'!!!";
+                return "Header of the result with locator " + TXT_RESULT_HEADER.get() + "!!!";
             }
         },
-        BTN_SUBMIT("name=btnG") {
+        DIV_SEARCH_MENU("css=div.search-menu-container") {
             @Override
             public String log() {
-                return "Button \"Search\" used with locator: '" + BTN_SUBMIT.get() + "'!!!";
+                return "Search menu with locator " + DIV_SEARCH_MENU.get() + "!!!";
             }
         },
         ;
 
         private final String myLocator;
 
-        GooglePageLocators(String locator) {
+        GitHubSearchPageLocators(String locator) {
             myLocator = locator;
         }
 
@@ -74,35 +72,6 @@ public class GooglePage extends AbstractPage<GooglePage>{
 
         // Abstract method which need to be implemented
         public abstract String log();
-
-    }
-
-
-    public GooglePage typeSearch(String text){
-        webControl().getLocation(GooglePageLocators.IPF_SEARCH.get());
-        webControl().type(GooglePageLocators.IPF_SEARCH.get(), text);
-        return this;
-    }
-
-    /**
-     * Press search with Actions Builder
-     * @return
-     */
-    public GooglePage buttonSearch(){
-        webControl().click(GooglePageLocators.BTN_SUBMIT.get());
-        return this;
-    }
-
-
-    /**
-     * Opens this page object
-     * @return
-     */
-    public GooglePage open() {
-        for(GooglePageLocators s:GooglePageLocators.values()){
-            log.info(s.log());
-        }
-        return openPage(GooglePage.class);
     }
 
     /* (non-Javadoc)
@@ -110,6 +79,9 @@ public class GooglePage extends AbstractPage<GooglePage>{
      */
     @Override
     protected ExpectedCondition<?> getPageLoadCondition() {
-        return ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(GooglePageLocators.IPF_SEARCH.get()).setLocator(GooglePageLocators.IPF_SEARCH.get()));
+        return ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(GitHubSearchPageLocators.DIV_SEARCH_MENU.get()).setLocator(GitHubSearchPageLocators.DIV_SEARCH_MENU.get()));
+
     }
+
+
 }

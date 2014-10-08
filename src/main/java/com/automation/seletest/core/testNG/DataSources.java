@@ -29,6 +29,11 @@ package com.automation.seletest.core.testNG;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 
 import com.automation.seletest.core.services.FilesUtils;
@@ -40,7 +45,18 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
+@Component
 public class DataSources {
+
+    private static FilesUtils file;
+
+    @Autowired
+    private FilesUtils wiredfile;
+
+    @PostConstruct
+    public void init() {
+        DataSources.file = wiredfile;
+    }
 
     /**
      * Generic DataProvider that returns data from a Map
@@ -53,6 +69,18 @@ public class DataSources {
         Map<String, String> map = ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).readData(method);
         return new Object[][] { { map } };
     }
+
+    @DataProvider(name = "ExcelData")
+    public static Object[][] createData(ITestContext context) throws Exception{
+        String testParam = context.getCurrentXmlTest().getParameter("validationsxls");
+        String testParamSheet = context.getCurrentXmlTest().getParameter("validationsxlsSheet");
+        String testParamTable = context.getCurrentXmlTest().getParameter("validationsxlsTable");
+        Object[][] retObjArr=file.getTableArray(testParam,testParamSheet,testParamTable);
+        return(retObjArr);
+    }
+
+
+
 
 
 
