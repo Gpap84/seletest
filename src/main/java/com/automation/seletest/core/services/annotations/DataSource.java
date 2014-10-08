@@ -51,5 +51,21 @@ public @interface DataSource {
      */
     String filePath() default "";
 
+    /**
+     * Enum for data type
+     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    public enum Data{CSV,PROPERTIES,EXCEL};
+
+    /**
+     * Data type to be used
+     * @return enum data type (csv/ excel sheet/ properties)
+     */
+    Data dataType();
+
+
+
+
 
 }

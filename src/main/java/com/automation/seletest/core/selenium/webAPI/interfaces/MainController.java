@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.interfaces;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -195,6 +196,13 @@ public interface MainController<T extends MainController<T>>{
      * @return MainController
      */
     T deleteCookieByName(String name);
+
+    /**
+     * Gets a cookie by name
+     * @param name
+     * @return cookie
+     */
+    Cookie getCookieNamed(String name);
 
     /**
      * Deletes a cookie
@@ -408,5 +416,17 @@ public interface MainController<T extends MainController<T>>{
      * @return true if element is not clickable
      */
     boolean isElementNotClickable(Object locator);
+
+    /**
+     * Download a file using URLConnection
+     * @param url
+     * @param filenamePrefix
+     * @param fileExtension
+     * @return The absolute path of the downloaded file
+     * @throws IOException
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException;
 
 }

@@ -30,6 +30,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +63,7 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 /**
+ * SeleniumController class..
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -683,6 +688,40 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         } else{
             return (String)locator;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getCookieNamed(java.lang.String)
+     */
+    @Override
+    public Cookie getCookieNamed(String name) {
+        return new Cookie(name,selenium().getCookieByName(name));
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#downloadFile(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("resource")
+    @Override
+    public String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException {
+        URLConnection request = null;
+        request = new URL(url).openConnection();
+        request.setRequestProperty("Cookie", "PHPSESSID="+getCookieNamed("PHPSESSID").getValue());
+        InputStream in = request.getInputStream();
+        File downloadedFile = File.createTempFile(filenamePrefix, fileExtension);
+        FileOutputStream out = new FileOutputStream(downloadedFile);
+        byte[] buffer = new byte[1024];
+        int len = in.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+        }
+        in.close();
+        out.close();
+        return downloadedFile.getAbsolutePath();
     }
 
 

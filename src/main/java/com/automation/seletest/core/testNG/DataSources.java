@@ -48,6 +48,15 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
 @Component
 public class DataSources {
 
+    /**Constant for excel file*/
+    private final static String EXCEL="xls";
+
+    /**Constant for excel sheet*/
+    private final static String EXCELSHEET="xlsSheet";
+
+    /**Constant for excel table*/
+    private final static String EXCELTABLE="xlsTable";
+
     private static FilesUtils file;
 
     @Autowired
@@ -70,11 +79,11 @@ public class DataSources {
         return new Object[][] { { map } };
     }
 
-    @DataProvider(name = "ExcelData")
+    @DataProvider(name = "ExcelDataProvider",parallel=true)
     public static Object[][] createData(ITestContext context) throws Exception{
-        String testParam = context.getCurrentXmlTest().getParameter("validationsxls");
-        String testParamSheet = context.getCurrentXmlTest().getParameter("validationsxlsSheet");
-        String testParamTable = context.getCurrentXmlTest().getParameter("validationsxlsTable");
+        String testParam = context.getCurrentXmlTest().getParameter(EXCEL);
+        String testParamSheet = context.getCurrentXmlTest().getParameter(EXCELSHEET);
+        String testParamTable = context.getCurrentXmlTest().getParameter(EXCELTABLE);
         Object[][] retObjArr=file.getTableArray(testParam,testParamSheet,testParamTable);
         return(retObjArr);
     }

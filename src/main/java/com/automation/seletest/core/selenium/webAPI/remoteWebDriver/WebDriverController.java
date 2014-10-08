@@ -30,7 +30,12 @@ package com.automation.seletest.core.selenium.webAPI.remoteWebDriver;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -285,6 +290,15 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      ************************COOKIES SECTION*********************
      *************************************************************
      */
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getCookieNamed(java.lang.String)
+     */
+    @Override
+    public Cookie getCookieNamed(String name) {
+        return webDriver().manage().getCookieNamed(name);
+    }
+
     @Override
     @Monitor
     @RetryFailure(retryCount=1)
@@ -598,5 +612,33 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         waitController().waitForElementNotClickable(locator);
         return false;
     }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#downloadFile(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("resource")
+    @Override
+    public String downloadFile(String url, String filenamePrefix,String fileExtension) throws MalformedURLException, IOException, InterruptedException {
+        URLConnection request = null;
+        request = new URL(url).openConnection();
+        request.setRequestProperty("Cookie", "PHPSESSID="+getCookieNamed("PHPSESSID").getValue());
+        InputStream in = request.getInputStream();
+        File downloadedFile = File.createTempFile(filenamePrefix, fileExtension);
+        FileOutputStream out = new FileOutputStream(downloadedFile);
+        byte[] buffer = new byte[1024];
+        int len = in.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+        }
+        in.close();
+        out.close();
+        return downloadedFile.getAbsolutePath();
+    }
+
+
 
 }
