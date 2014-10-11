@@ -16,8 +16,9 @@ This is a Java Framework based on WebDriver API to interact with web or mobile a
 Tests supported:<br>
 a] Web End to End functional <b>Supported</b><br>
 b] DB transactions tests <b>Not supported yet...</b><br>
-c] Client performance Tests <b>Supported...</b><br>
+c] Client performance tests <b>Supported</b><br>
 d] Mobile End to End functional <b>Partially supported (Android)</b><br>
+e] Web Security tests<b>Upcoming</b>
 
 
 Tools used:<br>
@@ -33,7 +34,7 @@ Tools used:<br>
 
 Current Drivers supported:<br>
 a] ChromeDriver<br>
-b] InternetExplorerDriver for IE9<br>
+b] InternetExplorerDriver<br>
 c] FirefoxDriver<br>
 d] PhantomJSDriver<br>
 e] AppiumDriver<br>
@@ -47,6 +48,7 @@ Features:
  * JVM memory usage
  * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
  * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver (:contains('')/nth-child)
+ * Custom Angular selectors (<b>Upcoming</b>)
 
 
 <b>Tips for IEDriver</b><br>
