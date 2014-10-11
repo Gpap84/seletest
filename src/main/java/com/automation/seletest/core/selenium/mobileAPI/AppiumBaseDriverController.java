@@ -1,7 +1,7 @@
 /*
-This file is part of the Seletest by Papadakis Giannis <gpapadakis84@gmail.com>.
+This file is part of the Seletest by Giannis Papadakis <gpapadakis84@gmail.com>.
 
-Copyright (c) 2014, Papadakis Giannis <gpapadakis84@gmail.com>
+Copyright (c) 2014, Giannis Papadakis <gpapadakis84@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -24,44 +24,48 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.selenium.configuration;
+package com.automation.seletest.core.selenium.mobileAPI;
 
-import io.appium.java_client.TouchAction;
-
-import org.openqa.selenium.interactions.Actions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 /**
- * This class returns all the interfaces - objects used for testing
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-public class SessionControl {
+@SuppressWarnings("unchecked")
+public abstract class AppiumBaseDriverController<T> implements AppiumController<AppiumBaseDriverController<T>>{
+
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
+
+
     /**
-     * verifyController for this test instance
-     * @return AssertTest instance
+     * UiScrollable locator for android
+     * @param uiSelector
+     * @return UIScrollable locator
      */
-    public static <T> AssertTest<?> verifyController(){
-        return SessionContext.session().getAssertion();
+    public String uiScrollable(String uiSelector) {
+        return "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" + uiSelector + ".instance(0));";
     }
 
     /**
-     * Actions builder
-     * @return Actions instance
+     * Gets the WebDriver instance
+     * @return WebDriver instance
      */
-    public static Actions actionsBuilder(){
-        return SessionContext.session().getActions();
+    public T webDriver(){
+        return (T) SessionContext.getSession().getWebDriver();
     }
 
-
     /**
-     * TouchAction builder
-     * @return TouchAction instance
+     * WaitFor Controller
+     * @return WaitFor
      */
-    public static TouchAction touchactionsBuilder(){
-        return SessionContext.session().getTouchAction();
+    public WaitFor waitController() {
+        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
 }

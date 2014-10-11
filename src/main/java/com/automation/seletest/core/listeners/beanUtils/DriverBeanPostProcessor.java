@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.testng.ITestResult;
 import org.testng.Reporter;
 
 import com.automation.seletest.core.services.properties.CoreProperties;
@@ -58,9 +59,13 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
-        String browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.BROWSERTYPE.get());
-        String clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.CLIENTLOGS.get());
+        String browserType=null;
+        String clientLogs=null;
+        ITestResult result=Reporter.getCurrentTestResult();
+        if(result!=null) {
+            browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.BROWSERTYPE.get());
+            clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.CLIENTLOGS.get());
+        }
 
         if(bean instanceof DesiredCapabilities) {
 

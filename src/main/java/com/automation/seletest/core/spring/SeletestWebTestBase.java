@@ -43,6 +43,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import com.automation.seletest.core.listeners.InitListener;
+import com.automation.seletest.core.selenium.configuration.ConfigurationDriver;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.properties.CoreProperties;
 
@@ -53,11 +54,8 @@ import com.automation.seletest.core.services.properties.CoreProperties;
  */
 @Slf4j
 @Listeners(InitListener.class)
-@ContextConfiguration(locations={
-        "classpath*:META-INF/spring/app-context.xml",
-        "classpath*:META-INF/spring/mail-context.xml",
-        "classpath*:META-INF/spring/thread-pool-context.xml"})
-public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
+@ContextConfiguration(classes=ConfigurationDriver.class)
+public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
 
     /**Μessage initialize new session*/
     private final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
@@ -79,11 +77,8 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     }
 
     @BeforeTest(alwaysRun = true)
-    protected void beforeTest(
-            ITestContext ctx) throws Exception {
-        if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
-                ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
-
+    protected void beforeTest(ITestContext ctx) throws Exception {
+        if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0 || ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
             log.debug("*****************************************");
             log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
             log.debug("*****************************************");
@@ -92,8 +87,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     }
 
     @BeforeClass(alwaysRun = true)
-    protected void beforeClass(
-            ITestContext ctx) throws Exception {
+    protected void beforeClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
             log.debug("******************************************************************");
             log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
@@ -103,8 +97,7 @@ public abstract class SeletestWebTestBase extends AbstractTestNGSpringContextTes
     }
 
     @BeforeMethod(alwaysRun = true)
-    protected void beforeMethod(
-            ITestContext ctx) throws Exception {
+    protected void beforeMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
             log.debug("*********************************************************************");
             log.debug("**** Initialize session: <<\"parallel={}\">>***************", ctx.getCurrentXmlTest().getParallel());

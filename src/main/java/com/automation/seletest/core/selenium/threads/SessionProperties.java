@@ -29,19 +29,20 @@ package com.automation.seletest.core.selenium.threads;
 
 
 
-import java.util.Map;
-
+import io.appium.java_client.TouchAction;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController.CloseSession;
+import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.thoughtworks.selenium.Selenium;
 
 
@@ -58,16 +59,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    /**Map with various controllers for test session*/
-    @Getter @Setter
-    Map<Class<?>,Object> controllers;
-
-    /**The web driver context*/
-    @Getter @Setter
-    AnnotationConfigApplicationContext driverContext;
-
-
-    /**Timeout for waiting until condition fullfilled */
+    /**The wait until timerout*/
     @Getter @Setter
     int waitUntil = 5;
 
@@ -78,6 +70,22 @@ public class SessionProperties<T extends RemoteWebDriver> {
     /**The selenium object*/
     @Getter @Setter
     Selenium selenium;
+
+    /**Actions class**/
+    @Getter @Setter
+    Actions actions;
+
+    /**Performance class**/
+    @Getter @Setter
+    PerformanceUtils performance;
+
+    /**Assertions class**/
+    @Getter @Setter
+    AssertTest<?> assertion;
+
+    /**TouchAction class**/
+    @Getter @Setter
+    TouchAction touchAction;
 
     /** Wait Strategy*/
     @Getter @Setter
@@ -104,12 +112,6 @@ public class SessionProperties<T extends RemoteWebDriver> {
         if(webDriver!=null){
             factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
-
-        //Initialize Controllers Array List
-        controllers.clear();
-
-        //Destroy the webdriver application context
-        driverContext.destroy();
 
         log.info("Session closed!!!");
     }

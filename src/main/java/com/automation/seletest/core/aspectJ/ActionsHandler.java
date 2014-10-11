@@ -28,6 +28,7 @@ package com.automation.seletest.core.aspectJ;
 
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -112,9 +113,7 @@ public class ActionsHandler extends SuperAspect {
         long start = System.currentTimeMillis();
         try {
             returnValue = pjp.proceed();
-        } catch (Exception ex) {
-            //Do not log because the handle is done in another advice
-        }
+        } catch (Exception ex) {}
         long elapsedTime = System.currentTimeMillis() - start;
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get())!=null &&
                 Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get()))) {
@@ -129,7 +128,9 @@ public class ActionsHandler extends SuperAspect {
     public void memoryBefore(final JoinPoint pjp) {
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
                 Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
-            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " before executing method: "+pjp.getSignature().getName());
+            NumberFormat format = NumberFormat.getInstance();
+
+            log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }
     }
 
@@ -138,7 +139,9 @@ public class ActionsHandler extends SuperAspect {
     public void memoryAfter(final JoinPoint pjp) {
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
                 Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
-            log.info("JVM memory in use = "+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())+ " after executing method: "+pjp.getSignature().getName());
+            NumberFormat format = NumberFormat.getInstance();
+
+            log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }
     }
 

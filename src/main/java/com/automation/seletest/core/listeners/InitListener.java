@@ -81,12 +81,11 @@ public class InitListener implements IInvokedMethodListener{
                 //Set session objects as testNG attribute
                 testResult.setAttribute("session", SessionContext.session());
                 Reporter.setCurrentTestResult(testResult);
-                SessionContext.session().getControllers().put(AssertTest.class, ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
-                SessionContext.session().getControllers().put(Actions.class, new Actions(SessionContext.session().getWebDriver()));
+                SessionContext.session().setAssertion(ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
+                SessionContext.session().setActions(new Actions(SessionContext.session().getWebDriver()));
 
                 seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
                 SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
-                SessionContext.session().setWaitUntil(seleniumTest.waitFor());
 
                 //initialize controller's names in thread
                 if(seleniumTest.driver().equals(DriverType.WEBDRIVER) && method.getTestMethod().getCurrentInvocationCount()==0) {
@@ -134,10 +133,14 @@ public class InitListener implements IInvokedMethodListener{
         }
 
         if(method.getTestMethod().isTest()){
+
             //Get preconfigure on @Test level
             postconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PostConfiguration.class);
 
-            PerformanceUtils perf=(PerformanceUtils) SessionContext.session().getControllers().get(PerformanceUtils.class);
+            //Get performance object
+            PerformanceUtils perf=SessionContext.session().getPerformance();
+
+            //Verify soft assertions
             SessionControl.verifyController().assertAll();
 
             //Performance collection data
@@ -190,7 +193,7 @@ public class InitListener implements IInvokedMethodListener{
                     ReflectionUtils.invokeMethod(m,innerObject);
                 }
             }
-            log.debug("{} steps executed successfully for!!!",configure instanceof PreConfiguration ? "Preconfiguration" : "Postconfiguration");
+            log.debug("{} steps executed successfully for!!!", configure instanceof PreConfiguration ? "Preconfiguration" : "Postconfiguration");
         } catch (Exception e) {
         log.error("Skip the test because of failure to preconfiguration with exception "+e.getLocalizedMessage()+"!!");
         throw new SkipException("Skip the test because of failure to configuration of test with message: "+e.getCause().toString()+"!!");

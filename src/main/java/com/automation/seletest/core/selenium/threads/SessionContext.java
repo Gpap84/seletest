@@ -96,10 +96,10 @@ public class SessionContext {
     public static void setSessionProperties(){
         threadStack.push(session());//push instanse of Session to stack
         String driver="";
-        if(session().getWebDriver() instanceof RemoteWebDriver) {
-            driver=session().getWebDriver().toString().split(":")[0];
+        if(session().getWebDriver() instanceof RemoteWebDriver && !(session().getWebDriver() instanceof AppiumDriver)) {
+            driver="Web Test: "+session().getWebDriver().toString().split(":")[0];
         } else if(session().getWebDriver() instanceof AppiumDriver) {
-            driver=session().getWebDriver().toString().split(":")[0];
+            driver="Mobile Test: "+session().getWebDriver().toString().split(":")[0];
         }
         log.info("Session started with type of driver: {}", driver);
         Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);

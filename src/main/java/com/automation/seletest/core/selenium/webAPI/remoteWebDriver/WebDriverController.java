@@ -65,7 +65,6 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.elements.ByJQuerySelector;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.Monitor;
@@ -82,7 +81,7 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  */
 @Component("webDriverControl")
 @SuppressWarnings({"rawtypes"})
-public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> implements MainController<WebDriverController<T>>{
+public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> {
 
     /**FileUtils*/
     @Autowired

@@ -26,9 +26,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
@@ -38,7 +47,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  *
  */
 @SuppressWarnings("unchecked")
-public abstract class DriverBaseController<T> {
+public abstract class DriverBaseController<T> implements MainController<DriverBaseController<T>>{
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
@@ -60,28 +69,38 @@ public abstract class DriverBaseController<T> {
     }
 
     /**
-     * Gets the strategy for Wait<WebDriver>
-     * @return Alias for Wait Strategy
-     */
-    public String getWait(){
-        return SessionContext.getSession().getWaitStrategy();
-    }
-
-    /**
      * WaitFor Controller
      * @return WaitFor
      */
     public WaitFor waitController() {
-        return factoryStrategy.getWaitStrategy(getWait());
+        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
-    /**
-     * UiScrollable locator for android
-     * @param uiSelector
-     * @return UIScrollable locator
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#downloadFile(java.lang.String, java.lang.String, java.lang.String)
      */
-    public String uiScrollable(String uiSelector) {
-        return "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" + uiSelector + ".instance(0));";
+    @SuppressWarnings("resource")
+    @Override
+    public String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException {
+        URLConnection request = null;
+        request = new URL(url).openConnection();
+        request.setRequestProperty("Cookie", "PHPSESSID="+getCookieNamed("PHPSESSID").getValue());
+        InputStream in = request.getInputStream();
+        File downloadedFile = File.createTempFile(filenamePrefix, fileExtension);
+        FileOutputStream out = new FileOutputStream(downloadedFile);
+        byte[] buffer = new byte[1024];
+        int len = in.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+        }
+        in.close();
+        out.close();
+        return downloadedFile.getAbsolutePath();
     }
+
 
 }

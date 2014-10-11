@@ -30,10 +30,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +50,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
@@ -70,7 +65,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
 @Component("seleniumControl")
 @Slf4j
 @SuppressWarnings("rawtypes")
-public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T> implements MainController<SeleniumController<T>>{
+public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T>{
 
     /**The FileUtils*/
     @Autowired
@@ -78,7 +73,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
 
     @Override
     public WebElement findElement(Object locator) {
-        throw new UnsupportedOperationException("findElements(object locator) method is not supported for Selenium 1");
+        throw new UnsupportedOperationException("findElements(object locator) method is not supported for Selenium RC");
     }
 
     /* (non-Javadoc)
@@ -345,9 +340,11 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#addCookie(org.openqa.selenium.Cookie)
      */
-    @Deprecated
     @Override
+    @Monitor
+    @RetryFailure(retryCount=1)
     public SeleniumController addCookie(Cookie cookie) {
+        selenium().createCookie(cookie.getName(), cookie.getValue());
         return this;
     }
 
@@ -355,8 +352,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getCookies()
      */
     @Override
-    @Deprecated
     public Set<Cookie> getCookies() {
+        selenium().getCookie();
         return null;
     }
 
@@ -385,12 +382,9 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#scriptLoadTimeout(long, java.util.concurrent.TimeUnit)
      */
-    @Deprecated
     @Override
     public SeleniumController scriptLoadTimeout(long timeout, TimeUnit timeunit) {
-        // TODO Auto-generated method stub
-        return this;
-
+        throw new UnsupportedOperationException("Method scriptLoadTimeout(long timeout, TimeUnit timeunit) is not supported with Selenium RC");
     }
 
     /* (non-Javadoc)
@@ -430,8 +424,10 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public Dimension getWindowDimension() {
-        // TODO Auto-generated method stub
-        return null;
+        int width = Integer.parseInt(selenium().getEval("screen.width"));
+        int height = Integer.parseInt(selenium().getEval("screen.height"));
+        Dimension dimension=new Dimension(width, height);
+        return dimension;
     }
 
     /* (non-Javadoc)
@@ -548,7 +544,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public SeleniumController goForward() {
-        throw new UnsupportedOperationException("Method goForward() is not supported with Selenium 1");
+        throw new UnsupportedOperationException("Method goForward() is not supported with Selenium RC");
     }
 
     /* (non-Javadoc)
@@ -556,7 +552,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public List<WebElement> findChildElements(Object parent, String child) {
-        throw new UnsupportedOperationException("Method findChildElements(Object parent, String child) is not supported with Selenium 1");
+        throw new UnsupportedOperationException("Method findChildElements(Object parent, String child) is not supported with Selenium RC");
     }
 
     /* (non-Javadoc)
@@ -656,7 +652,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public boolean isElementClickable(Object locator) {
-        throw new UnsupportedOperationException("Method isElementClickable(Object locator) is not supported with Selenium 1");
+        throw new UnsupportedOperationException("Method isElementClickable(Object locator) is not supported with Selenium RC");
     }
 
     /* (non-Javadoc)
@@ -673,7 +669,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public boolean isElementNotClickable(Object locator) {
-        throw new UnsupportedOperationException("Method isElementNotClickable(Object locator) is not supported with Selenium 1");
+        throw new UnsupportedOperationException("Method isElementNotClickable(Object locator) is not supported with Selenium RC");
 
     }
 
@@ -698,31 +694,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         return new Cookie(name,selenium().getCookieByName(name));
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#downloadFile(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @SuppressWarnings("resource")
-    @Override
-    public String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException {
-        URLConnection request = null;
-        request = new URL(url).openConnection();
-        request.setRequestProperty("Cookie", "PHPSESSID="+getCookieNamed("PHPSESSID").getValue());
-        InputStream in = request.getInputStream();
-        File downloadedFile = File.createTempFile(filenamePrefix, fileExtension);
-        FileOutputStream out = new FileOutputStream(downloadedFile);
-        byte[] buffer = new byte[1024];
-        int len = in.read(buffer);
-        while (len != -1) {
-            out.write(buffer, 0, len);
-            len = in.read(buffer);
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-        }
-        in.close();
-        out.close();
-        return downloadedFile.getAbsolutePath();
-    }
 
 
 }

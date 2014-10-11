@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.thoughtworks.selenium.Selenium;
 
 /**
@@ -55,14 +56,6 @@ public abstract class AbstractBase {
         private final String webDriverWait="webdriverwait";
 
         /**
-         * Timeout before any action
-         * @return amount of time to wait for condition
-         */
-        protected int waitTime() {
-            return SessionContext.getSession().getWaitUntil();
-        }
-
-        /**
          * Gets the selenium instance
          * @return
          */
@@ -76,7 +69,7 @@ public abstract class AbstractBase {
          * @return
          */
         protected WebDriverWait wfExpected(){
-            return (WebDriverWait) SessionContext.getSession().getDriverContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver()});
+            return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil()});
         }
 
         /**

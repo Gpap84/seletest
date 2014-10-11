@@ -71,10 +71,4 @@ public @interface  SeleniumTest {
      */
     AssertionType assertion() default AssertionType.SOFT;
 
-    /**
-     * Wait for condition
-     * @return integer the amount of time to wait for element
-     */
-    int waitFor() default 5;
-
 }

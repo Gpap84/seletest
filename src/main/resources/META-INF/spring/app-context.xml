@@ -31,15 +31,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 <constructor-arg ref="defaultTaskExecutor" />
 </bean>
 
-
+<!-- Register a bean post processor -->
+<bean class="com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor"/>
 
  <!-- scan components and services -->
  <context:component-scan base-package="com.automation.seletest">
-  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.LocalDriverConfiguration.Profile*.*" />
-  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.RemoteDriverConfiguration.Profile*.*" />
+  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.ConfigurationDriver.*" />
   </context:component-scan>
  
- <!-- Factory for waiting strategy -->
+ <!-- Factory for strategies -->
  <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
   <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.StrategyFactory">
   </property>

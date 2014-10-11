@@ -33,6 +33,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.thoughtworks.selenium.SeleniumException;
 
 /**
@@ -50,8 +51,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public WebElement waitForElementPresence(String locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " presence");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " presence");
             } try {
                 if (selenium().isElementPresent(defineLocator(locator))) {
                     break;
@@ -70,8 +71,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public WebElement waitForElementVisibility(Object locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " visibility");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " visibility");
             } try {
                 if (selenium().isVisible(defineLocator(locator))) {
                     break;
@@ -98,8 +99,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public Alert waitForAlert() {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for for alert presence");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for for alert presence");
             } try {
                 if (selenium().isAlertPresent()) {
                     break;
@@ -117,8 +118,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public Boolean waitForElementInvisibility(String locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " invisibility");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " invisibility");
             } try {
                 if (!selenium().isVisible(defineLocator(locator))) {
                     break;
@@ -137,8 +138,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public Boolean waitForTextPresentinElement(Object locator, String text) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " to have text " + text + "");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + "");
             } try {
                 if (selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
                     break;
@@ -157,8 +158,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public Boolean waitForTextPresentinValue(Object locator, String text) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
             } try {
                 if (selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
                     break;
@@ -177,8 +178,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public List<WebElement> waitForPresenceofAllElements(String locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
-                throw new SeleniumException("Timeout of " + waitTime() + " seconds waiting for elements with " + locator);
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
+                throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for elements with " + locator);
             } try {
                 int elements=0;
                 if(locator.startsWith("//") || locator.startsWith("xpath=")) {
@@ -210,7 +211,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
     @Override
     public void waitForPageLoaded() {
-        selenium().waitForPageToLoad(String.valueOf(waitTime()));
+        selenium().waitForPageToLoad(String.valueOf(SessionContext.getSession().getWaitUntil()));
 
     }
 
@@ -229,7 +230,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public boolean waitForElementNotPresent(String locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 return false;
             } try {
                 if (!selenium().isElementPresent(defineLocator(locator))) {
@@ -247,7 +248,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public boolean waitForElementInvisble(String locator) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
                 if (!selenium().isVisible(defineLocator(locator))) {
@@ -265,7 +266,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     public boolean waitForPageTitle(String title) {
         long startTime = System.currentTimeMillis();
         do {
-            if (System.currentTimeMillis() - startTime >= waitTime() * 1000) {
+            if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
                 String [] windowTitles=selenium().getAllWindowTitles();

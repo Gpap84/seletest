@@ -42,7 +42,6 @@ import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
 import com.automation.seletest.core.services.properties.CoreProperties;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -161,7 +160,7 @@ public class ExceptionHandler extends SuperAspect {
         Object returnValue=null;
         try {
             returnValue = pjp.proceed();
-            if(!(((AssertTest<?>) SessionContext.getSession().getControllers().get(AssertTest.class)).getAssertion() instanceof SoftAssert)) {
+            if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
                 if((pjp).getArgs().length==1){
                     report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                 } else {

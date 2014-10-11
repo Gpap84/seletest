@@ -44,7 +44,6 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  *
  */
 @Component("webDriverActions")
-@SuppressWarnings("unchecked")
 public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDriverBuilder>{
 
     @WaitCondition(waitFor.VISIBILITY)
@@ -99,8 +98,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
     @Override
     public ActionsDriverBuilder performActions() {
         SessionControl.actionsBuilder().build().perform();
-        SessionContext.getSession().getControllers().remove(Actions.class);
-        SessionContext.getSession().getControllers().put(Actions.class, new Actions(SessionContext.getSession().getWebDriver()));
+        SessionContext.getSession().setActions(new Actions(SessionContext.getSession().getWebDriver()));
         return this;
     }
 
@@ -147,8 +145,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
     @Override
     public ActionsDriverBuilder performTouchActions() {
         SessionControl.touchactionsBuilder().perform();
-        SessionContext.getSession().getControllers().remove(TouchAction.class);
-        SessionContext.getSession().getControllers().put(TouchAction.class, new TouchAction((AppiumDriver) SessionContext.getSession().getWebDriver()));
+        SessionContext.getSession().setTouchAction(new TouchAction((AppiumDriver) SessionContext.getSession().getWebDriver()));
         return this;
     }
 
@@ -158,7 +155,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
     @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsDriverBuilder dragndrop(Object draglocator, Object droplocator) {
-        SessionControl.actionsBuilder().dragAndDrop(SessionContext.getSession().getWebElement(), (WebElement)droplocator);
+        SessionControl.actionsBuilder().dragAndDrop(SessionContext.getSession().getWebElement(), (WebElement) droplocator);
         return this;
     }
 

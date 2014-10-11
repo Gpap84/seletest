@@ -41,7 +41,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
@@ -55,7 +54,7 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  */
 @Component
 @SuppressWarnings("rawtypes")
-public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseController<T> implements AppiumController<AppiumDriverController<T>>{
+public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDriverController<T>{
 
     @Override
     @Monitor
@@ -267,7 +266,7 @@ public class AppiumDriverController<T extends AppiumDriver> extends DriverBaseCo
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
-    public AppiumDriverController<T> zoom(Object locator) {
+    public AppiumDriverController zoom(Object locator) {
         webDriver().zoom(SessionContext.getSession().getWebElement());
         return this;
     }
