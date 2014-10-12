@@ -67,12 +67,14 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
 
         //Set DataProvider for the test
         if (testMethod != null){
-            if(dataType(testMethod).equals(Data.PROPERTIES)) {
-                test.setDataProviderClass(DataSources.class);
-                test.setDataProvider(dataPropertiesSource);
-            } else if(dataType(testMethod).equals(Data.EXCEL)){
-                test.setDataProviderClass(DataSources.class);
-                test.setDataProvider(dataExcelSource);
+            if(dataType(testMethod)!=null) {
+                if(dataType(testMethod).equals(Data.PROPERTIES)) {
+                    test.setDataProviderClass(DataSources.class);
+                    test.setDataProvider(dataPropertiesSource);
+                } else if(dataType(testMethod).equals(Data.EXCEL)){
+                    test.setDataProviderClass(DataSources.class);
+                    test.setDataProvider(dataExcelSource);
+                }
             }
         }
 
@@ -94,7 +96,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
         } else if(testMethod.getDeclaringClass().getAnnotation(DataSource.class) != null){
             return testMethod.getDeclaringClass().getAnnotation(DataSource.class).dataType();
         }
-        return Data.PROPERTIES;
+        return null;
     }
 
     /* (non-Javadoc)
@@ -103,7 +105,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
     @Override
     @SuppressWarnings("rawtypes")
     public void transform(IConfigurationAnnotation annotation,  Class testClass,
-           Constructor testConstructor, Method testMethod) {
+            Constructor testConstructor, Method testMethod) {
         // TODO Auto-generated method stub
     }
 
@@ -112,7 +114,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
      */
     @Override
     public void transform(IDataProviderAnnotation annotation, Method method) {
-         annotation.setParallel(usesParallelDataProvider(method));
+        annotation.setParallel(usesParallelDataProvider(method));
     }
 
     /* (non-Javadoc)
@@ -129,7 +131,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
      * @return
      */
     private boolean usesParallelDataProvider(final Method testMethod) {
-           return testMethod.getAnnotation(DataProvider.class).parallel();
+        return testMethod.getAnnotation(DataProvider.class).parallel();
     }
 
 

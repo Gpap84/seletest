@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.pagecomponents.pageObjects;
+package com.automation.seletest.pagecomponents.pageObjects.Web;
 
 import java.text.MessageFormat;
 
@@ -33,6 +33,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 /**
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)

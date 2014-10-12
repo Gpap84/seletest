@@ -13,24 +13,23 @@
   <listener class-name="com.automation.seletest.core.listeners.AnnotationTransformer"/>
 </listeners>
 
-
-<test
- name="Google Search on Selenium Grid">
-   <parameter name="profileDriver" value="seleniumGrid" />
-   <parameter name="browserType" value="chrome" />  
-  <classes>
-   <class
-    name="DemoTest.GoogleTest">
-   </class>
-  </classes>
-  </test>
-  
 <test
  name="Google Search on local environment">
      <parameter name="profileDriver" value="chrome" />
   <classes>
    <class
-    name="DemoTest.GoogleTest">
+    name="WebDemoTest.GoogleTest">
+   </class>
+  </classes>
+  </test>
+  
+<test
+ name="Google Search on Grid">
+     <parameter name="profileDriver" value="seleniumGrid" />
+     <parameter name="browserType" value="chrome" />
+  <classes>
+   <class
+    name="WebDemoTest.GoogleTest">
    </class>
   </classes>
   </test>

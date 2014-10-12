@@ -106,7 +106,7 @@ public class InitListener implements IInvokedMethodListener{
         }
 
         //Set session as testng attribute for after configuration methods
-        if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isAfterTestConfiguration()) {
+        if((testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0) && method.getTestMethod().isAfterTestConfiguration()) {
             testResult.setAttribute("session", SessionContext.session());
         } else if(method.getTestMethod().isAfterClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
             testResult.setAttribute("session", SessionContext.session());

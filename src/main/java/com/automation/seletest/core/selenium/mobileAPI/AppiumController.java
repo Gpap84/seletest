@@ -196,4 +196,14 @@ public interface AppiumController<T extends AppiumController<T>>{
      */
     T zoom(Object locator);
 
+    /**
+     * Taps to center of WebElement
+     * @param fingers
+     * @param locator
+     * @param duration
+     * @return AppiumController
+     */
+    T tap(int fingers, Object locator, int duration);
+
+
 }

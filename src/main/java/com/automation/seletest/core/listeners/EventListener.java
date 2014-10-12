@@ -113,7 +113,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             DesiredCapabilities cap = (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(CoreProperties.CAPABILITIES.get());
 
             /**Capabilities for android-ios appium*/
-            if(profileDriver.contains("Android")) {
+            if(profileDriver.contains("android")) {
                 DesiredCapabilities androidcap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(CoreProperties.ANDROIDCAPABILITIES.get(),new Object[] {appPath,appActivity,appPackage,autoLaunch});
                 cap.merge(androidcap);
             } else if (profileDriver.contains("iOS")) {

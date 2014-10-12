@@ -61,7 +61,9 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         String browserType=null;
         String clientLogs=null;
+
         ITestResult result=Reporter.getCurrentTestResult();
+
         if(result!=null) {
             browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.BROWSERTYPE.get());
             clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.CLIENTLOGS.get());

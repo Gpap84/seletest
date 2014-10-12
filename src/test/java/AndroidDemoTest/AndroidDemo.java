@@ -24,36 +24,35 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package DemoTest;
+package AndroidDemoTest;
 
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.services.annotations.DataSource;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
-import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
-import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
-import com.automation.seletest.pagecomponents.pageObjects.GitHubSearchPage;
-import com.automation.seletest.pagecomponents.pageObjects.GitHubSearchResultPage.GitHubSearchPageLocators;
+import com.automation.seletest.core.testNG.PreConfiguration;
+import com.automation.seletest.pagecomponents.pageObjects.Android.CalculatorPage;
+import com.automation.seletest.pagecomponents.pageObjects.Android.CalculatorPage.CalculatorLocators;
 
-
-@DataSource(filePath="./target/test-classes/DataSources/demoTest.properties")
-@SeleniumTest
-public class GitHubSearch extends SeletestWebTestBase{
+/**
+ * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+ *
+ */
+public class AndroidDemo extends SeletestWebTestBase{
 
     @Autowired
-    GitHubSearchPage gitHub;
+    CalculatorPage calculate;
 
-    @SeleniumTest(assertion=AssertionType.HARD, driver=DriverType.SELENIUM)
-    @Test
-    public void gitHubSearch(Map<String, String> map) throws InterruptedException, ExecutionException{
-        gitHub.openPage().searchRepository(map.get("gitHubsearch"));
-        SessionControl.verifyController().elementPresent(GitHubSearchPageLocators.TXT_RESULT_HEADER.getWithParams(map.get("gitHubExpectedResult"))).get();
-    }
+        @SeleniumTest
+        @Test
+        @PreConfiguration(classReference = CalculatorPage.class, method = "clearResult")
+        public void CalculateMultiplication() throws InterruptedException, ExecutionException{
+            calculate.calculateMultiplication(CalculatorLocators.BTN_1.get(), CalculatorLocators.BTN_3.get());
+            SessionControl.verifyController().textPresentinElement(CalculatorLocators.IPF_RESULT.get(), "3").get();
+        }
 
 }

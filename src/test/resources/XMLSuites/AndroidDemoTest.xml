@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Android Demo" parallel="false">
+
+ 
+ <parameter name="hostURL" value="http://www.google.gr/" />
+ <parameter name="gridHost" value="http://127.0.0.1" />
+ <parameter name="gridPort" value="4723" />
+ <parameter name="app" value="C:\Android-SDK\tools\Calculator.apk"></parameter>
+ <parameter name="autoLaunch" value="true"></parameter>
+ <parameter name="appPackage" value="my.android.calc"></parameter>
+ <parameter name="appActivity" value="my.android.calc.MainActivity"></parameter>
+   
+ <listeners>
+  <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+  <listener class-name="com.automation.seletest.core.listeners.TestListener"/>
+  <listener class-name="com.automation.seletest.core.listeners.AnnotationTransformer"/>
+</listeners>
+
+
+<test name="Appium demo test">
+   <parameter name="profileDriver" value="androidGrid" />
+  <classes>
+   <class
+    name="AndroidDemoTest.AndroidDemo">
+   </class>
+  </classes>
+  </test>
+  
+</suite>

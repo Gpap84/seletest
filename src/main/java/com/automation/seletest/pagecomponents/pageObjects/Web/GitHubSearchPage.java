@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.pagecomponents.pageObjects;
+package com.automation.seletest.pagecomponents.pageObjects.Web;
 
 import java.text.MessageFormat;
 
@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.common.KeyInfo;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.properties.CoreProperties;
+import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 /**
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -88,17 +89,12 @@ public class GitHubSearchPage extends AbstractPage<GitHubSearchPage>{
 
 }
 
-    /**
-     * Performs a search
-     * @param search
-     * @param clazz
-     * @return
-     */
     public GitHubSearchPage searchRepository(String search) {
         webControl().type(GitHubPageLocators.BTN_SEARCH.get(),search);
         actionsControl().press(KeyInfo.ENTER).performActions();
         return this;
     }
+
 
     public GitHubSearchPage openPage() {
         openPage(GitHubSearchPage.class);

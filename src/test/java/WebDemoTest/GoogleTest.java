@@ -1,4 +1,4 @@
-package DemoTest;
+package WebDemoTest;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -12,7 +12,7 @@ import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
 import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
-import com.automation.seletest.pagecomponents.pageObjects.GooglePage;
+import com.automation.seletest.pagecomponents.pageObjects.Web.GooglePage;
 
 @DataSource(filePath="./target/test-classes/DataSources/demoTest.properties")
 @SeleniumTest

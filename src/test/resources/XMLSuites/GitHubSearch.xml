@@ -17,7 +17,7 @@
      <parameter name="profileDriver" value="chrome" />
   <classes>
    <class
-    name="DemoTest.GitHubSearch">
+    name="WebDemoTest.GitHubSearch">
    </class>
   </classes>
   </test>

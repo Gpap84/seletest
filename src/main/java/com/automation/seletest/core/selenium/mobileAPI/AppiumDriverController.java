@@ -265,9 +265,22 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
      */
     @Override
     @WaitCondition(waitFor.PRESENCE)
+    @Monitor
     @RetryFailure(retryCount=1)
     public AppiumDriverController zoom(Object locator) {
         webDriver().zoom(SessionContext.getSession().getWebElement());
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#tap(java.lang.Object)
+     */
+    @Override
+    @WaitCondition(waitFor.PRESENCE)
+    @Monitor
+    @RetryFailure(retryCount=1)
+    public AppiumDriverController tap(int fingers, Object locator, int duration) {
+        webDriver().tap(fingers, SessionContext.getSession().getWebElement(), duration);
         return this;
     }
 
