@@ -46,7 +46,7 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
 import com.thoughtworks.selenium.SeleniumException;
 
 /**
- * Error Handling Aspect
+ * Error Handling Aspect class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -65,7 +65,7 @@ public class ExceptionHandler extends SuperAspect {
     /**
      * Handle Exceptions...
      * @param pjp
-     * @return
+     * @return proxied object
      * @throws Throwable
      */
     @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
@@ -113,7 +113,7 @@ public class ExceptionHandler extends SuperAspect {
      * Around advice with custom annotation for retrying execution of JoinPoint
      * @param pjp
      * @param retry
-     * @return
+     * @return proxied object
      * @throws Throwable
      */
     @Around("retryExecution(retry)")
@@ -135,7 +135,7 @@ public class ExceptionHandler extends SuperAspect {
     /**
      * Around advice for performing JS scripts
      * @param pjp
-     * @return
+     * @return proxied object
      * @throws Throwable
      */
     @Around("jsHandle(js)")
@@ -152,7 +152,7 @@ public class ExceptionHandler extends SuperAspect {
     /**
      * around advice for verification methods
      * @param pjp
-     * @return
+     * @return proxied object
      * @throws Throwable
      */
     @Around("logVerify(verify)")
@@ -203,7 +203,7 @@ public class ExceptionHandler extends SuperAspect {
      * Handle exceptions for Boolean-Integer returning type methods in web controller
      * @param pjp
      * @param ex
-     * @return
+     * @return Proxied Object
      * @throws Throwable
      */
     private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {

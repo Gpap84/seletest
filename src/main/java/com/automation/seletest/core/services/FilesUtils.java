@@ -80,6 +80,7 @@ public class FilesUtils {
                 parametersCSV.put(nextLine[0], nextLine[1]);
                 i++;
             }
+            log.debug("CSV test data set from file {}",filepath);
         } catch (Exception e) {
             log.error("Exception during loading test data sources: "+e);
             throw new SkipException("Data not loaded for test execution!!!");
@@ -178,6 +179,7 @@ public class FilesUtils {
                     log.error("No value specified for key: "+key);
                 }
             }
+            log.debug("Test properties set from file {}",inputFile);
         } catch (Exception e) {
             log.error("Exception during loading test data sources: "+e);
             throw new SkipException("Data not loaded for test execution!!!");
@@ -213,9 +215,11 @@ public class FilesUtils {
                     tabArray[ci][cj]=sheet.getCell(j,i).getContents();
                 }
             }
+            log.debug("Excel table read for file: {}",xlFilePath);
+
         }
         catch (Exception e)    {
-            log.error("Exception occured: "+e);
+            log.error("Exception during reading from Excel file occured: "+e);
         }
         return(tabArray);
     }

@@ -14,7 +14,6 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-<context:property-placeholder location="BrowserSettings/browser.properties" order="1" ignore-unresolvable="true" /> 
 <context:spring-configured />
 <context:load-time-weaver />
 <context:annotation-config />
@@ -43,6 +42,17 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
   <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.StrategyFactory">
   </property>
+  </bean>
+  
+  <!-- RestTemplate client-->
+  <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" autowire-candidate="true">
+    <property name="messageConverters"> 
+        <list> 
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.FormHttpMessageConverter"/> 
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+        </list> 
+    </property>
   </bean>
  
  <!-- Aliases for wait strategy -->

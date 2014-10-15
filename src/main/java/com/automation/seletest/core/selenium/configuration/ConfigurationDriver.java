@@ -72,30 +72,43 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Configuration
 @SuppressWarnings("deprecation")
-@PropertySources({@PropertySource({"BrowserSettings/browser.properties"})})
-@ImportResource({"classpath*:META-INF/spring/app-context.xml", "classpath*:META-INF/spring/mail-context.xml", "classpath*:META-INF/spring/thread-pool-context.xml"})
+@Configuration
+@PropertySources({@PropertySource({"BrowserSettings/browser.properties","core.properties"})})
+@ImportResource({
+    "classpath*:META-INF/spring/app-context.xml",
+    "classpath*:META-INF/spring/mail-context.xml",
+    "classpath*:META-INF/spring/thread-pool-context.xml"})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class ConfigurationDriver {
 
     @Autowired
     Environment env;
 
+    /**
+     * Chrome bean
+     * @param capabilities
+     * @return WebDriver instance
+     */
     @Lazy(true)
     @Bean(name="chrome")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WebDriver chrome(DesiredCapabilities capabilities){
+    public WebDriver chrome(DesiredCapabilities capabilities) {
         File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
         WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
         System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
         return new ChromeDriver(capabilities);
     }
 
+    /**
+     * Chrome with Options loaded bean
+     * @return WebDriver instance
+     * @throws Exception
+     */
     @Lazy(true)
     @Bean(name="chromeOptions")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WebDriver chromeOptions() throws Exception{
+    public WebDriver chromeOptions() throws Exception {
         File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
         WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
         System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
@@ -105,7 +118,7 @@ public class ConfigurationDriver {
     /**
      * Load chrome options from properties file
      * @param optionsPath
-     * @return
+     * @return ChromeOptions the chrome options loaded from properties file
      * @throws Exception
      */
     public ChromeOptions chromeOptions(String optionsPath) throws Exception{
@@ -125,6 +138,11 @@ public class ConfigurationDriver {
         return options;
     }
 
+    /**
+     * Firefox bean
+     * @param capabilities
+     * @return WebDriver instance
+     */
     @Bean(name="firefox")
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -132,6 +150,11 @@ public class ConfigurationDriver {
         return new FirefoxDriver(capabilities);
     }
 
+    /**
+     * Internet Explorer bean
+     * @param capabilities
+     * @return WebDriver instance
+     */
     @Bean(name="internetExplorer")
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -144,6 +167,11 @@ public class ConfigurationDriver {
         return new InternetExplorerDriver(capabilities.merge(ieCap));
     }
 
+    /**
+     * Opera bean
+     * @param capabilities
+     * @return WebDriver instance
+     */
     @Bean(name="opera")
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -151,6 +179,11 @@ public class ConfigurationDriver {
         return new OperaDriver(capabilities);
     }
 
+    /**
+     * PhantomJS bean
+     * @param capabilities
+     * @return WebDriver instance
+     */
     @Bean(name="phantomJS")
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -163,6 +196,13 @@ public class ConfigurationDriver {
         return new PhantomJSDriver(capabilities.merge(phantomJSCap));
     }
 
+    /**
+     * Selenium Grid bean
+     * @param url
+     * @param cap
+     * @return WebDriver instance
+     * @throws MalformedURLException
+     */
     @Lazy(true)
     @Bean(name="seleniumGrid")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -170,6 +210,13 @@ public class ConfigurationDriver {
         return new Augmenter().augment(new RemoteWebDriver(new URL(url),cap));
     }
 
+    /**
+     * Android bean
+     * @param url
+     * @param cap
+     * @return WebDriver instance
+     * @throws MalformedURLException
+     */
     @Lazy(true)
     @Bean(name="androidGrid")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -177,6 +224,13 @@ public class ConfigurationDriver {
         return new AndroidDriver(new URL(url),cap);
     }
 
+    /**
+     * iOS bean
+     * @param url
+     * @param cap
+     * @return WebDriver instance
+     * @throws MalformedURLException
+     */
     @Lazy(true)
     @Bean(name="iOSGrid")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -185,6 +239,12 @@ public class ConfigurationDriver {
     }
 
 
+    /**
+     * WebDriver wait bean
+     * @param driver
+     * @param timeout
+     * @return WebDriverWait instance
+     */
     @Lazy(true)
     @Bean(name="webdriverwait")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -193,6 +253,10 @@ public class ConfigurationDriver {
     }
 
 
+    /**
+     * Capabilities bean
+     * @return DesiredCapabilities
+     */
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -201,6 +265,12 @@ public class ConfigurationDriver {
         return capabilities;
     }
 
+    /**
+     * Selenium bean
+     * @param driver
+     * @param baseUrl
+     * @return Selenium
+     */
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -208,6 +278,14 @@ public class ConfigurationDriver {
         return new WebDriverBackedSelenium(driver, baseUrl);
     }
 
+    /**
+     * android capabilities bean
+     * @param appPath
+     * @param appActivity
+     * @param appPackage
+     * @param autolaunch
+     * @return DesiredCapabilities
+     */
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -225,6 +303,14 @@ public class ConfigurationDriver {
         return capabilities;
     }
 
+    /**
+     * iOS capabilities bean
+     * @param appPath
+     * @param udid
+     * @param bundleId
+     * @param autolaunch
+     * @return DesiredCapabilities
+     */
     @Lazy(true)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

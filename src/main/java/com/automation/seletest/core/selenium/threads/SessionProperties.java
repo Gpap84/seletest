@@ -30,6 +30,9 @@ package com.automation.seletest.core.selenium.threads;
 
 
 import io.appium.java_client.TouchAction;
+
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +105,10 @@ public class SessionProperties<T extends RemoteWebDriver> {
     /**WebElement per session*/
     @Getter @Setter
     WebElement webElement;
+
+    /**List of web elements*/
+    @Getter @Setter
+    List<WebElement> webElements;
 
     /**
      * Initialize objects per session and close session!!!

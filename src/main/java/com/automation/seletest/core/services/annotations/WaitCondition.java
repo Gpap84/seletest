@@ -49,7 +49,7 @@ public @interface  WaitCondition {
 
     /**Enum specifying type of wait strategies*/
     public enum waitFor{
-        VISIBILITY,PRESENCE,ALERT,CLICKABLE;
+        VISIBILITY, PRESENCE, ALERT, CLICKABLE, VISIBILITYALL, PRESENCEALL;
     }
 
     /**waitFor value*/

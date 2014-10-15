@@ -55,6 +55,7 @@ import com.thoughtworks.selenium.SeleniumException;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings("unchecked")
 @Aspect
 @Component
 public class ActionsHandler extends SuperAspect {
@@ -103,6 +104,10 @@ public class ActionsHandler extends SuperAspect {
             SessionContext.getSession().setWebElement(waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
             SessionContext.getSession().setWebElement(waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
+            SessionContext.getSession().setWebElements(waitFor().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+        } else if(waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
+            SessionContext.getSession().setWebElements(waitFor().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
 
@@ -129,7 +134,6 @@ public class ActionsHandler extends SuperAspect {
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
                 Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
             NumberFormat format = NumberFormat.getInstance();
-
             log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }
     }
@@ -140,7 +144,6 @@ public class ActionsHandler extends SuperAspect {
         if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
                 Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
             NumberFormat format = NumberFormat.getInstance();
-
             log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }
     }
