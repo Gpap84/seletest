@@ -28,15 +28,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.listeners;
 
 import java.io.File;
-import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+import org.testng.Reporter;
+
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 /**
  * Test Listener
@@ -46,14 +53,14 @@ import org.testng.ITestResult;
 @Slf4j
 public class TestListener implements ITestListener{
 
-    private final String screenShots="./target/surefire-reports/screenshots";
-    private final String logs="./target/surefire-reports/logs";
+    private final String screenShots="/html/screenshots";
+    private final String logs="/html/Logs";
 
     @Override
     public void onStart(ITestContext testContext) {
         log.info("Suite: "+testContext.getSuite().getName()+" started at: "+testContext.getStartDate());
-        createDirectory(screenShots);
-        createDirectory(logs);
+        createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+screenShots);
+        createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+logs);
     }
 
     @Override
@@ -82,12 +89,6 @@ public class TestListener implements ITestListener{
                 }
             }
         }
-        try {
-            FileUtils.copyDirectoryToDirectory(new File(new File(context.getSuite().getOutputDirectory()).getParent(),"screenshots"),
-                    new File(new File(context.getSuite().getOutputDirectory()).getParent(),"html"));
-        } catch (IOException e) {
-            log.error("Exception during copying screenshots to HTML folder!!!" + e);
-        }
     }
 
     @Override
@@ -103,7 +104,14 @@ public class TestListener implements ITestListener{
     @Override
     public void onTestFailure(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" failed");
-//        ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail("gpapadakis84@gmail.com","Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
+        LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
+        StringBuilder list=new StringBuilder();
+        for (LogEntry entry : entries) {
+            list.append(entry.getMessage()+"\n");
+        }
+        ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
+        Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
+//        ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail("seletest.giannis@gmail.com","Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
     }
 
     @Override
@@ -115,12 +123,9 @@ public class TestListener implements ITestListener{
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 
     }
-    /**
-     * Create a directory
-     * @param dir
-     */
+
     private void createDirectory(String dir){
-        File currentPath = new File(dir);
+        File currentPath = new File(dir).getAbsoluteFile();
         if(!currentPath.exists()){
             currentPath.mkdirs();
         }

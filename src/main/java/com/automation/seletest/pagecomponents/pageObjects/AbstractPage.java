@@ -32,13 +32,13 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
 import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
 /**
@@ -50,6 +50,9 @@ import com.automation.seletest.core.spring.SeletestWebTestBase;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 @Component
 public abstract class AbstractPage<T> extends SeletestWebTestBase{
+
+    @Autowired
+    StrategyFactory strategy;
 
     /**Timeout to load a page*/
     private static final int LOAD_TIMEOUT = 30;
@@ -94,13 +97,11 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
      * @return ElementController
      */
     public MainController webControl() {
-        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
+        return strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 
     public ActionsBuilderController actionsControl() {
-        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getActionsStrategy(SessionContext.getSession().getActionsStrategy());
+        return strategy.getActionsStrategy(SessionContext.getSession().getActionsStrategy());
     }
-
-
 
 }

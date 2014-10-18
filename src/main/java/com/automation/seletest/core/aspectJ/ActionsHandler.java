@@ -40,14 +40,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.properties.CoreProperties;
 import com.thoughtworks.selenium.SeleniumException;
 
 /**
@@ -120,8 +119,7 @@ public class ActionsHandler extends SuperAspect {
             returnValue = pjp.proceed();
         } catch (Exception ex) {}
         long elapsedTime = System.currentTimeMillis() - start;
-        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get())!=null &&
-                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.APILOGS.get()))) {
+        if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
         log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
         }
         return returnValue;
@@ -131,8 +129,7 @@ public class ActionsHandler extends SuperAspect {
     /**Log memory usage before execution of method*/
     @Before("monitor()")
     public void memoryBefore(final JoinPoint pjp) {
-        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
-                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+        if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
             NumberFormat format = NumberFormat.getInstance();
             log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }
@@ -141,8 +138,7 @@ public class ActionsHandler extends SuperAspect {
     /**Log memory usage after execution of method*/
     @After("monitor()")
     public void memoryAfter(final JoinPoint pjp) {
-        if(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get())!=null &&
-                Boolean.parseBoolean(Reporter.getCurrentTestResult().getTestContext().getCurrentXmlTest().getParameter(CoreProperties.JVMLOGS.get()))) {
+        if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
             NumberFormat format = NumberFormat.getInstance();
             log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
         }

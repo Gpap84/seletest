@@ -106,7 +106,7 @@ public class FilesUtils {
      */
     public File createScreenshotFile() throws IOException {
         if (Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory() != null) {
-            File outputDir = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent(), "screenshots");
+            File outputDir = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent(), "/html/screenshots");
             FileUtils.forceMkdir(outputDir);
             return new File(outputDir, "screenshot-" + System.nanoTime() + ".png");
         }
@@ -120,13 +120,13 @@ public class FilesUtils {
      * @return
      */
     public String relativePath(File file, ITestContext ct) {
-        String outputDir = new File(ct.getSuite().getOutputDirectory()).getParent();
-        if (outputDir != null) {
-            String absolute = file.getAbsolutePath();
-            int beginIndex = absolute.indexOf(outputDir) + outputDir.length();
-            String relative = absolute.substring(beginIndex);
-            return "."+relative.replace('\\', '/');
-        }
+//        String outputDir = new File(ct.getSuite().getOutputDirectory()).getParent();
+//        if (outputDir != null) {
+//            String absolute = file.getAbsolutePath();
+//            int beginIndex = absolute.indexOf(outputDir) + outputDir.length();
+//            String relative = absolute.substring(beginIndex);
+//            return "."+relative.replace('\\', '/');
+//        }
         return file.getPath();
     }
 
@@ -222,6 +222,25 @@ public class FilesUtils {
             log.error("Exception during reading from Excel file occured: "+e);
         }
         return(tabArray);
+    }
+
+    /**
+     * Create an HTML file from template
+     * @param title
+     * @param body
+     */
+    public void createHTML(String title, String body, String filename) {
+        try {
+            File htmlTemplateFile = new File("target/classes/template.html").getAbsoluteFile();
+            String htmlString;
+            htmlString = FileUtils.readFileToString(htmlTemplateFile);
+            htmlString = htmlString.replace("$title", title);
+            htmlString = htmlString.replace("$body", body);
+            File newHtmlFile = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParentFile(),"/html/Logs/"+filename+".html");
+            FileUtils.writeStringToFile(newHtmlFile, htmlString);
+        } catch (IOException e) {
+            log.error("Exception during reading template.html: "+e);
+        }
     }
 
 

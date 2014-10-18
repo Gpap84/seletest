@@ -78,7 +78,7 @@ public class ExceptionHandler extends SuperAspect {
                 if(pjp.getSignature().toString().contains("pageObjects")) {
                     report.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
                 } else {
-                    report.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:black; font-weight: 500;\"");
+                    report.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:#663366;\"");
                 }
             }
         } catch (Exception ex) {

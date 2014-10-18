@@ -10,7 +10,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
  <!-- Mail Service -->
  <context:component-scan base-package="com.automation.seletest.core.services.MailService" />
-
+ <context:property-placeholder location="classpath:BrowserSettings/browser.properties"/>
+ 
  <!-- SET default mail properties -->
  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
   <property name="host" value="smtp.gmail.com" />
