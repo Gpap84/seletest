@@ -234,7 +234,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#isWebElementPresent(java.lang.String)
      */
     @Override
-    public boolean isWebElementPresent(String locator) {
+    public boolean isElementPresent(String locator) {
         waitController().waitForElementPresence(defineLocator(locator));
         return true;
     }
@@ -692,6 +692,23 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     public Cookie getCookieNamed(String name) {
         return new Cookie(name,selenium().getCookieByName(name));
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotVisible(java.lang.Object)
+     */
+    @Override
+    public boolean isElementNotVisible(String locator) {
+        waitController().waitForElementInvisibility(defineLocator(locator));
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#elementsMatching(java.lang.Object)
+     */
+    @Override
+    public int elementsMatching(String locator) {
+        throw new UnsupportedOperationException("Method elementsMatching(Object locator) is not supported with Selenium RC");
     }
 
 

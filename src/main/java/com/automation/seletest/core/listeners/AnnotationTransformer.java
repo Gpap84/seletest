@@ -104,8 +104,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
      */
     @Override
     @SuppressWarnings("rawtypes")
-    public void transform(IConfigurationAnnotation annotation,  Class testClass,
-            Constructor testConstructor, Method testMethod) {
+    public void transform(IConfigurationAnnotation annotation,  Class testClass, Constructor testConstructor, Method testMethod) {
         // TODO Auto-generated method stub
     }
 

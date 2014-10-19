@@ -30,7 +30,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -82,8 +81,8 @@ public class ExceptionHandler extends SuperAspect {
                 }
             }
         } catch (Exception ex) {
-            if (ex instanceof TimeoutException || ex instanceof NoSuchElementException || ex instanceof SeleniumException) {
-                report.error("Exception: "+ex.getMessage().split("Build")[0].trim());
+            if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
+                report.error("Exception: "+ex);
                 throw ex;
             } else{
                 report.error(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex));

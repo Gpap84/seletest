@@ -97,9 +97,9 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFound" , messagePass = "found", message = "elementLocator", screenShot = false)
+    @VerifyLog(messageFail = "notfound" , messagePass = "found", message = "elementLocator", screenShot = false)
     public Future<Boolean> elementPresent(String locator) {
-        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementPresent(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("found"));
         return new AsyncResult<>(true);
     }
 
@@ -110,7 +110,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
+    @VerifyLog(messageFail = "notfoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = false)
     public Future<Boolean> elementVisible(String locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isWebElementVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundVisible"));
         return new AsyncResult<>(true);
@@ -123,7 +123,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textPresentinElement(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinElement(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
@@ -136,7 +136,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textPresentValueAttribute(Object locator, String text) {
         assertion.assertTrue(strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy()).waitForTextPresentinValue(locator, text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
@@ -149,7 +149,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
     public Future<Boolean> textOfSelectedOption(Object locator, String text) {
         assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).getFirstSelectedOptionText(locator),text,env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
@@ -162,9 +162,9 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundEditable" , messagePass = "foundEditable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundEditable" , messagePass = "foundEditable", message = "elementLocator", screenShot = true)
     public Future<Boolean> fieldEditable(Object locator) {
-        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundEditable"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundEditable"));
         return new AsyncResult<>(true);
     }
 
@@ -174,9 +174,9 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "foundEditable" , messagePass = "notFoundEditable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundEditable" , messagePass = "foundEditable", message = "elementLocator", screenShot = true)
     public Future<Boolean> fieldNotEditable(Object locator) {
-        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldNotEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundEditable"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isFieldNotEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundEditable"));
         return new AsyncResult<>(true);
     }
 
@@ -186,9 +186,9 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notFoundClickable" , messagePass = "foundClickable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundClickable" , messagePass = "foundClickable", message = "elementLocator", screenShot = true)
     public Future<Boolean> elementClickable(Object locator) {
-        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundClickable"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundClickable"));
         return new AsyncResult<>(true);
     }
 
@@ -198,12 +198,35 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "foundClickable" , messagePass = "notFoundClickable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "notfoundClickable" , messagePass = "foundClickable", message = "elementLocator", screenShot = true)
     public Future<Boolean> elementNotClickable(Object locator) {
-        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementNotClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundClickable"));
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementNotClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundClickable"));
         return new AsyncResult<>(true);
     }
 
+    /**
+     * Verify that element is not visible
+     * @param locator
+     * @return AsyncResult
+     */
+    @Async
+    @VerifyLog(messageFail = "notfoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = true)
+    public Future<Boolean> elementNotVisible(String locator) {
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementNotVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notfoundVisible"));
+        return new AsyncResult<>(true);
+    }
 
+    /**
+     * Check if number of elements present in screen
+     * @param locator
+     * @param expectedElements
+     * @return true if correct number of elements present in screen
+     */
+    @Async
+    @VerifyLog(messageFail = "notfound" , messagePass = "found", message = "numberElements", screenShot = true)
+    public Future<Boolean> elementsMatching(String locator, int expectedElements) {
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).elementsMatching(locator),expectedElements,"Found "+String.valueOf(expectedElements)+" matching locator: "+locator);
+        return new AsyncResult<>(true);
+    }
 
 }

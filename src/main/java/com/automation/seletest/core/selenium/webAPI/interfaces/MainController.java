@@ -145,7 +145,14 @@ public interface MainController<T extends MainController<T>>{
      * @param locator
      * @return true if a web element is present
      */
-    boolean isWebElementPresent(String locator);
+    boolean isElementPresent(String locator);
+
+    /**
+     *  Defines if a web element is not visible
+     * @param locator
+     * @return true if element is no longer visible
+     */
+    boolean isElementNotVisible(String locator);
 
     /**
      * Defines if text is present in source
@@ -342,6 +349,13 @@ public interface MainController<T extends MainController<T>>{
      * @return List<WebElement> with all child elements
      */
     List<WebElement> findChildElements(Object parent, String child);
+
+    /**
+     * Number of elements matching the locator
+     * @param locator
+     * @return integer number of elements matching locator
+     */
+    int elementsMatching(String locator);
 
     /**
      *

@@ -208,8 +208,14 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      **************************************/
 
     @Override
-    public boolean isWebElementPresent(String locator) {
+    public boolean isElementPresent(String locator) {
         waitController().waitForElementPresence(locator);
+        return true;
+    }
+
+    @Override
+    public boolean isElementNotVisible(String locator) {
+        waitController().waitForElementInvisible(locator);
         return true;
     }
 
@@ -585,7 +591,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     public boolean isElementClickable(Object locator) {
         waitController().waitForElementToBeClickable(locator);
-        return false;
+        return true;
     }
 
     /* (non-Javadoc)
@@ -604,6 +610,14 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     public boolean isElementNotClickable(Object locator) {
         waitController().waitForElementNotClickable(locator);
-        return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#numberElementsMatching(java.lang.Object)
+     */
+    @Override
+    public int elementsMatching(String locator) {
+        return waitController().waitForVisibilityofAllElements(locator).size();
     }
 }

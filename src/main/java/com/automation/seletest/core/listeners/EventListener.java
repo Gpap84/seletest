@@ -34,6 +34,7 @@ import io.appium.java_client.ios.IOSDriver;
 
 import java.sql.Time;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,6 +139,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
+                driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
                 SessionContext.session().setWebDriver((RemoteWebDriver)driver);
                 selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
                 SessionContext.session().setSelenium(selenium);

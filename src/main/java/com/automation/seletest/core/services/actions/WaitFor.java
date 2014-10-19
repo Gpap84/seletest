@@ -124,7 +124,7 @@ public interface WaitFor {
      * @param locator
      * true if element is invisible
      */
-    boolean waitForElementInvisble(String locator);
+    boolean waitForElementInvisible(String locator);
 
     /**
      *Wait for title of page

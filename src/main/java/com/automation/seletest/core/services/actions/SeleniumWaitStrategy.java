@@ -245,7 +245,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
      */
     @Override
-    public boolean waitForElementInvisble(String locator) {
+    public boolean waitForElementInvisible(String locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {

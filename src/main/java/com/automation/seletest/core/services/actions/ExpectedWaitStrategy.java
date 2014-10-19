@@ -175,7 +175,7 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
      */
     @Override
-    public boolean waitForElementInvisble(String locator) {
+    public boolean waitForElementInvisible(String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
@@ -200,5 +200,7 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
         }
         return false;
     }
+
+
 
 }

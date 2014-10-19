@@ -26,7 +26,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI.elements;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -58,7 +66,10 @@ public abstract class ByJQuerySelector extends By {
      * ByJQuerySelectorExtended class.
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      */
+    @Slf4j(topic="ByJQuerySelectorExtended")
    public static class ByJQuerySelectorExtended extends ByJQuerySelector{
+
+        private static final String JQUERY_LOAD_SCRIPT = "jQuerify.js";
 
        private final String ownSelector;
 
@@ -70,6 +81,14 @@ public abstract class ByJQuerySelector extends By {
     @SuppressWarnings("unchecked")
     @Override
     public List<WebElement> findElements(SearchContext context) {
+        try {
+            String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
+            ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
+            log.info("JQuery library injected!!!");
+        } catch (IOException e) {
+             log.error("Error trying to inject jquery: "+e);
+        }
+
         Object o= ((JavascriptExecutor) context)
                 .executeScript("return $('" + ownSelector+ "');");
     return (List<WebElement>) o;
@@ -77,6 +96,13 @@ public abstract class ByJQuerySelector extends By {
 
     @Override
     public WebElement findElement(SearchContext context) {
+        try {
+            String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
+            ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
+            log.info("JQuery library injected!!!");
+        } catch (IOException e) {
+            log.error("Error trying to inject jquery: "+e);
+        }
         Object o=((JavascriptExecutor) context)
                 .executeScript("return $('" + ownSelector+ "').get(0);");
     	return (WebElement) o;
@@ -86,6 +112,25 @@ public abstract class ByJQuerySelector extends By {
     public String toString() {
       return "By.jQuerySelector: " + ownSelector;
     }
-   }
+
+    // helper method
+    private static String readFile(String file) throws IOException {
+        Charset cs = Charset.forName("UTF-8");
+        FileInputStream stream = new FileInputStream(file);
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+            StringBuilder builder = new StringBuilder();
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
+            return builder.toString();
+        }
+        finally {
+            stream.close();
+        }
+    }
+  }
 
 }

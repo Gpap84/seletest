@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
-import org.testng.ITestContext;
 import org.testng.Reporter;
 import org.testng.SkipException;
 
@@ -95,7 +94,7 @@ public class FilesUtils {
      *            file must exist
      */
     public void reportScreenshot(File file) {
-        Reporter.log("<a href=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\"><p><img width=\"878\" src=\"" + relativePath(file, Reporter.getCurrentTestResult().getTestContext()) + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
+        Reporter.log("<a href=\"" + file.getPath() + "\"><p><img width=\"878\" src=\"" + file.getPath() + "\" alt=\"screenshot at " + new Date() + "\"/></p></a><br />");
         log.warn("Screenshot captured, path is {}", file.getAbsolutePath());
     }
 
@@ -111,23 +110,6 @@ public class FilesUtils {
             return new File(outputDir, "screenshot-" + System.nanoTime() + ".png");
         }
         return new File("screenshot-" + System.nanoTime() + ".png");
-    }
-
-    /**
-     * Make relative path (different OS)
-     * @param file
-     * @param ct
-     * @return
-     */
-    public String relativePath(File file, ITestContext ct) {
-//        String outputDir = new File(ct.getSuite().getOutputDirectory()).getParent();
-//        if (outputDir != null) {
-//            String absolute = file.getAbsolutePath();
-//            int beginIndex = absolute.indexOf(outputDir) + outputDir.length();
-//            String relative = absolute.substring(beginIndex);
-//            return "."+relative.replace('\\', '/');
-//        }
-        return file.getPath();
     }
 
     /**
