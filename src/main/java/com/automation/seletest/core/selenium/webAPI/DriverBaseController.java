@@ -109,6 +109,7 @@ public abstract class DriverBaseController<T> implements MainController<DriverBa
     public void sleep(int milliseconds){
          try {
             Thread.sleep(milliseconds);
+            log.info("Sleep for: "+milliseconds+" milliseconds");
         } catch (InterruptedException e) {
            log.error("Exception during thread sleep: "+e);
         }

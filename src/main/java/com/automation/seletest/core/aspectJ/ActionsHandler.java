@@ -72,7 +72,7 @@ public class ActionsHandler extends SuperAspect {
      * @param returnVal
      */
     @AfterReturning(pointcut ="getReturningValue()",returning="returnVal")
-    public void afterReturningAdvice(final JoinPoint jp,Object returnVal) {
+    public void afterReturningAdvice(final JoinPoint jp, Object returnVal) {
         log.info("Command: "+jp.getSignature().getName()+" for["+arguments((ProceedingJoinPoint)jp)+"]"+" returned value: "+returnVal);
     }
 

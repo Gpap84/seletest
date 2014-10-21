@@ -711,6 +711,15 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         throw new UnsupportedOperationException("Method elementsMatching(Object locator) is not supported with Selenium RC");
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotPresent(java.lang.String)
+     */
+    @Override
+    public boolean isElementNotPresent(String locator) {
+        waitController().waitForElementNotPresent(locator);
+        return true;
+    }
+
 
 
 }

@@ -185,6 +185,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=1)
+    @JSHandle
     public Point getLocation(Object locator) {
         return SessionContext.getSession().getWebElement().getLocation();
     }
@@ -619,5 +620,14 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     public int elementsMatching(String locator) {
         return waitController().waitForVisibilityofAllElements(locator).size();
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotPresent(java.lang.String)
+     */
+    @Override
+    public boolean isElementNotPresent(String locator) {
+        waitController().waitForElementNotPresent(locator);
+        return true;
     }
 }

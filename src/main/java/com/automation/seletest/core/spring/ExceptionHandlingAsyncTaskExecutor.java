@@ -32,6 +32,8 @@ import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.task.AsyncTaskExecutor;
+import org.testng.ITestResult;
+import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
@@ -136,8 +138,11 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
     /**
      * Handle exception for asynchronous execution method
      * @param ex
+     * @throws Exception
      */
-    private void handle(Exception ex) {
+    private void handle(Exception ex){
         log.error("Error during @Async execution: " + ex);
+        Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
+        Reporter.getCurrentTestResult().setThrowable(ex);
     }
 }

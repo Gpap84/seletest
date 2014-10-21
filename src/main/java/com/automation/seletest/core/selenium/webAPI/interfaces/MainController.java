@@ -155,6 +155,13 @@ public interface MainController<T extends MainController<T>>{
     boolean isElementNotVisible(String locator);
 
     /**
+     * Defines if a web element is not present
+     * @param locator
+     * @return true if element is no longer present
+     */
+    boolean isElementNotPresent(String locator);
+
+    /**
      * Defines if text is present in source
      * @param text
      * @return false if not text present in page source

@@ -84,7 +84,7 @@ public abstract class ByJQuerySelector extends By {
         try {
             String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
             ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
-            log.info("JQuery library injected!!!");
+            log.debug("JQuery library injected from file {}!!!", getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
         } catch (IOException e) {
              log.error("Error trying to inject jquery: "+e);
         }
@@ -99,7 +99,7 @@ public abstract class ByJQuerySelector extends By {
         try {
             String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
             ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
-            log.info("JQuery library injected!!!");
+            log.debug("JQuery library injected from file {}!!!", getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
         } catch (IOException e) {
             log.error("Error trying to inject jquery: "+e);
         }

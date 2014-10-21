@@ -61,6 +61,9 @@ import com.automation.seletest.core.services.annotations.DataSource;
 @Service
 public class FilesUtils {
 
+    /** Constant for html template*/
+    private final String HTML_TEMPLATE="template.html";
+
     /**
      * Read data from CSV file
      * @param filepath
@@ -213,7 +216,7 @@ public class FilesUtils {
      */
     public void createHTML(String title, String body, String filename) {
         try {
-            File htmlTemplateFile = new File("target/classes/template.html").getAbsoluteFile();
+            File htmlTemplateFile = new File(getClass().getClassLoader().getResource(HTML_TEMPLATE).getPath()).getAbsoluteFile();
             String htmlString;
             htmlString = FileUtils.readFileToString(htmlTemplateFile);
             htmlString = htmlString.replace("$title", title);

@@ -29,7 +29,6 @@ package com.automation.seletest.core.listeners;
 
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -132,7 +131,7 @@ public class InitListener implements IInvokedMethodListener{
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
-                            log.error("Exception waiting Future task to complete: "+e);
+                            log.error("Exception waiting future task to complete: "+e);
                         }
                     }
                 }
@@ -172,6 +171,9 @@ public class InitListener implements IInvokedMethodListener{
      */
     private void executionConfiguration(Object configure) throws SkipException{
         try{
+
+            Class<?> noparams[]= {};
+
             String method="";
             Class<?>  classRef=null;
             if(configure instanceof PreConfiguration){
@@ -182,14 +184,9 @@ public class InitListener implements IInvokedMethodListener{
                 classRef=((PostConfiguration)configure).classReference();
             }
             Class<?> invokedClass=ApplicationContextProvider.getApplicationContext().getBean(classRef).getClass();
-            Constructor<?> constructor = invokedClass.getDeclaredConstructors()[0];
-            constructor.setAccessible(true);
-            Object innerObject = constructor.newInstance();
-            for (Method m:invokedClass.getMethods()){
-                if(m.getName().equalsIgnoreCase(method)) {
-                    ReflectionUtils.invokeMethod(m,innerObject);
-                }
-            }
+            Method _method=invokedClass.getDeclaredMethod(method,noparams);
+            Object target=invokedClass.newInstance();
+            ReflectionUtils.invokeMethod(_method,target);
             log.debug("{} steps executed successfully for!!!", configure instanceof PreConfiguration ? "Preconfiguration" : "Postconfiguration");
         } catch (Exception e) {
             log.error("Skip the test because of failure to preconfiguration with exception "+e.getLocalizedMessage()+"!!");

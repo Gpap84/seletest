@@ -129,6 +129,13 @@ public class AssertTest<T extends Assertion> {
         return new AsyncResult<>(true);
     }
 
+    @Async
+    @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true)
+    public Future<Boolean> textContainedinElement(Object locator, String text) {
+        assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).getText(locator).toLowerCase().contains(text),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
+        return new AsyncResult<>(true);
+    }
+
     /**
      * Verify that text is present in value attribute of element
      * @param locator
@@ -225,7 +232,7 @@ public class AssertTest<T extends Assertion> {
     @Async
     @VerifyLog(messageFail = "notfound" , messagePass = "found", message = "numberElements", screenShot = true)
     public Future<Boolean> elementsMatching(String locator, int expectedElements) {
-        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).elementsMatching(locator),expectedElements,"Found "+String.valueOf(expectedElements)+" matching locator: "+locator);
+        assertion.assertEquals(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).elementsMatching(locator),expectedElements,"Found "+String.valueOf(expectedElements)+" elements matching locator: "+locator);
         return new AsyncResult<>(true);
     }
 
