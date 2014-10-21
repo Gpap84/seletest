@@ -103,7 +103,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
     /** WebDriver-Selenium controller strategy*/
     @Getter @Setter
-    String controllerStrategy="webDriverElement";
+    String controllerStrategy="webDriverControl";
 
     /** WebDriver-Selenium actions strategy*/
     @Getter @Setter

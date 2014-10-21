@@ -189,7 +189,7 @@ public class ExceptionHandler extends SuperAspect {
                     attemptCount,
                     retry.retryCount(),
                     ex.getClass().getCanonicalName(),
-                    ex.getMessage().split("\n")[0]));
+                    ex.getMessage()));
             Thread.sleep(retry.sleepMillis());
         }
     }

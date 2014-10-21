@@ -155,7 +155,7 @@ public class ConfigurationDriver {
      * @param capabilities
      * @return WebDriver instance
      */
-    @Bean(name="internetExplorer")
+    @Bean(name="ie")
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver internetExplorer(DesiredCapabilities capabilities){

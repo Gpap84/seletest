@@ -136,8 +136,10 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
 
     }
 
-    /**Prepare initialization*/
-    private void initializeSession(ITestContext ctx){
+    /**Prepare initialization
+     * @throws Exception */
+    private void initializeSession(ITestContext ctx) throws Exception{
+        prepareTest();
         boolean performance=false;
         if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get())!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get()))) {
             performance=true;
