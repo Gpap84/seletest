@@ -31,7 +31,9 @@ package com.automation.seletest.core.selenium.threads;
 
 import io.appium.java_client.TouchAction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +55,7 @@ import com.thoughtworks.selenium.Selenium;
  * Custom objects per session
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
+ * @param <V>
  */
 @Slf4j
 @SuppressWarnings("deprecation")
@@ -77,6 +80,10 @@ public class SessionProperties<T extends RemoteWebDriver> {
     /**Actions class**/
     @Getter @Setter
     Actions actions;
+
+    /**List of all asynchronous verifications**/
+    @Getter @Setter
+    ArrayList<Future<?>> verifications;
 
     /**Performance class**/
     @Getter @Setter

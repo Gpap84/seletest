@@ -31,6 +31,8 @@ package com.automation.seletest.core.listeners;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +55,7 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.testNG.PostConfiguration;
 import com.automation.seletest.core.testNG.PreConfiguration;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.automation.seletest.core.testNG.assertions.SoftAssert;
 
 @Slf4j
 @SuppressWarnings("unchecked")
@@ -72,6 +75,7 @@ public class InitListener implements IInvokedMethodListener{
 
         if(method.getTestMethod().isTest()){
             if(method.getTestMethod().isTest()){
+                SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
                 log.debug("Set assertion type parameter for test method: {}!!!",method.getTestMethod().getMethodName());
                 testResult.setAttribute("session", SessionContext.session());
                 Reporter.setCurrentTestResult(testResult);
@@ -93,7 +97,7 @@ public class InitListener implements IInvokedMethodListener{
             }
         }
 
-        //Set session as testng attribute for after configuration methods
+        //Set session as testNG attribute for after configuration methods
         if((testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0) && method.getTestMethod().isAfterTestConfiguration()) {
             testResult.setAttribute("session", SessionContext.session());
         } else if(method.getTestMethod().isAfterClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){
@@ -120,6 +124,20 @@ public class InitListener implements IInvokedMethodListener{
         }
 
         if(method.getTestMethod().isTest()){
+
+            //Wait for verifications to complete before finishing @Test (only for SoftAssert)
+            if(SessionContext.getSession().getAssertion().getAssertion() instanceof SoftAssert){
+                for(Future<?> a : (ArrayList<Future<?>>)SessionContext.getSession().getVerifications()){
+                    while(!a.isDone()){
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            log.error("Exception waiting Future task to complete: "+e);
+                        }
+                    }
+                }
+            }
+
             postconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PostConfiguration.class);
             PerformanceUtils perf=SessionContext.session().getPerformance();
             SessionControl.verifyController().assertAll();
@@ -131,6 +149,7 @@ public class InitListener implements IInvokedMethodListener{
             }
         }
 
+        //Set session as testNG attribute for Before configuration methods
         if(testResult.getTestContext().getCurrentXmlTest().getParallel()==null || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("false")==0 || testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("tests")==0 &&method.getTestMethod().isBeforeTestConfiguration()) {
             testResult.setAttribute("session", SessionContext.session());
         } else if(method.getTestMethod().isBeforeClassConfiguration() && testResult.getTestContext().getCurrentXmlTest().getParallel().compareTo("classes")==0){

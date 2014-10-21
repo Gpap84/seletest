@@ -33,6 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.task.AsyncTaskExecutor;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.testNG.assertions.SoftAssert;
+
 /**
  * ExceptionHandlingAsyncTaskExecutor class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -79,7 +82,17 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
      */
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        return executor.submit(createCallable(task));
+        Future<T> futureTask=null;
+        if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)){
+            try {
+                futureTask= executor.submit(createCallable(task));
+                futureTask.get(); //wait for verifications to finish
+            } catch (Exception e) {log.error("Exception during executing future task: "+e);}
+        } else {
+            futureTask = executor.submit(createCallable(task));
+            SessionContext.getSession().getVerifications().add(futureTask);//push Future task to a ArrayList
+        }
+        return futureTask;
     }
 
     /**

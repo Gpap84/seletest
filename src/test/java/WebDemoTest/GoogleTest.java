@@ -1,8 +1,6 @@
 package WebDemoTest;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -24,22 +22,19 @@ public class GoogleTest extends SeletestWebTestBase{
 
     @SeleniumTest(assertion=AssertionType.HARD, driver=DriverType.SELENIUM)
     @Test
-    public void googleSearch(Map<String, String> map) throws InterruptedException, ExecutionException{
+    public void googleSearch(Map<String, String> map){
         googlePage.typeSearch(map.get("GoogleSearch")).buttonSearch();
-        SessionControl.verifyController().elementPresent(map.get("ExpectedResult")).get();
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
     }
 
     @SeleniumTest(assertion=AssertionType.SOFT)
     @Test
-    public void googleSearch2(Map<String, String> map) throws InterruptedException{
+    public void googleSearch2(Map<String, String> map){
         googlePage.typeSearch(map.get("GoogleSearch2")).buttonSearch();
-        Future<?> verification=SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
-        Future<?> verification1=SessionControl.verifyController().elementPresent("//text1");
-        Future<?> verification2=SessionControl.verifyController().elementPresent("//text2");
+        SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
+        SessionControl.verifyController().elementPresent("//text1");
+        SessionControl.verifyController().elementPresent("//text2");
 
-        while (!verification.isDone()&& !verification1.isDone()&&!verification2.isDone()) {
-            Thread.sleep(10);
-        }
     }
 
 }
