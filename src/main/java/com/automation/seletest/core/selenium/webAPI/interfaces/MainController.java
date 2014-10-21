@@ -443,4 +443,9 @@ public interface MainController<T extends MainController<T>>{
      */
     String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException;
 
+    /**
+     * Sleep executed thread
+     * @param milliseconds
+     */
+    void sleep(int milliseconds);
 }

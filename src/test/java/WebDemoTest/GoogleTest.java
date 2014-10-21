@@ -2,6 +2,7 @@ package WebDemoTest;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -30,9 +31,15 @@ public class GoogleTest extends SeletestWebTestBase{
 
     @SeleniumTest(assertion=AssertionType.SOFT)
     @Test
-    public void googleSearch2(Map<String, String> map) throws InterruptedException, ExecutionException{
+    public void googleSearch2(Map<String, String> map) throws InterruptedException{
         googlePage.typeSearch(map.get("GoogleSearch2")).buttonSearch();
-        SessionControl.verifyController().elementPresent(map.get("ExpectedResult")).get();
+        Future<?> verification=SessionControl.verifyController().elementPresent(map.get("ExpectedResult"));
+        Future<?> verification1=SessionControl.verifyController().elementPresent("//text1");
+        Future<?> verification2=SessionControl.verifyController().elementPresent("//text2");
+
+        while (!verification.isDone()&& !verification1.isDone()&&!verification2.isDone()) {
+            Thread.sleep(10);
+        }
     }
 
 }

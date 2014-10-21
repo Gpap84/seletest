@@ -73,19 +73,15 @@ public class ExceptionHandler extends SuperAspect {
         try {
             returnValue = pjp.proceed();
             String arguments=arguments(pjp).isEmpty() ? "" : "for["+arguments(pjp)+"]";
-            if(!pjp.getTarget().toString().contains("WaitStrategy") || invokedMethod(pjp).getName().contains("takeScreen")) {
-                if(pjp.getSignature().toString().contains("pageObjects")) {
-                    report.warn("Page Object method: "+pjp.getSignature().getName()+" executed successfully","\"color:#663366; font-weight: bold;\"");
-                } else {
-                    report.info("Command: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:#663366;\"");
-                }
+            if(pjp.getSignature().toString().contains("pageObjects")) {
+                report.warn("Page Object method: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:#663366; font-weight: bold;\"");
             }
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
-                report.error("Exception: "+ex);
+                report.error("Exception: "+ex.getMessage().split("\n")[0]);
                 throw ex;
             } else{
-                report.error(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex));
+                report.error(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex.getMessage().split("\n")[0]));
             }
         }
         return returnValue;
@@ -121,7 +117,7 @@ public class ExceptionHandler extends SuperAspect {
         for (int attemptCount = 1; attemptCount <= (1+retry.retryCount()); attemptCount++) {
             try {
                 returnValue = pjp.proceed();
-                report.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed successfully","\"color:black; font-weight: 500;\"");
+                report.info("Command: "+pjp.getSignature().getName()+" for ["+arguments(pjp)+"] executed!","\"color:#3366FF; font-weight: 500;\"");
                 break;
             } catch (Exception ex) {
                 handleRetryException(pjp, ex, attemptCount, retry);
@@ -193,7 +189,7 @@ public class ExceptionHandler extends SuperAspect {
                     attemptCount,
                     retry.retryCount(),
                     ex.getClass().getCanonicalName(),
-                    ex.getMessage().split("Build info")[0].trim()));
+                    ex.getMessage().split("\n")[0]));
             Thread.sleep(retry.sleepMillis());
         }
     }

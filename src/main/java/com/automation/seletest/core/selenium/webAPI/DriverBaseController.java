@@ -34,6 +34,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
@@ -47,6 +49,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  *
  */
 @SuppressWarnings("unchecked")
+@Slf4j
 public abstract class DriverBaseController<T> implements MainController<DriverBaseController<T>>{
 
     @Autowired
@@ -100,6 +103,15 @@ public abstract class DriverBaseController<T> implements MainController<DriverBa
         in.close();
         out.close();
         return downloadedFile.getAbsolutePath();
+    }
+
+    @Override
+    public void sleep(int milliseconds){
+         try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+           log.error("Exception during thread sleep: "+e);
+        }
     }
 
 
