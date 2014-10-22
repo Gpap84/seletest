@@ -29,6 +29,7 @@ package com.automation.seletest.core.listeners;
 
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -37,16 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.ReflectionUtils;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestClass;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.SkipException;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
@@ -77,7 +77,6 @@ public class InitListener implements IInvokedMethodListener{
                 SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
                 log.debug("Set assertion type parameter for test method: {}!!!",method.getTestMethod().getMethodName());
                 testResult.setAttribute("session", SessionContext.session());
-                Reporter.setCurrentTestResult(testResult);
                 SessionContext.session().setAssertion(ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
                 SessionContext.session().setActions(new Actions(SessionContext.session().getWebDriver()));
                 seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
@@ -135,6 +134,7 @@ public class InitListener implements IInvokedMethodListener{
                         }
                     }
                 }
+                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Async verifications finished for @Test "+method.getTestMethod().getMethodName());
             }
 
             postconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PostConfiguration.class);
@@ -171,9 +171,6 @@ public class InitListener implements IInvokedMethodListener{
      */
     private void executionConfiguration(Object configure) throws SkipException{
         try{
-
-            Class<?> noparams[]= {};
-
             String method="";
             Class<?>  classRef=null;
             if(configure instanceof PreConfiguration){
@@ -183,10 +180,18 @@ public class InitListener implements IInvokedMethodListener{
                 method=((PostConfiguration)configure).method();
                 classRef=((PostConfiguration)configure).classReference();
             }
-            Class<?> invokedClass=ApplicationContextProvider.getApplicationContext().getBean(classRef).getClass();
-            Method _method=invokedClass.getDeclaredMethod(method,noparams);
-            Object target=invokedClass.newInstance();
-            ReflectionUtils.invokeMethod(_method,target);
+
+            Constructor<?> constructor = ApplicationContextProvider.getApplicationContext().getBean(classRef).getClass().getDeclaredConstructors()[0];
+            constructor.setAccessible(true);
+            Object innerObject = constructor.newInstance();
+            Method[] _methods = ApplicationContextProvider.getApplicationContext().getBean(classRef).getClass().getDeclaredMethods();
+            for(Method _method:_methods){
+                if(_method.getName().equals(method)){
+                    _method.setAccessible(true);
+                    _method.invoke(innerObject);
+                }
+            }
+
             log.debug("{} steps executed successfully for!!!", configure instanceof PreConfiguration ? "Preconfiguration" : "Postconfiguration");
         } catch (Exception e) {
             log.error("Skip the test because of failure to preconfiguration with exception "+e.getLocalizedMessage()+"!!");

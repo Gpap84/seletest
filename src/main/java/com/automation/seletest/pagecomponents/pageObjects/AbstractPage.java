@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
 
@@ -91,13 +92,12 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
     }
 
 
-
-    /**
-     * Interact with element based on factory strategy
-     * @return ElementController
-     */
     public MainController webControl() {
         return strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
+    }
+
+    public WaitFor waitControl() {
+        return strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
     public ActionsBuilderController actionsControl() {

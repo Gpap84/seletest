@@ -76,7 +76,7 @@ public abstract class DriverBaseController<T> implements MainController<DriverBa
      * @return WaitFor
      */
     public WaitFor waitController() {
-        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
+        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
     }
 
     /* (non-Javadoc)
@@ -114,6 +114,72 @@ public abstract class DriverBaseController<T> implements MainController<DriverBa
            log.error("Exception during thread sleep: "+e);
         }
     }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementClickable(Object locator) {
+        waitController().waitForElementToBeClickable(locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotClickable(java.lang.Object)
+     */
+    @Override
+    public boolean isElementNotClickable(Object locator) {
+        waitController().waitForElementNotClickable(locator);
+        return true;
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotPresent(java.lang.String)
+     */
+    @Override
+    public boolean isElementNotPresent(String locator) {
+        waitController().waitForElementNotPresent(locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isWebElementVisible(java.lang.Object)
+     */
+    @Override
+    public boolean isWebElementVisible(Object locator) {
+        waitController().waitForElementVisibility(locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementPresent(java.lang.String)
+     */
+    @Override
+    public boolean isElementPresent(String locator) {
+        waitController().waitForElementPresence(locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotVisible(java.lang.String)
+     */
+    @Override
+    public boolean isElementNotVisible(String locator) {
+        waitController().waitForElementInvisible(locator);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isTextPresentinElement(java.lang.Object, java.lang.String)
+     */
+    @Override
+    public boolean isTextPresentinElement(Object locator, String text) {
+        waitController().waitForTextPresentinElement(locator, text);
+        return true;
+    }
+
+
 
 
 }

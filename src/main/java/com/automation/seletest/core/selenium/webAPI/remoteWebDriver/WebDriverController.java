@@ -204,22 +204,6 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         return webDriver().getPageSource();
     }
 
-    /**************************************
-     *Verification type methods************
-     **************************************/
-
-    @Override
-    public boolean isElementPresent(String locator) {
-        waitController().waitForElementPresence(locator);
-        return true;
-    }
-
-    @Override
-    public boolean isElementNotVisible(String locator) {
-        waitController().waitForElementInvisible(locator);
-        return true;
-    }
-
     @Override
     public boolean isTextPresent(String text) {
         if(getPageSource().contains(text)){
@@ -229,11 +213,6 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         }
     }
 
-    @Override
-    public boolean isWebElementVisible(Object locator) {
-        waitController().waitForElementVisibility(locator);
-        return true;
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.String, org.openqa.selenium.WebElement)
@@ -586,14 +565,6 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         return SessionContext.getSession().getWebElement().isEnabled();
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementClickable(java.lang.Object)
-     */
-    @Override
-    public boolean isElementClickable(Object locator) {
-        waitController().waitForElementToBeClickable(locator);
-        return true;
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
@@ -605,14 +576,6 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         return !SessionContext.getSession().getWebElement().isEnabled();
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotClickable(java.lang.Object)
-     */
-    @Override
-    public boolean isElementNotClickable(Object locator) {
-        waitController().waitForElementNotClickable(locator);
-        return true;
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#numberElementsMatching(java.lang.Object)
@@ -622,12 +585,5 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
         return waitController().waitForVisibilityofAllElements(locator).size();
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotPresent(java.lang.String)
-     */
-    @Override
-    public boolean isElementNotPresent(String locator) {
-        waitController().waitForElementNotPresent(locator);
-        return true;
-    }
+
 }

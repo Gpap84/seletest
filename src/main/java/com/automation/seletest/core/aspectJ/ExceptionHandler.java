@@ -137,9 +137,9 @@ public class ExceptionHandler extends SuperAspect {
     public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
         Object returnValue = null;
         try {
-            returnValue = pjp.proceed();
             element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
             element().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+            returnValue = pjp.proceed();
         } catch (Exception ex) {} return returnValue;
     }
 
@@ -159,15 +159,17 @@ public class ExceptionHandler extends SuperAspect {
                 if((pjp).getArgs().length==1){
                     report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                 } else {
-                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass() + " "+(pjp).getArgs()[1]), "color:green; margin-left:20px;");
+                    report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()) + " "+(pjp).getArgs()[1], "color:green; margin-left:20px;");
                 }
             }
         } catch(AssertionError ex) {
             report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
                 element().takeScreenShot();
-            } throw ex;
-        } return returnValue;
+            }
+            throw ex;
+        }
+        return returnValue;
     }
 
     /**

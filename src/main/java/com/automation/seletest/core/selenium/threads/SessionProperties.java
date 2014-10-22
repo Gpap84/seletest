@@ -43,6 +43,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.automation.seletest.core.selenium.webAPI.interfaces.MainController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
@@ -60,6 +61,10 @@ import com.thoughtworks.selenium.Selenium;
 @Slf4j
 @SuppressWarnings("deprecation")
 public class SessionProperties<T extends RemoteWebDriver> {
+
+    /**ThreadPoolTask executor*/
+    @Autowired
+    ThreadPoolTaskExecutor executor;
 
     /**Factories Strategy*/
     @Autowired
@@ -127,6 +132,11 @@ public class SessionProperties<T extends RemoteWebDriver> {
             factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
 
-        log.info("Session closed!!!");
+        //shutdown task executor for asynchronous tasks
+        executor.shutdown();
+
+        log.debug("Shutdown default task executor with active threads: {}",executor.getActiveCount());
+
+        log.info("Session {} closed!!!",webDriver);
     }
 }

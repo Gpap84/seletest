@@ -455,4 +455,12 @@ public interface MainController<T extends MainController<T>>{
      * @param milliseconds
      */
     void sleep(int milliseconds);
+
+    /**
+     * If text present in element
+     * @param locator
+     * @param text
+     * @return text
+     */
+    boolean isTextPresentinElement(Object locator, String text);
 }

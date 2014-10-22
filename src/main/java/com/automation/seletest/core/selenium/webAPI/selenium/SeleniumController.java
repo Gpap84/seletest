@@ -230,15 +230,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         return selenium().getHtmlSource();
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#isWebElementPresent(java.lang.String)
-     */
-    @Override
-    public boolean isElementPresent(String locator) {
-        waitController().waitForElementPresence(defineLocator(locator));
-        return true;
-    }
-
     /* (non-Java0doc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#isTextPresent(java.lang.String)
      */
@@ -251,14 +242,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#isWebElementVisible(java.lang.Object)
-     */
-    @Override
-    public boolean isWebElementVisible(Object locator) {
-        waitController().waitForElementVisibility(defineLocator(locator));
-        return true;
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#uploadFile(java.lang.Object, java.lang.String)
@@ -647,13 +630,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         return selenium().isEditable(defineLocator(locator));
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementClickable(java.lang.Object)
-     */
-    @Override
-    public boolean isElementClickable(Object locator) {
-        throw new UnsupportedOperationException("Method isElementClickable(Object locator) is not supported with Selenium RC");
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
@@ -664,14 +640,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         return !selenium().isEditable(defineLocator(locator));
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotClickable(java.lang.Object)
-     */
-    @Override
-    public boolean isElementNotClickable(Object locator) {
-        throw new UnsupportedOperationException("Method isElementNotClickable(Object locator) is not supported with Selenium RC");
-
-    }
 
     /**
      * Define locator
@@ -694,14 +662,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         return new Cookie(name,selenium().getCookieByName(name));
     }
 
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotVisible(java.lang.Object)
-     */
-    @Override
-    public boolean isElementNotVisible(String locator) {
-        waitController().waitForElementInvisibility(defineLocator(locator));
-        return true;
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#elementsMatching(java.lang.Object)
@@ -709,15 +669,6 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     public int elementsMatching(String locator) {
         throw new UnsupportedOperationException("Method elementsMatching(Object locator) is not supported with Selenium RC");
-    }
-
-    /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isElementNotPresent(java.lang.String)
-     */
-    @Override
-    public boolean isElementNotPresent(String locator) {
-        waitController().waitForElementNotPresent(locator);
-        return true;
     }
 
 

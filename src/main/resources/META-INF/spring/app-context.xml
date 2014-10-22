@@ -22,8 +22,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 <task:annotation-driven executor="exceptionHandlingTaskExecutor" />
 <task:executor id="defaultTaskExecutor"/>
 <bean id="defaultTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-    <property name="corePoolSize" value="10" />
-    <property name="maxPoolSize" value="25" />
+    <property name="corePoolSize" value="30" />
+    <property name="maxPoolSize" value="35" />
     <property name="queueCapacity" value="35" />
 </bean>
 <bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
