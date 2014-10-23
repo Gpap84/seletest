@@ -463,4 +463,10 @@ public interface MainController<T extends MainController<T>>{
      * @return text
      */
     boolean isTextPresentinElement(Object locator, String text);
+
+    /**
+     * Wait for angular to finish
+     * @return
+     */
+    T waitForAngularFinish();
 }

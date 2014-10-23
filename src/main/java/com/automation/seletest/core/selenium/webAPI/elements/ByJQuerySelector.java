@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI.elements;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -82,7 +82,8 @@ public abstract class ByJQuerySelector extends By {
     @Override
     public List<WebElement> findElements(SearchContext context) {
         try {
-            String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
+            String jQueryLoader = readFile(getClass().getResourceAsStream(JQUERY_LOAD_SCRIPT));
+            log.debug("JQuery library located: "+getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
             ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
             log.debug("JQuery library injected from file {}!!!", getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
         } catch (IOException e) {
@@ -97,7 +98,7 @@ public abstract class ByJQuerySelector extends By {
     @Override
     public WebElement findElement(SearchContext context) {
         try {
-            String jQueryLoader = readFile(getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
+            String jQueryLoader = readFile(getClass().getClassLoader().getResourceAsStream(JQUERY_LOAD_SCRIPT));
             ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
             log.debug("JQuery library injected from file {}!!!", getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
         } catch (IOException e) {
@@ -114,9 +115,9 @@ public abstract class ByJQuerySelector extends By {
     }
 
     // helper method
-    private static String readFile(String file) throws IOException {
+    private static String readFile(InputStream file) throws IOException {
         Charset cs = Charset.forName("UTF-8");
-        FileInputStream stream = new FileInputStream(file);
+        InputStream stream = file;
         try {
             Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
             StringBuilder builder = new StringBuilder();

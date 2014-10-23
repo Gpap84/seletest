@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.aspectJ;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -51,6 +53,7 @@ import com.thoughtworks.selenium.SeleniumException;
  */
 @Aspect
 @Component
+@Slf4j
 public class ExceptionHandler extends SuperAspect {
 
     /**The log service*/
@@ -81,7 +84,7 @@ public class ExceptionHandler extends SuperAspect {
                 report.error("Exception: "+ex.getMessage().split("\n")[0]);
                 throw ex;
             } else{
-                report.error(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex.getMessage().split("\n")[0]));
+                log.warn(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex.getMessage()));
             }
         }
         return returnValue;

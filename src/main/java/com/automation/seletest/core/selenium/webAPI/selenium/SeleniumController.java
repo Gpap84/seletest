@@ -671,6 +671,14 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
         throw new UnsupportedOperationException("Method elementsMatching(Object locator) is not supported with Selenium RC");
     }
 
+    /* (non-Javadoc)
+     * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#waitForAngularFinish()
+     */
+    @Override
+    public SeleniumController<T> waitForAngularFinish() {
+        throw new UnsupportedOperationException("Method waitForAngularFinish() is not supported with Selenium RC");
+    }
+
 
 
 }

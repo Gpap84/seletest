@@ -46,7 +46,6 @@ import org.testng.SkipException;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.annotations.SeleniumTest;
 import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
@@ -134,7 +133,7 @@ public class InitListener implements IInvokedMethodListener{
                         }
                     }
                 }
-                ApplicationContextProvider.getApplicationContext().getBean(LogUtils.class).info("Async verifications finished for @Test "+method.getTestMethod().getMethodName());
+                log.debug("Async verifications finished for @Test {}",method.getTestMethod().getMethodName());
             }
 
             postconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PostConfiguration.class);

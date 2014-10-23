@@ -25,6 +25,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="corePoolSize" value="30" />
     <property name="maxPoolSize" value="35" />
     <property name="queueCapacity" value="35" />
+    <property name="keepAliveSeconds" value="5"/>
 </bean>
 <bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
 <constructor-arg ref="defaultTaskExecutor" />

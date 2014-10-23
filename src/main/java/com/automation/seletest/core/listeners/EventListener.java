@@ -139,7 +139,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
 
             if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
-                driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
+                driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
                 SessionContext.session().setWebDriver((RemoteWebDriver)driver);
                 selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium",new Object[] {driver,((InitializationEvent) event).getHostUrl()});
                 SessionContext.session().setSelenium(selenium);
