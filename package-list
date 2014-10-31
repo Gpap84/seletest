@@ -14,8 +14,11 @@ com.automation.seletest.core.services
 com.automation.seletest.core.services.actions
 com.automation.seletest.core.services.annotations
 com.automation.seletest.core.services.factories
+com.automation.seletest.core.services.network
 com.automation.seletest.core.services.properties
 com.automation.seletest.core.spring
 com.automation.seletest.core.testNG
 com.automation.seletest.core.testNG.assertions
 com.automation.seletest.pagecomponents.pageObjects
+com.automation.seletest.pagecomponents.pageObjects.Android
+com.automation.seletest.pagecomponents.pageObjects.Web
