@@ -74,7 +74,7 @@ public class InitListener implements IInvokedMethodListener{
         if(method.getTestMethod().isTest()){
             if(method.getTestMethod().isTest()){
                 SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
-                log.debug("Set assertion type parameter for test method: {}!!!",method.getTestMethod().getMethodName());
+                log.debug("Set assertion type parameter for test method: {}!!!", method.getTestMethod().getMethodName());
                 testResult.setAttribute("session", SessionContext.session());
                 SessionContext.session().setAssertion(ApplicationContextProvider.getApplicationContext().getBean(AssertTest.class));
                 SessionContext.session().setActions(new Actions(SessionContext.session().getWebDriver()));

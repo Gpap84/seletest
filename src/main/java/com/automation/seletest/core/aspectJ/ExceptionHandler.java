@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.JSHandle;
@@ -67,7 +68,7 @@ public class ExceptionHandler extends SuperAspect {
     /**
      * Handle Exceptions...
      * @param pjp
-     * @return proxied object
+     * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
     @Around(value="logPOs() || actionsBuilderController() || takeScreenCap() || waitConditions() || sendMail()")
@@ -77,7 +78,7 @@ public class ExceptionHandler extends SuperAspect {
             returnValue = pjp.proceed();
             String arguments=arguments(pjp).isEmpty() ? "" : "for["+arguments(pjp)+"]";
             if(pjp.getSignature().toString().contains("pageObjects")) {
-                report.warn("Page Object method: "+pjp.getSignature().getName()+" "+arguments+" executed successfully","\"color:#663366; font-weight: bold;\"");
+                report.warn("Page Object function: "+pjp.getSignature().getName()+" "+arguments+" executed successfully");
             }
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
@@ -93,7 +94,7 @@ public class ExceptionHandler extends SuperAspect {
     /**
      * Around Advice for
      * @param pjp
-     * @return Output of executed method
+     * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
     @Around("componentsStatus()")
@@ -111,7 +112,7 @@ public class ExceptionHandler extends SuperAspect {
      * Around advice with custom annotation for retrying execution of JoinPoint
      * @param pjp
      * @param retry
-     * @return proxied object
+     * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
     @Around("retryExecution(retry)")
@@ -139,11 +140,10 @@ public class ExceptionHandler extends SuperAspect {
     @Around("jsHandle(js)")
     public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
         Object returnValue = null;
-        try {
-            element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
-            element().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
-            returnValue = pjp.proceed();
-        } catch (Exception ex) {} return returnValue;
+        SessionControl.element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+        SessionControl.element().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+        returnValue = pjp.proceed();
+        return returnValue;
     }
 
 
@@ -168,7 +168,7 @@ public class ExceptionHandler extends SuperAspect {
         } catch(AssertionError ex) {
             report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                element().takeScreenShot();
+                SessionControl.element().takeScreenShot();
             }
             throw ex;
         }
@@ -185,9 +185,11 @@ public class ExceptionHandler extends SuperAspect {
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
         if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
+            log.debug("Do not retry execution due to exception {}",ex);
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
-            throw new RuntimeException(retry.message()+" for method: "+pjp.getKind(), ex);
+            log.debug("Retry execution exceeded for method {}",invokedMethod(pjp));
+            throw new RuntimeException(retry.message()+" for method: "+invokedMethod(pjp), ex);
         } else {
             report.error(String.format("%s: Attempt %d of %d failed with exception '%s'. Will retry immediately. %s",
                     pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),
@@ -210,13 +212,15 @@ public class ExceptionHandler extends SuperAspect {
         MethodSignature signature = (MethodSignature ) pjp.getSignature();
         Class<?> returnType = signature.getReturnType();
         if(returnType.getName().compareTo("int")==0){
+            log.debug("Return 0 value for method {}",invokedMethod(pjp));
             return 0;
         } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+            log.debug("Return false value for method {}",invokedMethod(pjp));
             return false;
         } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
+            log.debug("Return true value for method {}",invokedMethod(pjp));
             return true;
-        }
-        return null;
+        } return null;
     }
 
 

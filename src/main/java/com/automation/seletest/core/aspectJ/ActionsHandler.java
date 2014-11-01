@@ -38,16 +38,15 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Aspect that handles logging,screenshots etc.
@@ -84,10 +83,8 @@ public class ActionsHandler extends SuperAspect {
      */
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
-        if(ex instanceof TimeoutException || ex instanceof SeleniumException){
-            log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-            element().takeScreenShot();
-        }
+        log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
+        SessionControl.element().takeScreenShot();
     }
 
     /**
@@ -98,15 +95,15 @@ public class ActionsHandler extends SuperAspect {
     public void waitFor(final JoinPoint pjp) {
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElement(waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElement(waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElements(waitFor().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElements(SessionControl.waitFor().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElements(waitFor().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElements(SessionControl.waitFor().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
 
@@ -115,12 +112,10 @@ public class ActionsHandler extends SuperAspect {
     public Object monitorLogs(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue = null;
         long start = System.currentTimeMillis();
-        try {
-            returnValue = pjp.proceed();
-        } catch (Exception ex) {}
+        returnValue = pjp.proceed();
         long elapsedTime = System.currentTimeMillis() - start;
         if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
-        log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
+            log.info("Execution time for method \"" + pjp.getSignature().getName() + "\": " + elapsedTime + " ms. ("+ elapsedTime/60000 + " minutes)","\"color:#0066CC;\"");
         }
         return returnValue;
     }

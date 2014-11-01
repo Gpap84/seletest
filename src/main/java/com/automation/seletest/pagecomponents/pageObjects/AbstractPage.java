@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.SeletestWebTestBase;
@@ -92,7 +92,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
     }
 
 
-    public MainController webControl() {
+    public WebController webControl() {
         return strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 

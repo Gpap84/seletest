@@ -203,7 +203,7 @@ public interface AppiumController<T extends AppiumController<T>>{
      * @param duration
      * @return AppiumController
      */
-    T tap(int fingers, Object locator, int duration);
+    T tap(Object locator, int fingers, int duration);
 
 
 }

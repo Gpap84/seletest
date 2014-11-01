@@ -28,7 +28,7 @@ package com.automation.seletest.core.services.factories;
 
 
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 
 /**
@@ -43,7 +43,7 @@ public interface StrategyFactory<T> {
     WaitFor getWaitStrategy(String waitController);
 
     /**Gets the elementController type*/
-    MainController<?> getControllerStrategy(String elementController);
+    WebController<?> getControllerStrategy(String elementController);
 
     /**Gets the actionsController type*/
     ActionsBuilderController<?> getActionsStrategy(String actionsController);

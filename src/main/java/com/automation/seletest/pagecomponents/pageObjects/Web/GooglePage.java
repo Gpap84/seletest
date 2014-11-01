@@ -51,7 +51,7 @@ public class GooglePage extends AbstractPage<GooglePage>{
                 return "TextField \"Search\" used with locator: '" + IPF_SEARCH.get() + "'!!!";
             }
         },
-        BTN_SUBMIT("name=btnG") {
+        BTN_SUBMIT("name=mpoursa") {
             @Override
             public String log() {
                 return "Button \"Search\" used with locator: '" + BTN_SUBMIT.get() + "'!!!";

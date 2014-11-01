@@ -105,7 +105,7 @@ public enum Locators {
 
         @Override
         public By setLocator(String locator) {
-            return ByJQuerySelector.ByJQuery(findLocatorSubstring(locator));
+            return BySelector.ByJQuery(findLocatorSubstring(locator));
         }
     },
 

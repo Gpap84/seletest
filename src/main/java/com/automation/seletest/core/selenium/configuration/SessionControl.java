@@ -31,6 +31,10 @@ import io.appium.java_client.TouchAction;
 import org.openqa.selenium.interactions.Actions;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
+import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
 
 /**
@@ -39,6 +43,7 @@ import com.automation.seletest.core.testNG.assertions.AssertTest;
  *
  */
 public class SessionControl {
+
     /**
      * verifyController for this test instance
      * @return AssertTest instance
@@ -64,4 +69,19 @@ public class SessionControl {
         return SessionContext.session().getTouchAction();
     }
 
+    /**
+     * Wait Strategy
+     * @return WaitFor
+     */
+    public static WaitFor waitFor() {
+        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getWaitStrategy(SessionContext.getSession().getWaitStrategy());
+    }
+
+    /**
+     * Web Strategy
+     * @return WebController
+     */
+    public static WebController<?> element() {
+        return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
+    }
 }

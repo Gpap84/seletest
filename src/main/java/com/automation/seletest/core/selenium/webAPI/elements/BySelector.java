@@ -42,11 +42,11 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 /**
- * ByJQuerySelector class
+ * BySelector class
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-public abstract class ByJQuerySelector extends By {
+public abstract class BySelector extends By {
 
 
     /**
@@ -67,7 +67,7 @@ public abstract class ByJQuerySelector extends By {
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      */
     @Slf4j(topic="ByJQuerySelectorExtended")
-   public static class ByJQuerySelectorExtended extends ByJQuerySelector{
+   public static class ByJQuerySelectorExtended extends BySelector{
 
         private static final String JQUERY_LOAD_SCRIPT = "jQuerify.js";
 
@@ -83,7 +83,6 @@ public abstract class ByJQuerySelector extends By {
     public List<WebElement> findElements(SearchContext context) {
         try {
             String jQueryLoader = readFile(getClass().getResourceAsStream(JQUERY_LOAD_SCRIPT));
-            log.debug("JQuery library located: "+getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
             ((JavascriptExecutor) context).executeAsyncScript(jQueryLoader);
             log.debug("JQuery library injected from file {}!!!", getClass().getClassLoader().getResource(JQUERY_LOAD_SCRIPT).getPath());
         } catch (IOException e) {

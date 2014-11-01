@@ -43,7 +43,7 @@ import org.openqa.selenium.logging.LogEntries;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-public interface MainController<T extends MainController<T>>{
+public interface WebController<T extends WebController<T>>{
 
     /**
      * Finds a web element

@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 
@@ -50,7 +50,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  */
 @SuppressWarnings("unchecked")
 @Slf4j
-public abstract class DriverBaseController<T> implements MainController<DriverBaseController<T>>{
+public abstract class DriverBaseController<T> implements WebController<DriverBaseController<T>>{
 
     @Autowired
     StrategyFactory<?> factoryStrategy;

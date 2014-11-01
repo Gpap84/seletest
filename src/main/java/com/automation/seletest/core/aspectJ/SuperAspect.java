@@ -34,9 +34,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController;
-import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
@@ -66,7 +63,7 @@ public abstract class SuperAspect {
     protected void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.interfaces.MainController.takeScreenShot*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.interfaces.WebController.takeScreenShot*(..))")
     protected void takeScreenCap() {}
 
     /**Methods for wait conditions*/
@@ -145,19 +142,5 @@ public abstract class SuperAspect {
         return m;
     }
 
-    /**
-     * Wait Strategy
-     * @return ActionsSync
-     */
-    public WaitFor waitFor() {
-        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
-    }
 
-    /**
-     * Element Controller
-     * @return ElementController
-     */
-    public MainController<?> element() {
-        return factoryStrategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
-    }
 }

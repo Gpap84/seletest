@@ -77,7 +77,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
             }
         }
         catch (Exception e) {
-            log.error("Error in Test Initialization phase with exception: "+e.getMessage());
+            log.error("Error in Test Initialization phase with exception: {}",e.getMessage());
         }
     }
 

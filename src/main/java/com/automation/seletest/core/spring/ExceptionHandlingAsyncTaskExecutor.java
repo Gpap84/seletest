@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.spring;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import lombok.extern.slf4j.Slf4j;
@@ -84,16 +85,17 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
      */
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        Future<T> futureTask=null;
-        if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)){
+        if(!SessionContext.getSession().getVerifications().isEmpty() && !((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
             try {
-                futureTask= executor.submit(createCallable(task));
-                futureTask.get(); //wait for verifications to finish
-            } catch (Exception e) {log.error("Exception during executing future task: "+e);}
-        } else {
-            futureTask = executor.submit(createCallable(task));
-            SessionContext.getSession().getVerifications().add(futureTask);//push Future task to a ArrayList
+                ((Future<T>)SessionContext.getSession().getVerifications().get(0)).get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("Exception during executing future task: "+e);
+                Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
+                Reporter.getCurrentTestResult().setThrowable(e);
+            }
         }
+        Future<T> futureTask = executor.submit(createCallable(task));
+        SessionContext.getSession().getVerifications().add(futureTask);//push Future task to a ArrayList
         return futureTask;
     }
 
@@ -141,8 +143,6 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
      * @throws Exception
      */
     private void handle(Exception ex){
-        log.error("Error during @Async execution: " + ex);
-        Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
-        Reporter.getCurrentTestResult().setThrowable(ex);
+        log.error("Error during @Async execution: {}", ex);
     }
 }

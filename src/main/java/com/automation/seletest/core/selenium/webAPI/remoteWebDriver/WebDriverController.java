@@ -58,7 +58,7 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
-import com.automation.seletest.core.selenium.webAPI.elements.ByJQuerySelector;
+import com.automation.seletest.core.selenium.webAPI.elements.BySelector;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.JSHandle;
@@ -500,7 +500,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @RetryFailure(retryCount=3)
     @JSHandle
     public int getColumnsTable(Object tableLocator) {
-        return SessionContext.getSession().getWebElement().findElements(ByJQuerySelector.ByJQuery("tbody tr:nth-child(1) td")).size();
+        return SessionContext.getSession().getWebElement().findElements(BySelector.ByJQuery("tbody tr:nth-child(1) td")).size();
     }
 
     /* (non-Javadoc)
@@ -590,8 +590,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     public WebDriverController waitForAngularFinish() {
-        ((JavascriptExecutor)webDriver()).executeAsyncScript("var callback = arguments[arguments.length - 1];" +
-                "angular.element(document.body).injector().get('$browser').notifyWhenNoOutstandingRequests(callback);");
+        ((JavascriptExecutor)webDriver()).executeAsyncScript("var callback = arguments[arguments.length - 1];angular.element(document.body).injector().get('$browser').notifyWhenNoOutstandingRequests(callback);");
         return this;
     }
 

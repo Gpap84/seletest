@@ -44,7 +44,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.selenium.webAPI.interfaces.MainController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.interfaces.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
@@ -55,7 +55,6 @@ import com.thoughtworks.selenium.Selenium;
  * Custom objects per session
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
- * @param <V>
  */
 @Slf4j
 @SuppressWarnings("deprecation")

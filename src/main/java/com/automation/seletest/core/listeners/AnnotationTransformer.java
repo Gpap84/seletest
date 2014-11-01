@@ -62,8 +62,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
 
     @Override
     @SuppressWarnings("rawtypes")
-    public void transform(final ITestAnnotation test, final Class testClass, final Constructor testConstructor,
-            final Method testMethod) {
+    public void transform(final ITestAnnotation test, final Class testClass, final Constructor testConstructor, final Method testMethod) {
 
         //Set DataProvider for the test
         if (testMethod != null){

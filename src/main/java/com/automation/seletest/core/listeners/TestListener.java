@@ -42,6 +42,7 @@ import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.MailUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
@@ -70,15 +71,13 @@ public class TestListener implements ITestListener{
         //Remove the passed configuration methods from the report
         for(ITestNGMethod m:context.getPassedConfigurations().getAllMethods()){
             if(!m.isBeforeMethodConfiguration()) {
-            context.getPassedConfigurations().removeResult(m);
+                context.getPassedConfigurations().removeResult(m);
             }
         }
-
         //Remove the skipped configuration methods from the report
         for(ITestNGMethod m:context.getSkippedConfigurations().getAllMethods()){
             context.getSkippedConfigurations().removeResult(m);
         }
-
         //remove the rerun tests result from report
         for(int i=0;i<context.getAllTestMethods().length;i++){
             if(context.getAllTestMethods()[i].getCurrentInvocationCount()==3){
@@ -104,14 +103,22 @@ public class TestListener implements ITestListener{
     @Override
     public void onTestFailure(ITestResult testResult) {
         log.debug("Test "+ testResult.getName()+" failed");
-        LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
-        StringBuilder list=new StringBuilder();
-        for (LogEntry entry : entries) {
-            list.append(entry.getMessage()+"\n");
+        try {
+            log.debug("Collect client logs after failure of the @Test");
+            LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
+            StringBuilder list=new StringBuilder();
+            for (LogEntry entry : entries) {
+                list.append(entry.getMessage()+"\n");
+            }
+            ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
+            Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
         }
-        ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
-        Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
-//        ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail("seletest.giannis@gmail.com","Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
+        catch(Exception ex) {log.error("Exception trying to collect client logs: {}",ex);}
+
+        if(System.getProperty("email")!=null) {
+            log.debug("Send email notification with failure of the @Test to address {} ", System.getProperty("email"));
+            ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail(System.getProperty("email"),"Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
+        }
     }
 
     @Override
