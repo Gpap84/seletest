@@ -1,5 +1,6 @@
-Seletest
+Seletest 
 ========
+![seletest](https://cloud.githubusercontent.com/assets/3785668/4871449/dcb9ef44-61b6-11e4-91dc-507370d15d5d.png)
 
 <a href="https://buildhive.cloudbees.com/job/GiannisPapadakis/job/Seletest/">
 <img src="https://camo.githubusercontent.com/f35d0c52028b388ea9593c5fd2bf78a3b955c7af/68747470733a2f2f6275696c64686976652e636c6f7564626565732e636f6d2f6a6f622f6d696368616c2d6c6970736b692f6a6f622f706167652d6f626a656374732d7765626472697665722f62616467652f69636f6e" alt="Build Status" data-canonical-source="https://buildhive.cloudbees.com/job/michal-lipski/job/page-objects-webdriver/badge/icon" style="max-width:100%;">
@@ -18,7 +19,7 @@ a] Web End to End functional <b>Supported</b><br>
 b] DB transactions tests <b>Not supported yet...</b><br>
 c] Client performance tests <b>Supported</b><br>
 d] Mobile End to End functional <b>Partially supported (Android)</b><br>
-e] Web Security tests<b>Upcoming</b>
+e] Web Security tests <b>Upcoming</b>
 
 
 Tools used:<br>
@@ -57,7 +58,7 @@ Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. T
 
 
 *******************************************
-<b>Released version 0.0.1</b>
+<b>Released version 0.0.1 - 0.0.2</b>
 *******************************************
 
 Seletest has been uploaded in sonatype nexus.<br>
@@ -77,5 +78,6 @@ See wiki for setting up Spring Maven Project and running first tests<br>
 <b>Upcoming:</b>
 * Set up Appium Server on Windows 7 and run test against android emulator
 * Set up Selenium Grid server and register a node
+* Use SeletestUtils project to automate remote appium-selenium node configuration
 
 
