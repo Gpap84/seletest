@@ -66,6 +66,10 @@ public abstract class SuperAspect {
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.interfaces.WebController.takeScreenShot*(..))")
     protected void takeScreenCap() {}
 
+    /**All Methods of WebController!!*/
+    @Pointcut("execution(!boolean com.automation.seletest.core.selenium.webAPI.interfaces.WebController.*(..))")
+    protected void webControl() {}
+
     /**Methods for wait conditions*/
     @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
     protected void waitConditions() {}

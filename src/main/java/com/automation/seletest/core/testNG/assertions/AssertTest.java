@@ -181,7 +181,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notfoundEditable" , messagePass = "foundEditable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "foundEditable" , messagePass = "notfoundEditable", message = "elementLocator", screenShot = true)
     public Future<Boolean> fieldNotEditable(Object locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.session().getControllerStrategy()).isFieldNotEditable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundEditable"));
         return new AsyncResult<>(true);
@@ -205,7 +205,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notfoundClickable" , messagePass = "foundClickable", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "foundClickable" , messagePass = "notfoundClickable", message = "elementLocator", screenShot = true)
     public Future<Boolean> elementNotClickable(Object locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.session().getControllerStrategy()).isElementNotClickable(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notFoundClickable"));
         return new AsyncResult<>(true);
@@ -217,7 +217,7 @@ public class AssertTest<T extends Assertion> {
      * @return AsyncResult
      */
     @Async
-    @VerifyLog(messageFail = "notfoundVisible" , messagePass = "foundVisible", message = "elementLocator", screenShot = true)
+    @VerifyLog(messageFail = "foundVisible" , messagePass = "notfoundVisible", message = "elementLocator", screenShot = true)
     public Future<Boolean> elementNotVisible(String locator) {
         assertion.assertTrue(strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy()).isElementNotVisible(locator),env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("notfoundVisible"));
         return new AsyncResult<>(true);

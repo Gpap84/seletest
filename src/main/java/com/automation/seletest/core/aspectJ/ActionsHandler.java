@@ -42,6 +42,7 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
@@ -83,8 +84,10 @@ public class ActionsHandler extends SuperAspect {
      */
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
-        log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-        SessionControl.element().takeScreenShot();
+        if(Reporter.getCurrentTestResult().getAttribute("verification")==null) {
+            log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
+            SessionControl.webControl().takeScreenShot();
+        }
     }
 
     /**

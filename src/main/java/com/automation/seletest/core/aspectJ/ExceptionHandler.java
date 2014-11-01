@@ -36,6 +36,7 @@ import org.openqa.selenium.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
@@ -82,7 +83,9 @@ public class ExceptionHandler extends SuperAspect {
             }
         } catch (Exception ex) {
             if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
-                report.error("Exception: "+ex.getMessage().split("\n")[0]);
+                if(Reporter.getCurrentTestResult().getAttribute("verification")==null) {
+                    report.error("Exception: "+ex.getMessage().split("\n")[0]);
+                }
                 throw ex;
             } else{
                 log.warn(String.format("%s: Failed with exception '%s'",pjp.getSignature().toString().substring(pjp.getSignature().toString().lastIndexOf(".")),ex.getMessage()));
@@ -140,8 +143,8 @@ public class ExceptionHandler extends SuperAspect {
     @Around("jsHandle(js)")
     public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
         Object returnValue = null;
-        SessionControl.element().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
-        SessionControl.element().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+        SessionControl.webControl().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+        SessionControl.webControl().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
         returnValue = pjp.proceed();
         return returnValue;
     }
@@ -157,6 +160,7 @@ public class ExceptionHandler extends SuperAspect {
     public Object verify(ProceedingJoinPoint pjp, VerifyLog verify) throws Throwable {
         Object returnValue=null;
         try {
+            Reporter.getCurrentTestResult().setAttribute("verification", true);
             returnValue = pjp.proceed();
             if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
                 if((pjp).getArgs().length==1){
@@ -168,10 +172,18 @@ public class ExceptionHandler extends SuperAspect {
         } catch(AssertionError ex) {
             report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                SessionControl.element().takeScreenShot();
+                SessionControl.webControl().takeScreenShot();
             }
             throw ex;
         }
+        return returnValue;
+    }
+
+    @Around("webControl()")
+    public Object webControl(ProceedingJoinPoint pjp) throws Throwable {
+        Object returnValue=null;
+        Reporter.getCurrentTestResult().removeAttribute("verification");
+        returnValue = pjp.proceed();
         return returnValue;
     }
 

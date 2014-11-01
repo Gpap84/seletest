@@ -88,6 +88,7 @@ public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor 
         if(!SessionContext.getSession().getVerifications().isEmpty() && !((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
             try {
                 ((Future<T>)SessionContext.getSession().getVerifications().get(0)).get();
+                SessionContext.getSession().getVerifications().clear();
             } catch (InterruptedException | ExecutionException e) {
                 log.error("Exception during executing future task: "+e);
                 Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);

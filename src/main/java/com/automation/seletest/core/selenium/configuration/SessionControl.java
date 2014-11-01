@@ -81,7 +81,7 @@ public class SessionControl {
      * Web Strategy
      * @return WebController
      */
-    public static WebController<?> element() {
+    public static WebController<?> webControl() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 }
