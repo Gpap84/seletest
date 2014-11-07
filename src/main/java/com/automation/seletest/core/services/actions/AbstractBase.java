@@ -32,14 +32,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
-import com.thoughtworks.selenium.Selenium;
 
 /**
  * AbstractBase contains all static abstract classes used
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings({"deprecation" })
 @Slf4j
 public abstract class AbstractBase {
 
@@ -55,13 +53,6 @@ public abstract class AbstractBase {
         /**Component name for WebDriverWait*/
         private final String webDriverWait="webdriverwait";
 
-        /**
-         * Gets the selenium instance
-         * @return
-         */
-        protected Selenium selenium(){
-            return SessionContext.getSession().getSelenium();
-        }
 
         /**
          * Returns a new WebDriverWait instance

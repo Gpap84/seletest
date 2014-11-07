@@ -17,7 +17,7 @@ public class HttpClient {
     RestTemplate template;
 
     /**
-     * Get request RestFul Web Service
+     * Get request
      * @param <T>
      * @param ip
      * @param account
@@ -28,7 +28,7 @@ public class HttpClient {
     }
 
     /**
-     * Create a new resource by POSTing the given object to the URI template, and returns the representation found in the response
+     * Post request
      * @param uri
      * @param request
      * @param responseType

@@ -31,21 +31,23 @@ import io.appium.java_client.TouchAction;
 import org.openqa.selenium.interactions.Actions;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * This class returns all the interfaces - objects used for testing
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings("deprecation")
 public class SessionControl {
 
     /**
-     * verifyController for this test instance
+     * AssertTest
      * @return AssertTest instance
      */
     public static <T> AssertTest<?> verifyController(){
@@ -70,10 +72,18 @@ public class SessionControl {
     }
 
     /**
+     * Selenium
+     * @return Selenium instance
+     */
+    public static Selenium selenium(){
+        return SessionContext.session().getSelenium();
+    }
+
+    /**
      * Wait Strategy
      * @return WaitFor
      */
-    public static WaitFor waitFor() {
+    public static WaitFor waitController() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
@@ -81,7 +91,7 @@ public class SessionControl {
      * Web Strategy
      * @return WebController
      */
-    public static WebController<?> webControl() {
+    public static WebController<?> webController() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 }

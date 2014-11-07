@@ -33,6 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * VerifyLog interface
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -61,8 +62,14 @@ public @interface VerifyLog {
     String message();
 
     /**
-     * screenshot
+     * Defines if we want to take screenshot of web page after assertion is failed...
      * @return true if we want to capture screenshot on error
      */
     boolean screenShot() default true;
+
+    /**
+     * highlight element after assertion passed or failed
+     * @return true if we want to highlight elements
+     */
+    boolean highlight() default false;
 }

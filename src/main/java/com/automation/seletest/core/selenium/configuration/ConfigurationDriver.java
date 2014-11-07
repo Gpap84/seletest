@@ -90,8 +90,8 @@ public class ConfigurationDriver {
      * @param capabilities
      * @return WebDriver instance
      */
-    @Lazy(true)
     @Bean(name="chrome")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chrome(DesiredCapabilities capabilities) {
         File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
@@ -105,8 +105,8 @@ public class ConfigurationDriver {
      * @return WebDriver instance
      * @throws Exception
      */
-    @Lazy(true)
     @Bean(name="chromeOptions")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chromeOptions() throws Exception {
         File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
@@ -203,8 +203,8 @@ public class ConfigurationDriver {
      * @return WebDriver instance
      * @throws MalformedURLException
      */
-    @Lazy(true)
     @Bean(name="seleniumGrid")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver seleniumGrid(String url, DesiredCapabilities cap) throws MalformedURLException{
         return new Augmenter().augment(new RemoteWebDriver(new URL(url),cap));
@@ -217,8 +217,8 @@ public class ConfigurationDriver {
      * @return WebDriver instance
      * @throws MalformedURLException
      */
-    @Lazy(true)
     @Bean(name="androidGrid")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver android(String url, DesiredCapabilities cap) throws MalformedURLException{
         return new AndroidDriver(new URL(url),cap);
@@ -231,8 +231,8 @@ public class ConfigurationDriver {
      * @return WebDriver instance
      * @throws MalformedURLException
      */
-    @Lazy(true)
     @Bean(name="iOSGrid")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver iOS(String url, DesiredCapabilities cap) throws MalformedURLException{
         return new IOSDriver(new URL(url),cap);
@@ -245,8 +245,8 @@ public class ConfigurationDriver {
      * @param timeout
      * @return WebDriverWait instance
      */
-    @Lazy(true)
     @Bean(name="webdriverwait")
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriverWait wait(WebDriver driver, int timeout){
         return new WebDriverWait(driver, timeout);
@@ -257,8 +257,8 @@ public class ConfigurationDriver {
      * Capabilities bean
      * @return DesiredCapabilities
      */
-    @Lazy(true)
     @Bean
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities capabilities(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -271,8 +271,8 @@ public class ConfigurationDriver {
      * @param baseUrl
      * @return Selenium
      */
-    @Lazy(true)
     @Bean
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Selenium selenium(WebDriver driver, String baseUrl){
         return new WebDriverBackedSelenium(driver, baseUrl);
@@ -286,8 +286,8 @@ public class ConfigurationDriver {
      * @param autolaunch
      * @return DesiredCapabilities
      */
-    @Lazy(true)
     @Bean
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities androidcapabilities(String appPath, String appActivity, String appPackage, String autolaunch){
         File app=new File(appPath);
@@ -311,8 +311,8 @@ public class ConfigurationDriver {
      * @param autolaunch
      * @return DesiredCapabilities
      */
-    @Lazy(true)
     @Bean
+    @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities iOScapabilities(String appPath, String udid, String bundleId, String autolaunch){
         File app=new File(appPath);

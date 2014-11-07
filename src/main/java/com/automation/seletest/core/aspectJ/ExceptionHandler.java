@@ -143,15 +143,15 @@ public class ExceptionHandler extends SuperAspect {
     @Around("jsHandle(js)")
     public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
         Object returnValue = null;
-        SessionControl.webControl().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
-        SessionControl.webControl().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+        SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
+        SessionControl.webController().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
         returnValue = pjp.proceed();
         return returnValue;
     }
 
 
     /**
-     * around advice for verification methods
+     * Around advice for verification methods (log output of assertion, highlight elements and take screenshots on failures)
      * @param pjp
      * @return proxied object
      * @throws Throwable
@@ -163,22 +163,32 @@ public class ExceptionHandler extends SuperAspect {
             Reporter.getCurrentTestResult().setAttribute("verification", true);
             returnValue = pjp.proceed();
             if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
-                if((pjp).getArgs().length==1){
+                if((pjp).getArgs().length==1) {
                     report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()), "color:green; margin-left:20px;");
                 } else {
                     report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()) + " "+(pjp).getArgs()[1], "color:green; margin-left:20px;");
+                } if(verify.highlight()) {
+                    SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.PASS_COLOR.get());
                 }
             }
         } catch(AssertionError ex) {
             report.verificationError("[Failed Assertion]: "+env.getProperty(verify.message())+" "+arguments(pjp)+" "+env.getProperty(verify.messageFail()));
             if(verify.screenShot()) {
-                SessionControl.webControl().takeScreenShot();
+                SessionControl.webController().takeScreenShot();
+            } if(verify.highlight()){
+                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.FAIL_COLOR.get());
             }
             throw ex;
         }
         return returnValue;
     }
 
+    /**
+     * Around functions of web controller
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("webControl()")
     public Object webControl(ProceedingJoinPoint pjp) throws Throwable {
         Object returnValue=null;

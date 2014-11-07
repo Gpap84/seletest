@@ -72,7 +72,6 @@ public class InitListener implements IInvokedMethodListener{
         }
 
         if(method.getTestMethod().isTest()){
-            if(method.getTestMethod().isTest()){
                 SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
                 log.debug("Set assertion type parameter for test method: {}!!!", method.getTestMethod().getMethodName());
                 testResult.setAttribute("session", SessionContext.session());
@@ -81,7 +80,7 @@ public class InitListener implements IInvokedMethodListener{
                 seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
                 SessionControl.verifyController().setAssertionType(seleniumTest.assertion());
                 preconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PreConfiguration.class);
-            }
+            
             if(seleniumTest!=null){
                 if(seleniumTest.driver().equals(DriverType.WEBDRIVER)) {
                     SessionContext.session().setControllerStrategy("webDriverControl");

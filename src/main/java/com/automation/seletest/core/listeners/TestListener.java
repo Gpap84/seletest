@@ -92,19 +92,19 @@ public class TestListener implements ITestListener{
 
     @Override
     public void onTestSuccess(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" passed");
+        log.debug("Test "+ testResult.getName()+" passed!!!");
     }
 
     @Override
     public void onTestSkipped(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" skipped");
+        log.debug("Test "+ testResult.getName()+" skipped!!!");
     }
 
     @Override
     public void onTestFailure(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" failed");
+        log.debug("Test "+ testResult.getName()+" failed!!!");
         try {
-            log.debug("Collect client logs after failure of the @Test");
+            log.debug("Collect client logs after failure of the @Test {}", testResult.getMethod());
             LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
             StringBuilder list=new StringBuilder();
             for (LogEntry entry : entries) {
@@ -123,7 +123,7 @@ public class TestListener implements ITestListener{
 
     @Override
     public void onTestStart(ITestResult result) {
-        log.debug("Test "+ result.getName()+" started!!");
+        log.debug("Test "+ result.getName()+" started!!!");
     }
 
     @Override

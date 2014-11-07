@@ -82,10 +82,10 @@ public class SessionContext {
      */
     public static void cleanSession() throws Exception{
         threadStack.removeElement(getSession());//remove element from thread stack
-        log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
         getSession().cleanSession();
         innerContext(ThreadLocalTargetSource.class).releaseTarget(getSession());
         innerContext(ThreadLocalTargetSource.class).destroy();
+        log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
     }
 
     /**

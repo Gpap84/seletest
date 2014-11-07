@@ -44,7 +44,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.selenium.webAPI.interfaces.WebController.CloseSession;
+import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.testNG.assertions.AssertTest;

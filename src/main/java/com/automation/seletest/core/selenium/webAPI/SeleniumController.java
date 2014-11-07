@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.selenium.webAPI.selenium;
+package com.automation.seletest.core.selenium.webAPI;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -49,7 +49,6 @@ import org.openqa.selenium.logging.LogEntries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
@@ -303,9 +302,11 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#deleteCookie(org.openqa.selenium.Cookie)
      */
-    @Deprecated
     @Override
+    @Monitor
+    @RetryFailure(retryCount=3)
     public SeleniumController deleteCookie(Cookie cookie) {
+        selenium().deleteCookie(cookie.getName(), cookie.getValue());
         return this;
     }
 
@@ -335,6 +336,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#getCookies()
      */
     @Override
+    @Monitor
+    @RetryFailure(retryCount=3)
     public Set<Cookie> getCookies() {
         selenium().getCookie();
         return null;
@@ -345,9 +348,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public SeleniumController implicitlyWait(long timeout, TimeUnit timeunit) {
-        // TODO Auto-generated method stub
-        //HttpCommandProcessor command = new  HttpCommandProcessor();
-        //command.doCommand("setImplicitWaitLocator", new String[] {"10000",});
+        selenium().setTimeout(String.valueOf(timeout));
         return this;
 
     }
@@ -356,10 +357,8 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.OptionsController#pageLoadTimeout(long, java.util.concurrent.TimeUnit)
      */
     @Override
-    @RetryFailure(retryCount=3)
     public SeleniumController pageLoadTimeout(long timeout, TimeUnit timeunit) {
-        selenium().setTimeout(String.valueOf(timeout));
-        return this;
+        throw new UnsupportedOperationException("Method pageLoadTimeout(long timeout, TimeUnit timeunit) is not supported with Selenium RC");
     }
 
     /* (non-Javadoc)

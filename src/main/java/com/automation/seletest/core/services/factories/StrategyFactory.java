@@ -28,7 +28,7 @@ package com.automation.seletest.core.services.factories;
 
 
 import com.automation.seletest.core.selenium.common.ActionsBuilderController;
-import com.automation.seletest.core.selenium.webAPI.interfaces.WebController;
+import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 
 /**

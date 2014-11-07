@@ -33,6 +33,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -54,13 +55,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " presence");
             } try {
-                if (selenium().isElementPresent(defineLocator(locator))) {
+                if (SessionControl.selenium().isElementPresent(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight(locator);
+        SessionControl.selenium().highlight(locator);
         return null;
     }
 
@@ -74,13 +75,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " visibility");
             } try {
-                if (selenium().isVisible(defineLocator(locator))) {
+                if (SessionControl.selenium().isVisible(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight((String)locator);
+        SessionControl.selenium().highlight((String)locator);
         return null;
     }
 
@@ -102,7 +103,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for for alert presence");
             } try {
-                if (selenium().isAlertPresent()) {
+                if (SessionControl.selenium().isAlertPresent()) {
                     break;
                 }
             } catch (Exception e) {
@@ -121,13 +122,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " invisibility");
             } try {
-                if (!selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight(defineLocator(locator));
+        SessionControl.selenium().highlight(defineLocator(locator));
         return null;
     }
 
@@ -141,13 +142,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + "");
             } try {
-                if (selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight((String)locator);
+        SessionControl.selenium().highlight((String)locator);
         return null;
     }
 
@@ -161,13 +162,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
             } try {
-                if (selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight((String)locator);
+        SessionControl.selenium().highlight((String)locator);
         return null;
     }
 
@@ -183,9 +184,9 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } try {
                 int elements=0;
                 if(locator.startsWith("//") || locator.startsWith("xpath=")) {
-                    elements=selenium().getXpathCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getXpathCount(defineLocator(locator)).intValue();
                 } else if(locator.startsWith("css=")) {
-                    elements=selenium().getCssCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getCssCount(defineLocator(locator)).intValue();
                 }
                 if (elements > 1) {
                     break;
@@ -193,7 +194,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } catch (Exception e) {
             } threadSleep(100);
         } while (true);
-        selenium().highlight(defineLocator(locator));
+        SessionControl.selenium().highlight(defineLocator(locator));
         return null;
     }
 
@@ -211,7 +212,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
     @Override
     public void waitForPageLoaded() {
-        selenium().waitForPageToLoad(String.valueOf(SessionContext.getSession().getWaitUntil()));
+        SessionControl.selenium().waitForPageToLoad(String.valueOf(SessionContext.getSession().getWaitUntil()));
 
     }
 
@@ -220,7 +221,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
     @Override
     public void waitForAjaxCallCompleted(long timeout) {
-        selenium().waitForCondition("selenium.browserbot.getCurrentWindow().jQuery.active == 0",String.valueOf(timeout));
+        SessionControl.selenium().waitForCondition("selenium.browserbot.getCurrentWindow().jQuery.active == 0",String.valueOf(timeout));
     }
 
     /* (non-Javadoc)
@@ -233,7 +234,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 return false;
             } try {
-                if (!selenium().isElementPresent(defineLocator(locator))) {
+                if (!SessionControl.selenium().isElementPresent(defineLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
@@ -251,7 +252,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
-                if (!selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
@@ -269,7 +270,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
-                String [] windowTitles=selenium().getAllWindowTitles();
+                String [] windowTitles=SessionControl.selenium().getAllWindowTitles();
                 if (windowTitles[windowTitles.length - 1].contains(title)) {
                     return true;
                 }
@@ -283,7 +284,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
     @Override
     public boolean waitForElementNotClickable(Object locator) {
-      throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium 1");
+      throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium RC");
     }
 
 }

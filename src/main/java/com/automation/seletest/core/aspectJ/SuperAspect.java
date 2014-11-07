@@ -63,11 +63,11 @@ public abstract class SuperAspect {
     protected void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.interfaces.WebController.takeScreenShot*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI.WebController.takeScreenShot*(..))")
     protected void takeScreenCap() {}
 
     /**All Methods of WebController!!*/
-    @Pointcut("execution(!boolean com.automation.seletest.core.selenium.webAPI.interfaces.WebController.*(..))")
+    @Pointcut("execution(!boolean com.automation.seletest.core.selenium.webAPI.WebController.*(..))")
     protected void webControl() {}
 
     /**Methods for wait conditions*/

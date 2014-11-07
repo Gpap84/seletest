@@ -86,7 +86,7 @@ public class ActionsHandler extends SuperAspect {
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
         if(Reporter.getCurrentTestResult().getAttribute("verification")==null) {
             log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
-            SessionControl.webControl().takeScreenShot();
+            SessionControl.webController().takeScreenShot();
         }
     }
 
@@ -98,15 +98,15 @@ public class ActionsHandler extends SuperAspect {
     public void waitFor(final JoinPoint pjp) {
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
         if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElement(SessionControl.waitFor().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElements(SessionControl.waitFor().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElements(SessionControl.waitController().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         } else if(waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElements(SessionControl.waitFor().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+            SessionContext.getSession().setWebElements(SessionControl.waitController().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
         }
     }
 
