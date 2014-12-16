@@ -1,70 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xmlns:aop="http://www.springframework.org/schema/aop"
- xmlns:context="http://www.springframework.org/schema/context" 
- xmlns:p="http://www.springframework.org/schema/p"
- xmlns:jee="http://www.springframework.org/schema/jee" 
- xmlns:task="http://www.springframework.org/schema/task"
- xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-<context:spring-configured />
-<context:load-time-weaver />
-<context:annotation-config />
+	<context:spring-configured />
+	
+	<!-- Enable load time weaving support  -->
+	<context:load-time-weaver />
+	<context:annotation-config />
 
-<!-- To enable both @Scheduled and @Async annotations. -->
-<task:annotation-driven executor="exceptionHandlingTaskExecutor" />
-<task:executor id="defaultTaskExecutor"/>
-<bean id="defaultTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-    <property name="corePoolSize" value="30" />
-    <property name="maxPoolSize" value="35" />
-    <property name="queueCapacity" value="35" />
-    <property name="keepAliveSeconds" value="5"/>
-</bean>
-<bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
-<constructor-arg ref="defaultTaskExecutor" />
-</bean>
+	<!-- Enables the caching through annotations -->
+	<cache:annotation-driven />
 
-<!-- Register a bean post processor -->
-<bean class="com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor"/>
+	<!-- To enable both @Scheduled and @Async annotations. -->
+	<task:annotation-driven executor="exceptionHandlingTaskExecutor" />
+	<task:executor id="defaultTaskExecutor" />
 
- <!-- scan components and services -->
- <context:component-scan base-package="com.automation.seletest">
-  <context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.ConfigurationDriver.*" />
-  </context:component-scan>
- 
- <!-- Factory for strategies -->
- <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
-  <property name="serviceLocatorInterface" value="com.automation.seletest.core.services.factories.StrategyFactory">
-  </property>
-  </bean>
-  
-  <!-- RestTemplate client-->
-  <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" autowire-candidate="true">
-    <property name="messageConverters"> 
-        <list> 
-            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
-            <bean class="org.springframework.http.converter.FormHttpMessageConverter"/> 
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter" />
-        </list> 
-    </property>
-  </bean>
- 
- <!-- Aliases for wait strategy -->
- <alias alias="WebDriverWait" name="webDriverWait"/>
- <alias alias="SeleniumWait" name="seleniumWait"/>
- 
- <!-- Aliases for controller strategy -->
- <alias alias="WebDriverAPI" name="webDriverControl"/>
- <alias alias="SeleniumAPI" name="seleniumControl"/>
- 
- <!-- Import test beans -->
- <import resource="classpath:/META-INF/spring/test-beans*.xml" />
+    <!--  Default Task Executor -->
+	<bean id="defaultTaskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="30" />
+		<property name="maxPoolSize" value="35" />
+		<property name="queueCapacity" value="35" />
+		<property name="keepAliveSeconds" value="5" />
+	</bean>
+	
+	<!-- Asynchronous Task Executor -->
+	<bean id="exceptionHandlingTaskExecutor"
+		class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
+		<constructor-arg ref="defaultTaskExecutor" />
+	</bean>
+
+	<!-- Register a bean post processor -->
+	<bean
+		class="com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor" />
+
+	<!-- scan components and services -->
+	<context:component-scan base-package="com.automation.seletest">
+		<context:exclude-filter type="regex"
+			expression="com.automation.seletest.core.selenium.configuration.ConfigurationDriver.*" />
+	</context:component-scan>
+
+	<!-- Factory for strategies -->
+	<bean
+		class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean"
+		id="StrategyFactory">
+		<property name="serviceLocatorInterface"
+			value="com.automation.seletest.core.services.factories.StrategyFactory">
+		</property>
+	</bean>
+
+	<!-- RestTemplate client -->
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate"
+		autowire-candidate="true">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Aliases for wait strategy -->
+	<alias alias="WebDriverWait" name="webDriverWait" />
+	<alias alias="SeleniumWait" name="seleniumWait" />
+
+	<!-- Aliases for controller strategy -->
+	<alias alias="WebDriverAPI" name="webDriverControl" />
+	<alias alias="SeleniumAPI" name="seleniumControl" />
+
+	<!-- Generic cache manager based on the JDK ConcurrentMap -->
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<property name="caches">
+			<set>
+				<bean
+					class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
+					p:name="wait" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- Import test beans -->
+	<import resource="classpath:/META-INF/spring/test-beans*.xml" />
 
 </beans>
