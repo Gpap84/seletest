@@ -140,7 +140,6 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
 
     @Override
     @Monitor
-    @RetryFailure(retryCount=3)
     public MultiTouchAction getMultiTouchAction() {
         return new MultiTouchAction((webDriver()));
     }
@@ -204,6 +203,7 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
      * @see com.automation.seletest.core.selenium.mobileAPI.AppiumController#getCurrentActivity()
      */
     @Override
+    @Monitor
     @RetryFailure(retryCount=3)
     public String getCurrentActivity() {
         return  ((AndroidDriver)webDriver()).currentActivity();

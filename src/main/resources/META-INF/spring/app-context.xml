@@ -17,6 +17,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	
 	<!-- Enable load time weaving support  -->
 	<context:load-time-weaver />
+	
+	<!-- activate annotations in beans already registered in the application context -->
 	<context:annotation-config />
 
 	<!-- Enables the caching through annotations -->
@@ -24,15 +26,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
 	<!-- To enable both @Scheduled and @Async annotations. -->
 	<task:annotation-driven executor="exceptionHandlingTaskExecutor" />
+	
+	<!--  Create a ThreadPoolTaskExecutor instance -->
 	<task:executor id="defaultTaskExecutor" />
 
     <!--  Default Task Executor -->
-	<bean id="defaultTaskExecutor"
-		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="corePoolSize" value="30" />
-		<property name="maxPoolSize" value="35" />
-		<property name="queueCapacity" value="35" />
-		<property name="keepAliveSeconds" value="5" />
+	<bean id="defaultTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="15" />
+		<property name="queueCapacity" value="10" />
 	</bean>
 	
 	<!-- Asynchronous Task Executor -->
@@ -42,19 +44,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	</bean>
 
 	<!-- Register a bean post processor -->
-	<bean
-		class="com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor" />
+	<bean class="com.automation.seletest.core.listeners.beanUtils.DriverBeanPostProcessor" />
 
 	<!-- scan components and services -->
 	<context:component-scan base-package="com.automation.seletest">
-		<context:exclude-filter type="regex"
-			expression="com.automation.seletest.core.selenium.configuration.ConfigurationDriver.*" />
+		<context:exclude-filter type="regex" expression="com.automation.seletest.core.selenium.configuration.ConfigurationDriver.*" />
 	</context:component-scan>
 
 	<!-- Factory for strategies -->
-	<bean
-		class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean"
-		id="StrategyFactory">
+	<bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean" id="StrategyFactory">
 		<property name="serviceLocatorInterface"
 			value="com.automation.seletest.core.services.factories.StrategyFactory">
 		</property>
@@ -65,11 +63,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		autowire-candidate="true">
 		<property name="messageConverters">
 			<list>
-				<bean
-					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
 				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
-				<bean
-					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
 			</list>
 		</property>
 	</bean>
@@ -86,9 +82,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
 		<property name="caches">
 			<set>
-				<bean
-					class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
-					p:name="wait" />
+				<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="wait" />
 			</set>
 		</property>
 	</bean>

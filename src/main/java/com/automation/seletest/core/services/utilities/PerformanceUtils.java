@@ -25,7 +25,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.automation.seletest.core.services;
+package com.automation.seletest.core.services.utilities;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,7 +46,7 @@ import org.springframework.stereotype.Service;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@Service
+@Service("performanceService")
 @Slf4j
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PerformanceUtils {

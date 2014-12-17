@@ -51,85 +51,86 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
 @SuppressWarnings("rawtypes")
 public class SessionContext {
 
-    /**
-     * Get the thread in parallel execution from a target Source
-     * @return SessionProperties instance
-     */
-    public static SessionProperties session(){
-        return (SessionProperties) innerContext(ThreadLocalTargetSource.class).getTarget();
-    }
+	private final static String session="session";
 
-    /**
-     * Session object
-     * @return SessionProperties instance
-     */
-    public static SessionProperties getSession(){
-        return (SessionProperties) Reporter.getCurrentTestResult().getAttribute("session");
-    }
+	/**
+	 * Get the thread in parallel execution from a target Source
+	 * @return SessionProperties instance
+	 */
+	public static SessionProperties session(){
+		return (SessionProperties) innerContext(ThreadLocalTargetSource.class).getTarget();
+	}
 
-    /**
-     * Return the ThreadLocalTargetSource
-     * @param targetBean
-     * @return ThreadLocalTargetSource instance
-     */
-    protected static ThreadLocalTargetSource innerContext(Class<?> targetBean) {
-        return (ThreadLocalTargetSource) ApplicationContextProvider.getApplicationContext().getBean(targetBean);
-    }
+	/**
+	 * Session object
+	 * @return SessionProperties instance
+	 */
+	public static SessionProperties getSession(){
+		return (SessionProperties) Reporter.getCurrentTestResult().getAttribute(session);
+	}
 
-    /**
-     * Destroy instances of the thread
-     * @throws Exception
-     */
-    public static void cleanSession() throws Exception{
-        threadStack.removeElement(getSession());//remove element from thread stack
-        getSession().cleanSession();
-        innerContext(ThreadLocalTargetSource.class).releaseTarget(getSession());
-        innerContext(ThreadLocalTargetSource.class).destroy();
-        log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
-    }
+	/**
+	 * Return the ThreadLocalTargetSource
+	 * @param targetBean
+	 * @return ThreadLocalTargetSource instance
+	 */
+	protected static ThreadLocalTargetSource innerContext(Class<?> targetBean) {
+		return (ThreadLocalTargetSource) ApplicationContextProvider.getApplicationContext().getBean(targetBean);
+	}
 
-    /**
-     * Log thread instance
-     * @param sessionObjects
-     * @throws Exception
-     */
-    public static void setSessionProperties(){
-        threadStack.push(session());//push instanse of Session to stack
-        String driver="";
-        if(session().getWebDriver() instanceof RemoteWebDriver && !(session().getWebDriver() instanceof AppiumDriver)) {
-            driver="Web Test: "+session().getWebDriver().toString().split(":")[0];
-        } else if(session().getWebDriver() instanceof AppiumDriver) {
-            driver="Mobile Test: "+session().getWebDriver().toString().split(":")[0];
-        }
-        log.info("Session started with type of driver: {}", driver);
-        Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);
-    }
+	/**
+	 * Destroy instances of the thread
+	 * @throws Exception
+	 */
+	public static void cleanSession() throws Exception{
+		threadStack.removeElement(getSession());//remove element from thread stack
+		getSession().cleanSession();
+		innerContext(ThreadLocalTargetSource.class).destroy();
+		log.debug("*********************Object removed from thread stack, new size is: {}*****************************", threadStack.size());
+	}
 
-    /**Clean all active threads stored in stack
-     * @throws Exception
-     *
-     */
-    public static void cleanSessionsFromStack() throws Exception {
-        for(int i=0; i < threadStack.size();i++){
-            SessionContext.stopSession(i);
-        }
-    }
-    /**
-     * Clean specific thread from a Stack with threads
-     * @param index
-     * @throws Exception
-     */
-    public static void stopSession(int index) throws Exception {
-        threadStack.get(index).cleanSession();
-        innerContext(ThreadLocalTargetSource.class).destroy();
-        threadStack.removeElement(threadStack.get(index));
-        log.debug("*********************Object removed from thread stack, new size is: {}*****************************",threadStack.size());
-    }
+	/**
+	 * Log thread instance
+	 * @param sessionObjects
+	 * @throws Exception
+	 */
+	public static void setSessionProperties(){
+		threadStack.push(session());//push instanse of Session to stack
+		String driver="";
+		if(session().getWebDriver() instanceof RemoteWebDriver && !(session().getWebDriver() instanceof AppiumDriver)) {
+			driver="Web Test: "+session().getWebDriver().toString().split(":")[0];
+		} else if(session().getWebDriver() instanceof AppiumDriver) {
+			driver="Mobile Test: "+session().getWebDriver().toString().split(":")[0];
+		}
+		log.info("Session started with type of driver: {}", driver);
+		Thread.currentThread().setName("SeletestFramework ["+driver+"] - session Active "+System.currentTimeMillis()%2048);
+	}
+
+	/**Clean all active threads stored in stack
+	 * @throws Exception
+	 *
+	 */
+	public static void cleanSessionsFromStack() throws Exception {
+		for(int i=0; i < threadStack.size();i++){
+			SessionContext.stopSession(i);
+		}
+	}
+	/**
+	 * Clean specific thread from a Stack with threads
+	 * @param index
+	 * @throws Exception
+	 */
+	public static void stopSession(int index) throws Exception {
+		threadStack.get(index).cleanSession();
+		innerContext(ThreadLocalTargetSource.class).destroy();
+		threadStack.removeElement(threadStack.get(index));
+		log.debug("*********************Object removed from thread stack, new size is: {}*****************************", threadStack.size());
+	}
 
 
 
-    /**Stack for storing instances of thread objects*/
-    @Getter @Setter
-    public static Stack<SessionProperties> threadStack = new Stack<SessionProperties>();
+	/**Stack for storing instances of thread objects*/
+	@Getter @Setter
+	public static Stack<SessionProperties> threadStack = new Stack<SessionProperties>();
 
 }

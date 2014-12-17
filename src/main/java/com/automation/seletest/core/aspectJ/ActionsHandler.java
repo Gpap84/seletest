@@ -46,8 +46,8 @@ import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.utilities.LogUtils;
 
 /**
  * Aspect that handles logging,screenshots etc.

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 
-import com.automation.seletest.core.services.FilesUtils;
+import com.automation.seletest.core.services.utilities.FilesUtils;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 

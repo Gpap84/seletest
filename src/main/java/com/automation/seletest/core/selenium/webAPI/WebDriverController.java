@@ -60,12 +60,12 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.elements.BySelector;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
+import com.automation.seletest.core.services.utilities.FilesUtils;
 
 /**
  * This class contains the implementation of WebDriver 2 API

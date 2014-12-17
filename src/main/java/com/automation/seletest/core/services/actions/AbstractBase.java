@@ -57,7 +57,7 @@ public abstract class AbstractBase {
         /**
          * Returns a new WebDriverWait instance
          * @param timeOutInSeconds
-         * @return
+         * @return WebDriverWait object
          */
         protected WebDriverWait wfExpected(){
             return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil()});

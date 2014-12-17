@@ -45,9 +45,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
-import com.automation.seletest.core.services.PerformanceUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.automation.seletest.core.services.utilities.PerformanceUtils;
+import com.automation.seletest.core.testNG.assertions.Assert;
 import com.thoughtworks.selenium.Selenium;
 
 
@@ -64,7 +64,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
     @Autowired
     StrategyFactory<?> factoryStrategy;
 
-    /**The wait until timerout*/
+    /**The wait until timeout*/
     @Getter @Setter
     int waitUntil = 5;
 
@@ -90,7 +90,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
     /**Assertions class**/
     @Getter @Setter
-    AssertTest<?> assertion;
+    Assert<?> assertion;
 
     /**TouchAction class**/
     @Getter @Setter
@@ -126,6 +126,6 @@ public class SessionProperties<T extends RemoteWebDriver> {
             factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
 
-        log.info("Session {} closed!!!",webDriver);
+        log.info("Session {} closed!!!", webDriver.toString().replace("[null]", ""));
     }
 }

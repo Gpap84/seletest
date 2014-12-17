@@ -40,11 +40,10 @@ import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.LogUtils;
 import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.VerifyLog;
-import com.automation.seletest.core.services.properties.CoreProperties;
+import com.automation.seletest.core.services.utilities.LogUtils;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -143,8 +142,8 @@ public class ExceptionHandler extends SuperAspect {
     @Around("jsHandle(js)")
     public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
         Object returnValue = null;
-        SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.ACTION_COLOR.get());
-        SessionControl.webController().changeStyle((pjp).getArgs()[0],"borderStyle", CoreProperties.DOTTED_BORDER.get());
+        SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", env.getProperty("color_action"));
+        SessionControl.webController().changeStyle((pjp).getArgs()[0],"borderStyle", env.getProperty("dotted"));
         returnValue = pjp.proceed();
         return returnValue;
     }
@@ -168,7 +167,7 @@ public class ExceptionHandler extends SuperAspect {
                 } else {
                     report.info(env.getProperty(verify.message())+" "+(pjp).getArgs()[0]+" "+env.getProperty(verify.messagePass()) + " "+(pjp).getArgs()[1], "color:green; margin-left:20px;");
                 } if(verify.highlight()) {
-                    SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.PASS_COLOR.get());
+                    SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", env.getProperty("color_pass"));
                 }
             }
         } catch(AssertionError ex) {
@@ -176,7 +175,7 @@ public class ExceptionHandler extends SuperAspect {
             if(verify.screenShot()) {
                 SessionControl.webController().takeScreenShot();
             } if(verify.highlight()){
-                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", CoreProperties.FAIL_COLOR.get());
+                SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor",  env.getProperty("color_fail"));
             }
             throw ex;
         }

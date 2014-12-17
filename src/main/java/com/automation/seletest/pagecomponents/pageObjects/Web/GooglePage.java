@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.LogUtils;
+import com.automation.seletest.core.services.utilities.LogUtils;
 import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 @Component

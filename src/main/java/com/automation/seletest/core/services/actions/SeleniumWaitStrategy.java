@@ -121,7 +121,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
 	@Cacheable("wait")
     @Override
-    public Boolean waitForElementInvisibility(final String locator) {
+    public boolean waitForElementInvisibility(final String locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -134,7 +134,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } threadSleep(100);
         } while (true);
         SessionControl.selenium().highlight(defineLocator(locator));
-        return null;
+        return false;
     }
 
     /* (non-Javadoc)
@@ -142,7 +142,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
 	@Cacheable("wait")
     @Override
-    public Boolean waitForTextPresentinElement(final Object locator,final String text) {
+    public boolean waitForTextPresentinElement(final Object locator,final String text) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -155,7 +155,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } threadSleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
-        return null;
+        return false;
     }
 
     /* (non-Javadoc)
@@ -163,7 +163,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
      */
 	@Cacheable("wait")
     @Override
-    public Boolean waitForTextPresentinValue(final Object locator,final String text) {
+    public boolean waitForTextPresentinValue(final Object locator,final String text) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -176,7 +176,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
             } threadSleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
-        return null;
+        return false;
     }
 
     /* (non-Javadoc)

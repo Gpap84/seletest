@@ -29,6 +29,9 @@ package com.automation.seletest.core.spring;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestContext;
@@ -45,7 +48,6 @@ import org.testng.annotations.Listeners;
 import com.automation.seletest.core.listeners.InitListener;
 import com.automation.seletest.core.selenium.configuration.ConfigurationDriver;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**
  * This class serves as the Base Class for Web Test Preparation
@@ -56,6 +58,9 @@ import com.automation.seletest.core.services.properties.CoreProperties;
 @Listeners(InitListener.class)
 @ContextConfiguration(classes=ConfigurationDriver.class)
 public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
+	
+	@Autowired
+	Environment env;
 
     /**Μessage initialize new session*/
     private final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
@@ -74,6 +79,9 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @BeforeSuite(alwaysRun = true)
     protected void suiteSettings(ITestContext ctx) throws Exception {
         log.debug("Suite : "+ctx.getCurrentXmlTest().getSuite().getName()+" started at: {}",ctx.getStartDate());
+        applicationContext.getBean(ThreadPoolTaskExecutor.class).setThreadNamePrefix("Seletest Thread Pool - ");
+        applicationContext.getBean(ThreadPoolTaskExecutor.class).getThreadPoolExecutor().allowCoreThreadTimeOut(true);
+
     }
 
     @BeforeTest(alwaysRun = true)
@@ -141,11 +149,11 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     private void initializeSession(ITestContext ctx) throws Exception{
         prepareTest();
         boolean performance=false;
-        if(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get())!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(CoreProperties.PERFORMANCE.get()))) {
+        if(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance")))) {
             performance=true;
         }
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
-        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(CoreProperties.HOST_URL.get()),performance,ctx);
+        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(env.getProperty("host")),performance,ctx);
     }
 
     /**Starts the Spring container*/

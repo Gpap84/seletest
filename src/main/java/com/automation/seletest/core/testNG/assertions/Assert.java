@@ -54,7 +54,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
 @SuppressWarnings({"unchecked","rawtypes"})
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AssertTest<T extends Assertion> {
+public class Assert<T extends Assertion> {
 
     /**Environment instance*/
     @Autowired
@@ -73,7 +73,7 @@ public class AssertTest<T extends Assertion> {
      * @param assertionType
      * @return
      */
-    public AssertTest setAssertionType(AssertionType assertionType){
+    public Assert setAssertionType(AssertionType assertionType){
         if(assertionType.equals(AssertionType.HARD)) {
             setAssertion((T) new Assertion());
         } else {
@@ -129,6 +129,12 @@ public class AssertTest<T extends Assertion> {
         return new AsyncResult<>(true);
     }
 
+    /**
+     * Verify that text is contained in element
+     * @param locator
+     * @param text
+     * @return AsyncResult
+     */
     @Async
     @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true, highlight=true)
     public Future<Boolean> textContainedinElement(Object locator, String text) {

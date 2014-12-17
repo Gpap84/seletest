@@ -33,11 +33,11 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.env.Environment;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-
-import com.automation.seletest.core.services.properties.CoreProperties;
 
 /**
  * DriverBeanPostProcessor class
@@ -45,6 +45,9 @@ import com.automation.seletest.core.services.properties.CoreProperties;
  *
  */
 public class DriverBeanPostProcessor implements BeanPostProcessor{
+	
+	@Autowired
+	Environment env;
 
     /**
      * Actions before initializing beans
@@ -65,8 +68,8 @@ public class DriverBeanPostProcessor implements BeanPostProcessor{
         ITestResult result=Reporter.getCurrentTestResult();
 
         if(result!=null) {
-            browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.BROWSERTYPE.get());
-            clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(CoreProperties.CLIENTLOGS.get());
+            browserType=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(env.getProperty("browser"));
+            clientLogs=Reporter.getCurrentTestResult().getMethod().getTestClass().getXmlTest().getAllParameters().get(env.getProperty("logs"));
         }
 
         if(bean instanceof DesiredCapabilities) {

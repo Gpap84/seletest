@@ -69,21 +69,21 @@ public interface WaitFor {
      * @param locator the locator of the WebElement to wait to become invisible
      * @return true if element is invisible or false otherwise
      */
-    Boolean waitForElementInvisibility(String locator);
+    boolean waitForElementInvisibility(String locator);
 
     /**
      * Wait for text to be present in Element
      * @param locator
      * @return true if text present in webElement or false otherwise
      */
-    Boolean waitForTextPresentinElement(Object locator,String text);
+    boolean waitForTextPresentinElement(Object locator,String text);
 
     /**
      * Wait for text to be present in attribute value
      * @param locator
      * @return true if text present in attribute value or false otherwise
      */
-    Boolean waitForTextPresentinValue(Object locator,String text);
+    boolean waitForTextPresentinValue(Object locator,String text);
 
 
     /**

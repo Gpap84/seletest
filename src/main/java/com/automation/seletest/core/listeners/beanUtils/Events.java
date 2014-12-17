@@ -33,6 +33,8 @@ import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 import org.testng.ITestContext;
 
+import com.automation.seletest.core.services.annotations.SeleniumTest;
+
 /**
  * Event class for custom events
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -86,6 +88,33 @@ public class Events extends ApplicationEvent{
             this.performance=performance;
             this.testcontext=context;
         }
+    }
+    
+    /**
+     * Class for events regarding TestNG configuration
+     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    public static class TestNGEvent extends Events {
+
+		public TestNGEvent(
+				Object source,
+				SeleniumTest selenium,
+				String msg) {
+			super(source);
+			this.test=selenium;
+			this.message=msg;
+		}
+
+		private static final long serialVersionUID = 1L;
+		  
+		/**SeleniuTest interface*/
+        @Getter @Setter private SeleniumTest test;
+        
+        /**General Message for event*/
+        @Getter @Setter private String message;
+        
+        
     }
 
 }

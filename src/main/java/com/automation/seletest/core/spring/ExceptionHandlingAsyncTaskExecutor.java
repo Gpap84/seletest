@@ -29,13 +29,13 @@ package com.automation.seletest.core.spring;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.testng.ITestResult;
-import org.testng.Reporter;
-
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
 
@@ -49,101 +49,108 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
 @SuppressWarnings({"rawtypes","unchecked","hiding"})
 public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor {
 
-    /**The AsyncTaskExecutor*/
-    private final AsyncTaskExecutor executor;
+	@Autowired
+	ThreadPoolTaskExecutor threadPoolExecutor;
 
-    public ExceptionHandlingAsyncTaskExecutor(AsyncTaskExecutor executor) {
-        this.executor = executor;
-    }
+	/**The AsyncTaskExecutor*/
+	private final AsyncTaskExecutor executor;
 
-    /* (non-Javadoc)
-     * @see org.springframework.core.task.TaskExecutor#execute(java.lang.Runnable)
-     */
-    @Override
-    public void execute(Runnable task) {
-        executor.execute(createWrappedRunnable(task));
-    }
+	public ExceptionHandlingAsyncTaskExecutor(AsyncTaskExecutor executor) {
+		this.executor = executor;
+	}
 
-    /* (non-Javadoc)
-     * @see org.springframework.core.task.AsyncTaskExecutor#execute(java.lang.Runnable, long)
-     */
-    @Override
-    public void execute(Runnable task, long startTimeout) {
-        executor.execute(createWrappedRunnable(task), startTimeout);
-    }
+	/* (non-Javadoc)
+	 * @see org.springframework.core.task.TaskExecutor#execute(java.lang.Runnable)
+	 */
+	@Override
+	public void execute(Runnable task) {
+		executor.execute(createWrappedRunnable(task));
+	}
 
-    /* (non-Javadoc)
-     * @see org.springframework.core.task.AsyncTaskExecutor#submit(java.lang.Runnable)
-     */
-    @Override
-    public Future<?> submit(Runnable task) {
-        return executor.submit(createWrappedRunnable(task));
-    }
+	/* (non-Javadoc)
+	 * @see org.springframework.core.task.AsyncTaskExecutor#execute(java.lang.Runnable, long)
+	 */
+	@Override
+	public void execute(Runnable task, long startTimeout) {
+		executor.execute(createWrappedRunnable(task), startTimeout);
+	}
 
-    /* (non-Javadoc)
-     * @see org.springframework.core.task.AsyncTaskExecutor#submit(java.util.concurrent.Callable)
-     */
-    @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        if(!SessionContext.getSession().getVerifications().isEmpty() && !((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)) {
-            try {
-                ((Future<T>)SessionContext.getSession().getVerifications().get(0)).get();
-                SessionContext.getSession().getVerifications().clear();
-            } catch (InterruptedException | ExecutionException e) {
-                log.error("Exception during executing future task: "+e);
-                Reporter.getCurrentTestResult().setStatus(ITestResult.FAILURE);
-                Reporter.getCurrentTestResult().setThrowable(e);
-            }
-        }
-        Future<T> futureTask = executor.submit(createCallable(task));
-        SessionContext.getSession().getVerifications().add(futureTask);//push Future task to a ArrayList
-        return futureTask;
-    }
+	/* (non-Javadoc)
+	 * @see org.springframework.core.task.AsyncTaskExecutor#submit(java.lang.Runnable)
+	 */
+	@Override
+	public Future<?> submit(Runnable task) {
+		return executor.submit(createWrappedRunnable(task));
+	}
 
-    /**
-     * Create callable task
-     * @param task
-     * @return Callable
-     */
-    private Callable createCallable(final Callable task) {
-        return new Callable() {
-            @Override
-            public T call() throws Exception {
-                try {
-                    return (T) task.call();
-                } catch (Exception ex) {
-                    handle(ex);
-                    throw ex;
-                }
-            }
-        };
-    }
+	/* (non-Javadoc)
+	 * @see org.springframework.core.task.AsyncTaskExecutor#submit(java.util.concurrent.Callable)
+	 */
+	@Override
+	public <T> Future<T> submit(Callable<T> task) {
+		Future<T> futureTask=null;
+		try {
+			futureTask = executor.submit(createCallable(task));
+			if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)){
+				futureTask.get();
+				log.debug("Assertion finished: {} , proceed to the next one if exists!!!", task);
+			} else {
+				SessionContext.getSession().getVerifications().add(futureTask);
+			}
+			log.debug("Future task submitted {}", task.toString());
+		} catch (InterruptedException | ExecutionException e) {
+			log.error("Exception during executing future task {}, stop submitting any further tasks: ",e.getMessage());
+			throw new RejectedExecutionException("Reject any other verification task due to hard assertion error ----> "+e.getMessage());
+
+		}
+		return futureTask;
+	}
+
+	/**
+	 * Create callable task
+	 * @param task
+	 * @return Callable
+	 */
+	private Callable createCallable(final Callable task) {
+		return new Callable() {
+			@Override
+			public T call() throws Exception {
+				try {
+					log.debug("Thread Id {} for thread: ", Thread.currentThread().getId(),Thread.currentThread().getName());
+					return (T) task.call();
+				} catch (Exception ex) {
+					handle(ex);
+					throw ex;
+				}
+			}
+		};
+	}
 
 
-    /**
-     * Create runnable task
-     * @param task
-     * @return Runnable
-     */
-    private Runnable createWrappedRunnable(final Runnable task) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    task.run();
-                } catch (Exception ex) {
-                    handle(ex);
-                }
-            }
-        };
-    }
+	/**
+	 * Create runnable task
+	 * @param task
+	 * @return Runnable
+	 */
+	private Runnable createWrappedRunnable(final Runnable task) {
+		return new Runnable() {
+			@Override
+			public void run() {
+				try {
+					task.run();
+				} catch (Exception ex) {
+					handle(ex);
+				}
+			}
+		};
+	}
 
-    /**
-     * Handle exception for asynchronous execution method
-     * @param ex
-     * @throws Exception
-     */
-    private void handle(Exception ex){
-        log.error("Error during @Async execution: {}", ex);
-    }
+	/**
+	 * Handle exception for asynchronous execution method
+	 * @param ex
+	 * @throws Exception
+	 */
+	private void handle(Exception ex){
+		log.error("Error during @Async execution: {}", ex);
+	}
 }

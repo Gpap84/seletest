@@ -49,11 +49,11 @@ import org.openqa.selenium.logging.LogEntries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.services.FilesUtils;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
+import com.automation.seletest.core.services.utilities.FilesUtils;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 /**

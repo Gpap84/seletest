@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.services;
+package com.automation.seletest.core.services.utilities;
 
 import javax.annotation.PostConstruct;
 
@@ -38,7 +38,7 @@ import org.testng.Reporter;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@Service
+@Service("loggingService")
 @Slf4j
 public class LogUtils {
 

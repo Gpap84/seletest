@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.common.KeyInfo;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.properties.CoreProperties;
 import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 
 /**
@@ -46,10 +45,12 @@ import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 @Component
 @Slf4j
 public class GitHubSearchPage extends AbstractPage<GitHubSearchPage>{
+	
+	
 
     public enum GitHubPageLocators {
 
-        DIV_PARENT("$(\"[class*='container clearfix']\").css(\"borderStyle\", \"" + CoreProperties.DOTTED_BORDER.get() + "\" )") {
+        DIV_PARENT("$(\"[class*='container clearfix']\").css(\"borderStyle\", \"dotted\" )") {
             @Override
             public String log() {
                return "Parent div element" + DIV_PARENT.get() + "'!!!";

@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 import org.testng.ITestContext;
 
 import com.automation.seletest.core.listeners.beanUtils.Events;
+import com.automation.seletest.core.services.annotations.SeleniumTest;
 
 
 /**
@@ -48,7 +49,10 @@ import com.automation.seletest.core.listeners.beanUtils.Events;
 @SuppressWarnings("static-access")
 public class ApplicationContextProvider implements ApplicationContextAware,ApplicationEventPublisherAware {
 
-    private static ApplicationContext applicationContext = null;
+	/**Static access to ApplicatonCotext*/
+    private static ApplicationContext applicationContext;
+    
+    /**Publisher*/
     private static ApplicationEventPublisher publisher;
 
 
@@ -85,6 +89,15 @@ public class ApplicationContextProvider implements ApplicationContextAware,Appli
      */
     public void publishInitializationEvent(String message, String hostUrl, boolean performance, ITestContext ctx) {
         this.publisher.publishEvent(new Events.InitializationEvent(this, message, hostUrl, performance,ctx));
+    }
+    
+    /**
+     * Publish event for TestNG configuration
+     * @param selenium
+     * @param message
+     */
+    public void publishTestNGEvent(SeleniumTest selenium, String message) {
+        this.publisher.publishEvent(new Events.TestNGEvent(this, selenium, message));
     }
 
 }

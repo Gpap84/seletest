@@ -35,7 +35,7 @@ import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
-import com.automation.seletest.core.testNG.assertions.AssertTest;
+import com.automation.seletest.core.testNG.assertions.Assert;
 import com.thoughtworks.selenium.Selenium;
 
 /**
@@ -44,13 +44,13 @@ import com.thoughtworks.selenium.Selenium;
  *
  */
 @SuppressWarnings("deprecation")
-public class SessionControl {
+public final class SessionControl {
 
     /**
      * AssertTest
      * @return AssertTest instance
      */
-    public static <T> AssertTest<?> verifyController(){
+    public static <T> Assert<?> verifyController(){
         return SessionContext.session().getAssertion();
     }
 

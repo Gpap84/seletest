@@ -41,9 +41,9 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.FilesUtils;
-import com.automation.seletest.core.services.MailUtils;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.services.utilities.FilesUtils;
+import com.automation.seletest.core.services.utilities.MailUtils;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 /**
@@ -54,87 +54,89 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
 @Slf4j
 public class TestListener implements ITestListener{
 
-    private final String screenShots="/html/screenshots";
-    private final String logs="/html/Logs";
+	private final String screenShots="/html/screenshots";
+	private final String logs="/html/Logs";
 
-    @Override
-    public void onStart(ITestContext testContext) {
-        log.info("Suite: "+testContext.getSuite().getName()+" started at: "+testContext.getStartDate());
-        createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+screenShots);
-        createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+logs);
-    }
+	@Override
+	public void onStart(ITestContext testContext) {
+		log.info("Suite: "+testContext.getSuite().getName()+" started at: "+testContext.getStartDate());
+		createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+screenShots);
+		createDirectory(new File(testContext.getSuite().getOutputDirectory()).getParent()+logs);
+	}
 
-    @Override
-    public void onFinish(ITestContext context) {
-        log.info("Suite: "+context.getSuite().getName()+" ended at: "+context.getEndDate());
+	@Override
+	public void onFinish(ITestContext context) {
+		log.info("Suite: "+context.getSuite().getName()+" ended at: "+context.getEndDate());
 
-        //Remove the passed configuration methods from the report
-        for(ITestNGMethod m:context.getPassedConfigurations().getAllMethods()){
-            if(!m.isBeforeMethodConfiguration()) {
-                context.getPassedConfigurations().removeResult(m);
-            }
-        }
-        //Remove the skipped configuration methods from the report
-        for(ITestNGMethod m:context.getSkippedConfigurations().getAllMethods()){
-            context.getSkippedConfigurations().removeResult(m);
-        }
-        //remove the rerun tests result from report
-        for(int i=0;i<context.getAllTestMethods().length;i++){
-            if(context.getAllTestMethods()[i].getCurrentInvocationCount()==3){
-                if (context.getFailedTests().getResults(context.getAllTestMethods()[i]).size() == 2 || context.getPassedTests().getResults(context.getAllTestMethods()[i]).size() == 1){
-                    if(context.getAllTestMethods()[i].getParameterInvocationCount()==1){
-                        context.getFailedTests().removeResult(context.getAllTestMethods()[i]);
-                    }
-                }
-            }
-        }
-    }
+		//Remove the passed configuration methods from the report
+		for(ITestNGMethod m:context.getPassedConfigurations().getAllMethods()){
+			if(!m.isBeforeMethodConfiguration()) {
+				context.getPassedConfigurations().removeResult(m);
+			}
+		}
+		//Remove the skipped configuration methods from the report
+		for(ITestNGMethod m:context.getSkippedConfigurations().getAllMethods()){
+			context.getSkippedConfigurations().removeResult(m);
+		}
+		//remove the rerun tests result from report
+		for(int i=0;i<context.getAllTestMethods().length;i++){
+			if(context.getAllTestMethods()[i].getCurrentInvocationCount()==3){
+				if (context.getFailedTests().getResults(context.getAllTestMethods()[i]).size() == 2 || context.getPassedTests().getResults(context.getAllTestMethods()[i]).size() == 1){
+					if(context.getAllTestMethods()[i].getParameterInvocationCount()==1){
+						context.getFailedTests().removeResult(context.getAllTestMethods()[i]);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void onTestSuccess(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" passed!!!");
-    }
+	@Override
+	public void onTestSuccess(ITestResult testResult) {
+		log.debug("Test "+ testResult.getName()+" passed!!!");
+	}
 
-    @Override
-    public void onTestSkipped(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" skipped!!!");
-    }
+	@Override
+	public void onTestSkipped(ITestResult testResult) {
+		log.debug("Test "+ testResult.getName()+" skipped!!!");
+	}
 
-    @Override
-    public void onTestFailure(ITestResult testResult) {
-        log.debug("Test "+ testResult.getName()+" failed!!!");
-        try {
-            log.debug("Collect client logs after failure of the @Test {}", testResult.getMethod());
-            LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
-            StringBuilder list=new StringBuilder();
-            for (LogEntry entry : entries) {
-                list.append(entry.getMessage()+"\n");
-            }
-            ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
-            Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
-        }
-        catch(Exception ex) {log.error("Exception trying to collect client logs: {}",ex);}
+	@Override
+	public void onTestFailure(ITestResult testResult) {
+		log.debug("Test "+ testResult.getName()+" failed!!!");
+		try {
+			log.debug("Collect client logs after failure of the @Test {}", testResult.getMethod());
+			LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
+			StringBuilder list=new StringBuilder();
+			for (LogEntry entry : entries) {
+				list.append(entry.getMessage()+"\n");
+			}
+			ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
+			Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
+		}
+		catch(Exception ex) {
+			log.error("Exception trying to collect client logs: {}",ex.getMessage());
+		}
 
-        if(System.getProperty("email")!=null) {
-            log.debug("Send email notification with failure of the @Test to address {} ", System.getProperty("email"));
-            ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail(System.getProperty("email"),"Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
-        }
-    }
+		if(System.getProperty("email")!=null) {
+			log.debug("Send email notification with failure of the @Test to address {} ", System.getProperty("email"));
+			ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail(System.getProperty("email"),"Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
+		}
+	}
 
-    @Override
-    public void onTestStart(ITestResult result) {
-        log.debug("Test "+ result.getName()+" started!!!");
-    }
+	@Override
+	public void onTestStart(ITestResult result) {
+		log.debug("Test "+ result.getName()+" started!!!");
+	}
 
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+	@Override
+	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 
-    }
+	}
 
-    private void createDirectory(String dir){
-        File currentPath = new File(dir).getAbsoluteFile();
-        if(!currentPath.exists()){
-            currentPath.mkdirs();
-        }
-    }
+	private void createDirectory(String dir){
+		File currentPath = new File(dir).getAbsoluteFile();
+		if(!currentPath.exists()){
+			currentPath.mkdirs();
+		}
+	}
 }

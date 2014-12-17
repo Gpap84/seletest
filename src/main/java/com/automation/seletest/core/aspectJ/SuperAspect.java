@@ -79,10 +79,9 @@ public abstract class SuperAspect {
     protected void getReturningValue() {}
 
     /**Methods for sending email*/
-    @Pointcut("execution(* com.automation.seletest.core.services.MailUtils.*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.services.utilities.MailUtils.*(..))")
     protected void sendMail() {}
 
-    /** Pointcut for boolean methods inside WebAPI*/
     @Pointcut("execution(boolean com.automation.seletest.core.selenium.webAPI..*(..))")
     protected void componentsStatus() {}
 
@@ -91,7 +90,7 @@ public abstract class SuperAspect {
     protected void retryExecution(RetryFailure retry) {}
 
     /** Pointcut for logging in Custom Verify methods*/
-    @Pointcut("execution(* com.automation.seletest.core.testNG.assertions.AssertTest.*(..)) && @annotation(verify)")
+    @Pointcut("execution(* com.automation.seletest.core.testNG.assertions.Assert.*(..)) && @annotation(verify)")
     protected void logVerify(VerifyLog verify) {}
 
     /** Pointcut for logging PO methods*/

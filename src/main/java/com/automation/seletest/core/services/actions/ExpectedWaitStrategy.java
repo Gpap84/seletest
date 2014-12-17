@@ -90,13 +90,13 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 
 	@Cacheable("wait")
     @Override
-    public Boolean waitForElementInvisibility(final String locator) {
+    public boolean waitForElementInvisibility(final String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
 	@Cacheable("wait")
     @Override
-    public Boolean waitForTextPresentinElement(final Object locator,final String text) {
+    public boolean waitForTextPresentinElement(final Object locator,final String text) {
         if(locator instanceof String){
             return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator),text));
         }
@@ -111,7 +111,7 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 	
 	@Cacheable("wait")
     @Override
-    public Boolean waitForTextPresentinValue(final Object locator,final String text) {
+    public boolean waitForTextPresentinValue(final Object locator,final String text) {
         if(locator instanceof String){
             return wfExpected().until(ExpectedConditions.textToBePresentInElementValue(Locators.findByLocator((String)locator).setLocator((String)locator),text));
         }

@@ -36,7 +36,7 @@ import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
-import com.automation.seletest.core.services.LogUtils;
+import com.automation.seletest.core.services.utilities.LogUtils;
 
 /**
  * This class used for executing soft assertions
