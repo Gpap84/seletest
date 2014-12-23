@@ -5,6 +5,8 @@ target/
 *.log
 .gitignore
 chromedriver.log
+.idea/
+test-output/
 
 
 # Package Files #
