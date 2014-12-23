@@ -306,6 +306,13 @@
 			</exclusions>
 		</dependency>
 
+        <!-- JUnit support-->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
 
 
 		<!-- PhantomJS driver for headless testing -->
@@ -360,6 +367,14 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!--Spring JMX support-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jmx</artifactId>
+			<version>2.0.8</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Bean Factory -->
@@ -482,7 +497,6 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.13</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Read from a csv file -->
