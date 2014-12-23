@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -52,6 +53,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -61,6 +63,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.automation.setest.groovy.configuration.WebDriverOptions;
 import com.opera.core.systems.OperaDriver;
@@ -74,6 +77,7 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  */
 @SuppressWarnings("deprecation")
 @Configuration
+@EnableCaching
 @PropertySources({@PropertySource({"BrowserSettings/browser.properties","core.properties"})})
 @ImportResource({
     "classpath*:META-INF/spring/app-context.xml",
@@ -87,7 +91,7 @@ public class ConfigurationDriver {
 
     /**
      * Chrome bean
-     * @param capabilities
+     * @param capabilities Desirecapabilities for WebDriver
      * @return WebDriver instance
      */
     @Bean(name="chrome")
@@ -117,7 +121,7 @@ public class ConfigurationDriver {
 
     /**
      * Load chrome options from properties file
-     * @param optionsPath
+     * @param optionsPath String path to prprties file that stored the chrome options
      * @return ChromeOptions the chrome options loaded from properties file
      * @throws Exception
      */
@@ -140,7 +144,7 @@ public class ConfigurationDriver {
 
     /**
      * Firefox bean
-     * @param capabilities
+     * @param capabilities Desirercapabilities for WebDriver
      * @return WebDriver instance
      */
     @Bean(name="firefox")
@@ -149,10 +153,25 @@ public class ConfigurationDriver {
     public WebDriver firefox(DesiredCapabilities capabilities){
         return new FirefoxDriver(capabilities);
     }
-
+    
+    /**
+     * The defaultTaskExecutor for thread management
+     * @return ThreadPoolTaskExecutor the default thread pool task executor  
+     */
+    @Bean(name="SeletestTaskExecutor")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ThreadPoolTaskExecutor defaultTaskExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setThreadNamePrefix("Seletest Thread Pool - ");
+        taskExecutor.setCorePoolSize(10);
+        taskExecutor.setQueueCapacity(10);
+        taskExecutor.setMaxPoolSize(20);
+        return taskExecutor;
+    }
+   
     /**
      * Internet Explorer bean
-     * @param capabilities
+     * @param capabilities Desirercapabilities for WebDriver
      * @return WebDriver instance
      */
     @Bean(name="ie")
@@ -169,7 +188,7 @@ public class ConfigurationDriver {
 
     /**
      * Opera bean
-     * @param capabilities
+     * @param capabilities Desirercapabilities for WebDriver
      * @return WebDriver instance
      */
     @Bean(name="opera")
@@ -181,7 +200,7 @@ public class ConfigurationDriver {
 
     /**
      * PhantomJS bean
-     * @param capabilities
+     * @param capabilities Desirercapabilities for WebDriver
      * @return WebDriver instance
      */
     @Bean(name="phantomJS")
@@ -198,8 +217,8 @@ public class ConfigurationDriver {
 
     /**
      * Selenium Grid bean
-     * @param url
-     * @param cap
+     * @param url String url of Selenium Grid
+     * @param cap Desirercapabilities for WebDriver
      * @return WebDriver instance
      * @throws MalformedURLException
      */
@@ -212,8 +231,8 @@ public class ConfigurationDriver {
 
     /**
      * Android bean
-     * @param url
-     * @param cap
+     * @param url String url of selenium Grid
+     * @param cap Desirercapabilities for WebDriver
      * @return WebDriver instance
      * @throws MalformedURLException
      */
@@ -226,8 +245,8 @@ public class ConfigurationDriver {
 
     /**
      * iOS bean
-     * @param url
-     * @param cap
+     * @param url String url of selenium grid
+     * @param cap Desirercapabilities for WebDriver
      * @return WebDriver instance
      * @throws MalformedURLException
      */
@@ -241,8 +260,8 @@ public class ConfigurationDriver {
 
     /**
      * WebDriver wait bean
-     * @param driver
-     * @param timeout
+     * @param driver WebDriver
+     * @param timeout int timeout in seconds
      * @return WebDriverWait instance
      */
     @Bean(name="webdriverwait")
@@ -261,14 +280,13 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public DesiredCapabilities capabilities(){
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        return capabilities;
+        return new DesiredCapabilities();
     }
 
     /**
      * Selenium bean
-     * @param driver
-     * @param baseUrl
+     * @param driver WebDriver
+     * @param baseUrl Url of web app
      * @return Selenium
      */
     @Bean
@@ -280,10 +298,10 @@ public class ConfigurationDriver {
 
     /**
      * android capabilities bean
-     * @param appPath
-     * @param appActivity
-     * @param appPackage
-     * @param autolaunch
+     * @param appPath String path to apk stored
+     * @param appActivity String activity to launch
+     * @param appPackage String package of app
+     * @param autolaunch String autolaunch specifies if application will be autolaunched or not
      * @return DesiredCapabilities
      */
     @Bean
@@ -305,10 +323,10 @@ public class ConfigurationDriver {
 
     /**
      * iOS capabilities bean
-     * @param appPath
-     * @param udid
-     * @param bundleId
-     * @param autolaunch
+     * @param appPath String path to app or ipa stored
+     * @param udid String udid of the device
+     * @param bundleId String bundleid is the package name in iOS
+     * @param autolaunch String autolaunch specifies if application will be autolaunched or not
      * @return DesiredCapabilities
      */
     @Bean

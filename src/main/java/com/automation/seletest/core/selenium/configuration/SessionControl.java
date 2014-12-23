@@ -50,7 +50,7 @@ public final class SessionControl {
      * AssertTest
      * @return AssertTest instance
      */
-    public static <T> Assert<?> verifyController(){
+    public static Assert<?> verifyController(){
         return SessionContext.session().getAssertion();
     }
 

@@ -50,14 +50,14 @@ public @interface  SeleniumTest {
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    public enum AssertionType{SOFT,HARD};
+    public enum AssertionType{SOFT,HARD}
 
     /**
      * DriverType to specify if selenium 1 or webdriver api are used for @Test
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */
-    public enum DriverType{SELENIUM,WEBDRIVER,APPIUMDRIVER};
+    public enum DriverType{SELENIUM,WEBDRIVER,APPIUMDRIVER}
 
     /**
      * driver

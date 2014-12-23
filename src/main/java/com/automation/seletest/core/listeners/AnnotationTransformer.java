@@ -55,10 +55,10 @@ import com.automation.seletest.core.testNG.DataSources;
 public class AnnotationTransformer implements IAnnotationTransformer2{
 
     /**The name of the DataProvider used to load properties for data driven testing*/
-    private final String dataPropertiesSource="GenericDataProvider";
+    private static final String dataPropertiesSource="GenericDataProvider";
 
     /**The name of the DataProvider used to load data from excel for data driven testing*/
-    private final String dataExcelSource="ExcelDataProvider";
+    private static final String dataExcelSource="ExcelDataProvider";
 
     @Override
     @SuppressWarnings("rawtypes")
@@ -86,7 +86,7 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
 
     /**
      * Condition for use of custom dataprovider
-     * @param testMethod
+     * @param testMethod Method testMethod
      * @return Enum Data for dataType(csv-excel-properties)
      */
     private Data dataType(final Method testMethod) {
@@ -125,8 +125,8 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
 
     /**
      * If DataProvider run in parallel for input data
-     * @param testMethod
-     * @return
+     * @param testMethod Method testMethod
+     * @return boolea use or not dataProvider in parallel mode
      */
     private boolean usesParallelDataProvider(final Method testMethod) {
         return testMethod.getAnnotation(DataProvider.class).parallel();
@@ -152,13 +152,10 @@ public class AnnotationTransformer implements IAnnotationTransformer2{
         public boolean retry(ITestResult result) {
 
             if ((!result.isSuccess() &&
-                    (!(result.getThrowable() instanceof TimeoutException)
-                            || !(result.getThrowable() instanceof AssertionError)))) {
+                    (!(result.getThrowable() instanceof TimeoutException || result.getThrowable() instanceof AssertionError)))) {
                 if (count < maxCount) {
                     count++;
-                    log.info(Thread.currentThread().getName() + "Error in "
-                            + result.getName() + " with status "
-                            + result.getStatus() + " Retrying " + count + " times");
+                    log.info("{} - Error in {} with status {}. Retrying {} times",Thread.currentThread().getName(),result.getName(),result.getStatus(),count);
                     return true;
                 }
 

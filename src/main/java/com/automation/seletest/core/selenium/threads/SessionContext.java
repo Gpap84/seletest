@@ -71,7 +71,7 @@ public class SessionContext {
 
 	/**
 	 * Return the ThreadLocalTargetSource
-	 * @param targetBean
+	 * @param targetBean Class for target bean to be ThreadLocal
 	 * @return ThreadLocalTargetSource instance
 	 */
 	protected static ThreadLocalTargetSource innerContext(Class<?> targetBean) {
@@ -91,11 +91,10 @@ public class SessionContext {
 
 	/**
 	 * Log thread instance
-	 * @param sessionObjects
-	 * @throws Exception
 	 */
 	public static void setSessionProperties(){
-		threadStack.push(session());//push instanse of Session to stack
+		threadStack.push(session());
+		log.debug("{} stored in {}",session(),threadStack);
 		String driver="";
 		if(session().getWebDriver() instanceof RemoteWebDriver && !(session().getWebDriver() instanceof AppiumDriver)) {
 			driver="Web Test: "+session().getWebDriver().toString().split(":")[0];
@@ -117,7 +116,7 @@ public class SessionContext {
 	}
 	/**
 	 * Clean specific thread from a Stack with threads
-	 * @param index
+	 * @param index Index in stack
 	 * @throws Exception
 	 */
 	public static void stopSession(int index) throws Exception {
@@ -131,6 +130,6 @@ public class SessionContext {
 
 	/**Stack for storing instances of thread objects*/
 	@Getter @Setter
-	public static Stack<SessionProperties> threadStack = new Stack<SessionProperties>();
+	public static Stack<SessionProperties> threadStack = new Stack<>();
 
 }

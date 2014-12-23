@@ -33,9 +33,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.testNG.assertions.SoftAssert;
 
@@ -48,9 +46,6 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
 @Slf4j
 @SuppressWarnings({"rawtypes","unchecked","hiding"})
 public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor {
-
-	@Autowired
-	ThreadPoolTaskExecutor threadPoolExecutor;
 
 	/**The AsyncTaskExecutor*/
 	private final AsyncTaskExecutor executor;

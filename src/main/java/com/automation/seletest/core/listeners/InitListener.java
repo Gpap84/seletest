@@ -62,8 +62,6 @@ public class InitListener implements IInvokedMethodListener{
 		ITestClass testClass=method.getTestMethod().getTestClass();
 		Class<?> webClass=testClass.getRealClass();
 
-		SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getTestClass().getRealClass(), SeleniumTest.class);
-
 		if(testResult.getMethod().isBeforeClassConfiguration() && testResult.getMethod().getMethodName().equalsIgnoreCase("beforeClass")) {
 			preconfigure=webClass.getAnnotation(PreConfiguration.class);
 		}
@@ -71,11 +69,13 @@ public class InitListener implements IInvokedMethodListener{
 		//Set session as testNG attribute for after configuration methods
 		try{
 			testResult.setAttribute("session", SessionContext.session());}
-		catch(Exception ex) {}
+		catch(Exception ex) {
+			log.error("Attribute session cannot be set for result {}!!!",testResult.getName());
+		}
 
 		if(method.getTestMethod().isTest()){
 			log.debug("Set assertion type parameter for test method: {}!!!", method.getTestMethod().getMethodName());
-			seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
+			SeleniumTest seleniumTest=AnnotationUtils.findAnnotation(method.getTestMethod().getConstructorOrMethod().getMethod(), SeleniumTest.class);
 			ApplicationContextProvider.getApplicationContext().getBean(ApplicationContextProvider.class).publishTestNGEvent(seleniumTest, "Initialize objects for the @Test method: "+method.getTestMethod().getMethodName()); 
 			preconfigure = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(PreConfiguration.class);
 		}
@@ -99,7 +99,9 @@ public class InitListener implements IInvokedMethodListener{
 
 		try{
 			testResult.setAttribute("session", SessionContext.session());}
-		catch(Exception ex){}
+		catch(Exception ex){
+			log.error("Attribute session cannot be set for result {}!!!",testResult.getName());
+		}
 
 		if(method.getTestMethod().isTest()){
 
@@ -137,7 +139,7 @@ public class InitListener implements IInvokedMethodListener{
 
 	/**
 	 * Execute PreConfiguration
-	 * @param configure
+	 * @param configure Object for custom annotation PreConfigure-PostConfigure
 	 * @throws SkipException
 	 */
 	private void executionConfiguration(Object configure) throws SkipException{

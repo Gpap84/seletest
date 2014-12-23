@@ -67,7 +67,7 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Handle Exceptions...
-     * @param pjp
+     * @param pjp ProceedingJoinPoint
      * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
@@ -95,25 +95,25 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Around Advice for
-     * @param pjp
+     * @param pjp ProceedingJoinPoint
      * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
     @Around("componentsStatus()")
     public Object handleReturningFunctions(ProceedingJoinPoint pjp) throws Throwable {
-        Object returnValue = null;
+        Object returnValue;
         try {
             returnValue= pjp.proceed();
         } catch (Exception ex) {
-            returnValue=handleException(returnValue, pjp, ex);
+            returnValue=handleExceptionReturn(pjp);
         }
         return returnValue;
     }
 
     /**
      * Around advice with custom annotation for retrying execution of JoinPoint
-     * @param pjp
-     * @param retry
+     * @param pjp ProceedingJoinPoint
+     * @param retry RetryFailure
      * @return value from ProceedingJoinPoint
      * @throws Throwable
      */
@@ -135,13 +135,14 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Around advice for performing JS scripts
-     * @param pjp
-     * @return proxied object
+     * @param pjp ProceedingJoinPoint
+     * @param js JSHandle
+     * @return Object returning value
      * @throws Throwable
      */
     @Around("jsHandle(js)")
-    public Object executeJS(ProceedingJoinPoint pjp,JSHandle js) throws Throwable {
-        Object returnValue = null;
+    public Object executeJS(ProceedingJoinPoint pjp, JSHandle js) throws Throwable {
+        Object returnValue;
         SessionControl.webController().changeStyle((pjp).getArgs()[0],"backgroundColor", env.getProperty("color_action"));
         SessionControl.webController().changeStyle((pjp).getArgs()[0],"borderStyle", env.getProperty("dotted"));
         returnValue = pjp.proceed();
@@ -151,13 +152,13 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Around advice for verification methods (log output of assertion, highlight elements and take screenshots on failures)
-     * @param pjp
+     * @param pjp ProceedingJoinPoint
      * @return proxied object
      * @throws Throwable
      */
     @Around("logVerify(verify)")
     public Object verify(ProceedingJoinPoint pjp, VerifyLog verify) throws Throwable {
-        Object returnValue=null;
+        Object returnValue;
         try {
             Reporter.getCurrentTestResult().setAttribute("verification", true);
             returnValue = pjp.proceed();
@@ -184,13 +185,13 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Around functions of web controller
-     * @param pjp
-     * @return
+     * @param pjp ProceedingJoinPoint
+     * @return Objec returning value
      * @throws Throwable
      */
     @Around("webControl()")
     public Object webControl(ProceedingJoinPoint pjp) throws Throwable {
-        Object returnValue=null;
+        Object returnValue;
         Reporter.getCurrentTestResult().removeAttribute("verification");
         returnValue = pjp.proceed();
         return returnValue;
@@ -198,10 +199,10 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Method for handling exceptions....
-     * @param pjp
-     * @param ex
-     * @param attemptCount
-     * @param retry
+     * @param pjp ProceedingJoinPoint
+     * @param ex  Throwable
+     * @param attemptCount integer retries
+     * @param retry RetryFailure
      * @throws Throwable
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
@@ -224,12 +225,11 @@ public class ExceptionHandler extends SuperAspect {
 
     /**
      * Handle exceptions for Boolean-Integer returning type methods in web controller
-     * @param pjp
-     * @param ex
-     * @return Proxied Object
+     * @param pjp ProceedingJoinPoint
+     * @return returning value
      * @throws Throwable
      */
-    private Object handleException(Object type,ProceedingJoinPoint pjp, Throwable ex) throws Throwable {
+    private Object handleExceptionReturn(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature signature = (MethodSignature ) pjp.getSignature();
         Class<?> returnType = signature.getReturnType();
         if(returnType.getName().compareTo("int")==0){

@@ -161,13 +161,17 @@ public enum Locators {
 
     /**Get locator by value
      *
-     * @return
+     * @return locator
      */
     public String getLocator() {
         return value;
     }
 
-    /**Return enum for given value*/
+    /**
+     * Return enum for given value
+     * @param locator String lcoator to use
+     * @return Locators enum object
+     */
     static synchronized public Locators findByLocator(String locator) {
         if (locator != null) {
             for (Locators locatorUsed : Locators.values()) {

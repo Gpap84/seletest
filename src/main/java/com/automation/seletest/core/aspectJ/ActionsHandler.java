@@ -64,12 +64,12 @@ public class ActionsHandler extends SuperAspect {
     LogUtils log;
 
     /**Constant for taking screenshot*/
-    private final String takeScreencap="Take screenshot after exception: ";
+    private static final String takeScreencap="Take screenshot after exception: ";
 
     /**
      * Log returning value for get** methods
-     * @param jp
-     * @param returnVal
+     * @param jp JoinPoint
+     * @param returnVal Object for returning value
      */
     @AfterReturning(pointcut ="getReturningValue()",returning="returnVal")
     public void afterReturningAdvice(final JoinPoint jp, Object returnVal) {
@@ -78,7 +78,7 @@ public class ActionsHandler extends SuperAspect {
 
     /**
      * Take screencap after exceptions...
-     * @param joinPoint
+     * @param joinPoint JoinPoint
      * @param ex Throwable
      * @throws IOException
      */
@@ -92,7 +92,7 @@ public class ActionsHandler extends SuperAspect {
 
     /**
      * Wait for elements before any action....
-     * @param pjp
+     * @param pjp JoinPoint
      */
     @Before(value="waitElement()")
     public void waitFor(final JoinPoint pjp) {
@@ -113,7 +113,7 @@ public class ActionsHandler extends SuperAspect {
     /**Report execution for method @Monitor*/
     @Around(value="monitor()")
     public Object monitorLogs(ProceedingJoinPoint pjp) throws Throwable {
-        Object returnValue = null;
+        Object returnValue ;
         long start = System.currentTimeMillis();
         returnValue = pjp.proceed();
         long elapsedTime = System.currentTimeMillis() - start;

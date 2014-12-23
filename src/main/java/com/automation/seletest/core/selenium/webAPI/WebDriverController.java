@@ -129,7 +129,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @Monitor
     public WebDriverController takeScreenShot() throws IOException{
-        File scrFile = ((TakesScreenshot) webDriver()).getScreenshotAs(OutputType.FILE);
+        File scrFile = webDriver().getScreenshotAs(OutputType.FILE);
         File file = fileService.createScreenshotFile();
         FileUtils.copyFile(scrFile, file);
         fileService.reportScreenshot(file);
@@ -140,7 +140,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     public WebDriverController takeScreenShotOfElement(Object locator) throws IOException {
-        File screenshot = ((TakesScreenshot)webDriver()).getScreenshotAs(OutputType.FILE);
+        File screenshot = webDriver().getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
         WebElement element=SessionContext.getSession().getWebElement();
         Point point = element.getLocation();
@@ -206,11 +206,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     public boolean isTextPresent(String text) {
-        if(getPageSource().contains(text)){
-            return true;
-        } else {
-            return false;
-        }
+            return getPageSource().contains(text);
     }
 
 
@@ -307,8 +303,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Monitor
     @RetryFailure(retryCount=3)
     public Set<Cookie> getCookies() {
-        Set<Cookie> cookies=webDriver().manage().getCookies();
-        return cookies;
+        return webDriver().manage().getCookies();
     }
 
     @Override
@@ -511,8 +506,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getFirstSelectedOptionText(Object locator) {
-        String selectedText=new Select(SessionContext.getSession().getWebElement()).getFirstSelectedOption().getText();
-        return selectedText;
+        return new Select(SessionContext.getSession().getWebElement()).getFirstSelectedOption().getText();
     }
 
     /* (non-Javadoc)
@@ -523,7 +517,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @RetryFailure(retryCount=3)
     @JSHandle
     public List<String> getAllOptionsText(Object locator) {
-        List<String> optionValues = new ArrayList<String>();
+        List<String> optionValues = new ArrayList<>();
         List<WebElement> list=new Select(SessionContext.getSession().getWebElement()).getOptions();
         for (WebElement element:list) {
             optionValues.add(element.getText());
@@ -590,7 +584,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     public WebDriverController waitForAngularFinish() {
-        ((JavascriptExecutor)webDriver()).executeAsyncScript("var callback = arguments[arguments.length - 1];angular.element(document.body).injector().get('$browser').notifyWhenNoOutstandingRequests(callback);");
+        webDriver().executeAsyncScript("var callback = arguments[arguments.length - 1];angular.element(document.body).injector().get('$browser').notifyWhenNoOutstandingRequests(callback);");
         return this;
     }
 

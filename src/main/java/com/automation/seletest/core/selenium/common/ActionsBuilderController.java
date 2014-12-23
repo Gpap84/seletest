@@ -31,14 +31,14 @@ public interface ActionsBuilderController<T extends ActionsBuilderController<T>>
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
-     * @param locator
+     * @param locator Object locator ca be String or WebElement
      * @return instance of ActionBuilder
      */
     T click(Object locator);
 
     /**
      * Moves the mouse to the middle of the element
-     * @param locator
+     * @param locator Object locator ca be String or WebElement
      * @return instance of ActionBuilder
      */
     T mouseOver(Object locator);
@@ -46,7 +46,7 @@ public interface ActionsBuilderController<T extends ActionsBuilderController<T>>
     /**
      * Performs a modifier key release.
      * Releasing a non-depressed modifier key will yield undefined behaviour.
-     * @param key
+     * @param key keyInfo event
      * @return instance of ActionBuilder
      */
     T mouseUp(KeyInfo key);
@@ -56,23 +56,23 @@ public interface ActionsBuilderController<T extends ActionsBuilderController<T>>
      * Does not release the modifier key - subsequent interactions may assume it's kept pressed.
      * Note that the modifier key is never released implicitly - either keyUp(theKey) or sendKeys(Keys.NULL)
      *  must be called to release the modifier.
-     * @param key
+     * @param key KeInfo event
      * @return instance of ActionBuilder
      */
     T mouseDown(KeyInfo key);
 
     /**
      * Move to element first and then perform mouseDown
-     * @param locator
-     * @param key
+     * @param locator Object locator ca be String or WebElement
+     * @param key KeyInfo event
      * @return instance of ActionBuilder
      */
     T mouseDown(Object locator, KeyInfo key);
 
     /**
      * Move to element and then perform mouseUp
-     * @param locator
-     * @param key
+     * @param locator Object locator ca be String or WebElement
+     * @param key KeyInfo event
      * @return instance of ActionBuilder
      */
     T mouseUp(Object locator, KeyInfo key);
@@ -146,15 +146,15 @@ public interface ActionsBuilderController<T extends ActionsBuilderController<T>>
 
     /**
      * Drags elements from one location to another
-     * @param draglocator
-     * @param droplocator
+     * @param draglocator Object tto drag
+     * @param droplocator Object to drop
      * @return instance of ActionBuilder
      */
     T dragndrop(Object draglocator, Object droplocator);
 
     /**
      * Press a keyboard key
-     * @param key
+     * @param key KeyInfo event
      * @return instance of ActionBuilder
      */
     T press(KeyInfo key);

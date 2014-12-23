@@ -48,7 +48,7 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 
 
 /**
- * (AppiumDriverController api for iOS-Android native app interaction
+ * AppiumDriverController class.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
@@ -195,8 +195,7 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
     @Monitor
     @RetryFailure(retryCount=3)
     public Object executeScript(String driverCommand, HashMap<String, ?> parameters) {
-        Object response=webDriver().execute(driverCommand, parameters);
-        return response;
+        return webDriver().execute(driverCommand, parameters);
     }
 
     /* (non-Javadoc)

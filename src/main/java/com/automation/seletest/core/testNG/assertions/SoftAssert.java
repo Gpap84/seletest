@@ -50,7 +50,7 @@ public class SoftAssert extends Assertion {
     LogUtils log;
 
     /** LinkedHashMap to preserve the order*/
-    private final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
+    private static final Map<AssertionError, IAssert> m_errors = Maps.newLinkedHashMap();
 
     @Override
     public void executeAssert(IAssert a) {

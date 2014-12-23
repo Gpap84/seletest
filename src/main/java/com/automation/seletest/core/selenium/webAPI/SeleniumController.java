@@ -204,8 +204,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     public Point getLocation(Object locator) {
         int px =(Integer) selenium().getElementPositionLeft(defineLocator(locator));
         int py=(Integer) selenium().getElementPositionTop(defineLocator(locator));
-        Point p=new Point(px, py);
-        return p;
+        return new Point(px, py);
     }
 
     /* (non-Javadoc)
@@ -234,11 +233,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      */
     @Override
     public boolean isTextPresent(String text) {
-        if(getPageSource().contains(text)){
-            return true;
-        } else {
-            return false;
-        }
+        return getPageSource().contains(text);
     }
 
 
@@ -397,8 +392,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     public Point getWindowPosition() {
         int width = Integer.parseInt(selenium().getEval("screen.width"));
         int height = Integer.parseInt(selenium().getEval("screen.height"));
-        Point p=new Point(width, height);
-        return p;
+        return new Point(width, height);
     }
 
     /* (non-Javadoc)
@@ -408,8 +402,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     public Dimension getWindowDimension() {
         int width = Integer.parseInt(selenium().getEval("screen.width"));
         int height = Integer.parseInt(selenium().getEval("screen.height"));
-        Dimension dimension=new Dimension(width, height);
-        return dimension;
+        return new Dimension(width, height);
     }
 
     /* (non-Javadoc)
@@ -576,8 +569,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     public String getFirstSelectedOptionText(Object locator) {
-        String selectedText=selenium().getSelectedLabel(defineLocator(locator));
-        return selectedText;
+        return selenium().getSelectedLabel(defineLocator(locator));
     }
 
     /* (non-Javadoc)
@@ -642,7 +634,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
 
     /**
      * Define locator
-     * @param locator
+     * @param locator Object locator
      * @return String locator
      */
     private String defineLocator(Object locator){

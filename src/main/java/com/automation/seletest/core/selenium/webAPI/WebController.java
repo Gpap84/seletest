@@ -47,61 +47,63 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Finds a web element
-     * @param locator
+     * @param locator Object locator
      * @return WebElement the element found
      */
     WebElement findElement(Object locator);
 
     /**
      * Click function
-     * @param locator
-     * @param timeout
-     * @return MainController
+     * @param locator Object locator
+     * @return WebController
      */
     T click(Object locator);
 
     /**
      * Enter function
-     * @param locator
-     * @param text
-     * @param timeout
-     * @return MainController
+     * @param locator Object locator
+     * @param text text to type
+     * @return WebController
      */
     T type(Object locator, String text);
 
 
     /**
-     * Quit browser type
+     * Quit browser enum class.
      * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
      *
      */
-    public enum CloseSession{QUIT,CLOSE};
+    public enum CloseSession{QUIT,CLOSE}
 
 
     /**
      * Gets URL
-     * @param url
+     * @param url String url
+     * @return WebController
      */
     T goToTargetHost(String url);
 
     /**
      * Change style of specific element
-     * @param attribute
-     * @param locator
-     * @param attributevalue
+     * @param attribute String html attribute
+     * @param locator Object locator
+     * @param attributevalue String attribute value
+     * @return WebController
      */
     T changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
      * @throws IOException
+     * @return WebController
      */
     T takeScreenShot() throws IOException;
 
     /**
      * Take screenshot of an element
-     * @param locator
+     * @param locator Object locator
      * @throws IOException
+     * @return WebController
      */
     T takeScreenShotOfElement(Object locator) throws IOException;
 
@@ -176,9 +178,10 @@ public interface WebController<T extends WebController<T>>{
     boolean isWebElementVisible(Object locator);
 
     /**
-     * Upload a file in dialog box
-     * @param path
-     * @param element
+     *  Upload a file in dialog bog
+     * @param locator Object locator
+     * @param path Strng path for local file to upload
+     * @return WeCntroller
      */
     T uploadFile(Object locator, String path);
 
@@ -193,6 +196,7 @@ public interface WebController<T extends WebController<T>>{
     /**
      * Select option from drop down by value
      * @param value
+     * @return WebController
      */
     T selectByValue(String locator, String value);
 
@@ -200,20 +204,20 @@ public interface WebController<T extends WebController<T>>{
      * Select option from drop down by visible text
      * @param locator
      * @param text
+     * @return WebController
      */
     T selectByVisibleText(String locator, String text);
 
     /**
      * Deletes a cookie by name
-     * @param name
-     * @param value
-     * @return MainController
+     * @param name String name for cookie
+     * @return WebController
      */
     T deleteCookieByName(String name);
 
     /**
      * Gets a cookie by name
-     * @param name
+     * @param name String name of the cookie
      * @return cookie
      */
     Cookie getCookieNamed(String name);
@@ -221,21 +225,20 @@ public interface WebController<T extends WebController<T>>{
     /**
      * Deletes a cookie
      * @param cookie
-     * @return MainController
+     * @return WebController
      */
     T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
-     * @return MainController
+     * @return WebController
      */
     T deleteAllCookies();
 
     /**
      * Create a cookie
-     * @param name
-     * @param value
-     * @return MainController
+     * @param cookie Cookie to add
+     * @return WebController
      */
     T addCookie(Cookie cookie);
 
@@ -248,40 +251,46 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Implicitly wait
-     * @param timeout
-     * @param timeunit
+     * @param timeout long timeout for implicit wait
+     * @param timeunit TimeUnit to use
+     * @return WebController
      */
     T implicitlyWait(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for page to load
-     * @param timeout
-     * @param timeunit
+     * @param timeout long timeout for page load wait
+     * @param timeunit TimeUnit to use
+     * @return WebController
      */
     T pageLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for script to finish
-     * @param timeout
-     * @param timeunit
+     * @param timeout long timeout for script load wait
+     * @param timeunit TimeUnit to use
+     * @return WebController
      */
     T scriptLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Set window position
      * @param point
+     * @return WebController
      */
     T setWindowPosition(Point point);
 
     /**
      * Set window size
      * @param dimension
+     * @return WebController
      */
     T setWindowDimension(Dimension dimension);
 
     /**
      * Gets window position
      * @return Point for window position
+     * @return WebController
      */
     Point getWindowPosition();
 
@@ -293,6 +302,7 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Maximize window
+     * @return WebController
      */
     T maximizeWindow();
 
@@ -305,6 +315,7 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Switch to latest window
+     * @return WebController
      */
     T switchToLatestWindow();
 
@@ -316,37 +327,40 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Accept alert
+     * @return WebController
      */
     T acceptAlert();
 
     /**
      * Dismiss Alert
+     * @return WebController
      */
     T dismissAlert();
 
     /**
      * Quit session or close latest window
      * @param type
+     * @return WebController
      */
     T quit(CloseSession type);
 
     /**
      * Switch control to frame located by name or id
      * @param frameId
+     * @return WebController
      */
     T switchToFrame(String frameId);
 
     /**
      *  Go backward
-     * @return MainController
+     * @return WebController
      */
     T goBack();
 
     /**
      * Go forward
-     * @return MainController
+     * @return WebController
      */
-
     T goForward();
 
     /**
@@ -406,7 +420,7 @@ public interface WebController<T extends WebController<T>>{
      * Deselect Option by Value
      * @param locator
      * @param value
-     * @return MainController
+     * @return WebController
      */
     T clearSelectedOption(Object locator, String value);
 
@@ -448,7 +462,7 @@ public interface WebController<T extends WebController<T>>{
      * @throws MalformedURLException
      * @throws InterruptedException
      */
-    String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException;
+    String downloadFile(String url, String filenamePrefix, String fileExtension) throws IOException, InterruptedException;
 
     /**
      * Sleep executed thread
@@ -466,7 +480,7 @@ public interface WebController<T extends WebController<T>>{
 
     /**
      * Wait for angular to finish
-     * @return
+     * @return WebController
      */
     T waitForAngularFinish();
 }

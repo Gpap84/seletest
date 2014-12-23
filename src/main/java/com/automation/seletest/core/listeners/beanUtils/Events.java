@@ -69,11 +69,11 @@ public class Events extends ApplicationEvent{
 
         /**
          * Initialize event
-         * @param source
-         * @param msg
-         * @param hostUrl
-         * @param performance
-         * @param context
+         * @param source Object source
+         * @param msg String message
+         * @param hostUrl String url
+         * @param performance boolean peformance
+         * @param context ITestContext context
          * @param isWeb
          */
         public InitializationEvent(

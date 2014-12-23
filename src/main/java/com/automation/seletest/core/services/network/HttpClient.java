@@ -18,9 +18,6 @@ public class HttpClient {
 
     /**
      * Get request
-     * @param <T>
-     * @param ip
-     * @param account
      * @return response from web server
      */
     public <T> T getRequest(String uri, Class<?> responseType, Object... arguments){
@@ -29,10 +26,6 @@ public class HttpClient {
 
     /**
      * Post request
-     * @param uri
-     * @param request
-     * @param responseType
-     * @param arguments
      * @return response from web server
      */
     public <T> T postRequest(String uri, Object request, Class<?> responseType, Object... arguments){

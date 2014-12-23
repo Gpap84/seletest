@@ -122,12 +122,12 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
 		/**
 		 * Initialize Web or Mobile session
-		 * @param event
+		 * @param event Application event
 		 * @throws Exception
 		 */
 		public void initializeSession(ApplicationEvent event) throws Exception{
-			WebDriver driver=null;
-			Selenium selenium=null;
+			WebDriver driver;
+			Selenium selenium;
 			ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
 			String gridHost=textcontext.getCurrentXmlTest().getParameter(env.getProperty("grid_host"));
@@ -143,10 +143,10 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 
 			/**Capabilities for android-ios appium*/
 			if(profileDriver.contains("android")) {
-				DesiredCapabilities androidcap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("android_cap"),new Object[] {appPath,appActivity,appPackage,autoLaunch});
+				DesiredCapabilities androidcap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("android_cap"), appPath,appActivity,appPackage,autoLaunch);
 				cap.merge(androidcap);
 			} else if (profileDriver.contains("iOS")) {
-				DesiredCapabilities ioscap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("ios_cap"),new Object[] {appPath,udid,appPackage,autoLaunch});
+				DesiredCapabilities ioscap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("ios_cap"), appPath,udid,appPackage,autoLaunch);
 				cap.merge(ioscap);
 			}
 
@@ -161,15 +161,15 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
 			}
 
 			if(profileDriver.contains("Grid")) {
-				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, new Object[]{gridHost+":"+gridPort+"/wd/hub",cap});
+				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, gridHost+":"+gridPort+"/wd/hub",cap);
 			} else {
-				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, new Object[]{cap});
+				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, cap);
 			}
 
 			if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
 				driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 				SessionContext.session().setWebDriver((RemoteWebDriver)driver);
-				selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium", new Object[] {driver,((InitializationEvent) event).getHostUrl()});
+				selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium", driver,((InitializationEvent) event).getHostUrl());
 				SessionContext.session().setSelenium(selenium);
 				driver.get(((InitializationEvent) event).getHostUrl());
 			} else {

@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -64,7 +63,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
 
     /**
      * Gets the selenium instance
-     * @return
+     * @return selenium instance
      */
     public T selenium(){
         return (T) SessionContext.getSession().getSelenium();
@@ -83,8 +82,8 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @SuppressWarnings("resource")
     @Override
-    public String downloadFile(String url, String filenamePrefix, String fileExtension) throws MalformedURLException, IOException, InterruptedException {
-        URLConnection request = null;
+    public String downloadFile(String url, String filenamePrefix, String fileExtension) throws IOException, InterruptedException {
+        URLConnection request;
         request = new URL(url).openConnection();
         request.setRequestProperty("Cookie", "PHPSESSID="+getCookieNamed("PHPSESSID").getValue());
         InputStream in = request.getInputStream();

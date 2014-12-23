@@ -47,15 +47,18 @@ import com.automation.seletest.core.services.utilities.MailUtils;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 
 /**
- * Test Listener
+ * Test Listener class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
 @Slf4j
 public class TestListener implements ITestListener{
 
-	private final String screenShots="/html/screenshots";
-	private final String logs="/html/Logs";
+	/** Screenshots directory*/
+	private static final String screenShots="/html/screenshots";
+
+	/**Logs directory*/
+	private static final String logs="/html/Logs";
 
 	@Override
 	public void onStart(ITestContext testContext) {
@@ -108,7 +111,7 @@ public class TestListener implements ITestListener{
 			LogEntries entries=ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy()).logs(LogType.BROWSER);
 			StringBuilder list=new StringBuilder();
 			for (LogEntry entry : entries) {
-				list.append(entry.getMessage()+"\n");
+				list.append(entry.getMessage()).append("\n");
 			}
 			ApplicationContextProvider.getApplicationContext().getBean(FilesUtils.class).createHTML("Logs for Client", list.toString(), "Logs_"+testResult.getName());
 			Reporter.log("<p class=\"testOutput\"><a href=\"Logs/Logs_"+testResult.getName()+".html\">Client Logs<a/></p>");
@@ -119,7 +122,7 @@ public class TestListener implements ITestListener{
 
 		if(System.getProperty("email")!=null) {
 			log.debug("Send email notification with failure of the @Test to address {} ", System.getProperty("email"));
-			ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail(System.getProperty("email"),"Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable());
+			ApplicationContextProvider.getApplicationContext().getBean(MailUtils.class).sendMail(System.getProperty("email"),"Failure on test: "+testResult.getName(),"Exception occured is: "+testResult.getThrowable().getMessage());
 		}
 	}
 

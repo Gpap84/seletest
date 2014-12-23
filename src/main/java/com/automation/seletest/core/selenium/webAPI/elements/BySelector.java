@@ -51,8 +51,8 @@ public abstract class BySelector extends By {
 
     /**
      * JQuery selector expressions can be found in http://www.w3schools.com/jquery/jquery_ref_selectors.asp
-     * @param selector
-     * @return
+     * @param selector String selector
+     * @return By object
      */
     public static By ByJQuery(final String selector) {
         if (selector == null) {
@@ -116,9 +116,8 @@ public abstract class BySelector extends By {
     // helper method
     private static String readFile(InputStream file) throws IOException {
         Charset cs = Charset.forName("UTF-8");
-        InputStream stream = file;
         try {
-            Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+            Reader reader = new BufferedReader(new InputStreamReader(file, cs));
             StringBuilder builder = new StringBuilder();
             char[] buffer = new char[8192];
             int read;
@@ -128,7 +127,7 @@ public abstract class BySelector extends By {
             return builder.toString();
         }
         finally {
-            stream.close();
+            file.close();
         }
     }
   }

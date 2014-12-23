@@ -126,6 +126,6 @@ public class SessionProperties<T extends RemoteWebDriver> {
             factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
         }
 
-        log.info("Session {} closed!!!", webDriver.toString().replace("[null]", ""));
+        log.info("Session {} closed!!!", webDriver.toString().replace("(null)", ""));
     }
 }

@@ -56,7 +56,7 @@ public @interface DataSource {
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
      *
      */
-    public enum Data{CSV,PROPERTIES,EXCEL};
+    public enum Data{CSV,PROPERTIES,EXCEL}
 
     /**
      * Data type to be used

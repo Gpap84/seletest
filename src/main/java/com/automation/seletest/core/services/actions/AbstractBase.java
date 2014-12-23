@@ -45,7 +45,6 @@ public abstract class AbstractBase {
     /**
      * Abstract class for Waiting Conditions
      * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
-     * @param <T>
      *
      */
     public static abstract class WaitBase implements WaitFor{
@@ -56,16 +55,15 @@ public abstract class AbstractBase {
 
         /**
          * Returns a new WebDriverWait instance
-         * @param timeOutInSeconds
          * @return WebDriverWait object
          */
         protected WebDriverWait wfExpected(){
-            return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, new Object[]{SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil()});
+            return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil());
         }
 
         /**
          * Sleeps a thread
-         * @param timeout
+         * @param timeout long timeout for thread sleep
          */
         protected void threadSleep(final long timeout){
             try {
@@ -77,7 +75,7 @@ public abstract class AbstractBase {
 
         /**
          * Define locator
-         * @param locator
+         * @param locator Object locator
          * @return String locator
          */
         protected String defineLocator(Object locator){

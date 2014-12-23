@@ -63,10 +63,10 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
 	Environment env;
 
     /**Μessage initialize new session*/
-    private final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
+    private static final String INITIALIZE_SESSION="Event for initializing Session occured at: {} !!!";
 
     /**Message for exception during application context load*/
-    private final String ERROR_IOC="Error during initializing spring container ";
+    private static final String ERROR_IOC="Error during initializing spring container ";
 
     @BeforeSuite(alwaysRun = true)
     @BeforeClass(alwaysRun = true)
@@ -79,9 +79,8 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @BeforeSuite(alwaysRun = true)
     protected void suiteSettings(ITestContext ctx) throws Exception {
         log.debug("Suite : "+ctx.getCurrentXmlTest().getSuite().getName()+" started at: {}",ctx.getStartDate());
-        applicationContext.getBean(ThreadPoolTaskExecutor.class).setThreadNamePrefix("Seletest Thread Pool - ");
         applicationContext.getBean(ThreadPoolTaskExecutor.class).getThreadPoolExecutor().allowCoreThreadTimeOut(true);
-
+ 
     }
 
     @BeforeTest(alwaysRun = true)

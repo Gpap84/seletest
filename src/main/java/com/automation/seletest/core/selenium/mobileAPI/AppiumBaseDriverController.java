@@ -45,7 +45,7 @@ public abstract class AppiumBaseDriverController<T> implements AppiumController<
 
     /**
      * UiScrollable locator for android
-     * @param uiSelector
+     * @param uiSelector String uiSelector api
      * @return UIScrollable locator
      */
     public String uiScrollable(String uiSelector) {

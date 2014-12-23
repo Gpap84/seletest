@@ -64,7 +64,7 @@ public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * This method installs an apk or ipa file to mobile device if it not already installed
-     * @param appPath
+     * @param appPath String appPath the path to application stored locally
      * @param bundleId (also appPackage for android)
      */
     T installApp(String appPath, String bundleId);
@@ -72,13 +72,13 @@ public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * Performs a touch action
-     * @param e
+     * @param e TouchAction
      */
     T performTouchAction(TouchAction e);
 
     /**
      * Performs multitouch action
-     * @param e
+     * @param e MultiTouchAction
      */
     T performMultiTouchAction(MultiTouchAction e);
 
@@ -89,7 +89,7 @@ public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * rotate screen of mobile device
-     * @param e
+     * @param e Screenrientation
      */
     T rotate(ScreenOrientation e);
 
@@ -108,55 +108,55 @@ public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * checks if application is installed in device
-     * @param bundleId
+     * @param bundleId Package name
      */
     boolean isAppInstalled(String bundleId);
 
     /**
      * Pinch to specific coordinates
-     * @param x
-     * @param y
+     * @param x x coordinate
+     * @param y y coordinate
      */
     T pinch(int x,int y);
 
     /**
      * Locks the screen for specific amount of time
-     * @param sec
+     * @param sec seconds to lock screen
      */
     T lockScreen(int sec);
 
 
     /**
      * Tap to element with coordinates for specific duration
-     * @param fingers
-     * @param y
-     * @param z
-     * @param duration
+     * @param fingers number of fingers
+     * @param y y coordinate
+     * @param z z coordinate
+     * @param duration duration for tap
      */
     T tap(int fingers, int y, int z, int duration);
 
 
     /**
      * Zoom to element with coordinates
-     * @param x
-     * @param y
+     * @param x x coordinate
+     * @param y y coordinate
      */
     T zoom(int x, int y);
 
     /**
      * swipe gesture
-     * @param startx
-     * @param starty
-     * @param endx
-     * @param endy
-     * @param duration
+     * @param startx x start position
+     * @param starty y start position
+     * @param endx x end position
+     * @param endy y end position
+     * @param duration suration for swipe
      */
     T swipe(int startx, int starty, int endx, int endy, int duration);
 
     /**
      * Executes script on mobile device
-     * @param driverCommand
-     * @param parameters
+     * @param driverCommand Driver command to execute
+     * @param parameters Map with parameters
      */
     Object executeScript(String driverCommand, HashMap<String, ?> parameters);
 
@@ -168,39 +168,39 @@ public interface AppiumController<T extends AppiumController<T>>{
 
     /**
      * Scroll forward to the element which has a description or name which contains the input text.
-     * @param text
+     * @param text text contained in element
      * @return mobileElement after scrollTo location that contains text
      */
     MobileElement scrollTo(String text);
 
     /**
      * Scroll forward to the element which has a description or name which contains the input text.
-     * @param text
+     * @param text exact text of element
      * @return mobileElement after scrollTo location with text
      */
     MobileElement scrollToExact(String text);
 
     /**
      * Sets NetworkConnectionSettings
-     * @param airplaneMode
-     * @param wifi
-     * @param data
+     * @param airplaneMode boolean airplaneMode
+     * @param wifi boolean wifi
+     * @param data boolean data
      */
     T setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data);
 
 
     /**
      * Zooms to element in device
-     * @param locator
+     * @param locator bject locator
      * @return AppiumController
      */
     T zoom(Object locator);
 
     /**
      * Taps to center of WebElement
-     * @param fingers
-     * @param locator
-     * @param duration
+     * @param fingers number of fingers
+     * @param locator object locator
+     * @param duration duration for tap
      * @return AppiumController
      */
     T tap(Object locator, int fingers, int duration);
