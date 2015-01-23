@@ -2,6 +2,7 @@ Seletest
 ========
 ![seletest](https://cloud.githubusercontent.com/assets/3785668/4871463/ff777690-61b7-11e4-9cb7-916e8d43f616.png)
 
+![hire2](https://cloud.githubusercontent.com/assets/3785668/5871555/2e5c7d4a-a2e8-11e4-8473-519ddd2b2173.png)
 
 <a href="https://buildhive.cloudbees.com/job/GiannisPapadakis/job/Seletest/">
 <img src="https://camo.githubusercontent.com/f35d0c52028b388ea9593c5fd2bf78a3b955c7af/68747470733a2f2f6275696c64686976652e636c6f7564626565732e636f6d2f6a6f622f6d696368616c2d6c6970736b692f6a6f622f706167652d6f626a656374732d7765626472697665722f62616467652f69636f6e" alt="Build Status" data-canonical-source="https://buildhive.cloudbees.com/job/michal-lipski/job/page-objects-webdriver/badge/icon" style="max-width:100%;">
@@ -15,51 +16,74 @@ This is a Java Framework based on WebDriver API to interact with web or mobile a
 ******<b>Javadoc: http://giannispapadakis.github.io/Seletest/</b> ******
 
 
-Tests supported:<br>
-a] Web End to End functional <b>Supported</b><br>
-b] DB transactions tests <b>Not supported yet...</b><br>
-c] Client performance tests <b>Supported</b><br>
-d] Mobile End to End functional <b>Partially supported (Android)</b><br>
-e] Web Security tests <b>Upcoming</b>
+<html>
+
+<body>
+<table style="width:100%; border: 1px solid black;border-collapse: collapse;">
+  <tr>
+    <td>Web End to End functional</td>
+    <td><b>Supported</b></td>		
+  </tr>
+  <tr>
+    <td>DB transactions tests</td>
+    <td><b>Not supported yet...</b></td>		
+  </tr>
+  <tr>
+    <td>Client performance tests</td>
+    <td><b>Supported</b></td>		
+  </tr>
+   <tr>
+    <td>Mobile End to End functional</td>
+    <td><b>Partially supported (Android)</b></td>		
+  </tr>
+  <tr>
+    <td>Web Security tests</td>
+    <td><b>Upcoming</b></td>		
+  </tr>
+</table>
+
+</body>
+</html>
+
+<b>Frameworks - tools:</b><br>
+* Selenium 2 in Java<br>
+* TestNG JUnit framework<br>
+* Spring Java Framework<br>
+* ReportNG<br>
+* Appium Java client<br>
+* Apache Maven<br>
+* AspectJ<br>
+* Browsermob-proxy<br>
 
 
-Tools used:<br>
-<b>* Selenium 2 in Java</b><br>
-<b>* TestNG JUnit framework</b><br>
-<b>* Spring Java Framework</b><br>
-<b>* ReportNG</b><br>
-<b>* Appium Java client</b><br>
-<b>* Apache Maven</b><br>
-<b>* AspectJ</b><br>
-<b>* Browsermob-proxy</b><br>
+<b>Current Drivers supported:</b><br>
+* ChromeDriver<br>
+* InternetExplorerDriver<br>
+* FirefoxDriver<br>
+* SafariDriver<br>
+* OperaDriver<br>
+* PhantomJSDriver<br>
+* AppiumDriver (IOSDriver-AndroidDriver)<br>
 
-
-Current Drivers supported:<br>
-a] ChromeDriver<br>
-b] InternetExplorerDriver<br>
-c] FirefoxDriver<br>
-d] PhantomJSDriver<br>
-e] AppiumDriver<br>
-
-Features:
- * Fluent logging mechanism using AspectJ support with advices
- * Interaction with Page Objects and Page Facades using hard or soft assertions (with hard assertions, exception is thrown, thus preventing any further execution and with soft assertions, exceptions are stored to Map and verification of @Test is done only when the test finished)
- * All the verification methods are asynchronously executed using Spring Task Executor covering dynamic pages
+<b>Features:</b>
+ * Fluent logging mechanism and error handling using AspectJ support with advices
+ * Interaction with Page Objects and Page Facades using hard or soft assertions
+ * Asynchronous execution of verifications with Spring Task Async Executors covering dynamic pages (AngularJS)
  * Appium support with custom TouchAction API for interaction with Android devices-emulators
  * JS errors collection during execution of tests
- * JVM memory usage
+ * JVM memory usage with JMX client
  * HAR file with network traffic logs using browser-mob proxy that can be analyzed in online tools like https://code.google.com/p/harviewer/ 
- * Custom JQuery selector replaces CSS Pseudo-classes support in WebDriver (:contains('')/nth-child)
+ * Custom JQuery selector replaces CSS pseudo-classes support in WebDriver (<b>:contains('') / nth-child</b>)
  * Custom Angular selectors (<b>Upcoming</b>)
 
 
-<b>Tips for IEDriver</b><br>
+<b>Tips for Internet Explorer execution</b><br>
 On IE 7 or higher on Windows Vista or Windows 7, you must set the Protected Mode settings for each zone to be the same value. The value can be on or off, as long as it is the same for every zone. To set the Protected Mode settings, choose "Internet Options..." from the Tools menu, and click on the Security tab. For each zone, there will be a check box at the bottom of the tab labeled "Enable Protected Mode".<br>
 Additionally, "Enhanced Protected Mode" must be disabled for IE 10 and higher. This option is found in the Advanced tab of the Internet Options dialog.
 
 
 *******************************************
-<b>Released version 0.0.1 - 0.0.2</b>
+<b>Released versions</b>
 *******************************************
 
 Seletest has been uploaded in sonatype nexus.<br>
