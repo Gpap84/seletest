@@ -98,6 +98,8 @@ Add this to your pom.xml:<br>
 
 See wiki for setting up Spring Maven Project and running first tests<br>
 
+<b> You are very welcome to <a href="https://guides.github.com/activities/contributing-to-open-source/">contribute</a> to the project</b>
+
 <b>Upcoming:</b>
 * Set up Appium Server on Windows 7 and run test against android emulator
 * Set up Selenium Grid server and register a node
