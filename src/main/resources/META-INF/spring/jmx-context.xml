@@ -12,7 +12,6 @@
     <!--Export mbeans-->
     <context:mbean-export default-domain="seletest.mbeans" />
 
-
     <!--JMX server-->
     <bean id="seletestJmxServer"
           class="org.springframework.jmx.support.ConnectorServerFactoryBean"
@@ -51,7 +50,5 @@
     <bean id="memoryWarningService" class="com.automation.seletest.core.jmx.MemoryWarningService">
         <property name="percentageUsageThreshold" value="0.5" />
     </bean>
-
-    <task:scheduler id="SeletestScheduler" pool-size="10" />
 
 </beans>

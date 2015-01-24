@@ -39,18 +39,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.testng.Reporter;
 
 @Component
+@Slf4j
 public class MemoryThreadDumper {
-
-
-	/** The application logger */
-	private static final Logger LOG = LoggerFactory.getLogger(MemoryThreadDumper.class);
-
 
 	/**
 	 * It dumps the Thread stacks
@@ -58,7 +54,7 @@ public class MemoryThreadDumper {
 	 */
 	public void dumpStacks() {
 
-		String stackFileName = "C:/tmp/stacks.dump";
+		String dumps = "stacks.dump";
 
 		ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
 		ThreadInfo[] threadInfos = mxBean.getThreadInfo(mxBean.getAllThreadIds(), 0);
@@ -67,12 +63,12 @@ public class MemoryThreadDumper {
 			threadInfoMap.put(threadInfo.getThreadId(), threadInfo);
 		}
 
-		File dumpFile = new File(stackFileName);
+		File dumpFile = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent()+dumps);
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(dumpFile));
 			this.dumpTraces(mxBean, threadInfoMap, writer);
-			LOG.warn("Stacks dumped to: " + stackFileName);
+			log.warn("Stacks dumped to: " + dumps);
 
 		} catch (IOException e) {
 			throw new IllegalStateException("An exception occurred while writing the thread dump");

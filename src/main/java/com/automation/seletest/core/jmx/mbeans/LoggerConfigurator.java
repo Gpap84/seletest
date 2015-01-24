@@ -29,6 +29,7 @@ package com.automation.seletest.core.jmx.mbeans;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Component;
      * Log4j Logger at runtime
      */
     @Component
+    @Slf4j
     @ManagedResource(objectName = LoggerConfigurator.MBEAN_NAME, description = "Allows clients to set the Log4j Logger level at runtime")
     public class LoggerConfigurator {
 
@@ -52,7 +54,7 @@ import org.springframework.stereotype.Component;
         @ManagedOperationParameters({ @ManagedOperationParameter(description = "The Logger Name", name = "loggerName"), })
         public String getLoggerLevel(String loggerName) {
             Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-            ch.qos.logback.classic.Level loggerLevel = logger.getLevel();
+            Level loggerLevel = logger.getLevel();
             return loggerLevel == null ? "The logger " + loggerName + " has not level" : loggerLevel.toString();
         }
 
@@ -65,6 +67,6 @@ import org.springframework.stereotype.Component;
             logger.setLevel(Level.INFO);
             Logger loggerNew = (Logger) LoggerFactory.getLogger(loggerName);
             loggerNew.setLevel(Level.toLevel(loggerLevel, Level.INFO));
-            logger.info("Set logger " + loggerName + " to level "+ loggerNew.getLevel());
+            log.info("Set logger " + loggerName + " to level "+ loggerNew.getLevel());
         }
     }

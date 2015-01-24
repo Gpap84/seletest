@@ -37,8 +37,7 @@ import javax.management.Notification;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -46,13 +45,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  * threshold.
  *
  */
+@Slf4j
 public class MemoryWarningService implements NotificationListener {
 
 
+	/**MBean name*/
 	public static final String MBEAN_NAME = "seletest.mbeans:type=monitoring,name=MemoryWarningService";
-
-	/** The MemoryWarningService logger */
-	private static final Logger LOG = LoggerFactory.getLogger(MemoryWarningService.class);
 
 	@Autowired
 	private NotificationEmitter memoryMxBean;
@@ -60,6 +58,11 @@ public class MemoryWarningService implements NotificationListener {
 	@Autowired
 	private MemoryThreadDumper threadDumper;
 
+	@PostConstruct
+	public void completeSetup() {
+		memoryMxBean.addNotificationListener(this, null, null);
+		log.info("Notifications listener added to JMX bean");
+	}
 
 	/** A pool of Memory MX Beans specialised in HEAP management */
 	private static final MemoryPoolMXBean tenuredGenPool = findTenuredGenPool();
@@ -70,34 +73,27 @@ public class MemoryWarningService implements NotificationListener {
 		if (notification.getType().equals(MemoryNotificationInfo.MEMORY_THRESHOLD_EXCEEDED)) {
 			long maxMemory = tenuredGenPool.getUsage().getMax();
 			long usedMemory = tenuredGenPool.getUsage().getUsed();
-			LOG.warn("Memory usage low!!!");
+			log.warn("Memory usage low!!!");
 			double percentageUsed = (double) usedMemory / maxMemory;
-			LOG.warn("percentageUsed = " + percentageUsed);
+			log.warn("percentageUsed = " + percentageUsed);
 			threadDumper.dumpStacks();
 		} else {
-			LOG.info("Other notification received..."+ notification.getMessage());
+			log.info("Other notification received..."+ notification.getMessage());
 		}
 
 	}
 
-	/**
-	 * It sets the threshold percentage.
-	 */
+	/** It sets the threshold percentage.*/
 	public void setPercentageUsageThreshold(double percentage) {
 		if (percentage <= 0.0 || percentage > 1.0) {
 			throw new IllegalArgumentException("Percentage not in range");
 		} else {
-			LOG.info("Percentage is: " + percentage);
+			log.info("Percentage is: " + percentage);
 		}
 		long maxMemory = tenuredGenPool.getUsage().getMax();
 		long warningThreshold = (long) (maxMemory * percentage);
 		tenuredGenPool.setUsageThreshold(warningThreshold);
-	}
-
-	@PostConstruct
-	public void completeSetup() {
-		memoryMxBean.addNotificationListener(this, null, null);
-		LOG.info("Listener added to JMX bean");
+		log.info("Warning Threshold is: " + warningThreshold);
 	}
 
 	private static MemoryPoolMXBean findTenuredGenPool() {

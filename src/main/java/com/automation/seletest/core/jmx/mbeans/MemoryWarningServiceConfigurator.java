@@ -27,11 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.jmx.mbeans;
 
 import com.automation.seletest.core.jmx.MemoryWarningService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
@@ -39,28 +36,19 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 @ManagedResource(objectName = MemoryWarningServiceConfigurator.MBEAN_NAME,description = "Allows clients to set the memory threshold")
-public class MemoryWarningServiceConfigurator implements ApplicationContextAware {
-
-	/** The MemoryWarningServiceConfigurator logger */
-	private static final Logger LOG = LoggerFactory.getLogger(MemoryWarningServiceConfigurator.class);
+public class MemoryWarningServiceConfigurator {
 
 	public static final String MBEAN_NAME = "seletest.mbeans:type=config,name=MemoryWarningServiceConfiguration";
-
-	private ApplicationContext ctx;
 
 	@ManagedOperation(description = "Sets the memory threshold for the memory warning system")
 	@ManagedOperationParameters({ @ManagedOperationParameter(description = "The memory threshold", name = "memoryThreshold"), })
 	public void setMemoryThreshold(double memoryThreshold) {
-		MemoryWarningService memoryWarningService = (MemoryWarningService) ctx.getBean("memoryWarningService");
+		MemoryWarningService memoryWarningService = (MemoryWarningService) ApplicationContextProvider.getApplicationContext().getBean("memoryWarningService");
 		memoryWarningService.setPercentageUsageThreshold(memoryThreshold);
-		LOG.info("Memory threshold set to " + memoryThreshold);
+		log.info("Memory threshold set to " + memoryThreshold);
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)throws BeansException {
-		ctx = applicationContext;
-
-	}
 
 }
