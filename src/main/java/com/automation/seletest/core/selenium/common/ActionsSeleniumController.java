@@ -33,19 +33,20 @@ import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 
 /**
+ * ActionsSeleniumController class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
 @Component("seleniumActions")
 @SuppressWarnings("deprecation")
-public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsSeleniumBuilder>{
+public class ActionsSeleniumController implements ActionsController<ActionsSeleniumController> {
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#click(java.lang.Object)
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder click(Object locator) {
+    public ActionsSeleniumController click(Object locator) {
         return null;
     }
 
@@ -54,7 +55,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder mouseOver(Object locator) {
+    public ActionsSeleniumController mouseOver(Object locator) {
         SessionContext.getSession().getSelenium().mouseOver((String)locator);
         return this;
     }
@@ -63,7 +64,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#mouseUp(org.openqa.selenium.Keys)
      */
     @Override
-    public ActionsSeleniumBuilder mouseUp(KeyInfo key) {
+    public ActionsSeleniumController mouseUp(KeyInfo key) {
         SessionContext.getSession().getSelenium().keyUpNative(key.getEvent());
         return this;
     }
@@ -72,9 +73,9 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#mouseDown(org.openqa.selenium.Keys)
      */
     @Override
-    public ActionsSeleniumBuilder mouseDown(KeyInfo key) {
+    public ActionsSeleniumController mouseDown(KeyInfo key) {
         SessionContext.getSession().getSelenium().keyDownNative(key.getEvent());
-        return null;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -82,7 +83,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder mouseDown(Object locator, KeyInfo key) {
+    public ActionsSeleniumController mouseDown(Object locator, KeyInfo key) {
         SessionContext.getSession().getSelenium().keyDown((String)locator, key.getEvent());
         return this;
     }
@@ -92,7 +93,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder mouseUp(Object locator, KeyInfo key) {
+    public ActionsSeleniumController mouseUp(Object locator, KeyInfo key) {
         SessionContext.getSession().getSelenium().keyUp((String)locator, key.getEvent());
         return this;
     }
@@ -102,7 +103,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder clickAndHold(Object locator) {
+    public ActionsSeleniumController clickAndHold(Object locator) {
         SessionContext.getSession().getSelenium().mouseDown((String)locator);
         return this;
     }
@@ -112,7 +113,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder performActions() {
+    public ActionsSeleniumController performActions() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -122,7 +123,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder performTouchActions() {
+    public ActionsSeleniumController performTouchActions() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -132,7 +133,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder tap(Object locator) {
+    public ActionsSeleniumController tap(Object locator) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -142,7 +143,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder tap(Object locator, int x, int y) {
+    public ActionsSeleniumController tap(Object locator, int x, int y) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -152,7 +153,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder tap(int x, int y) {
+    public ActionsSeleniumController tap(int x, int y) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -162,7 +163,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @Deprecated
     @Override
-    public ActionsSeleniumBuilder press(int x, int y) {
+    public ActionsSeleniumController press(int x, int y) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -172,7 +173,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder press(Object locator) {
+    public ActionsSeleniumController press(Object locator) {
         clickAndHold(locator);
         SessionContext.getSession().getSelenium().mouseUp((String)locator);
         return this;
@@ -183,7 +184,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsSeleniumBuilder press(Object locator, int x, int y) {
+    public ActionsSeleniumController press(Object locator, int x, int y) {
         SessionContext.getSession().getSelenium().mouseDownAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
         SessionContext.getSession().getSelenium().mouseUpAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
         return this;
@@ -193,7 +194,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#dragndrop(java.lang.Object, java.lang.Object)
      */
     @Override
-    public ActionsSeleniumBuilder dragndrop(Object draglocator, Object droplocator) {
+    public ActionsSeleniumController dragndrop(Object draglocator, Object droplocator) {
         SessionContext.getSession().getSelenium().dragAndDropToObject((String)draglocator, (String) droplocator);
         return this;
     }
@@ -202,7 +203,7 @@ public class ActionsSeleniumBuilder implements ActionsBuilderController<ActionsS
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(com.automation.seletest.core.selenium.common.KeyInfo)
      */
     @Override
-    public ActionsSeleniumBuilder press(KeyInfo key) {
+    public ActionsSeleniumController press(KeyInfo key) {
         SessionContext.getSession().getSelenium().keyPressNative(key.getEvent());
         return this;
     }

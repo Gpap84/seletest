@@ -44,7 +44,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-public abstract class SuperAspect {
+public abstract class SeletestPointcuts {
 
     /**Factories Strategy*/
     @Autowired
@@ -59,7 +59,7 @@ public abstract class SuperAspect {
     protected void monitor() {}
 
     /**All methods in ActionsBuilderController*/
-    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsBuilderController.*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.selenium.common.ActionsController.*(..))")
     protected void actionsBuilderController() {}
 
     /**Methods for taking screenshots!!*/

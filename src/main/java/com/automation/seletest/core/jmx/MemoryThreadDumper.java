@@ -82,20 +82,13 @@ public class MemoryThreadDumper {
 			Map<Long, ThreadInfo> threadInfoMap, Writer writer)
 			throws IOException {
 		Map<Thread, StackTraceElement[]> stacks = Thread.getAllStackTraces();
-		writer.write("Dump of "
-				+ stacks.size()
-				+ " thread at "
-				+ new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z")
-						.format(new Date(System.currentTimeMillis())) + "\n\n");
+		writer.write("Dump of "+stacks.size()+" thread at "+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(System.currentTimeMillis())) + "\n\n");
 		for (Map.Entry<Thread, StackTraceElement[]> entry : stacks.entrySet()) {
 			Thread thread = entry.getKey();
-			writer.write("\"" + thread.getName() + "\" prio="
-					+ thread.getPriority() + " tid=" + thread.getId() + " "
-					+ thread.getState() + " "
-					+ (thread.isDaemon() ? "deamon" : "worker") + "\n");
+			writer.write("\""+thread.getName()+"\" prio="+thread.getPriority()+" tid="+thread.getId()+"\n");
 			ThreadInfo threadInfo = threadInfoMap.get(thread.getId());
 			if (threadInfo != null) {
-				writer.write("    native=" + threadInfo.isInNative()
+				writer.write(" native=" + threadInfo.isInNative()
 						+ ", suspended=" + threadInfo.isSuspended()
 						+ ", block=" + threadInfo.getBlockedCount() + ", wait="
 						+ threadInfo.getWaitedCount() + "\n");

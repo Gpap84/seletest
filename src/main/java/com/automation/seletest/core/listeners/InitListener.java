@@ -69,9 +69,7 @@ public class InitListener implements IInvokedMethodListener{
 		//Set session as testNG attribute for after configuration methods
 		try{
 			testResult.setAttribute("session", SessionContext.session());}
-		catch(Exception ex) {
-			log.error("Attribute session cannot be set for result {}!!!",testResult.getName());
-		}
+		catch(Exception ex) {}
 
 		if(method.getTestMethod().isTest()){
 			log.debug("Set assertion type parameter for test method: {}!!!", method.getTestMethod().getMethodName());
@@ -99,9 +97,7 @@ public class InitListener implements IInvokedMethodListener{
 
 		try{
 			testResult.setAttribute("session", SessionContext.session());}
-		catch(Exception ex){
-			log.error("Attribute session cannot be set for result {}!!!",testResult.getName());
-		}
+		catch(Exception ex){}
 
 		if(method.getTestMethod().isTest()){
 

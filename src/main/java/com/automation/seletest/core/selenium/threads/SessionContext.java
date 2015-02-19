@@ -110,8 +110,8 @@ public class SessionContext {
 	 *
 	 */
 	public static void cleanSessionsFromStack() throws Exception {
-		for(int i=0; i < threadStack.size();i++){
-			SessionContext.stopSession(i);
+		while(!threadStack.isEmpty()){
+			SessionContext.stopSession(0);
 		}
 	}
 	/**
@@ -125,8 +125,6 @@ public class SessionContext {
 		threadStack.removeElement(threadStack.get(index));
 		log.debug("*********************Object removed from thread stack, new size is: {}*****************************", threadStack.size());
 	}
-
-
 
 	/**Stack for storing instances of thread objects*/
 	@Getter @Setter

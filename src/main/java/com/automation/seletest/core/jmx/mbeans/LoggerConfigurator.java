@@ -37,8 +37,6 @@ import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
-
-
 /**
      * MBean which allows clients to change or retrieve the logging level for a
      * Log4j Logger at runtime

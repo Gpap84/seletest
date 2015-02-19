@@ -45,12 +45,12 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
  */
 @Slf4j
 @SuppressWarnings({"rawtypes","unchecked","hiding"})
-public class ExceptionHandlingAsyncTaskExecutor<T> implements AsyncTaskExecutor {
+public class AsyncSeletestExecutor<T> implements AsyncTaskExecutor {
 
 	/**The AsyncTaskExecutor*/
 	private final AsyncTaskExecutor executor;
 
-	public ExceptionHandlingAsyncTaskExecutor(AsyncTaskExecutor executor) {
+	public AsyncSeletestExecutor(AsyncTaskExecutor executor) {
 		this.executor = executor;
 	}
 

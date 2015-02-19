@@ -86,9 +86,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @BeforeTest(alwaysRun = true)
     protected void beforeTest(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0 || ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
-            log.debug("*****************************************");
-            log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
-            log.debug("*****************************************");
+            log.debug("############### Initialize session upon parallel level: <<\"parallel={}\">> ###############", ctx.getCurrentXmlTest().getParallel());
             initializeSession(ctx);
         }
     }
@@ -96,9 +94,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @BeforeClass(alwaysRun = true)
     protected void beforeClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-            log.debug("******************************************************************");
-            log.debug("**** Initialize session upon parallel level: <<\"parallel={}\">>***********", ctx.getCurrentXmlTest().getParallel());
-            log.debug("******************************************************************");
+            log.debug("############### Initialize session upon parallel level: <<\"parallel={}\">> ###############", ctx.getCurrentXmlTest().getParallel());
             initializeSession(ctx);
         }
     }
@@ -106,9 +102,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @BeforeMethod(alwaysRun = true)
     protected void beforeMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-            log.debug("*********************************************************************");
-            log.debug("**** Initialize session: <<\"parallel={}\">>***************", ctx.getCurrentXmlTest().getParallel());
-            log.debug("*********************************************************************");
+            log.debug("############### Initialize session: <<\"parallel={}\">> ###############", ctx.getCurrentXmlTest().getParallel());
             initializeSession(ctx);
         }
     }
@@ -116,7 +110,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @AfterClass(alwaysRun = true)
     protected void cleanSessionOnClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
-            log.debug("************* Clean session on @AfterClass ************************");
+            log.debug("############### Clean session on @AfterClass ###############");
             SessionContext.cleanSession();
         }
     }
@@ -125,7 +119,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     public void cleanSessionOnTest(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
                 ctx.getCurrentXmlTest().getParallel().compareTo("tests")==0){
-            log.debug("************* Clean session on @AfterTest ***************************");
+            log.debug("############### Clean session on @AfterTest ###############");
             SessionContext.cleanSession();
         }
     }
@@ -133,36 +127,29 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     @AfterMethod(alwaysRun = true)
     public void cleanSessionOnMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
-            log.debug("************* Clean session on @AfterMethod *********************");
+            log.debug("############### Clean session on @AfterMethod ###############");
             SessionContext.cleanSession();
         }
     }
 
     @AfterSuite(alwaysRun = true)
     protected void cleanSuite() throws Exception {
-
+          SessionContext.cleanSessionsFromStack();
     }
 
-    /**Prepare initialization
-     * @throws Exception */
+
     private void initializeSession(ITestContext ctx) throws Exception{
-        prepareTest();
-        boolean performance=false;
-        if(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance")))) {
-            performance=true;
-        }
         ApplicationContextProvider publisher = applicationContext.getBean(ApplicationContextProvider.class);
-        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(env.getProperty("host")),performance,ctx);
+        publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(env.getProperty("host")),ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))) ? true : false,ctx);
     }
 
-    /**Starts the Spring container*/
     private void prepareTest() throws Exception{
         try {
             if (applicationContext == null) {
                 super.springTestContextPrepareTestInstance();
             }
         } catch (Exception e1) {
-            log.error(ERROR_IOC+e1.getCause());
+            log.error(ERROR_IOC+e1.getMessage());
             throw e1;
         }
     }

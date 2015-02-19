@@ -56,7 +56,6 @@ public class GitHubSearchPage extends AbstractPage<GitHubSearchPage>{
                return "Parent div element" + DIV_PARENT.get() + "'!!!";
             }
         },
-
         BTN_SIGN_IN("jquery=a:contains(Sign in)") {
             @Override
             public String log() {

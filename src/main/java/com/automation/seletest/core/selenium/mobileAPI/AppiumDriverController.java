@@ -26,6 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.mobileAPI;
 
+import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
@@ -38,6 +41,7 @@ import java.util.Map;
 
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
@@ -53,8 +57,38 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  *
  */
 @Component
-@SuppressWarnings("rawtypes")
-public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDriverController<T>{
+@SuppressWarnings("unchecked")
+public class AppiumDriverController<T extends AppiumDriver> implements AppiumController<T>{
+
+    @Autowired
+    StrategyFactory<?> factoryStrategy;
+
+
+    /**
+     * UiScrollable locator for android
+     * @param uiSelector String uiSelector api
+     * @return UIScrollable locator
+     */
+    private String uiScrollable(String uiSelector) {
+        return "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" + uiSelector + ".instance(0));";
+    }
+
+    /**
+     * Gets the WebDriver instance
+     * @return WebDriver instance
+     */
+    @SuppressWarnings("unchecked")
+	private T webDriver(){
+        return (T) SessionContext.getSession().getWebDriver();
+    }
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    private WaitFor<?> waitController() {
+        return factoryStrategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
+    }
 
     @Override
     @Monitor
@@ -99,7 +133,7 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
         } return this;
     }
 
-    @Override
+	@Override
     @Monitor
     @RetryFailure(retryCount=3)
     public AppiumDriverController performTouchAction(TouchAction e) {
@@ -171,7 +205,7 @@ public class AppiumDriverController<T extends AppiumDriver> extends AppiumBaseDr
     @Monitor
     @RetryFailure(retryCount=3)
     public AppiumDriverController tap(int finger, int y, int z, int duration) {
-        webDriver().tap(finger,y,z,duration);
+        webDriver().tap(finger, y, z, duration);
         return this;
     }
 

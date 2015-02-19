@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.common;
 
 
-public interface ActionsBuilderController<T extends ActionsBuilderController<T>> {
+public interface ActionsController<T extends ActionsController<T>> {
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()

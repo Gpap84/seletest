@@ -29,6 +29,7 @@ package com.automation.seletest.core.aspectJ;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.List;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -57,7 +58,7 @@ import com.automation.seletest.core.services.utilities.LogUtils;
 @SuppressWarnings("unchecked")
 @Aspect
 @Component
-public class ActionsHandler extends SuperAspect {
+public class ActionsHandler extends SeletestPointcuts {
 
     /**Log service*/
     @Autowired
@@ -97,16 +98,18 @@ public class ActionsHandler extends SuperAspect {
     @Before(value="waitElement()")
     public void waitFor(final JoinPoint pjp) {
         WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
-        if(waitFor==null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementVisibility(methodArguments((ProceedingJoinPoint)pjp)[0]));
-        } else if(waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint)pjp)[0]));
-        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElement(SessionControl.waitController().waitForElementPresence((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
-        } else if(waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement)) {
-            SessionContext.getSession().setWebElements(SessionControl.waitController().waitForPresenceofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
-        } else if(waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint)pjp)[0] instanceof WebElement))) {
-            SessionContext.getSession().setWebElements(SessionControl.waitController().waitForVisibilityofAllElements((String)methodArguments((ProceedingJoinPoint)pjp)[0]));
+        if(SessionContext.getSession().getWaitStrategy().equalsIgnoreCase("WebDriverWait")) {
+            if (waitFor == null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement))) {
+                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementVisibility(methodArguments((ProceedingJoinPoint) pjp)[0]));
+            } else if (waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
+                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint) pjp)[0]));
+            } else if (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement)) {
+                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementPresence((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
+            } else if (waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement)) {
+                SessionContext.getSession().setWebElements((List<WebElement>) SessionControl.waitController().waitForPresenceofAllElements((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
+            } else if (waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement))) {
+                SessionContext.getSession().setWebElements((List<WebElement>) SessionControl.waitController().waitForVisibilityofAllElements((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
+            }
         }
     }
 
@@ -129,7 +132,7 @@ public class ActionsHandler extends SuperAspect {
     public void memoryBefore(final JoinPoint pjp) {
         if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
             NumberFormat format = NumberFormat.getInstance();
-            log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
+            log.info("JVM memory in use = " + format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024) + " before executing method: " + pjp.getSignature().getName());
         }
     }
 
@@ -138,7 +141,7 @@ public class ActionsHandler extends SuperAspect {
     public void memoryAfter(final JoinPoint pjp) {
         if(LoggerFactory.getLogger(ActionsHandler.class).isDebugEnabled()) {
             NumberFormat format = NumberFormat.getInstance();
-            log.info("JVM memory in use = "+ format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)+ " before executing method: "+pjp.getSignature().getName());
+            log.info("JVM memory in use = " + format.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024) + " before executing method: " + pjp.getSignature().getName());
         }
     }
 

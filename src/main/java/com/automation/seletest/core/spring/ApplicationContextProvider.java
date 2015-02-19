@@ -41,7 +41,7 @@ import com.automation.seletest.core.services.annotations.SeleniumTest;
 
 
 /**
- * With this class we set application context in a static variable
+ * ApplicationContextProvider serves to get static instance of ApplicationContext
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */

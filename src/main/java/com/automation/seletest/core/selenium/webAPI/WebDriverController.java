@@ -158,7 +158,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @JSHandle
     public WebElement findElement(Object locator) {
-        return waitController().waitForElementVisibility(locator);
+        return (WebElement) waitController().waitForElementVisibility(locator);
     }
 
 
@@ -576,7 +576,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     public int elementsMatching(String locator) {
-        return waitController().waitForVisibilityofAllElements(locator).size();
+        return ((List<WebElement>)waitController().waitForVisibilityofAllElements(locator)).size();
     }
 
     /* (non-Javadoc)

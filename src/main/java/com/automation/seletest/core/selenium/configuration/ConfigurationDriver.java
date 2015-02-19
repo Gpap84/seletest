@@ -37,7 +37,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -54,14 +53,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -71,13 +63,14 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 /**
- * Configuration class.
+ * Configuration class for bean definitions.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
 @SuppressWarnings("deprecation")
 @Configuration
 @EnableCaching
+@EnableMBeanExport(defaultDomain = "seletest.mbeans")
 @PropertySources({@PropertySource({"BrowserSettings/browser.properties","core.properties"})})
 @ImportResource({
     "classpath*:META-INF/spring/app-context.xml",

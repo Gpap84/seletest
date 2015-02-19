@@ -36,27 +36,27 @@ import org.openqa.selenium.WebElement;
  * Interface for waiting methods
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com) *
  */
-public interface WaitFor {
+public interface WaitFor<T> {
 
 
     /** Wait for element to be present in DOM
      * @param locator the locator of the WebElement to wait to be present in DOM
      * @return WebElement that is present in screen
      */
-    WebElement waitForElementPresence(String locator);
+    <T> T waitForElementPresence(String locator);
 
     /** Wait for element to be visible
      * @param locator the locator of the WebElement to wait for visibility
      * @return WebElement that is visible
      */
-    WebElement waitForElementVisibility(Object locator);
+    <T> T waitForElementVisibility(Object locator);
 
     /**
      * Wait for element to be clickable
      * @param locator the locator of the WebElement to wait to be clickable
      * @return WebElement that is clickable
      */
-    WebElement waitForElementToBeClickable(Object locator);
+    <T> T waitForElementToBeClickable(Object locator);
 
     /**
      * Wait for alert
@@ -91,14 +91,14 @@ public interface WaitFor {
      * @param locator
      * @return List<WebElement> the elements to be present in screen
      */
-    List<WebElement> waitForPresenceofAllElements(String locator);
+    <T> T waitForPresenceofAllElements(String locator);
 
     /**
      * Wait for elements with matching locator to be visible in screen
      * @param locator
      * @return List<WebElement> the elements to be visible in screen
      */
-    List<WebElement> waitForVisibilityofAllElements(String locator);
+    <T> T waitForVisibilityofAllElements(String locator);
 
     /**
      * Waits for a page to load

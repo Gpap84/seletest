@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.automation.seletest.core.services.utilities.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
+import org.springframework.cache.annotation.CacheEvict;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -52,6 +54,9 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
 
     @Autowired
     StrategyFactory<?> factoryStrategy;
+
+    @Autowired
+    LogUtils logUtils;
 
     /**
      * Gets the WebDriver instance
@@ -177,7 +182,10 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
         return true;
     }
 
-
-
+    @Override
+    @CacheEvict(value="wait",allEntries = true)
+    public void clearCache(){
+        logUtils.warn("Clear cached objects!!!");
+    }
 
 }

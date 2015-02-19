@@ -20,10 +20,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<context:annotation-config />
 
 	<!-- To enable both @Scheduled and @Async annotations. -->
-	<task:annotation-driven executor="exceptionHandlingTaskExecutor" scheduler="SeletestScheduler"/>
+	<task:annotation-driven executor="exceptionHandlingTaskExecutor"/>
 	
 	<!-- Asynchronous Task Executor -->
-	<bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.ExceptionHandlingAsyncTaskExecutor">
+	<bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.AsyncSeletestExecutor">
 		<constructor-arg ref="SeletestTaskExecutor" />
 	</bean>
 

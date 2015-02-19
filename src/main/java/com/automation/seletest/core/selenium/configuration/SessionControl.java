@@ -83,7 +83,7 @@ public final class SessionControl {
      * Wait Strategy
      * @return WaitFor
      */
-    public static WaitFor waitController() {
+    public static WaitFor<?> waitController() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 

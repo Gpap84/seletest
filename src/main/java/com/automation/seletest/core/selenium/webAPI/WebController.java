@@ -46,6 +46,11 @@ import org.openqa.selenium.logging.LogEntries;
 public interface WebController<T extends WebController<T>>{
 
     /**
+     * Clear the cache
+     */
+    void clearCache();
+
+    /**
      * Finds a web element
      * @param locator Object locator
      * @return WebElement the element found

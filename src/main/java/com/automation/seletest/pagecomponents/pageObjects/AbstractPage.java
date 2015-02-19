@@ -35,7 +35,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.common.ActionsBuilderController;
+import com.automation.seletest.core.selenium.common.ActionsController;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebController;
 import com.automation.seletest.core.services.actions.WaitFor;
@@ -100,7 +100,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
         return strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
-    public ActionsBuilderController actionsControl() {
+    public ActionsController actionsControl() {
         return strategy.getActionsStrategy(SessionContext.getSession().getActionsStrategy());
     }
 

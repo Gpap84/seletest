@@ -17,18 +17,27 @@ public class HttpClient {
     RestTemplate template;
 
     /**
-     * Get request
-     * @return response from web server
+     * GET http request to Rest API
+     * @param uri The uri to send GET request
+     * @param responseType The class of the response type
+     * @param arguments Object... for arguments to send GET request
+     * @param <T>
+     * @return T
      */
-    public <T> T getRequest(String uri, Class<?> responseType, Object... arguments){
+    public <T> T getHTTPRequest(String uri, Class<?> responseType, Object... arguments){
         return (T) template.getForObject(uri,responseType, arguments);
     }
 
     /**
-     * Post request
-     * @return response from web server
+     * POST http reqest to Rest API
+         * @param uri  The uri to send POST request
+     * @param request The object request
+     * @param responseType The class of the response type
+     * @param arguments Object... for arguments to send POST request
+     * @param <T>
+     * @return T
      */
-    public <T> T postRequest(String uri, Object request, Class<?> responseType, Object... arguments){
+    public <T> T postHTTPRequest(String uri, Object request, Class<?> responseType, Object... arguments){
         return (T) template.postForObject(uri, request, responseType, arguments);
     }
 

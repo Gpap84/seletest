@@ -39,36 +39,36 @@ import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
 
 /**
- * Actions builder class.
+ * ActionsWebDriverController class.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
 @Component("webDriverActions")
-public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDriverBuilder>{
+public class ActionsWebDriverController implements ActionsController<ActionsWebDriverController> {
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsDriverBuilder mouseOver(Object locator) {
+    public ActionsWebDriverController mouseOver(Object locator) {
         SessionControl.actionsBuilder().moveToElement(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
-    public ActionsDriverBuilder mouseUp(KeyInfo key) {
+    public ActionsWebDriverController mouseUp(KeyInfo key) {
         SessionControl.actionsBuilder().keyUp(key.getKey());
         return this;
 
     }
 
     @Override
-    public ActionsDriverBuilder mouseDown(KeyInfo key) {
+    public ActionsWebDriverController mouseDown(KeyInfo key) {
         SessionControl.actionsBuilder().keyDown(key.getKey());
         return this;
     }
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsDriverBuilder mouseDown(Object locator, KeyInfo key) {
+    public ActionsWebDriverController mouseDown(Object locator, KeyInfo key) {
         SessionControl.actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key.getKey());
         return this;
 
@@ -76,27 +76,27 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
 
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsDriverBuilder mouseUp(Object locator, KeyInfo key) {
+    public ActionsWebDriverController mouseUp(Object locator, KeyInfo key) {
         SessionControl.actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key.getKey());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder clickAndHold(Object locator) {
+    public ActionsWebDriverController clickAndHold(Object locator) {
         SessionControl.actionsBuilder().clickAndHold(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder click(Object locator) {
+    public ActionsWebDriverController click(Object locator) {
         SessionControl.actionsBuilder().click(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @Override
-    public ActionsDriverBuilder performActions() {
+    public ActionsWebDriverController performActions() {
         SessionControl.actionsBuilder().build().perform();
         SessionContext.getSession().setActions(new Actions(SessionContext.getSession().getWebDriver()));
         return this;
@@ -104,46 +104,46 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder tap(Object locator) {
+    public ActionsWebDriverController tap(Object locator) {
         SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder tap(Object locator, int x, int y) {
+    public ActionsWebDriverController tap(Object locator, int x, int y) {
         SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement(),x,y);
         return null;
     }
 
     @Override
-    public ActionsDriverBuilder tap(int x, int y) {
+    public ActionsWebDriverController tap(int x, int y) {
         SessionControl.touchactionsBuilder().tap(x,y);
         return this;
     }
 
     @Override
-    public ActionsDriverBuilder press(int x, int y) {
+    public ActionsWebDriverController press(int x, int y) {
         SessionControl.touchactionsBuilder().press(x,y);
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder press(Object locator) {
+    public ActionsWebDriverController press(Object locator) {
         SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement());
         return this;
     }
 
     @WaitCondition(waitFor.CLICKABLE)
     @Override
-    public ActionsDriverBuilder press(Object locator, int x, int y) {
+    public ActionsWebDriverController press(Object locator, int x, int y) {
         SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement(),x,y);
         return this;
     }
 
     @Override
-    public ActionsDriverBuilder performTouchActions() {
+    public ActionsWebDriverController performTouchActions() {
         SessionControl.touchactionsBuilder().perform();
         SessionContext.getSession().setTouchAction(new TouchAction((AppiumDriver) SessionContext.getSession().getWebDriver()));
         return this;
@@ -154,7 +154,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
      */
     @WaitCondition(waitFor.VISIBILITY)
     @Override
-    public ActionsDriverBuilder dragndrop(Object draglocator, Object droplocator) {
+    public ActionsWebDriverController dragndrop(Object draglocator, Object droplocator) {
         SessionControl.actionsBuilder().dragAndDrop(SessionContext.getSession().getWebElement(), (WebElement) droplocator);
         return this;
     }
@@ -163,7 +163,7 @@ public class ActionsDriverBuilder implements ActionsBuilderController<ActionsDri
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(com.automation.seletest.core.selenium.common.KeyInfo)
      */
     @Override
-    public ActionsDriverBuilder press(KeyInfo key) {
+    public ActionsWebDriverController press(KeyInfo key) {
         SessionControl.actionsBuilder().sendKeys(key.getKey());
         return this;
     }

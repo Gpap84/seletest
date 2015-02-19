@@ -54,8 +54,6 @@ import com.automation.seletest.core.services.annotations.DataSource;
 /**
  * This class operates as a service for reading properties from various input types
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- * @param <T>
- *
  */
 @Slf4j
 @Service("fileHandlingService")

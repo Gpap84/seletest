@@ -28,9 +28,11 @@ package com.automation.seletest.core.services.actions;
 
 import java.util.List;
 
+import com.automation.seletest.core.selenium.threads.ThreadUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -44,14 +46,32 @@ import com.thoughtworks.selenium.SeleniumException;
  */
 @Component("seleniumWait")
 @SuppressWarnings("deprecation")
-public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
+public class SeleniumWaitStrategy implements  WaitFor{
+
+
+    @Autowired
+    ThreadUtils thread;
+
+
+    /**
+     * Define locator
+     * @param locator Object locator
+     * @return String locator
+     */
+    private String defineLocator(Object locator){
+        if(((String)locator).startsWith("jquery=")){
+            return ((String)locator).replace("jquery=", "css=");
+        } else{
+            return (String)locator;
+        }
+    }
+
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementPresence(java.lang.String)
      */
-	@Cacheable("wait")
     @Override
-    public WebElement waitForElementPresence(final String locator) {
+    public SeleniumWaitStrategy waitForElementPresence(final String locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -61,18 +81,17 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight(locator);
-        return null;
+        return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementVisibility(java.lang.Object)
      */
-	@Cacheable("wait")
     @Override
-    public WebElement waitForElementVisibility(final Object locator) {
+    public SeleniumWaitStrategy waitForElementVisibility(final Object locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -82,18 +101,17 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
-        return null;
+        return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementToBeClickable(java.lang.Object)
      */
-	@Cacheable("wait")
     @Override
-    public WebElement waitForElementToBeClickable(Object locator) {
+    public SeleniumWaitStrategy waitForElementToBeClickable(Object locator) {
         throw new UnsupportedCommandException("waitForElementToBeClickable(Object locator) is not used by Selenium 1");
     }
 
@@ -111,7 +129,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         return null;
     }
@@ -119,7 +137,6 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementInvisibility(java.lang.String)
      */
-	@Cacheable("wait")
     @Override
     public boolean waitForElementInvisibility(final String locator) {
         long startTime = System.currentTimeMillis();
@@ -131,7 +148,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight(defineLocator(locator));
         return false;
@@ -140,7 +157,6 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForTextPresentinElement(java.lang.Object, java.lang.String)
      */
-	@Cacheable("wait")
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
         long startTime = System.currentTimeMillis();
@@ -152,7 +168,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
         return false;
@@ -161,7 +177,6 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForTextPresentinValue(java.lang.Object, java.lang.String)
      */
-	@Cacheable("wait")
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
         long startTime = System.currentTimeMillis();
@@ -173,7 +188,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
         return false;
@@ -182,9 +197,8 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForPresenceofAllElements(java.lang.String)
      */
-	@Cacheable("wait")
     @Override
-    public List<WebElement> waitForPresenceofAllElements(final String locator) {
+    public SeleniumWaitStrategy waitForPresenceofAllElements(final String locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -200,18 +214,18 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     break;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
         SessionControl.selenium().highlight(defineLocator(locator));
-        return null;
+        return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForVisibilityofAllElements(java.lang.String)
      */
-    @Deprecated
     @Override
-    public List<WebElement> waitForVisibilityofAllElements(String locator) {
+    public SeleniumWaitStrategy waitForVisibilityofAllElements(String locator) {
+        //TODO
         return null;
     }
 
@@ -221,13 +235,11 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     @Override
     public void waitForPageLoaded() {
         SessionControl.selenium().waitForPageToLoad(String.valueOf(SessionContext.getSession().getWaitUntil()));
-
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.ActionsSync#waitForAjaxCallCompleted(long)
      */
-    @Cacheable("wait")
     @Override
     public void waitForAjaxCallCompleted(final long timeout) {
         SessionControl.selenium().waitForCondition("selenium.browserbot.getCurrentWindow().jQuery.active == 0",String.valueOf(timeout));
@@ -236,7 +248,6 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForElementNotPresent(final String locator) {
         long startTime = System.currentTimeMillis();
@@ -248,14 +259,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     return true;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForElementInvisible(final String locator) {
         long startTime = System.currentTimeMillis();
@@ -267,14 +277,13 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     return true;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForPageTitle(final String title) {
         long startTime = System.currentTimeMillis();
@@ -287,7 +296,7 @@ public class SeleniumWaitStrategy extends AbstractBase.WaitBase{
                     return true;
                 }
             } catch (Exception e) {
-            } threadSleep(100);
+            } thread.sleep(100);
         } while (true);
     }
 

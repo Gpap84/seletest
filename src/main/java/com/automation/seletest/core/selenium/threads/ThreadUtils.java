@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.threads;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * This class will be used for locking/ unlocking functions from being called from multiple threads
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
+@Component
 public class ThreadUtils{
 
 	 boolean isLocked = false;
@@ -72,4 +74,17 @@ public class ThreadUtils{
 	      }
 	    }
 	  }
+
+	/**
+	 * Sleeps a thread
+	 * @param timeout long timeout for thread sleep
+	 */
+	public void sleep(final long timeout){
+		try {
+			log.info("About to sleep: ",timeout);
+			Thread.sleep(timeout);
+		} catch (InterruptedException e) {
+			log.error("Interrupted exception occured trying to sleep thread for: "+timeout+" {}",e.getMessage());
+		}
+	}
 	}

@@ -71,12 +71,11 @@ public class PerformanceUtils {
     }
 
     /**
-     * get the Selenium proxy object
-     * @param server
-     * @return
-     * @throws Exception
+     * Get the Selenium Proxy object
+     * @param port
+     * @return Proxy the selenium proxy
      */
-    public Proxy proxy(int port) throws Exception{
+    public Proxy proxy(int port){
         Proxy proxy = new Proxy();
         proxy.setHttpProxy("localhost:"+port+"");
         return proxy;
@@ -104,7 +103,7 @@ public class PerformanceUtils {
             FileOutputStream fos = new FileOutputStream(path);
             harFile.writeTo(fos);}
         catch(Exception ex){
-            log.error("Cannot write to external file: "+ex.getLocalizedMessage());
+            log.error("Cannot write to external file: {}",ex.getMessage());
         }
     }
 
@@ -118,18 +117,17 @@ public class PerformanceUtils {
         try {
             server.stop();
         } catch (Exception e) {
-           log.error("Server cannot be stopped!!"+e);
+           log.error("Exception while trying to stop proxy server {}",e.getMessage());
         }
         return this;
     }
 
     /**
      * Creates new har
-     * @param name
-     * @return
-     * @throws Exception
+     * @param name The name of the har file
+     * @return The instance of the class
      */
-    public PerformanceUtils newHar(String name) throws Exception{
+    public PerformanceUtils newHar(String name){
         server.newHar(name);
         return this;
     }

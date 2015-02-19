@@ -29,6 +29,7 @@ package com.automation.seletest.core.selenium.threads;
 
 
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 import io.appium.java_client.TouchAction;
 
 import java.util.ArrayList;
@@ -59,10 +60,6 @@ import com.thoughtworks.selenium.Selenium;
 @Slf4j
 @SuppressWarnings("deprecation")
 public class SessionProperties<T extends RemoteWebDriver> {
-
-    /**Factories Strategy*/
-    @Autowired
-    StrategyFactory<?> factoryStrategy;
 
     /**The wait until timeout*/
     @Getter @Setter
@@ -123,7 +120,7 @@ public class SessionProperties<T extends RemoteWebDriver> {
 
         //Quits driver
         if(webDriver!=null){
-            factoryStrategy.getControllerStrategy(controllerStrategy).quit(CloseSession.QUIT);
+            SessionControl.webController().quit(CloseSession.QUIT);
         }
 
         log.info("Session {} closed!!!", webDriver.toString().replace("(null)", ""));

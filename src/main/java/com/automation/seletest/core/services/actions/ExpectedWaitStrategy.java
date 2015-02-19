@@ -30,27 +30,46 @@ package com.automation.seletest.core.services.actions;
 
 import java.util.List;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.threads.ThreadUtils;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 
 /**
- * ExpectedWaitStrategy
+ * ExpectedWaitStrategy class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
 @Component("webDriverWait")
 @Slf4j
-public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
+public class ExpectedWaitStrategy implements WaitFor{
+
+	@Autowired
+	ThreadUtils thread;
+
+	/**Component name for WebDriverWait*/
+	private final String webDriverWait="webdriverwait";
+
+
+	/**
+	 * Returns a new WebDriverWait instance
+	 * @return WebDriverWait object
+	 */
+	private WebDriverWait wfExpected(){
+		return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil());
+	}
+
+
 
 	@Cacheable("wait")
 	@Override
@@ -61,16 +80,14 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 
 	@Cacheable("wait")
 	@Override
-	public WebElement waitForElementVisibility(final Object locator) {
-		if(locator instanceof String){
-			return wfExpected().until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator)));
-		}
-		else if(locator instanceof WebElement){
-			return wfExpected().until(ExpectedConditions.visibilityOf((WebElement)locator));
-		}
-		else{
-			throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
-		}
+	public WebElement waitForElementVisibility(final Object locator){
+			if (locator instanceof String) {
+				return wfExpected().until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String) locator).setLocator((String) locator)));
+			} else if (locator instanceof WebElement) {
+				return wfExpected().until(ExpectedConditions.visibilityOf((WebElement) locator));
+			} else {
+				throw new UnsupportedOperationException("The defined locator: " + locator + " is not supported!!!");
+			}
 	}
 
 	@Cacheable("wait")
@@ -169,7 +186,7 @@ public class ExpectedWaitStrategy extends AbstractBase.WaitBase{
 						return true;
 					}
 
-					threadSleep(timeout);
+					thread.sleep(timeout);
 				}
 				return false;
 			}

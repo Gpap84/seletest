@@ -74,7 +74,6 @@ public class Events extends ApplicationEvent{
          * @param hostUrl String url
          * @param performance boolean peformance
          * @param context ITestContext context
-         * @param isWeb
          */
         public InitializationEvent(
                 Object source,
