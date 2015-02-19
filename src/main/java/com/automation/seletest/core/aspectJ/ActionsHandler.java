@@ -58,7 +58,7 @@ import com.automation.seletest.core.services.utilities.LogUtils;
 @SuppressWarnings("unchecked")
 @Aspect
 @Component
-public class ActionsHandler extends SeletestPointcuts {
+public class ActionsHandler extends SeletestPointCuts {
 
     /**Log service*/
     @Autowired

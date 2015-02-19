@@ -55,7 +55,7 @@ import com.thoughtworks.selenium.SeleniumException;
 @Aspect
 @Component
 @Slf4j
-public class ExceptionHandler extends SeletestPointcuts {
+public class ExceptionHandler extends SeletestPointCuts {
 
     /**The log service*/
     @Autowired

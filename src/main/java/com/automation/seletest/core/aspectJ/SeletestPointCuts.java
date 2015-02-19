@@ -44,7 +44,7 @@ import com.automation.seletest.core.services.factories.StrategyFactory;
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-public abstract class SeletestPointcuts {
+public abstract class SeletestPointCuts {
 
     /**Factories Strategy*/
     @Autowired
