@@ -49,6 +49,7 @@ import org.openqa.selenium.logging.LogEntries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.automation.seletest.core.services.annotations.JSHandle;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
@@ -63,7 +64,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
  */
 @Component("seleniumControl")
 @Slf4j
-@SuppressWarnings({ "rawtypes", "deprecation" })
+@SuppressWarnings({ "rawtypes", "deprecation","unchecked" })
 public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T>{
 
     /**The FileUtils*/
@@ -82,6 +83,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public SeleniumController click(Object locator) {
         selenium().click(defineLocator(locator));
         return this;
@@ -94,6 +96,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public SeleniumController type(Object locator, String text) {
         selenium().typeKeys(defineLocator(locator), text);
         return this;
@@ -149,6 +152,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @Monitor
     @WaitCondition(waitFor.VISIBILITY)
+    @JSHandle
     public SeleniumController takeScreenShotOfElement(Object locator) throws IOException {
         String base64Screenshot = selenium().captureScreenshotToString();
         byte[] decodedScreenshot = Base64.decodeBase64(base64Screenshot.getBytes());
@@ -181,6 +185,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public String getText(Object locator) {
         return selenium().getText(defineLocator(locator));
     }
@@ -191,6 +196,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public String getTagName(Object locator) {
         return selenium().getAttribute(defineLocator(locator)+"@tagName");
     }
@@ -201,6 +207,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public Point getLocation(Object locator) {
         int px =(Integer) selenium().getElementPositionLeft(defineLocator(locator));
         int py=(Integer) selenium().getElementPositionTop(defineLocator(locator));
@@ -213,6 +220,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public Dimension getElementDimensions(Object locator) {
         int height = (Integer) (selenium().getElementHeight(defineLocator(locator)));
         int width = (Integer) selenium().getElementWidth(defineLocator(locator));
@@ -265,6 +273,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public SeleniumController selectByValue(String locator, String value) {
         selenium().select(defineLocator(locator),"value="+value);
         return this;
@@ -277,6 +286,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Monitor
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public SeleniumController selectByVisibleText(String locator, String text) {
         selenium().select(defineLocator(locator),"label="+text);
         return this;
@@ -536,6 +546,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public int getRowsTable(Object tableLocator) {
         int rows = 0;
         String locator=defineLocator(tableLocator);
@@ -552,6 +563,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public int getColumnsTable(Object tableLocator) {
         int columns = 0;
         String locator=defineLocator(tableLocator);
@@ -568,6 +580,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public String getFirstSelectedOptionText(Object locator) {
         return selenium().getSelectedLabel(defineLocator(locator));
     }
@@ -578,6 +591,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @Override
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
+    @JSHandle
     public List<String> getAllOptionsText(Object locator) {
         List<String> optionValues = new ArrayList<String>();
         String [] options=selenium().getSelectOptions(defineLocator(locator));
@@ -593,6 +607,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @Monitor
+    @JSHandle
     public SeleniumController<T> clearSelectedOptionByText(Object locator, String text) {
         if(selenium().isSomethingSelected(defineLocator(locator))){
             selenium().select(defineLocator(locator),"label="+text);
@@ -606,6 +621,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
     @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @Monitor
+    @JSHandle
     public SeleniumController<T> clearSelectedOption(Object locator, String value) {
         if(selenium().isSomethingSelected(defineLocator(locator))){
             selenium().select(defineLocator(locator),"value="+value);
@@ -637,7 +653,7 @@ public class SeleniumController<T extends DefaultSelenium> extends DriverBaseCon
      * @param locator Object locator
      * @return String locator
      */
-    private String defineLocator(Object locator){
+    private synchronized String defineLocator(Object locator){
         if(((String)locator).startsWith("jquery=")){
             return ((String)locator).replace("jquery=", "css=");
         } else{

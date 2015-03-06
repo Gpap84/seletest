@@ -183,9 +183,9 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
     }
 
     @Override
-    @CacheEvict(value="wait",allEntries = true)
+    @CacheEvict(value="wait", allEntries = true)
     public void clearCache(){
-        logUtils.warn("Clear cached objects!!!");
+        logUtils.warn("Clear cached web elements!!!");
     }
 
 }

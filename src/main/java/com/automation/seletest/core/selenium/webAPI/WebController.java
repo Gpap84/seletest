@@ -43,7 +43,8 @@ import org.openqa.selenium.logging.LogEntries;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  * @param <T>
  */
-public interface WebController<T extends WebController<T>>{
+@SuppressWarnings("hiding")
+public interface WebController<T>{
 
     /**
      * Clear the cache
@@ -62,7 +63,7 @@ public interface WebController<T extends WebController<T>>{
      * @param locator Object locator
      * @return WebController
      */
-    T click(Object locator);
+    <T> T click(Object locator);
 
     /**
      * Enter function
@@ -70,7 +71,7 @@ public interface WebController<T extends WebController<T>>{
      * @param text text to type
      * @return WebController
      */
-    T type(Object locator, String text);
+    <T> T type(Object locator, String text);
 
 
     /**
@@ -86,7 +87,7 @@ public interface WebController<T extends WebController<T>>{
      * @param url String url
      * @return WebController
      */
-    T goToTargetHost(String url);
+    <T> T goToTargetHost(String url);
 
     /**
      * Change style of specific element
@@ -95,14 +96,14 @@ public interface WebController<T extends WebController<T>>{
      * @param attributevalue String attribute value
      * @return WebController
      */
-    T changeStyle(Object locator, String attribute, String attributevalue);
+    <T> T changeStyle(Object locator, String attribute, String attributevalue);
 
     /**
      * Takes screenshot
      * @throws IOException
      * @return WebController
      */
-    T takeScreenShot() throws IOException;
+    <T> T takeScreenShot() throws IOException;
 
     /**
      * Take screenshot of an element
@@ -110,7 +111,7 @@ public interface WebController<T extends WebController<T>>{
      * @throws IOException
      * @return WebController
      */
-    T takeScreenShotOfElement(Object locator) throws IOException;
+    <T> T takeScreenShotOfElement(Object locator) throws IOException;
 
 
     /**
@@ -188,7 +189,7 @@ public interface WebController<T extends WebController<T>>{
      * @param path Strng path for local file to upload
      * @return WeCntroller
      */
-    T uploadFile(Object locator, String path);
+    <T> T uploadFile(Object locator, String path);
 
     /**
      * Executes JavaScript on browser
@@ -203,7 +204,7 @@ public interface WebController<T extends WebController<T>>{
      * @param value
      * @return WebController
      */
-    T selectByValue(String locator, String value);
+    <T> T selectByValue(String locator, String value);
 
     /**
      * Select option from drop down by visible text
@@ -211,14 +212,14 @@ public interface WebController<T extends WebController<T>>{
      * @param text
      * @return WebController
      */
-    T selectByVisibleText(String locator, String text);
+    <T> T selectByVisibleText(String locator, String text);
 
     /**
      * Deletes a cookie by name
      * @param name String name for cookie
      * @return WebController
      */
-    T deleteCookieByName(String name);
+    <T> T deleteCookieByName(String name);
 
     /**
      * Gets a cookie by name
@@ -232,20 +233,20 @@ public interface WebController<T extends WebController<T>>{
      * @param cookie
      * @return WebController
      */
-    T deleteCookie(Cookie cookie);
+    <T> T deleteCookie(Cookie cookie);
 
     /**
      * Delete all cookies
      * @return WebController
      */
-    T deleteAllCookies();
+    <T> T deleteAllCookies();
 
     /**
      * Create a cookie
      * @param cookie Cookie to add
      * @return WebController
      */
-    T addCookie(Cookie cookie);
+    <T> T addCookie(Cookie cookie);
 
     /**
      * Gets all cookies
@@ -260,7 +261,7 @@ public interface WebController<T extends WebController<T>>{
      * @param timeunit TimeUnit to use
      * @return WebController
      */
-    T implicitlyWait(long timeout,TimeUnit timeunit);
+    <T> T implicitlyWait(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for page to load
@@ -268,7 +269,7 @@ public interface WebController<T extends WebController<T>>{
      * @param timeunit TimeUnit to use
      * @return WebController
      */
-    T pageLoadTimeout(long timeout,TimeUnit timeunit);
+    <T> T pageLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Timeout waiting for script to finish
@@ -276,21 +277,21 @@ public interface WebController<T extends WebController<T>>{
      * @param timeunit TimeUnit to use
      * @return WebController
      */
-    T scriptLoadTimeout(long timeout,TimeUnit timeunit);
+    <T> T scriptLoadTimeout(long timeout,TimeUnit timeunit);
 
     /**
      * Set window position
      * @param point
      * @return WebController
      */
-    T setWindowPosition(Point point);
+    <T> T setWindowPosition(Point point);
 
     /**
      * Set window size
      * @param dimension
      * @return WebController
      */
-    T setWindowDimension(Dimension dimension);
+    <T> T setWindowDimension(Dimension dimension);
 
     /**
      * Gets window position
@@ -309,7 +310,7 @@ public interface WebController<T extends WebController<T>>{
      * Maximize window
      * @return WebController
      */
-    T maximizeWindow();
+    <T> T maximizeWindow();
 
     /**
      * Get logs (client,server,performance....etc.)
@@ -322,7 +323,7 @@ public interface WebController<T extends WebController<T>>{
      * Switch to latest window
      * @return WebController
      */
-    T switchToLatestWindow();
+    <T> T switchToLatestWindow();
 
     /**
      * Gets the number of opened windows
@@ -334,39 +335,39 @@ public interface WebController<T extends WebController<T>>{
      * Accept alert
      * @return WebController
      */
-    T acceptAlert();
+    <T> T acceptAlert();
 
     /**
      * Dismiss Alert
      * @return WebController
      */
-    T dismissAlert();
+    <T> T dismissAlert();
 
     /**
      * Quit session or close latest window
      * @param type
      * @return WebController
      */
-    T quit(CloseSession type);
+    <T> T quit(CloseSession type);
 
     /**
      * Switch control to frame located by name or id
      * @param frameId
      * @return WebController
      */
-    T switchToFrame(String frameId);
+    <T> T switchToFrame(String frameId);
 
     /**
      *  Go backward
      * @return WebController
      */
-    T goBack();
+    <T> T goBack();
 
     /**
      * Go forward
      * @return WebController
      */
-    T goForward();
+    <T> T goForward();
 
     /**
      * Find all child elements of parent
@@ -418,7 +419,7 @@ public interface WebController<T extends WebController<T>>{
      * @param text
      * @return MainController
      */
-    T clearSelectedOptionByText(Object locator, String text);
+    <T> T clearSelectedOptionByText(Object locator, String text);
 
 
     /**
@@ -427,7 +428,7 @@ public interface WebController<T extends WebController<T>>{
      * @param value
      * @return WebController
      */
-    T clearSelectedOption(Object locator, String value);
+    <T> T clearSelectedOption(Object locator, String value);
 
     /**
      * If field editable
@@ -487,5 +488,5 @@ public interface WebController<T extends WebController<T>>{
      * Wait for angular to finish
      * @return WebController
      */
-    T waitForAngularFinish();
+    <T> T waitForAngularFinish();
 }

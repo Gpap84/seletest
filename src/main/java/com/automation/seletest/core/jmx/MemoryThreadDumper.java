@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 import org.testng.Reporter;
@@ -48,64 +49,64 @@ import org.testng.Reporter;
 @Slf4j
 public class MemoryThreadDumper {
 
-	/**
-	 * It dumps the Thread stacks
-	 * @throws java.io.IOException
-	 */
-	public void dumpStacks() {
+    /**
+     * It dumps the Thread stacks
+     * @throws java.io.IOException
+     */
+    public void dumpStacks() {
 
-		String dumps = "stacks.dump";
+        String dumps = "stacks.dump";
 
-		ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
-		ThreadInfo[] threadInfos = mxBean.getThreadInfo(mxBean.getAllThreadIds(), 0);
-		Map<Long, ThreadInfo> threadInfoMap = new HashMap<Long, ThreadInfo>();
-		for (ThreadInfo threadInfo : threadInfos) {
-			threadInfoMap.put(threadInfo.getThreadId(), threadInfo);
-		}
+        ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] threadInfos = mxBean.getThreadInfo(mxBean.getAllThreadIds(), 0);
+        Map<Long, ThreadInfo> threadInfoMap = new HashMap<Long, ThreadInfo>();
+        for (ThreadInfo threadInfo : threadInfos) {
+            threadInfoMap.put(threadInfo.getThreadId(), threadInfo);
+        }
 
-		File dumpFile = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent()+dumps);
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(dumpFile));
-			this.dumpTraces(mxBean, threadInfoMap, writer);
-			log.warn("Stacks dumped to: " + dumps);
+        File dumpFile = new File(new File(Reporter.getCurrentTestResult().getTestContext().getSuite().getOutputDirectory()).getParent()+dumps);
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(dumpFile));
+            this.dumpTraces(mxBean, threadInfoMap, writer);
+            log.warn("Stacks dumped to: " + dumps);
 
-		} catch (IOException e) {
-			throw new IllegalStateException("An exception occurred while writing the thread dump");
-		} finally {
-			IOUtils.closeQuietly(writer);
-		}
+        } catch (IOException e) {
+            throw new IllegalStateException("An exception occurred while writing the thread dump");
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
 
-	}
+    }
 
-	private void dumpTraces(ThreadMXBean mxBean,
-			Map<Long, ThreadInfo> threadInfoMap, Writer writer)
-			throws IOException {
-		Map<Thread, StackTraceElement[]> stacks = Thread.getAllStackTraces();
-		writer.write("Dump of "+stacks.size()+" thread at "+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(System.currentTimeMillis())) + "\n\n");
-		for (Map.Entry<Thread, StackTraceElement[]> entry : stacks.entrySet()) {
-			Thread thread = entry.getKey();
-			writer.write("\""+thread.getName()+"\" prio="+thread.getPriority()+" tid="+thread.getId()+"\n");
-			ThreadInfo threadInfo = threadInfoMap.get(thread.getId());
-			if (threadInfo != null) {
-				writer.write(" native=" + threadInfo.isInNative()
-						+ ", suspended=" + threadInfo.isSuspended()
-						+ ", block=" + threadInfo.getBlockedCount() + ", wait="
-						+ threadInfo.getWaitedCount() + "\n");
-				writer.write(" lock=" + threadInfo.getLockName()
-						+ " owned by " + threadInfo.getLockOwnerName() + " ("
-						+ threadInfo.getLockOwnerId() + "), cpu="
-						+ mxBean.getThreadCpuTime(threadInfo.getThreadId())
-						/ 1000000L + ", user="
-						+ mxBean.getThreadUserTime(threadInfo.getThreadId())
-						/ 1000000L + "\n");
-			}
-			for (StackTraceElement element : entry.getValue()) {
-				writer.write("        ");
-				writer.write(element.toString());
-				writer.write("\n");
-			}
-			writer.write("\n");
-		}
-	}
+    private void dumpTraces(ThreadMXBean mxBean,
+            Map<Long, ThreadInfo> threadInfoMap, Writer writer)
+                    throws IOException {
+        Map<Thread, StackTraceElement[]> stacks = Thread.getAllStackTraces();
+        writer.write("Dump of "+stacks.size()+" thread at "+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(System.currentTimeMillis())) + "\n\n");
+        for (Map.Entry<Thread, StackTraceElement[]> entry : stacks.entrySet()) {
+            Thread thread = entry.getKey();
+            writer.write("\""+thread.getName()+"\" prio="+thread.getPriority()+" tid="+thread.getId()+"\n");
+            ThreadInfo threadInfo = threadInfoMap.get(thread.getId());
+            if (threadInfo != null) {
+                writer.write(" native=" + threadInfo.isInNative()
+                        + ", suspended=" + threadInfo.isSuspended()
+                        + ", block=" + threadInfo.getBlockedCount() + ", wait="
+                        + threadInfo.getWaitedCount() + "\n");
+                writer.write(" lock=" + threadInfo.getLockName()
+                        + " owned by " + threadInfo.getLockOwnerName() + " ("
+                        + threadInfo.getLockOwnerId() + "), cpu="
+                        + mxBean.getThreadCpuTime(threadInfo.getThreadId())
+                        / 1000000L + ", user="
+                        + mxBean.getThreadUserTime(threadInfo.getThreadId())
+                        / 1000000L + "\n");
+            }
+            for (StackTraceElement element : entry.getValue()) {
+                writer.write("        ");
+                writer.write(element.toString());
+                writer.write("\n");
+            }
+            writer.write("\n");
+        }
+    }
 }
