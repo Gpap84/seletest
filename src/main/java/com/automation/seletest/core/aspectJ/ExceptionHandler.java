@@ -207,7 +207,7 @@ public class ExceptionHandler extends SeletestPointCuts {
      */
     private void handleRetryException(ProceedingJoinPoint pjp, Throwable ex, int attemptCount, RetryFailure retry) throws Throwable {
         if (ex instanceof TimeoutException || ex instanceof SeleniumException) {
-            log.debug("Do not retry execution due to exception {}",ex);
+            log.debug("Do not retry execution due to exception {}", ex.getMessage());
             throw ex;
         } if (attemptCount == 1 + retry.retryCount()) {
             log.debug("Retry execution exceeded for method {}",invokedMethod(pjp));
@@ -235,13 +235,11 @@ public class ExceptionHandler extends SeletestPointCuts {
         if(returnType.getName().compareTo("int")==0){
             log.debug("Return 0 value for method {}",invokedMethod(pjp));
             return 0;
-        } else if(returnType.getName().compareTo("boolean")==0 && !pjp.getSignature().toString().contains("Not")){
+        } else if(returnType.getName().compareTo("boolean")==0){
             log.debug("Return false value for method {}",invokedMethod(pjp));
             return false;
-        } else if(returnType.getName().compareTo("boolean")==0 && pjp.getSignature().toString().contains("Not")){
-            log.debug("Return true value for method {}",invokedMethod(pjp));
-            return true;
-        } return null;
+        }
+        return null;
     }
 
 

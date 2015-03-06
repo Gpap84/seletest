@@ -26,9 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.mobileAPI;
 
-import com.automation.seletest.core.services.actions.WaitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
-
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
@@ -45,10 +42,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.annotations.Monitor;
 import com.automation.seletest.core.services.annotations.RetryFailure;
 import com.automation.seletest.core.services.annotations.WaitCondition;
 import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 
 
 /**
@@ -77,7 +76,6 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
      * Gets the WebDriver instance
      * @return WebDriver instance
      */
-    @SuppressWarnings("unchecked")
 	private T webDriver(){
         return (T) SessionContext.getSession().getWebDriver();
     }
@@ -93,7 +91,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController launchApp() {
+    public AppiumDriverController<T> launchApp() {
         webDriver().launchApp();
         return this;
     }
@@ -101,7 +99,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController resetApp() {
+    public AppiumDriverController<T> resetApp() {
         webDriver().resetApp();
         return this;
     }
@@ -109,7 +107,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController runAppinBackground(int sec) {
+    public AppiumDriverController<T> runAppinBackground(int sec) {
         webDriver().runAppInBackground(sec);
         return this;
     }
@@ -117,7 +115,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController closeApp() {
+    public AppiumDriverController<T> closeApp() {
         webDriver().closeApp();
         return this;
     }
@@ -125,7 +123,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController installApp(String appPath, String bundleId) {
+    public AppiumDriverController<T> installApp(String appPath, String bundleId) {
         if(!isAppInstalled(bundleId)) {
             Map<String, String> args = new HashMap<String, String>();
             args.put("appPath", appPath);
@@ -136,7 +134,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
 	@Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController performTouchAction(TouchAction e) {
+    public AppiumDriverController<T> performTouchAction(TouchAction e) {
         webDriver().performTouchAction(e);
         return this;
     }
@@ -144,7 +142,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController performMultiTouchAction(MultiTouchAction e) {
+    public AppiumDriverController<T> performMultiTouchAction(MultiTouchAction e) {
         webDriver().performMultiTouchAction(e);
         return this;
     }
@@ -152,7 +150,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController hideKeyboard() {
+    public AppiumDriverController<T> hideKeyboard() {
         webDriver().hideKeyboard();
         return this;
     }
@@ -160,7 +158,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController rotate(ScreenOrientation e) {
+    public AppiumDriverController<T> rotate(ScreenOrientation e) {
         webDriver().rotate(e);
         return this;
     }
@@ -188,7 +186,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController pinch(int x, int y) {
+    public AppiumDriverController<T> pinch(int x, int y) {
         webDriver().pinch(x, y);
         return this;
     }
@@ -196,7 +194,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController lockScreen(int sec) {
+    public AppiumDriverController<T> lockScreen(int sec) {
         webDriver().lockScreen(sec);
         return this;
     }
@@ -204,7 +202,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController tap(int finger, int y, int z, int duration) {
+    public AppiumDriverController<T> tap(int finger, int y, int z, int duration) {
         webDriver().tap(finger, y, z, duration);
         return this;
     }
@@ -213,14 +211,14 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController zoom(int x, int y) {
+    public AppiumDriverController<T> zoom(int x, int y) {
         webDriver().zoom(x, y);
         return this;
     }
 
     @Override
     @Monitor
-    public AppiumDriverController swipe(int startx, int starty, int endx, int endy, int duration) {
+    public AppiumDriverController<T> swipe(int startx, int starty, int endx, int endy, int duration) {
         webDriver().swipe(startx, starty, endx, endy, duration);
         return this;
     }
@@ -280,7 +278,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @Override
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data) {
+    public AppiumDriverController<T> setNetworkConnection(boolean airplaneMode, boolean wifi, boolean data) {
         if(webDriver() instanceof AndroidDriver) {
             NetworkConnectionSetting network=new NetworkConnectionSetting(false, true, true);
             network.setAirplaneMode(airplaneMode);
@@ -300,7 +298,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @WaitCondition(waitFor.PRESENCE)
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController zoom(Object locator) {
+    public AppiumDriverController<T> zoom(Object locator) {
         webDriver().zoom(SessionContext.getSession().getWebElement());
         return this;
     }
@@ -312,7 +310,7 @@ public class AppiumDriverController<T extends AppiumDriver> implements AppiumCon
     @WaitCondition(waitFor.PRESENCE)
     @Monitor
     @RetryFailure(retryCount=3)
-    public AppiumDriverController tap(Object locator, int fingers, int duration) {
+    public AppiumDriverController<T> tap(Object locator, int fingers, int duration) {
         webDriver().tap(fingers, SessionContext.getSession().getWebElement(), duration);
         return this;
     }

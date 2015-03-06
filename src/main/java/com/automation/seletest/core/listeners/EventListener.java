@@ -74,119 +74,119 @@ import com.thoughtworks.selenium.Selenium;
 @Slf4j
 public class EventListener implements ApplicationListener<ApplicationEvent> {
 
-	@Override
-	public void onApplicationEvent(ApplicationEvent event) {
-		Time sessionTime=new Time(event.getTimestamp());
-		try {
-			if (event instanceof InitializationEvent) {
-				log.debug(((InitializationEvent) event).getMessage(), sessionTime);
-				new Initialize().initializeSession(event);
-			} else if(event instanceof TestNGEvent) {
-				log.debug(((TestNGEvent) event).getMessage(), sessionTime);
-				SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
-				SessionContext.session().setAssertion(ApplicationContextProvider.getApplicationContext().getBean(Assert.class));
-				SessionContext.session().setActions(new Actions(SessionContext.session().getWebDriver()));
-				SessionControl.verifyController().setAssertionType(((TestNGEvent) event).getTest().assertion());
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        Time sessionTime=new Time(event.getTimestamp());
+        try {
+            if (event instanceof InitializationEvent) {
+                log.debug(((InitializationEvent) event).getMessage(), sessionTime);
+                new Initialize().initializeSession(event);
+            } else if(event instanceof TestNGEvent) {
+                log.debug(((TestNGEvent) event).getMessage(), sessionTime);
+                SessionContext.session().setVerifications(new ArrayList<Future<Boolean>>());
+                SessionContext.session().setAssertion(ApplicationContextProvider.getApplicationContext().getBean(Assert.class));
+                SessionContext.session().setActions(new Actions(SessionContext.session().getWebDriver()));
+                SessionControl.verifyController().setAssertionType(((TestNGEvent) event).getTest().assertion());
 
-				if(((TestNGEvent) event).getTest()!=null){
-					log.debug("Setting aliases for --> {}", ((TestNGEvent) event).getTest().toString());
-					if(((TestNGEvent) event).getTest().driver().equals(DriverType.WEBDRIVER)) {
-						SessionContext.session().setControllerStrategy("webDriverControl");
-						SessionContext.session().setActionsStrategy("webDriverActions");
-					} else if(((TestNGEvent) event).getTest().driver().equals(DriverType.SELENIUM)) {
-						SessionContext.session().setControllerStrategy("seleniumControl");
-						SessionContext.session().setWaitStrategy("seleniumWait");
-						SessionContext.session().setActionsStrategy("seleniumActions");
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			log.error("Error in Test Initialization phase with exception: {}", e.getMessage());
-		}
-	}
+                if(((TestNGEvent) event).getTest()!=null){
+                    log.debug("Setting aliases for --> {}", ((TestNGEvent) event).getTest().toString());
+                    if(((TestNGEvent) event).getTest().driver().equals(DriverType.WEBDRIVER)) {
+                        SessionContext.session().setControllerStrategy("webDriverControl");
+                        SessionContext.session().setActionsStrategy("webDriverActions");
+                    } else if(((TestNGEvent) event).getTest().driver().equals(DriverType.SELENIUM)) {
+                        SessionContext.session().setControllerStrategy("seleniumControl");
+                        SessionContext.session().setWaitStrategy("seleniumWait");
+                        SessionContext.session().setActionsStrategy("seleniumActions");
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            log.error("Error in Test Initialization phase with exception: {}", e.getMessage());
+        }
+    }
 
-	/**
-	 * Initialization class
-	 * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
-	 *
-	 */
-	@Configurable
-	static class Initialize {
+    /**
+     * Initialization class
+     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
+     *
+     */
+    @Configurable
+    static class Initialize {
 
-		@Autowired
-		AppiumController<?> mobileControl;
-		
-		@Autowired
-		Environment env;
+        @Autowired
+        AppiumController<?> mobileControl;
 
-		/**
-		 * Initialize Web or Mobile session
-		 * @param event Application event
-		 * @throws Exception
-		 */
-		public void initializeSession(ApplicationEvent event) throws Exception{
-			WebDriver driver;
-			Selenium selenium;
-			ITestContext textcontext=((InitializationEvent) event).getTestcontext();
+        @Autowired
+        Environment env;
 
-			String gridHost=textcontext.getCurrentXmlTest().getParameter(env.getProperty("grid_host"));
-			String gridPort=textcontext.getCurrentXmlTest().getParameter(env.getProperty("grid_port"));
-			String profileDriver=textcontext.getCurrentXmlTest().getParameter(env.getProperty("profile_Web"));
-			String appPath = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_path"));
-			String appPackage = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_package"));
-			String autoLaunch=textcontext.getCurrentXmlTest().getParameter(env.getProperty("auto_lauch"));
-			String appActivity = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_act"));
-			String udid = textcontext.getCurrentXmlTest().getParameter(env.getProperty("udid"));
+        /**
+         * Initialize Web or Mobile session
+         * @param event Application event
+         * @throws Exception
+         */
+        public void initializeSession(ApplicationEvent event) throws Exception{
+            WebDriver driver;
+            Selenium selenium;
+            ITestContext textcontext=((InitializationEvent) event).getTestcontext();
 
-			DesiredCapabilities cap = (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("selenium_cap"));
+            String gridHost=textcontext.getCurrentXmlTest().getParameter(env.getProperty("grid_host"));
+            String gridPort=textcontext.getCurrentXmlTest().getParameter(env.getProperty("grid_port"));
+            String profileDriver=textcontext.getCurrentXmlTest().getParameter(env.getProperty("profile_Web"));
+            String appPath = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_path"));
+            String appPackage = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_package"));
+            String autoLaunch=textcontext.getCurrentXmlTest().getParameter(env.getProperty("auto_lauch"));
+            String appActivity = textcontext.getCurrentXmlTest().getParameter(env.getProperty("app_act"));
+            String udid = textcontext.getCurrentXmlTest().getParameter(env.getProperty("udid"));
 
-			/**Capabilities for android-ios appium*/
-			if(profileDriver.contains("android")) {
-				DesiredCapabilities androidcap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("android_cap"), appPath,appActivity,appPackage,autoLaunch);
-				cap.merge(androidcap);
-			} else if (profileDriver.contains("iOS")) {
-				DesiredCapabilities ioscap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("ios_cap"), appPath,udid,appPackage,autoLaunch);
-				cap.merge(ioscap);
-			}
+            DesiredCapabilities cap = (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("selenium_cap"));
 
-			/**Performance with browser-mob proxy for local environment*/
-			if(((InitializationEvent) event).isPerformance() && !profileDriver.contains("Grid")){
-				PerformanceUtils performance = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
-				int proxyPort=new Random().nextInt(5000);
-				performance.proxyServer(proxyPort);
-				performance.newHar("Har created at: "+ new Time(event.getTimestamp()));
-				cap.setCapability(CapabilityType.PROXY, performance.proxy(proxyPort));
-				SessionContext.session().setPerformance(performance);
-			}
+            /**Capabilities for android-ios appium*/
+            if(profileDriver.contains("android")) {
+                DesiredCapabilities androidcap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("android_cap"), appPath,appActivity,appPackage,autoLaunch);
+                cap.merge(androidcap);
+            } else if (profileDriver.contains("iOS")) {
+                DesiredCapabilities ioscap =  (DesiredCapabilities) ApplicationContextProvider.getApplicationContext().getBean(env.getProperty("ios_cap"), appPath,udid,appPackage,autoLaunch);
+                cap.merge(ioscap);
+            }
 
-			if(profileDriver.contains("Grid")) {
-				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, gridHost+":"+gridPort+"/wd/hub",cap);
-			} else {
-				driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, cap);
-			}
+            /**Performance with browser-mob proxy for local environment*/
+            if(((InitializationEvent) event).isPerformance() && !profileDriver.contains("Grid")){
+                PerformanceUtils performance = ApplicationContextProvider.getApplicationContext().getBean(PerformanceUtils.class);
+                int proxyPort=new Random().nextInt(5000);
+                performance.proxyServer(proxyPort);
+                performance.newHar("Har created at: "+ new Time(event.getTimestamp()));
+                cap.setCapability(CapabilityType.PROXY, performance.proxy(proxyPort));
+                SessionContext.session().setPerformance(performance);
+            }
 
-			if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
-				driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
-				SessionContext.session().setWebDriver((RemoteWebDriver)driver);
-				selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium", driver,((InitializationEvent) event).getHostUrl());
-				SessionContext.session().setSelenium(selenium);
-				driver.get(((InitializationEvent) event).getHostUrl());
-			} else {
-				if(driver instanceof AndroidDriver) {
-					SessionContext.session().setWebDriver((AndroidDriver)driver);
-				} else if(driver instanceof IOSDriver){
-					SessionContext.session().setWebDriver((IOSDriver)driver);
-				}
-				SessionContext.session().setTouchAction(new TouchAction((AppiumDriver) driver));
-				mobileControl.installApp(appPath,appPackage);
-				if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(autoLaunch))){
-					mobileControl.launchApp();
-				}
-			}
-			SessionContext.setSessionProperties();
+            if(profileDriver.contains("Grid")) {
+                driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, gridHost+":"+gridPort+"/wd/hub",cap);
+            } else {
+                driver=(WebDriver) ApplicationContextProvider.getApplicationContext().getBean(profileDriver, cap);
+            }
 
-		}
-	}
+            if(driver instanceof RemoteWebDriver && !(driver instanceof AppiumDriver)) {
+                driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+                SessionContext.session().setWebDriver((RemoteWebDriver)driver);
+                selenium=(Selenium)ApplicationContextProvider.getApplicationContext().getBean("selenium", driver,((InitializationEvent) event).getHostUrl());
+                SessionContext.session().setSelenium(selenium);
+                driver.get(((InitializationEvent) event).getHostUrl());
+            } else {
+                if(driver instanceof AndroidDriver) {
+                    SessionContext.session().setWebDriver((AndroidDriver)driver);
+                } else if(driver instanceof IOSDriver){
+                    SessionContext.session().setWebDriver((IOSDriver)driver);
+                }
+                SessionContext.session().setTouchAction(new TouchAction((AppiumDriver) driver));
+                mobileControl.installApp(appPath,appPackage);
+                if(!Boolean.parseBoolean(textcontext.getCurrentXmlTest().getParameter(autoLaunch))){
+                    mobileControl.launchApp();
+                }
+            }
+            SessionContext.setSessionProperties();
+
+        }
+    }
 
 }

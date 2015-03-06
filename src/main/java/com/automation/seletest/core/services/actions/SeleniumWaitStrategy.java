@@ -26,27 +26,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
-import java.util.List;
-
-import com.automation.seletest.core.selenium.threads.ThreadUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.threads.ThreadUtils;
 import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings({"unchecked","deprecation"})
 @Component("seleniumWait")
-@SuppressWarnings("deprecation")
-public class SeleniumWaitStrategy implements  WaitFor{
+public class SeleniumWaitStrategy implements  WaitFor<Object>{
 
 
     @Autowired

@@ -33,15 +33,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.automation.seletest.core.services.utilities.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.actions.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
-import org.springframework.cache.annotation.CacheEvict;
+import com.automation.seletest.core.services.utilities.LogUtils;
 
 /**
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
@@ -78,7 +78,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      * WaitFor Controller
      * @return WaitFor
      */
-    public WaitFor waitController() {
+    public WaitFor<?> waitController() {
         return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
     }
 

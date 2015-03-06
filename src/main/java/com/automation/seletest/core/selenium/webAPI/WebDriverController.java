@@ -46,7 +46,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -57,7 +56,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.DriverBaseController;
 import com.automation.seletest.core.selenium.webAPI.elements.BySelector;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.services.annotations.JSHandle;
@@ -75,7 +73,7 @@ import com.automation.seletest.core.services.utilities.FilesUtils;
  *
  */
 @Component("webDriverControl")
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({"rawtypes","unchecked"})
 public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> {
 
     /**FileUtils*/
@@ -206,7 +204,7 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     public boolean isTextPresent(String text) {
-            return getPageSource().contains(text);
+        return getPageSource().contains(text);
     }
 
 

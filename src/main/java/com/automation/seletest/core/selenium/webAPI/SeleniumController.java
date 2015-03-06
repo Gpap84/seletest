@@ -63,7 +63,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
  */
 @Component("seleniumControl")
 @Slf4j
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "deprecation" })
 public class SeleniumController<T extends DefaultSelenium> extends DriverBaseController<T>{
 
     /**The FileUtils*/

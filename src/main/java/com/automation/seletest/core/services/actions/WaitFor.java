@@ -26,16 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.services.actions;
 
-import java.util.List;
-
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.WebElement;
 
 
 /**
  * Interface for waiting methods
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com) *
  */
+@SuppressWarnings("hiding")
 public interface WaitFor<T> {
 
 

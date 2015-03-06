@@ -29,7 +29,6 @@ package com.automation.seletest.core.selenium.threads;
 
 
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
 import io.appium.java_client.TouchAction;
 
 import java.util.ArrayList;
@@ -43,10 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
-import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.utilities.PerformanceUtils;
 import com.automation.seletest.core.testNG.assertions.Assert;
 import com.thoughtworks.selenium.Selenium;
