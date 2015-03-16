@@ -40,8 +40,11 @@ class WebDriverOptions {
      * @param file
      * @param path
      */
-    public static synchronized void downloadDriver(File file, String path) {
+    public static synchronized void downloadDriver(File file, String path, String proxyHost, String proxyPort) {
         if (!file.exists()) {
+            if(proxyHost != null && proxyPort != null) {
+                System.properties << [ 'http.proxyHost':proxyHost, 'http.proxyPort':proxyPort ]
+            }
             log.info('Download {} from Central Repo', file)
             def ant = new AntBuilder()
             ant.get(src: path, dest: 'driver.zip')
@@ -52,6 +55,5 @@ class WebDriverOptions {
         else {
             log.info('{} already exists', file)
         }
-
     }
 }

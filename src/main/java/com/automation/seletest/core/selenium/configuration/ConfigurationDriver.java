@@ -53,7 +53,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -92,9 +100,15 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chrome(DesiredCapabilities capabilities) {
-        File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
-        WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
-        System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
+        File chromeDriver;
+        if (System.getProperty("os.name").compareTo("Linux")==0) {
+            chromeDriver=new File(env.getProperty("browser.chromedriver.path"));
+            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_linux32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        } else {
+            chromeDriver=new File(env.getProperty("browser.chromedriver.path")+".exe");
+            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_win32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        }
+        System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
         return new ChromeDriver(capabilities);
     }
 
@@ -107,10 +121,16 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chromeOptions() throws Exception {
-        File chromeDriverExecutable=new File(env.getProperty("ChromeDriverPath"));
-        WebDriverOptions.downloadDriver(chromeDriverExecutable, env.getProperty("ChromeDriverURL"));
-        System.setProperty("webdriver.chrome.driver", new File(env.getProperty("ChromeDriverPath")).getAbsolutePath());
-        return new ChromeDriver(chromeOptions(new File(env.getProperty("ChromeProperties")).getAbsolutePath()));
+        File chromeDriver;
+        if (System.getProperty("os.name").compareTo("Linux")==0) {
+            chromeDriver=new File(env.getProperty("browser.chromedriver.path"));
+            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_linux32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        } else {
+            chromeDriver=new File(env.getProperty("browser.chromedriver.path")+".exe");
+            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_win32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        }
+        System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
+        return new ChromeDriver(chromeOptions(new File(env.getProperty("browser.chrome.properties")).getAbsolutePath()));
     }
 
     /**
@@ -147,10 +167,10 @@ public class ConfigurationDriver {
     public WebDriver firefox(DesiredCapabilities capabilities){
         return new FirefoxDriver(capabilities);
     }
-    
+
     /**
      * The defaultTaskExecutor for thread management
-     * @return ThreadPoolTaskExecutor the default thread pool task executor  
+     * @return ThreadPoolTaskExecutor the default thread pool task executor
      */
     @Bean(name="SeletestTaskExecutor")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -162,7 +182,7 @@ public class ConfigurationDriver {
         taskExecutor.setMaxPoolSize(20);
         return taskExecutor;
     }
-   
+
     /**
      * Internet Explorer bean
      * @param capabilities Desirercapabilities for WebDriver
@@ -172,9 +192,9 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver internetExplorer(DesiredCapabilities capabilities){
-        File ieDriverExecutable=new File(env.getProperty("IEDriverPath"));
-        WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("IEDriverURL"));
-        System.setProperty("webdriver.ie.driver", new File(env.getProperty("IEDriverPath")).getAbsolutePath());
+        File ieDriverExecutable=new File(env.getProperty("browser.iedriver.path"));
+        WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("browser.iedriver"),env.getProperty("net.host"),env.getProperty("net.port"));
+        System.setProperty("webdriver.ie.driver", ieDriverExecutable.getAbsolutePath());
         DesiredCapabilities ieCap = DesiredCapabilities.internetExplorer();
         capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
         return new InternetExplorerDriver(capabilities.merge(ieCap));
@@ -201,10 +221,16 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver phantomJS(DesiredCapabilities capabilities){
-        File phantomJSDriverExecutable=new File(env.getProperty("PhantomJSDriverPath"));
-        WebDriverOptions.downloadDriver(phantomJSDriverExecutable, env.getProperty("PhantomJSDriverPathURL"));
+        File phantomJSDriver;
+        if (System.getProperty("os.name").compareTo("Linux")==0) {
+            phantomJSDriver=new File(env.getProperty("browser.phantomJs.path"));
+            WebDriverOptions.downloadDriver(phantomJSDriver, env.getProperty("browser.phantomJs")+"-1.9.8-linux-x86_64.tar.bz2",env.getProperty("net.host"),env.getProperty("net.port"));
+        } else {
+            phantomJSDriver=new File(env.getProperty("browser.phantomJs.path")+".exe");
+            WebDriverOptions.downloadDriver(phantomJSDriver, env.getProperty("browser.phantomJs")+"-1.9.8-windows.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        }
         DesiredCapabilities phantomJSCap = new DesiredCapabilities();
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,new File(env.getProperty("PhantomJSDriverPath")).getAbsolutePath());
+        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,phantomJSDriver.getAbsolutePath());
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--ignore-ssl-errors=yes","--web-security=false","--ssl-protocol=any"});
         return new PhantomJSDriver(capabilities.merge(phantomJSCap));
     }
