@@ -1,4 +1,4 @@
-Seletest 
+seletest 
 ========
 ![seletest](https://cloud.githubusercontent.com/assets/3785668/4871463/ff777690-61b7-11e4-9cb7-916e8d43f616.png)
 
@@ -12,7 +12,7 @@ Web and Mobile Automation testing framework based on Spring - Webdriver - Appium
 
 This is a Java Framework based on WebDriver API to interact with web or mobile applications for performing automated functional tests.
 
-******<b>Javadoc: http://giannispapadakis.github.io/Seletest/</b> ******
+******<b>Javadoc: http://giannispapadakis.github.io/seletest/</b> ******
 
 
 <html>
@@ -104,6 +104,6 @@ See wiki for setting up Spring Maven Project and running first tests<br>
 <b>Upcoming:</b>
 * Set up Appium Server on Windows 7 and run test against android emulator
 * Set up Selenium Grid server and register a node
-* Use SeletestUtils project to automate remote appium-selenium node configuration
+* Use seletestUtils project to automate remote appium-selenium node configuration
 
 
