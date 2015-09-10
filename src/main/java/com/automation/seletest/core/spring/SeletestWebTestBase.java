@@ -30,6 +30,8 @@ package com.automation.seletest.core.spring;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,7 +60,7 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
 @Listeners(InitListener.class)
 @ContextConfiguration(classes=ConfigurationDriver.class)
 public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
-	
+
 	@Autowired
 	Environment env;
 
@@ -80,7 +82,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     protected void suiteSettings(ITestContext ctx) throws Exception {
         log.debug("Suite : "+ctx.getCurrentXmlTest().getSuite().getName()+" started at: {}",ctx.getStartDate());
         applicationContext.getBean(ThreadPoolTaskExecutor.class).getThreadPoolExecutor().allowCoreThreadTimeOut(true);
- 
+
     }
 
     @BeforeTest(alwaysRun = true)
@@ -107,6 +109,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value="webCache", allEntries=true, beforeInvocation = true)})
     @AfterClass(alwaysRun = true)
     protected void cleanSessionOnClass(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("classes")==0){
@@ -115,6 +118,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value="webCache", allEntries=true, beforeInvocation = true)})
     @AfterTest(alwaysRun = true)
     public void cleanSessionOnTest(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("false")==0||
@@ -124,6 +128,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value="webCache", allEntries=true, beforeInvocation = true)})
     @AfterMethod(alwaysRun = true)
     public void cleanSessionOnMethod(ITestContext ctx) throws Exception {
         if(ctx.getCurrentXmlTest().getParallel().compareTo("methods")==0){
@@ -132,6 +137,7 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value="webCache", allEntries=true, beforeInvocation = true)})
     @AfterSuite(alwaysRun = true)
     protected void cleanSuite() throws Exception {
           SessionContext.cleanSessionsFromStack();

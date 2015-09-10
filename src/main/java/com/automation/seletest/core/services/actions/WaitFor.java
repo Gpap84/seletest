@@ -139,4 +139,9 @@ public interface WaitFor<T> {
      */
     boolean waitForElementNotClickable(Object locator);
 
+    /**
+     * Wait for Javascript finish loading in UI
+     */
+    void waitForJSToLoad();
+
 }

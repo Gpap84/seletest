@@ -20,7 +20,7 @@
             <bean id="rmiRegistry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
                 <property name="port" value="${seletest.jmx.rmi.port}" />
             </bean>
-<!--
+
             <bean id="clientConnector"
                   class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
                   depends-on="seletestJmxServer">
@@ -36,7 +36,7 @@
                     </map>
                 </property>
             </bean>
--->
+
     <!--ManagementFactory handles managed beans in java platform-->
     <bean id="memoryMxBean" class="java.lang.management.ManagementFactory" factory-method="getMemoryMXBean" />
 

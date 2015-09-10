@@ -26,10 +26,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.services.actions;
 
-
-
-import java.util.List;
-
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.threads.ThreadUtils;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -41,10 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.threads.ThreadUtils;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
+import java.util.List;
 
 /**
  * ExpectedWaitStrategy class.
@@ -71,19 +68,16 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
     }
 
 
-
-
-    @Cacheable("wait")
     @Override
     public WebElement waitForElementPresence(final String locator) {
         return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
-    @Cacheable("wait")
     @Override
     public WebElement waitForElementVisibility(final Object locator){
         if (locator instanceof String) {
-            return wfExpected().until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String) locator).setLocator((String) locator)));
+            return wfExpected().until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String) locator).setLocator((String)
+                    locator)));
         } else if (locator instanceof WebElement) {
             return wfExpected().until(ExpectedConditions.visibilityOf((WebElement) locator));
         } else {
@@ -91,7 +85,6 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         }
     }
 
-    @Cacheable("wait")
     @Override
     public WebElement waitForElementToBeClickable(final Object locator) {
         if(locator instanceof String){
@@ -110,28 +103,24 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         return wfExpected().until(ExpectedConditions.alertIsPresent());
     }
 
-    @Cacheable("wait")
     @Override
     public boolean waitForElementInvisibility(final String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
-    @Cacheable("wait")
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
         if(locator instanceof String){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+            return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String) locator).setLocator((String) locator), text));
         }
         else if(locator instanceof WebElement){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElement((WebElement)locator,text));
+            return wfExpected().until(ExpectedConditions.textToBePresentInElement((WebElement) locator, text));
         }
         else{
             throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
         }
     }
 
-
-    @Cacheable("wait")
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
         if(locator instanceof String){
@@ -145,14 +134,12 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         }
     }
 
-    @Cacheable("wait")
     @Override
     public List<WebElement> waitForPresenceofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
 
     }
 
-    @Cacheable("wait")
     @Override
     public List<WebElement> waitForVisibilityofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
@@ -196,10 +183,12 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         wfExpected().until(ajaxCallExpectation);
     }
 
+
+
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
      */
-    @Cacheable("wait")
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webElementsCache",key="#locator")
     @Override
     public boolean waitForElementNotPresent(final String locator) {
         return wfExpected().until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator))));
@@ -208,7 +197,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
      */
-    @Cacheable("wait")
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webElementsCache",key="#locator")
     @Override
     public boolean waitForElementInvisible(final String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
@@ -217,7 +206,6 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForPageTitle(final String title) {
         return wfExpected().until(ExpectedConditions.titleContains(title));
@@ -226,7 +214,6 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotClickable(java.lang.Object)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForElementNotClickable(final Object locator) {
         if(locator instanceof String){
@@ -238,6 +225,31 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         return false;
     }
 
+    @Override
+    public void waitForJSToLoad() {
+        ExpectedCondition<Boolean> javascriptDone = new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver d) {
+                try{
+                    return  ((Boolean) ((JavascriptExecutor) d).executeAsyncScript(
 
+                            " var callback =arguments[arguments.length - 1]; " +
+                                    " var count=42; " +
+                                    " setTimeout( collect, 0);" +
+                                    " function collect() { " +
+                                    " if(count-->0) { "+
+                                    " setTimeout( collect, 0); " +
+                                    " } "+
+                                    " else {callback(" +
+                                    "    true" +
+                                    " );}"+
+                                    " } "
+                    ));
+                } catch (Exception e) {
+                    return Boolean.FALSE;
+                }
+            }
+        };
+        wfExpected().until(javascriptDone);
+    }
 
 }

@@ -45,7 +45,6 @@ import com.thoughtworks.selenium.SeleniumException;
 @Component("seleniumWait")
 public class SeleniumWaitStrategy implements  WaitFor<Object>{
 
-
     @Autowired
     ThreadUtils thread;
 
@@ -304,6 +303,11 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
     @Override
     public boolean waitForElementNotClickable(final Object locator) {
       throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium RC");
+    }
+
+    @Override
+    public void waitForJSToLoad() {
+         //TODO
     }
 
 }

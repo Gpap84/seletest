@@ -27,10 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.aspectJ;
 
 
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.List;
-
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.annotations.WaitCondition;
+import com.automation.seletest.core.services.utilities.LogUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -45,17 +45,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.Reporter;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.utilities.LogUtils;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.List;
 
 /**
  * Aspect that handles logging,screenshots etc.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("unchecked")
+
 @Aspect
 @Component
 public class ActionsHandler extends SeletestPointCuts {

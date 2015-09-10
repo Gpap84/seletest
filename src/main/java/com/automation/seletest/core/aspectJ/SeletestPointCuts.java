@@ -26,18 +26,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.aspectJ;
 
-import java.lang.reflect.Method;
-
+import com.automation.seletest.core.services.annotations.JSHandle;
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.automation.seletest.core.services.annotations.JSHandle;
-import com.automation.seletest.core.services.annotations.RetryFailure;
-import com.automation.seletest.core.services.annotations.VerifyLog;
-import com.automation.seletest.core.services.factories.StrategyFactory;
+import java.lang.reflect.Method;
 
 /**
  * Super class with common functions
@@ -104,7 +103,7 @@ public abstract class SeletestPointCuts {
 
     /**
      * Type of arguments of an executed method
-     * @param proceedPoint
+     * @param proceedPoint The method to be invoked from aspect advice
      * @return String arguments
      */
     public String arguments(ProceedingJoinPoint proceedPoint){
@@ -127,7 +126,7 @@ public abstract class SeletestPointCuts {
 
     /**
      * Get method arguments
-     * @param proceedPoint
+     * @param proceedPoint The method to be invoked from aspect advice
      * @return arguments of proxied methods
      */
     public Object[] methodArguments(ProceedingJoinPoint proceedPoint){
@@ -136,7 +135,7 @@ public abstract class SeletestPointCuts {
 
     /**
      * Return invoked method
-     * @param pjp
+     * @param pjp The method to be invoked from aspect advice
      * @return invoked Method
      */
     public Method invokedMethod(JoinPoint pjp) {
