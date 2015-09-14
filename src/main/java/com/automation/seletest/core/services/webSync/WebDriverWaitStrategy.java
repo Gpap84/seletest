@@ -73,13 +73,13 @@ public class WebDriverWaitStrategy implements WaitFor{
     }
 
 
-    @Cacheable(cacheManager = "seleniumCacheManager", value="webCache", keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementPresence(final Object locator) {
         return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator((String)locator).setLocator((String) locator)));
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementVisibility(final Object locator){
         if (locator instanceof String) {
@@ -92,7 +92,7 @@ public class WebDriverWaitStrategy implements WaitFor{
         }
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementToBeClickable(final Object locator) {
         if(locator instanceof String){
@@ -116,7 +116,7 @@ public class WebDriverWaitStrategy implements WaitFor{
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
         if(locator instanceof String){
@@ -130,7 +130,7 @@ public class WebDriverWaitStrategy implements WaitFor{
         }
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
         if(locator instanceof String){
@@ -144,14 +144,14 @@ public class WebDriverWaitStrategy implements WaitFor{
         }
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public List<WebElement> waitForPresenceofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
 
     }
 
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
+    @Cacheable(value="webCache")
     @Override
     public List<WebElement> waitForVisibilityofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));

@@ -49,6 +49,7 @@ import java.util.concurrent.Future;
  * @author Giannis Papadakis
  *
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Assert<T extends Assertion> {
@@ -160,7 +161,7 @@ public class Assert<T extends Assertion> {
      */
     @Async
     @VerifyLog(messageFail = "notfoundwithText" , messagePass = "foundwithText", message = "elementLocator", screenShot = true, highlight=true)
-    public <T> Future<Boolean> textOfSelectedOption(Object locator, String text) {
+    public Future<Boolean> textOfSelectedOption(Object locator, String text) {
         assertion.assertEquals(strategy.getControllerStrategy(SessionContext.session().getControllerStrategy()).getFirstSelectedOptionText(locator),text,env.getProperty("elementLocator")+" "+locator+" "+env.getProperty("foundwithText") + " "+text);
         return new AsyncResult<>(true);
     }

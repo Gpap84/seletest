@@ -67,6 +67,7 @@ import java.util.concurrent.TimeUnit;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings({"rawtypes","unchecked"})
 @Component("webDriverControl")
 public class WebDriverController extends DriverBaseController {
 

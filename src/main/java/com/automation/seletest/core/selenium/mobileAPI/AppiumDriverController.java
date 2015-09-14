@@ -53,6 +53,7 @@ import java.util.Map;
  *
  */
 @Component
+@SuppressWarnings("unchecked")
 public class AppiumDriverController implements AppiumController{
 
     @Autowired

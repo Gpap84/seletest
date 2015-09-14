@@ -10,7 +10,10 @@
        http://www.springframework.org/schema/cache/spring-cache.xsd">
 
 
-    <cache:annotation-driven cache-manager="seleniumCacheManager"/>
+    <cache:annotation-driven cache-manager="seleniumCacheManager" key-generator="cacheKeyGenerator"/>
+
+    <!--CacheKeyGenerator for seletest-->
+    <bean id="cacheKeyGenerator" class="com.automation.seletest.core.ehcache.EhCacheGenerator" />
 
     <!--Cache manager for seletest-->
     <bean id="seleniumCacheManager"

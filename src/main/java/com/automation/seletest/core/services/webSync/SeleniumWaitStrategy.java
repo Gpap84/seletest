@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings("deprecation")
 @Component("seleniumWait")
 @Slf4j
 public class SeleniumWaitStrategy implements WaitFor{

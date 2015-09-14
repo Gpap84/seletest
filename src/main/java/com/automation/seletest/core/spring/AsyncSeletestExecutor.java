@@ -92,8 +92,9 @@ public class AsyncSeletestExecutor<T> implements AsyncTaskExecutor {
             }
             log.debug("Future task submitted {}", task.toString());
         } catch (InterruptedException | ExecutionException e) {
-            log.error("Exception during executing future task {}, stop submitting any further tasks: ",e.getMessage());
-            throw new RejectedExecutionException("Reject any other verification task due to hard assertion error ----> "+e.getMessage());
+            log.error(String.format("Exception during executing future task: %s, stop submitting any further tasks!",e.getMessage()));
+            throw new RejectedExecutionException(String.format("Reject any other verification task due to hard assertion error ----> %s ",e
+                    .getMessage()));
 
         }
         return futureTask;

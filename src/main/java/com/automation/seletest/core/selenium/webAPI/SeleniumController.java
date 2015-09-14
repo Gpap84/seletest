@@ -58,6 +58,7 @@ import java.util.concurrent.TimeUnit;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
+@SuppressWarnings({ "rawtypes", "deprecation","unchecked" })
 @Component("seleniumControl")
 @Slf4j
 public class SeleniumController extends DriverBaseController{
