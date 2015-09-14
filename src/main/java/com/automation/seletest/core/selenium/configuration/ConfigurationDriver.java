@@ -165,7 +165,6 @@ public class ConfigurationDriver {
      * @return ThreadPoolTaskExecutor the default thread pool task executor
      */
     @Bean(name="SeletestTaskExecutor")
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ThreadPoolTaskExecutor defaultTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setThreadNamePrefix("Seletest Thread Pool - ");

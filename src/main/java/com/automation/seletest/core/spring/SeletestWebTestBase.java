@@ -27,15 +27,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.spring;
 
+import com.automation.seletest.core.listeners.InitListener;
+import com.automation.seletest.core.selenium.threads.SessionContext;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -47,10 +46,6 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
-import com.automation.seletest.core.listeners.InitListener;
-import com.automation.seletest.core.selenium.configuration.ConfigurationDriver;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-
 /**
  * This class serves as the Base Class for Web Test Preparation
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -58,8 +53,7 @@ import com.automation.seletest.core.selenium.threads.SessionContext;
  */
 @Slf4j
 @Listeners(InitListener.class)
-@ContextConfiguration(classes=ConfigurationDriver.class)
-public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
+public class SeletestWebTestBase extends SpringTestBase {
 
 	@Autowired
 	Environment env;
@@ -70,13 +64,6 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
     /**Message for exception during application context load*/
     private static final String ERROR_IOC="Error during initializing spring container ";
 
-    @BeforeSuite(alwaysRun = true)
-    @BeforeClass(alwaysRun = true)
-    @BeforeTest(alwaysRun = true)
-    @Override
-    protected void springTestContextPrepareTestInstance() throws Exception {
-        prepareTest();
-    }
 
     @BeforeSuite(alwaysRun = true)
     protected void suiteSettings(ITestContext ctx) throws Exception {
@@ -149,16 +136,6 @@ public class SeletestWebTestBase extends AbstractTestNGSpringContextTests {
         publisher.publishInitializationEvent(INITIALIZE_SESSION, ctx.getCurrentXmlTest().getParameter(env.getProperty("host")),ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))!=null && Boolean.parseBoolean(ctx.getCurrentXmlTest().getParameter(env.getProperty("performance"))) ? true : false,ctx);
     }
 
-    private void prepareTest() throws Exception{
-        try {
-            if (applicationContext == null) {
-                super.springTestContextPrepareTestInstance();
-            }
-        } catch (Exception e1) {
-            log.error(ERROR_IOC+e1.getMessage());
-            throw e1;
-        }
-    }
 
 
 }

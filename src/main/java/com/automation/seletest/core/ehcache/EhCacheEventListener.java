@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * EhCacheEventListener class.
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  */
 public class EhCacheEventListener implements CacheEventListener {
 

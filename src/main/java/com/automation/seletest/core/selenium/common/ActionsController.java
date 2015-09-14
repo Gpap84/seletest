@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.common;
 
 
-public interface ActionsController<T extends ActionsController<T>> {
+public interface ActionsController<T extends ActionsController> {
 
     /**
      * Clicks in the middle of the given element. Equivalent to: Actions.moveToElement(onElement).click()
@@ -75,33 +75,33 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param key KeyInfo event
      * @return instance of ActionBuilder
      */
-    T mouseUp(Object locator, KeyInfo key);
+     T mouseUp(Object locator, KeyInfo key);
 
     /**
      * Clicks (without releasing) in the middle of the given element. This is equivalent to: Actions.moveToElement(onElement).clickAndHold()
      * @param locator of WebElement to click and hold
      * @return instance of ActionBuilder
      */
-    T clickAndHold(Object locator);
+     T clickAndHold(Object locator);
 
     /**
-     * Performs the sequence of actions represented by this instance
+     * Performs the sequence of webSync represented by this instance
      * @return instance of ActionBuilder
      */
-    T performActions();
+     T performActions();
 
     /**
      * Performs the sequence of TouchAction represented by this instance
      * @return instance of ActionBuilder
      */
-    T performTouchActions();
+     T performTouchActions();
 
     /**
      * Tap on WebElement in native apps
      * @param locator element to tap
      * @return instance of ActionBuilder
      */
-    T tap(Object locator);
+     T tap(Object locator);
 
     /**
      * Tap an element, offset from upper left corner
@@ -110,7 +110,7 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param y y offset
      * @return instance of ActionBuilder
      */
-    T tap(Object locator,int x, int y);
+     T tap(Object locator,int x, int y);
 
     /**
      * Tap on specific location in screen
@@ -118,7 +118,7 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param y y coordinate
      * @return instance of ActionBuilder
      */
-    T tap(int x, int y);
+     T tap(int x, int y);
 
     /**
      * Press on an absolute position on the screen
@@ -126,14 +126,14 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param y y coordinate
      * @return ActionsBuilder
      */
-    T press(int x, int y);
+     T press(int x, int y);
 
     /**
      * Press on WebElement in native apps
      * @param locator element to press
      * @return instance of ActionBuilder
      */
-    T press(Object locator);
+     T press(Object locator);
 
     /**
      * Press an element, offset from upper left corner
@@ -142,7 +142,7 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param y y offset
      * @return instance of ActionBuilder
      */
-    T press(Object locator, int x, int y);
+     T press(Object locator, int x, int y);
 
     /**
      * Drags elements from one location to another
@@ -150,14 +150,14 @@ public interface ActionsController<T extends ActionsController<T>> {
      * @param droplocator Object to drop
      * @return instance of ActionBuilder
      */
-    T dragndrop(Object draglocator, Object droplocator);
+     T dragndrop(Object draglocator, Object droplocator);
 
     /**
      * Press a keyboard key
      * @param key KeyInfo event
      * @return instance of ActionBuilder
      */
-    T press(KeyInfo key);
+     T press(KeyInfo key);
 
 
 }

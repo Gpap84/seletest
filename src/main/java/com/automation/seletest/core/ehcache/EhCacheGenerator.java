@@ -26,19 +26,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.ehcache;
 
-import net.sf.ehcache.event.CacheEventListener;
-import net.sf.ehcache.event.CacheEventListenerFactory;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.stereotype.Component;
 
-import java.util.Properties;
+import java.lang.reflect.Method;
 
 /**
- * EhCacheEventListenerFactory class.
+ * EhCacheGenerator class for adding keys to objects cached in Cache
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  */
-public class EhCacheEventListenerFactory extends CacheEventListenerFactory {
+@Component
+public class EhCacheGenerator implements KeyGenerator {
 
-	@Override
-	public CacheEventListener createCacheEventListener(Properties properties) {
-		return new EhCacheEventListener();
-	}
+	    @Override
+		public Object generate(Object target, Method method, Object... params) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(SessionContext.getSession().getWebDriver().toString());
+                sb.append(" ").append(method.getName());
+				for (Object param : params)
+					if (param instanceof WebElement && !(SessionContext.getSession().getWebDriver() instanceof EventFiringWebDriver))
+						sb.append(" ").append(((RemoteWebElement) param).getId());
+					else if (param instanceof WebElement && SessionContext.getSession().getWebDriver() instanceof EventFiringWebDriver) {
+						sb.append(" ").append(((WebElement) param).getLocation());
+					} else {
+						sb.append(" ").append(param.toString());
+					}
+				return sb.toString();
+			}
 }

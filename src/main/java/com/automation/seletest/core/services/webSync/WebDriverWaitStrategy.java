@@ -24,12 +24,12 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.services.actions;
+package com.automation.seletest.core.services.webSync;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.threads.ThreadUtils;
 import com.automation.seletest.core.selenium.webAPI.elements.Locators;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -37,42 +37,49 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * ExpectedWaitStrategy class.
+ * WebDriverWaitStrategy class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("unchecked")
 @Component("webDriverWait")
-public class ExpectedWaitStrategy implements WaitFor<Object>{
+@Slf4j
+public class WebDriverWaitStrategy implements WaitFor{
 
-    @Autowired
-    ThreadUtils thread;
-
-    /**Component name for WebDriverWait*/
-    private final String webDriverWait="webdriverwait";
-
+    /**
+     * Sleeps a thread
+     * @param timeout long timeout for thread sleep
+     */
+    private void sleep(final long timeout){
+        try {
+            log.info("About to sleep: ",timeout);
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            log.error(String.format("Interrupted exception occured trying to sleep thread for %a with message %b" , timeout, e.getMessage()));
+        }
+    }
 
     /**
      * Returns a new WebDriverWait instance
      * @return WebDriverWait object
      */
     private WebDriverWait wfExpected(){
-        return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean(webDriverWait, SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil());
+        return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean("webdriverwait", SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil());
     }
 
 
+    @Cacheable(cacheManager = "seleniumCacheManager", value="webCache", keyGenerator="ehCacheGenerator")
     @Override
-    public WebElement waitForElementPresence(final String locator) {
-        return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+    public WebElement waitForElementPresence(final Object locator) {
+        return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator((String)locator).setLocator((String) locator)));
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public WebElement waitForElementVisibility(final Object locator){
         if (locator instanceof String) {
@@ -85,6 +92,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         }
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public WebElement waitForElementToBeClickable(final Object locator) {
         if(locator instanceof String){
@@ -108,6 +116,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
         if(locator instanceof String){
@@ -121,6 +130,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         }
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
         if(locator instanceof String){
@@ -134,12 +144,14 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         }
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public List<WebElement> waitForPresenceofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
 
     }
 
+    @Cacheable(cacheManager = "seleniumCacheManager",value="webCache",keyGenerator="ehCacheGenerator")
     @Override
     public List<WebElement> waitForVisibilityofAllElements(final String locator) {
         return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
@@ -157,7 +169,6 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
         wfExpected().until(pageLoadedExpectation);
     }
 
-    @Cacheable("wait")
     @Override
     public void waitForAjaxCallCompleted(final long timeout) {
         ExpectedCondition<Boolean> ajaxCallExpectation = new ExpectedCondition<Boolean>() {
@@ -173,8 +184,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
                     if (scriptResult) {
                         return true;
                     }
-
-                    thread.sleep(timeout);
+                    sleep(timeout);
                 }
                 return false;
             }
@@ -186,25 +196,23 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
 
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementNotPresent(java.lang.String)
      */
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webElementsCache",key="#locator")
     @Override
     public boolean waitForElementNotPresent(final String locator) {
         return wfExpected().until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator))));
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementInvisble(java.lang.String)
      */
-    @Cacheable(cacheManager = "seleniumCacheManager",value="webElementsCache",key="#locator")
     @Override
     public boolean waitForElementInvisible(final String locator) {
         return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForPageTitle(java.lang.String)
      */
     @Override
     public boolean waitForPageTitle(final String title) {
@@ -212,7 +220,7 @@ public class ExpectedWaitStrategy implements WaitFor<Object>{
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotClickable(java.lang.Object)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementNotClickable(java.lang.Object)
      */
     @Override
     public boolean waitForElementNotClickable(final Object locator) {

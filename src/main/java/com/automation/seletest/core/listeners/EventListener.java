@@ -27,19 +27,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.listeners;
 
 
+import com.automation.seletest.core.listeners.beanUtils.Events.InitializationEvent;
+import com.automation.seletest.core.listeners.beanUtils.Events.TestNGEvent;
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
+import com.automation.seletest.core.services.utilities.PerformanceUtils;
+import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.testNG.assertions.Assert;
+import com.thoughtworks.selenium.Selenium;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -53,16 +55,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.testng.ITestContext;
 
-import com.automation.seletest.core.listeners.beanUtils.Events.InitializationEvent;
-import com.automation.seletest.core.listeners.beanUtils.Events.TestNGEvent;
-import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.SeleniumTest.DriverType;
-import com.automation.seletest.core.services.utilities.PerformanceUtils;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
-import com.automation.seletest.core.testNG.assertions.Assert;
-import com.thoughtworks.selenium.Selenium;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /*
  * ApplicationListener for event handling
@@ -115,7 +112,7 @@ public class EventListener implements ApplicationListener<ApplicationEvent> {
     static class Initialize {
 
         @Autowired
-        AppiumController<?> mobileControl;
+        AppiumController mobileControl;
 
         @Autowired
         Environment env;

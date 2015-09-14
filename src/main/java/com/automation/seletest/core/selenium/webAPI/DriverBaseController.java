@@ -26,6 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.webAPI;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.services.utilities.LogUtils;
+import com.thoughtworks.selenium.DefaultSelenium;
+import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,27 +41,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.actions.WaitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.automation.seletest.core.services.utilities.LogUtils;
-
 /**
- * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- * @param <T>
- *
+ * DriverBaseController class.
+ * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)*
  */
 @SuppressWarnings("unchecked")
 @Slf4j
-public abstract class DriverBaseController<T> implements WebController<DriverBaseController<T>>{
+public abstract class DriverBaseController implements WebController{
 
     @Autowired
-    StrategyFactory<?> factoryStrategy;
+    StrategyFactory factoryStrategy;
 
     @Autowired
     LogUtils logUtils;
@@ -62,7 +59,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      * Gets the WebDriver instance
      * @return WebDriver instance
      */
-    public T webDriver(){
+    public <T extends RemoteWebDriver> T webDriver(){
         return (T) SessionContext.getSession().getWebDriver();
     }
 
@@ -70,16 +67,8 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      * Gets the selenium instance
      * @return selenium instance
      */
-    public T selenium(){
+    public <T extends DefaultSelenium> T selenium(){
         return (T) SessionContext.getSession().getSelenium();
-    }
-
-    /**
-     * WaitFor Controller
-     * @return WaitFor
-     */
-    public WaitFor<?> waitController() {
-        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
     }
 
     /* (non-Javadoc)
@@ -123,7 +112,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isElementClickable(Object locator) {
-        waitController().waitForElementToBeClickable(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementToBeClickable(locator);
         return true;
     }
 
@@ -132,7 +121,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isElementNotClickable(Object locator) {
-        waitController().waitForElementNotClickable(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementNotClickable(locator);
         return true;
     }
 
@@ -142,7 +131,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isElementNotPresent(String locator) {
-        waitController().waitForElementNotPresent(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementNotPresent(locator);
         return true;
     }
 
@@ -151,7 +140,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isWebElementVisible(Object locator) {
-        waitController().waitForElementVisibility(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementVisibility(locator);
         return true;
     }
 
@@ -160,7 +149,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isElementPresent(String locator) {
-        waitController().waitForElementPresence(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementPresence(locator);
         return true;
     }
 
@@ -169,7 +158,7 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isElementNotVisible(String locator) {
-        waitController().waitForElementInvisible(locator);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForElementInvisible(locator);
         return true;
     }
 
@@ -178,14 +167,8 @@ public abstract class DriverBaseController<T> implements WebController<DriverBas
      */
     @Override
     public boolean isTextPresentinElement(Object locator, String text) {
-        waitController().waitForTextPresentinElement(locator, text);
+        factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy()).waitForTextPresentinElement(locator, text);
         return true;
-    }
-
-    @Override
-    @CacheEvict(value="wait", allEntries = true)
-    public void clearCache(){
-        logUtils.warn("Clear cached web elements!!!");
     }
 
 }

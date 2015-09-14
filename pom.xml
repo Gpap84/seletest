@@ -467,6 +467,12 @@
    <version>1.5</version>
   </dependency>
 
+  <dependency>
+   <groupId>com.google.inject</groupId>
+   <artifactId>guice</artifactId>
+   <version>3.0</version>
+  </dependency>
+
   <!-- Selenium Java API -->
   <dependency>
    <groupId>org.seleniumhq.selenium</groupId>
@@ -505,7 +511,7 @@
   <dependency>
    <groupId>org.springframework.integration</groupId>
    <artifactId>spring-integration-jmx</artifactId>
-   <version>${org.springframework.version}</version>
+   <version>4.2.0.RELEASE</version>
   </dependency>
 
 
@@ -727,7 +733,7 @@
 
  <!-- Shared version number properties -->
  <properties>
-  <org.springframework.version>4.1.4.RELEASE</org.springframework.version>
+  <org.springframework.version>4.2.1.RELEASE</org.springframework.version>
   <selenium.version>2.47.0</selenium.version>
   <aspectj.version>1.8.5</aspectj.version>
   <testng.version>6.8.8</testng.version>

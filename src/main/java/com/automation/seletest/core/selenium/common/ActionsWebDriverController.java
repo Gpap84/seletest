@@ -26,17 +26,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.common;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.TouchAction;
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
-import org.springframework.stereotype.Component;
-
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.services.webSync.WaitFor;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * ActionsWebDriverController class.
@@ -44,12 +43,22 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  *
  */
 @Component("webDriverActions")
-public class ActionsWebDriverController implements ActionsController<ActionsWebDriverController> {
+public class ActionsWebDriverController implements ActionsController {
 
-    @WaitCondition(waitFor.VISIBILITY)
+    @Autowired
+    StrategyFactory factoryStrategy;
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    private WaitFor<WebElement> waitController() {
+        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
+    }
+
     @Override
     public ActionsWebDriverController mouseOver(Object locator) {
-        SessionControl.actionsBuilder().moveToElement(SessionContext.getSession().getWebElement());
+        SessionControl.actionsBuilder().moveToElement(waitController().waitForElementVisibility(locator));
         return this;
     }
 
@@ -66,32 +75,28 @@ public class ActionsWebDriverController implements ActionsController<ActionsWebD
         return this;
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsWebDriverController mouseDown(Object locator, KeyInfo key) {
-        SessionControl.actionsBuilder().keyDown(SessionContext.getSession().getWebElement(),key.getKey());
+        SessionControl.actionsBuilder().keyDown(waitController().waitForElementVisibility(locator),key.getKey());
         return this;
 
     }
 
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsWebDriverController mouseUp(Object locator, KeyInfo key) {
-        SessionControl.actionsBuilder().keyUp(SessionContext.getSession().getWebElement(),key.getKey());
+        SessionControl.actionsBuilder().keyUp(waitController().waitForElementVisibility(locator),key.getKey());
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController clickAndHold(Object locator) {
-        SessionControl.actionsBuilder().clickAndHold(SessionContext.getSession().getWebElement());
+        SessionControl.actionsBuilder().clickAndHold(waitController().waitForElementVisibility(locator));
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController click(Object locator) {
-        SessionControl.actionsBuilder().click(SessionContext.getSession().getWebElement());
+        SessionControl.actionsBuilder().click(waitController().waitForElementVisibility(locator));
         return this;
     }
 
@@ -102,17 +107,15 @@ public class ActionsWebDriverController implements ActionsController<ActionsWebD
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController tap(Object locator) {
-        SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement());
+        SessionControl.touchactionsBuilder().tap(waitController().waitForElementVisibility(locator));
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController tap(Object locator, int x, int y) {
-        SessionControl.touchactionsBuilder().tap(SessionContext.getSession().getWebElement(),x,y);
+        SessionControl.touchactionsBuilder().tap(waitController().waitForElementVisibility(locator),x,y);
         return null;
     }
 
@@ -128,17 +131,15 @@ public class ActionsWebDriverController implements ActionsController<ActionsWebD
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController press(Object locator) {
-        SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement());
+        SessionControl.touchactionsBuilder().press(waitController().waitForElementVisibility(locator));
         return this;
     }
 
-    @WaitCondition(waitFor.CLICKABLE)
     @Override
     public ActionsWebDriverController press(Object locator, int x, int y) {
-        SessionControl.touchactionsBuilder().press(SessionContext.getSession().getWebElement(),x,y);
+        SessionControl.touchactionsBuilder().press(waitController().waitForElementVisibility(locator),x,y);
         return this;
     }
 
@@ -152,10 +153,9 @@ public class ActionsWebDriverController implements ActionsController<ActionsWebD
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#dragndrop(java.lang.String, java.lang.String)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsWebDriverController dragndrop(Object draglocator, Object droplocator) {
-        SessionControl.actionsBuilder().dragAndDrop(SessionContext.getSession().getWebElement(), (WebElement) droplocator);
+        SessionControl.actionsBuilder().dragAndDrop(waitController().waitForElementVisibility(draglocator), waitController().waitForElementVisibility(droplocator));
         return this;
     }
 

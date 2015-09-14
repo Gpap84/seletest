@@ -26,14 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.services.annotations;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 /**
  * This annotation defines Web Test
@@ -47,20 +47,16 @@ public @interface  SeleniumTest {
 
     /**
      * AssertionType enum to specify type of assertion level (SOFT - HARD)
-     * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
-     *
      */
     public enum AssertionType{SOFT,HARD}
 
     /**
      * DriverType to specify if selenium 1 or webdriver api are used for @Test
-     * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
-     *
      */
     public enum DriverType{SELENIUM,WEBDRIVER,APPIUMDRIVER}
 
     /**
-     * driver
+     * driver The driver type for the @Test
      * @return the type of driver
      */
     DriverType driver() default DriverType.WEBDRIVER;

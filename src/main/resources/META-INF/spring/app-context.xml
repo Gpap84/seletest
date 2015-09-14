@@ -4,7 +4,6 @@
 		xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
@@ -12,16 +11,16 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
 	<context:spring-configured />
-	
+
 	<!-- Enable load time weaving support  -->
 	<context:load-time-weaver />
-	
+
 	<!-- activate annotations in beans already registered in the application context -->
 	<context:annotation-config />
 
 	<!-- To enable both @Scheduled and @Async annotations. -->
-	<task:annotation-driven executor="exceptionHandlingTaskExecutor"/>
-	
+	<task:annotation-driven executor="exceptionHandlingTaskExecutor" proxy-target-class="true"/>
+
 	<!-- Asynchronous Task Executor -->
 	<bean id="exceptionHandlingTaskExecutor" class="com.automation.seletest.core.spring.AsyncSeletestExecutor">
 		<constructor-arg ref="SeletestTaskExecutor" />
@@ -60,15 +59,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<!-- Aliases for controller strategy -->
 	<alias alias="WebDriverAPI" name="webDriverControl" />
 	<alias alias="SeleniumAPI" name="seleniumControl" />
-
-	<!-- Generic cache manager based on the JDK ConcurrentMap -->
-	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-		<property name="caches">
-			<set>
-				<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="wait" />
-			</set>
-		</property>
-	</bean>
 
 	<!-- Import test beans -->
 	<import resource="classpath:/META-INF/spring/test-beans*.xml" />

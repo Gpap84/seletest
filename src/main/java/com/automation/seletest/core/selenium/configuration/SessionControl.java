@@ -32,7 +32,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.webSync.WaitFor;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.spring.ApplicationContextProvider;
 import com.automation.seletest.core.testNG.assertions.Assert;
@@ -43,7 +43,6 @@ import com.thoughtworks.selenium.Selenium;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("deprecation")
 public final class SessionControl {
 
     /**
@@ -83,7 +82,7 @@ public final class SessionControl {
      * Wait Strategy
      * @return WaitFor
      */
-    public static WaitFor<?> waitController() {
+    public static WaitFor waitController() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getWaitStrategy(SessionContext.getSession().getWaitStrategy());
     }
 
@@ -91,7 +90,7 @@ public final class SessionControl {
      * Web Strategy
      * @return WebController
      */
-    public static WebController<?> webController() {
+    public static WebController webController() {
         return ApplicationContextProvider.getApplicationContext().getBean(StrategyFactory.class).getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 }

@@ -24,7 +24,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.automation.seletest.core.services.actions;
+package com.automation.seletest.core.services.webSync;
 
 import org.openqa.selenium.Alert;
 
@@ -33,7 +33,6 @@ import org.openqa.selenium.Alert;
  * Interface for waiting methods
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com) *
  */
-@SuppressWarnings("hiding")
 public interface WaitFor<T> {
 
 
@@ -41,20 +40,20 @@ public interface WaitFor<T> {
      * @param locator the locator of the WebElement to wait to be present in DOM
      * @return WebElement that is present in screen
      */
-    <T> T waitForElementPresence(String locator);
+    T waitForElementPresence(Object locator);
 
     /** Wait for element to be visible
      * @param locator the locator of the WebElement to wait for visibility
      * @return WebElement that is visible
      */
-    <T> T waitForElementVisibility(Object locator);
+    T waitForElementVisibility(Object locator);
 
     /**
      * Wait for element to be clickable
      * @param locator the locator of the WebElement to wait to be clickable
      * @return WebElement that is clickable
      */
-    <T> T waitForElementToBeClickable(Object locator);
+    T waitForElementToBeClickable(Object locator);
 
     /**
      * Wait for alert
@@ -89,14 +88,14 @@ public interface WaitFor<T> {
      * @param locator
      * @return List<WebElement> the elements to be present in screen
      */
-    <T> T waitForPresenceofAllElements(String locator);
+    T waitForPresenceofAllElements(String locator);
 
     /**
      * Wait for elements with matching locator to be visible in screen
      * @param locator
      * @return List<WebElement> the elements to be visible in screen
      */
-    <T> T waitForVisibilityofAllElements(String locator);
+    T waitForVisibilityofAllElements(String locator);
 
     /**
      * Waits for a page to load

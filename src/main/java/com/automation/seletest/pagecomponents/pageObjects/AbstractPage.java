@@ -26,8 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects;
 
-import java.util.concurrent.TimeUnit;
-
+import com.automation.seletest.core.selenium.common.ActionsController;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.spring.SeletestWebTestBase;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -35,12 +38,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.common.ActionsController;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.services.actions.WaitFor;
-import com.automation.seletest.core.services.factories.StrategyFactory;
-import com.automation.seletest.core.spring.SeletestWebTestBase;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract super class serves as base page object
@@ -96,11 +94,7 @@ public abstract class AbstractPage<T> extends SeletestWebTestBase{
         return strategy.getControllerStrategy(SessionContext.getSession().getControllerStrategy());
     }
 
-    public WaitFor waitControl() {
-        return strategy.getWaitStrategy(SessionContext.getSession().getWaitStrategy());
-    }
-
-    public ActionsController actionsControl() {
+    public ActionsController<ActionsController> actionsControl() {
         return strategy.getActionsStrategy(SessionContext.getSession().getActionsStrategy());
     }
 

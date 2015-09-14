@@ -35,6 +35,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import java.lang.reflect.Method;
 
@@ -47,11 +48,7 @@ public abstract class SeletestPointCuts {
 
     /**Factories Strategy*/
     @Autowired
-    StrategyFactory<?> factoryStrategy;
-
-    /**Methods in classpath that have @WaitCondition*/
-    @Pointcut("execution(@com.automation.seletest.core.services.annotations.WaitCondition * *(..))")
-    protected void waitElement() {}
+    StrategyFactory factoryStrategy;
 
     /**Methods in classpath that have @Monitor*/
     @Pointcut("execution(@com.automation.seletest.core.services.annotations.Monitor * *(..))")
@@ -70,7 +67,7 @@ public abstract class SeletestPointCuts {
     protected void webControl() {}
 
     /**Methods for wait conditions*/
-    @Pointcut("execution(* com.automation.seletest.core.services.actions.*WaitStrategy.*(..))")
+    @Pointcut("execution(* com.automation.seletest.core.services.webSync.*WaitStrategy.*(..))")
     protected void waitConditions() {}
 
     /**Methods that are returning objects*/
@@ -85,6 +82,10 @@ public abstract class SeletestPointCuts {
     protected void componentsStatus() {}
 
     /** Pointcut for reexecuting methods*/
+    @Pointcut("execution(* com.automation.seletest..*(..)) && @annotation(async)")
+    protected void asynchronous(Async async) {}
+
+    /** Pointcut for async methods*/
     @Pointcut("execution(* com.automation.seletest.core.selenium.webAPI..*(..)) && @annotation(retry)")
     protected void retryExecution(RetryFailure retry) {}
 

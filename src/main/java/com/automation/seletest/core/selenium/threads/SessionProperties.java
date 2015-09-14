@@ -29,25 +29,22 @@ package com.automation.seletest.core.selenium.threads;
 
 
 
-import io.appium.java_client.TouchAction;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.webAPI.WebController.CloseSession;
 import com.automation.seletest.core.services.utilities.PerformanceUtils;
 import com.automation.seletest.core.testNG.assertions.Assert;
 import com.thoughtworks.selenium.Selenium;
+import io.appium.java_client.TouchAction;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 
 /**
@@ -56,8 +53,7 @@ import com.thoughtworks.selenium.Selenium;
  * @param <T>
  */
 @Slf4j
-@SuppressWarnings("deprecation")
-public class SessionProperties<T extends RemoteWebDriver> {
+public class SessionProperties<T extends WebDriver> {
 
     /**The wait until timeout*/
     @Getter @Setter
@@ -99,13 +95,9 @@ public class SessionProperties<T extends RemoteWebDriver> {
     @Getter @Setter
     String controllerStrategy="webDriverControl";
 
-    /** WebDriver-Selenium actions strategy*/
+    /** WebDriver-Selenium webSync strategy*/
     @Getter @Setter
     String actionsStrategy="webDriverActions";
-
-    /**WebElement per session*/
-    @Getter @Setter
-    WebElement webElement;
 
     /**List of web elements*/
     @Getter @Setter

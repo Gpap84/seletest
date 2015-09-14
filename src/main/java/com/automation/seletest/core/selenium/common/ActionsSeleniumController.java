@@ -26,11 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.common;
 
-import org.springframework.stereotype.Component;
-
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
+import com.automation.seletest.core.services.factories.StrategyFactory;
+import com.automation.seletest.core.services.webSync.WaitFor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * ActionsSeleniumController class.
@@ -38,8 +38,31 @@ import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
  *
  */
 @Component("seleniumActions")
-@SuppressWarnings("deprecation")
-public class ActionsSeleniumController implements ActionsController<ActionsSeleniumController> {
+public class ActionsSeleniumController implements ActionsController {
+
+    @Autowired
+    StrategyFactory factoryStrategy;
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    private WaitFor<String> waitController() {
+        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
+    }
+
+    /**
+     * Define locator
+     * @param locator Object locator
+     * @return String locator
+     */
+    private synchronized String defineLocator(Object locator){
+        if(((String)locator).startsWith("jquery=")){
+            return ((String)locator).replace("jquery=", "css=");
+        } else{
+            return (String)locator;
+        }
+    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#click(java.lang.Object)
@@ -53,10 +76,9 @@ public class ActionsSeleniumController implements ActionsController<ActionsSelen
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#mouseOver(java.lang.Object)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController mouseOver(Object locator) {
-        SessionContext.getSession().getSelenium().mouseOver((String)locator);
+        SessionContext.getSession().getSelenium().mouseOver(waitController().waitForElementVisibility(defineLocator(locator)));
         return this;
     }
 
@@ -81,30 +103,27 @@ public class ActionsSeleniumController implements ActionsController<ActionsSelen
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#mouseDown(java.lang.Object, org.openqa.selenium.Keys)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController mouseDown(Object locator, KeyInfo key) {
-        SessionContext.getSession().getSelenium().keyDown((String)locator, key.getEvent());
+        SessionContext.getSession().getSelenium().keyDown(waitController().waitForElementVisibility(defineLocator(locator)), key.getEvent());
         return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#mouseUp(java.lang.Object, org.openqa.selenium.Keys)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController mouseUp(Object locator, KeyInfo key) {
-        SessionContext.getSession().getSelenium().keyUp((String)locator, key.getEvent());
+        SessionContext.getSession().getSelenium().keyUp(waitController().waitForElementVisibility(defineLocator(locator)), key.getEvent());
         return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#clickAndHold(java.lang.Object)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController clickAndHold(Object locator) {
-        SessionContext.getSession().getSelenium().mouseDown((String)locator);
+        SessionContext.getSession().getSelenium().mouseDown(waitController().waitForElementVisibility(defineLocator(locator)));
         return this;
     }
 
@@ -171,22 +190,20 @@ public class ActionsSeleniumController implements ActionsController<ActionsSelen
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(java.lang.Object)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController press(Object locator) {
         clickAndHold(locator);
-        SessionContext.getSession().getSelenium().mouseUp((String)locator);
+        SessionContext.getSession().getSelenium().mouseUp(waitController().waitForElementVisibility(defineLocator(locator)));
         return this;
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.common.ActionsBuilderController#press(java.lang.Object, int, int)
      */
-    @WaitCondition(waitFor.VISIBILITY)
     @Override
     public ActionsSeleniumController press(Object locator, int x, int y) {
-        SessionContext.getSession().getSelenium().mouseDownAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
-        SessionContext.getSession().getSelenium().mouseUpAt((String)locator,String.valueOf(x)+ "," + String.valueOf(y));
+        SessionContext.getSession().getSelenium().mouseDownAt(waitController().waitForElementVisibility(defineLocator(locator)),String.valueOf(x)+ "," + String.valueOf(y));
+        SessionContext.getSession().getSelenium().mouseUpAt(waitController().waitForElementVisibility(defineLocator(locator)),String.valueOf(x)+ "," + String.valueOf(y));
         return this;
     }
 
@@ -195,7 +212,7 @@ public class ActionsSeleniumController implements ActionsController<ActionsSelen
      */
     @Override
     public ActionsSeleniumController dragndrop(Object draglocator, Object droplocator) {
-        SessionContext.getSession().getSelenium().dragAndDropToObject((String)draglocator, (String) droplocator);
+        SessionContext.getSession().getSelenium().dragAndDropToObject(waitController().waitForElementVisibility(defineLocator(draglocator)), waitController().waitForElementVisibility(defineLocator(droplocator)));
         return this;
     }
 

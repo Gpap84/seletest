@@ -26,17 +26,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.spring;
 
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.testNG.assertions.SoftAssert;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.AsyncTaskExecutor;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.core.task.AsyncTaskExecutor;
-
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.testNG.assertions.SoftAssert;
 
 /**
  * ExceptionHandlingAsyncTaskExecutor class.
@@ -45,7 +43,6 @@ import com.automation.seletest.core.testNG.assertions.SoftAssert;
  *
  */
 @Slf4j
-@SuppressWarnings({"rawtypes","unchecked","hiding"})
 public class AsyncSeletestExecutor<T> implements AsyncTaskExecutor {
 
     /**The AsyncTaskExecutor*/
@@ -84,7 +81,7 @@ public class AsyncSeletestExecutor<T> implements AsyncTaskExecutor {
      */
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        Future<T> futureTask=null;
+        Future<T> futureTask;
         try {
             futureTask = executor.submit(createCallable(task));
             if(!((SessionContext.getSession().getAssertion()).getAssertion() instanceof SoftAssert)){
