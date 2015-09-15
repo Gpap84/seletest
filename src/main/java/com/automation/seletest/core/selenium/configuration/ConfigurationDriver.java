@@ -81,7 +81,8 @@ import java.util.Properties;
         "classpath*:META-INF/spring/app-context.xml",
         "classpath*:META-INF/spring/mail-context.xml",
         "classpath*:META-INF/spring/thread-pool-context.xml",
-        "classpath*:META-INF/spring/cache-context.xml" })
+        "classpath*:META-INF/spring/cache-context.xml",
+        "classpath*:META-INF/spring/jmx-context.xml"})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @Slf4j
 public class ConfigurationDriver {
