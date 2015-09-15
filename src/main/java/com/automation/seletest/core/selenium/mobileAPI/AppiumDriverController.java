@@ -250,7 +250,7 @@ public class AppiumDriverController implements AppiumController{
         } else {
             waitController().waitForElementPresence("class=\"UIATableView\"");
         }
-        return webDriver().scrollTo(text);
+        return (MobileElement) webDriver().scrollTo(text);
     }
 
     /* (non-Javadoc)
@@ -266,7 +266,7 @@ public class AppiumDriverController implements AppiumController{
         } else {
             waitController().waitForElementPresence("class=\"UIATableView\"");
         }
-        return webDriver().scrollToExact(text);
+        return (MobileElement) webDriver().scrollToExact(text);
     }
 
     /* (non-Javadoc)
