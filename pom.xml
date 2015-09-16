@@ -401,7 +401,24 @@
   <dependency>
    <groupId>org.mockito</groupId>
    <artifactId>mockito-all</artifactId>
-   <version>1.9.5</version>
+   <version>${mockito.version}</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.mockito</groupId>
+   <artifactId>mockito-core</artifactId>
+   <version>2.0.31-beta</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.powermock</groupId>
+   <artifactId>powermock-module-testng</artifactId>
+   <version>${powermock.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.powermock</groupId>
+   <artifactId>powermock-api-mockito</artifactId>
+   <version>${powermock.version}</version>
   </dependency>
 
 
@@ -736,6 +753,8 @@
   <org.springframework.version>4.0.9.RELEASE</org.springframework.version>
   <selenium.version>2.47.0</selenium.version>
   <aspectj.version>1.8.5</aspectj.version>
+  <powermock.version>1.6.2</powermock.version>
+  <mockito.version>2.0.2-beta</mockito.version>
   <testng.version>6.8.8</testng.version>
   <lombok.version>1.12.6</lombok.version>
   <groovy.version>1.8.8</groovy.version>
