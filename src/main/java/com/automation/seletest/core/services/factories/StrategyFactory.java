@@ -41,10 +41,10 @@ public interface StrategyFactory<T> {
     WaitFor<T> getWaitStrategy(String waitController);
 
     /**Gets the elementController type*/
-    WebController getControllerStrategy(String elementController);
+    WebController<T> getControllerStrategy(String elementController);
 
     /**Gets the actionsController type*/
-    ActionsController<?> getActionsStrategy(String actionsController);
+    ActionsController getActionsStrategy(String actionsController);
 
 }
 

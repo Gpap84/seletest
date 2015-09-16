@@ -42,7 +42,14 @@ import java.util.concurrent.TimeUnit;
  * This interface is for all methods used by webdriver to interact with app UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  */
-public interface WebController{
+public interface WebController<T>{
+
+    /**
+     * This method sets the locator for the HTML element
+     * @param locator the locator to identify the HTML element
+     * @return Object that extends By
+     */
+    T setLocator(Object locator);
 
     /**
      * Finds a web element

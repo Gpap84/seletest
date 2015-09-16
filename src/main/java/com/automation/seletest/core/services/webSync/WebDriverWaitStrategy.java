@@ -27,16 +27,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.services.webSync;
 
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.spring.ApplicationContextProvider;
+import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +52,9 @@ import java.util.List;
 @Component("webDriverWait")
 @Slf4j
 public class WebDriverWaitStrategy implements WaitFor{
+
+    @Autowired
+    StrategyFactory factory;
 
     /**
      * Sleeps a thread
@@ -65,28 +70,28 @@ public class WebDriverWaitStrategy implements WaitFor{
     }
 
     /**
-     * Returns a new WebDriverWait instance
-     * @return WebDriverWait object
+     * Web Controller
+     * @return web controller
      */
-    private WebDriverWait wfExpected(){
-        return (WebDriverWait) ApplicationContextProvider.getApplicationContext().getBean("webdriverwait", SessionContext.getSession().getWebDriver(),SessionContext.getSession().getWaitUntil());
+    private WebController<By> web() {
+        return factory.getControllerStrategy(SessionContext.session().getControllerStrategy());
     }
-
 
     @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementPresence(final Object locator) {
-        return wfExpected().until(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator((String)locator).setLocator((String) locator)));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.presenceOfElementLocated(web().setLocator(locator)));
     }
 
     @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementVisibility(final Object locator){
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         if (locator instanceof String) {
-            return wfExpected().until(ExpectedConditions.visibilityOfElementLocated(Locators.findByLocator((String) locator).setLocator((String)
-                    locator)));
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(web().setLocator(locator)));
         } else if (locator instanceof WebElement) {
-            return wfExpected().until(ExpectedConditions.visibilityOf((WebElement) locator));
+            return wait.until(ExpectedConditions.visibilityOf((WebElement) locator));
         } else {
             throw new UnsupportedOperationException("The defined locator: " + locator + " is not supported!!!");
         }
@@ -95,11 +100,12 @@ public class WebDriverWaitStrategy implements WaitFor{
     @Cacheable(value="webCache")
     @Override
     public WebElement waitForElementToBeClickable(final Object locator) {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         if(locator instanceof String){
-            return wfExpected().until(ExpectedConditions.elementToBeClickable(Locators.findByLocator((String)locator).setLocator((String)locator)));
+            return wait.until(ExpectedConditions.elementToBeClickable(web().setLocator(locator)));
         }
         else if(locator instanceof WebElement){
-            return wfExpected().until(ExpectedConditions.elementToBeClickable((WebElement)locator));
+            return wait.until(ExpectedConditions.elementToBeClickable((WebElement)locator));
         }
         else{
             throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
@@ -108,22 +114,25 @@ public class WebDriverWaitStrategy implements WaitFor{
 
     @Override
     public Alert waitForAlert() {
-        return wfExpected().until(ExpectedConditions.alertIsPresent());
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.alertIsPresent());
     }
 
     @Override
     public boolean waitForElementInvisibility(final String locator) {
-        return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.invisibilityOfElementLocated(web().setLocator(locator)));
     }
 
     @Cacheable(value="webCache")
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         if(locator instanceof String){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElementLocated(Locators.findByLocator((String) locator).setLocator((String) locator), text));
+            return wait.until(ExpectedConditions.textToBePresentInElementLocated(web().setLocator(locator), text));
         }
         else if(locator instanceof WebElement){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElement((WebElement) locator, text));
+            return wait.until(ExpectedConditions.textToBePresentInElement((WebElement) locator, text));
         }
         else{
             throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
@@ -133,11 +142,12 @@ public class WebDriverWaitStrategy implements WaitFor{
     @Cacheable(value="webCache")
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         if(locator instanceof String){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue(Locators.findByLocator((String)locator).setLocator((String)locator),text));
+            return wait.until(ExpectedConditions.textToBePresentInElementValue(web().setLocator(locator),text));
         }
         else if(locator instanceof WebElement){
-            return wfExpected().until(ExpectedConditions.textToBePresentInElementValue((WebElement)locator,text));
+            return wait.until(ExpectedConditions.textToBePresentInElementValue((WebElement)locator,text));
         }
         else{
             throw new UnsupportedOperationException("The defined locator: "+locator+" is not supported!!!");
@@ -147,18 +157,21 @@ public class WebDriverWaitStrategy implements WaitFor{
     @Cacheable(value="webCache")
     @Override
     public List<WebElement> waitForPresenceofAllElements(final String locator) {
-        return wfExpected().until(ExpectedConditions.presenceOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(web().setLocator(locator)));
 
     }
 
     @Cacheable(value="webCache")
     @Override
     public List<WebElement> waitForVisibilityofAllElements(final String locator) {
-        return wfExpected().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.findByLocator(locator).setLocator(locator)));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(web().setLocator(locator)));
     }
 
     @Override
     public void waitForPageLoaded() {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         ExpectedCondition<Boolean> pageLoadedExpectation = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -166,11 +179,12 @@ public class WebDriverWaitStrategy implements WaitFor{
             }
         };
 
-        wfExpected().until(pageLoadedExpectation);
+        wait.until(pageLoadedExpectation);
     }
 
     @Override
     public void waitForAjaxCallCompleted(final long timeout) {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         ExpectedCondition<Boolean> ajaxCallExpectation = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -190,7 +204,7 @@ public class WebDriverWaitStrategy implements WaitFor{
             }
         };
 
-        wfExpected().until(ajaxCallExpectation);
+        wait.until(ajaxCallExpectation);
     }
 
 
@@ -200,7 +214,8 @@ public class WebDriverWaitStrategy implements WaitFor{
      */
     @Override
     public boolean waitForElementNotPresent(final String locator) {
-        return wfExpected().until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(Locators.findByLocator(locator).setLocator(locator))));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(web().setLocator(locator))));
     }
 
     /* (non-Javadoc)
@@ -208,7 +223,9 @@ public class WebDriverWaitStrategy implements WaitFor{
      */
     @Override
     public boolean waitForElementInvisible(final String locator) {
-        return wfExpected().until(ExpectedConditions.invisibilityOfElementLocated(Locators.findByLocator(locator).setLocator(locator)));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+
+        return wait.until(ExpectedConditions.invisibilityOfElementLocated(web().setLocator(locator)));
     }
 
     /* (non-Javadoc)
@@ -216,7 +233,8 @@ public class WebDriverWaitStrategy implements WaitFor{
      */
     @Override
     public boolean waitForPageTitle(final String title) {
-        return wfExpected().until(ExpectedConditions.titleContains(title));
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
+        return wait.until(ExpectedConditions.titleContains(title));
     }
 
     /* (non-Javadoc)
@@ -224,17 +242,19 @@ public class WebDriverWaitStrategy implements WaitFor{
      */
     @Override
     public boolean waitForElementNotClickable(final Object locator) {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         if(locator instanceof String){
-            return wfExpected().until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(Locators.findByLocator((String)locator).setLocator((String)locator))));
+            return wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(web().setLocator(locator))));
         }
         else if(locator instanceof WebElement){
-            return wfExpected().until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable((WebElement)locator)));
+            return wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable((WebElement)locator)));
         }
         return false;
     }
 
     @Override
     public void waitForJSToLoad() {
+        WebDriverWait wait = new WebDriverWait(SessionContext.getSession().getWebDriver(), SessionContext.getSession().getWaitUntil());
         ExpectedCondition<Boolean> javascriptDone = new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver d) {
                 try{
@@ -257,7 +277,7 @@ public class WebDriverWaitStrategy implements WaitFor{
                 }
             }
         };
-        wfExpected().until(javascriptDone);
+        wait.until(javascriptDone);
     }
 
 }

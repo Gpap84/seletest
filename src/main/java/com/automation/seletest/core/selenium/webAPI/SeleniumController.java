@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -58,10 +59,10 @@ import java.util.concurrent.TimeUnit;
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings({ "rawtypes", "deprecation","unchecked" })
+@SuppressWarnings("ALL")
 @Component("seleniumControl")
 @Slf4j
-public class SeleniumController extends DriverBaseController{
+public class SeleniumController<T extends String> extends DriverBaseController{
 
     /**The FileUtils*/
     @Autowired
@@ -69,7 +70,7 @@ public class SeleniumController extends DriverBaseController{
 
     @Override
     public WebElement findElement(Object locator) {
-        throw new UnsupportedOperationException("findElements(object locator) method is not supported for Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /**
@@ -88,7 +89,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public SeleniumController click(Object locator) {
-        selenium().click(waitController().waitForElementPresence(defineLocator(locator)));
+        selenium().click(waitController().waitForElementPresence(setLocator(locator)));
         return this;
     }
 
@@ -100,7 +101,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public SeleniumController type(Object locator, String text) {
-        selenium().typeKeys(waitController().waitForElementPresence(defineLocator(locator)), text);
+        selenium().typeKeys(waitController().waitForElementPresence(setLocator(locator)), text);
         return this;
     }
 
@@ -120,7 +121,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public SeleniumController changeStyle(Object locator, String attribute, String attributevalue) {
-        selenium().highlight(waitController().waitForElementPresence(defineLocator(locator)));
+        selenium().highlight(waitController().waitForElementPresence(setLocator(locator)));
         return this;
     }
 
@@ -166,10 +167,10 @@ public class SeleniumController extends DriverBaseController{
                 fos.close();
             }
             BufferedImage  fullImg = ImageIO.read(screenShotFrame);
-            int px=(Integer) selenium().getElementPositionLeft(waitController().waitForElementPresence(defineLocator(locator)));
-            int py=(Integer) selenium().getElementPositionTop(waitController().waitForElementPresence(defineLocator(locator)));
-            int eleWidth = (Integer) selenium().getElementWidth(waitController().waitForElementPresence(defineLocator(locator)));
-            int eleHeight = (Integer) selenium().getElementHeight(waitController().waitForElementPresence(defineLocator(locator)));
+            int px=(Integer) selenium().getElementPositionLeft(waitController().waitForElementPresence(setLocator(locator)));
+            int py=(Integer) selenium().getElementPositionTop(waitController().waitForElementPresence(setLocator(locator)));
+            int eleWidth = (Integer) selenium().getElementWidth(waitController().waitForElementPresence(setLocator(locator)));
+            int eleHeight = (Integer) selenium().getElementHeight(waitController().waitForElementPresence(setLocator(locator)));
             BufferedImage eleScreenshot= fullImg.getSubimage(px, py, eleWidth, eleHeight);
             ImageIO.write(eleScreenshot, "png", screenShotFrame);
             File file = fileService.createScreenshotFile();
@@ -179,14 +180,23 @@ public class SeleniumController extends DriverBaseController{
         return this;
     }
 
+    @Override
+    public T setLocator(final Object locator) {
+        if(((String)locator).startsWith("jquery=")) {
+            ((String) locator).replace("jquery=", "css=");
+        }
+        return (T) locator;
+
+    }
+
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#getText(java.lang.Object)
-     */
+		 * @see com.automation.seletest.core.selenium.webAPI.interfaces.ElementController#getText(java.lang.Object)
+		 */
     @Override
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getText(Object locator) {
-        return selenium().getText(waitController().waitForElementPresence(defineLocator(locator)));
+        return selenium().getText(waitController().waitForElementPresence(setLocator(locator)));
     }
 
     /* (non-Javadoc)
@@ -196,7 +206,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getTagName(Object locator) {
-        return selenium().getAttribute(waitController().waitForElementPresence(defineLocator(locator))+"@tagName");
+        return selenium().getAttribute(waitController().waitForElementPresence(setLocator(locator))+"@tagName");
     }
 
     /* (non-Javadoc)
@@ -206,8 +216,8 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public Point getLocation(Object locator) {
-        int px =(Integer) selenium().getElementPositionLeft(waitController().waitForElementPresence(defineLocator(locator)));
-        int py=(Integer) selenium().getElementPositionTop(waitController().waitForElementPresence(defineLocator(locator)));
+        int px =(Integer) selenium().getElementPositionLeft(waitController().waitForElementPresence(setLocator(locator)));
+        int py=(Integer) selenium().getElementPositionTop(waitController().waitForElementPresence(setLocator(locator)));
         return new Point(px, py);
     }
 
@@ -218,8 +228,8 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public Dimension getElementDimensions(Object locator) {
-        int height = (Integer) (selenium().getElementHeight(waitController().waitForElementPresence(defineLocator(locator))));
-        int width = (Integer) selenium().getElementWidth(waitController().waitForElementPresence(defineLocator(locator)));
+        int height = (Integer) (selenium().getElementHeight(waitController().waitForElementPresence(setLocator(locator))));
+        int width = (Integer) selenium().getElementWidth(waitController().waitForElementPresence(setLocator(locator)));
         return new Dimension(width, height);
     }
 
@@ -248,7 +258,7 @@ public class SeleniumController extends DriverBaseController{
     @Monitor
     @RetryFailure(retryCount=3)
     public SeleniumController uploadFile(Object locator, String path) {
-        selenium().attachFile(waitController().waitForElementPresence(defineLocator(locator)), path);
+        selenium().attachFile(waitController().waitForElementPresence(setLocator(locator)), path);
         return this;
     }
 
@@ -269,7 +279,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public SeleniumController selectByValue(String locator, String value) {
-        selenium().select(waitController().waitForElementPresence(defineLocator(locator)),"value="+value);
+        selenium().select(waitController().waitForElementPresence(setLocator(locator)),"value="+value);
         return this;
     }
 
@@ -281,7 +291,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public SeleniumController selectByVisibleText(String locator, String text) {
-        selenium().select(waitController().waitForElementPresence(defineLocator(locator)),"label="+text);
+        selenium().select(waitController().waitForElementPresence(setLocator(locator)), "label=" + text);
         return this;
     }
 
@@ -356,7 +366,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public SeleniumController pageLoadTimeout(long timeout, TimeUnit timeunit) {
-        throw new UnsupportedOperationException("Method pageLoadTimeout(long timeout, TimeUnit timeunit) is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -364,7 +374,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public SeleniumController scriptLoadTimeout(long timeout, TimeUnit timeunit) {
-        throw new UnsupportedOperationException("Method scriptLoadTimeout(long timeout, TimeUnit timeunit) is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -424,7 +434,7 @@ public class SeleniumController extends DriverBaseController{
     @Deprecated
     @Override
     public LogEntries logs(String logtype) {
-        return null;
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -520,7 +530,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public SeleniumController goForward() {
-        throw new UnsupportedOperationException("Method goForward() is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -528,7 +538,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public List<WebElement> findChildElements(Object parent, String child) {
-        throw new UnsupportedOperationException("Method findChildElements(Object parent, String child) is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -538,7 +548,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public int getRowsTable(Object tableLocator) {
-        String locator=waitController().waitForElementPresence(defineLocator(tableLocator));
+        String locator=waitController().waitForElementPresence(setLocator(tableLocator));
         int rows = 0;
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
             rows = selenium().getXpathCount(locator + "//tbody//tr").intValue();
@@ -555,7 +565,7 @@ public class SeleniumController extends DriverBaseController{
     @JSHandle
     public int getColumnsTable(Object tableLocator) {
         int columns = 0;
-        String locator=waitController().waitForElementPresence(defineLocator(tableLocator));
+        String locator=waitController().waitForElementPresence(setLocator(tableLocator));
         if (locator.startsWith("xpath=") || locator.startsWith("//")) {
             columns = selenium().getXpathCount(locator + "//tbody//tr[1]/td").intValue();
         } else if (locator.startsWith("css=")) {
@@ -570,7 +580,7 @@ public class SeleniumController extends DriverBaseController{
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getFirstSelectedOptionText(Object locator) {
-        return selenium().getSelectedLabel(waitController().waitForElementPresence(defineLocator(locator)));
+        return selenium().getSelectedLabel(waitController().waitForElementPresence(setLocator(locator)));
     }
 
     /* (non-Javadoc)
@@ -581,10 +591,9 @@ public class SeleniumController extends DriverBaseController{
     @JSHandle
     public List<String> getAllOptionsText(Object locator) {
         ArrayList<String> optionValues = new ArrayList<String>();
-        String [] options=selenium().getSelectOptions(waitController().waitForElementPresence(defineLocator(locator)));
-        for (String option:options) {
-            optionValues.add(option);
-        } return optionValues;
+        String [] options=selenium().getSelectOptions(waitController().waitForElementPresence(setLocator(locator)));
+        Collections.addAll(optionValues, options);
+        return optionValues;
     }
 
     /* (non-Javadoc)
@@ -595,8 +604,8 @@ public class SeleniumController extends DriverBaseController{
     @Monitor
     @JSHandle
     public SeleniumController clearSelectedOptionByText(Object locator, String text) {
-        if(selenium().isSomethingSelected(waitController().waitForElementPresence(defineLocator(locator)))){
-            selenium().select(waitController().waitForElementPresence(defineLocator(locator)),"label="+text);
+        if(selenium().isSomethingSelected(waitController().waitForElementPresence(setLocator(locator)))){
+            selenium().select(waitController().waitForElementPresence(setLocator(locator)),"label="+text);
         } return this;
     }
 
@@ -608,8 +617,8 @@ public class SeleniumController extends DriverBaseController{
     @Monitor
     @JSHandle
     public SeleniumController clearSelectedOption(Object locator, String value) {
-        if(selenium().isSomethingSelected(waitController().waitForElementPresence(defineLocator(locator)))){
-            selenium().select(waitController().waitForElementPresence(defineLocator(locator)),"value="+value);
+        if(selenium().isSomethingSelected(waitController().waitForElementPresence(setLocator(locator)))){
+            selenium().select(waitController().waitForElementPresence(setLocator(locator)),"value="+value);
         } return this;
     }
 
@@ -618,7 +627,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public boolean isFieldEditable(Object locator) {
-        return selenium().isEditable(waitController().waitForElementPresence(defineLocator(locator)));
+        return selenium().isEditable(waitController().waitForElementPresence(setLocator(locator)));
     }
 
 
@@ -627,22 +636,9 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public boolean isFieldNotEditable(Object locator) {
-        return !selenium().isEditable(waitController().waitForElementPresence(defineLocator(locator)));
+        return !selenium().isEditable(waitController().waitForElementPresence(setLocator(locator)));
     }
 
-
-    /**
-     * Define locator
-     * @param locator Object locator
-     * @return String locator
-     */
-    private synchronized String defineLocator(Object locator){
-        if(((String)locator).startsWith("jquery=")){
-            return ((String)locator).replace("jquery=", "css=");
-        } else{
-            return (String)locator;
-        }
-    }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getCookieNamed(java.lang.String)
@@ -658,7 +654,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public int elementsMatching(String locator) {
-        throw new UnsupportedOperationException("Method elementsMatching(Object locator) is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -666,7 +662,7 @@ public class SeleniumController extends DriverBaseController{
      */
     @Override
     public SeleniumController waitForAngularFinish() {
-        throw new UnsupportedOperationException("Method waitForAngularFinish() is not supported with Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
 

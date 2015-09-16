@@ -28,11 +28,12 @@ package com.automation.seletest.core.services.webSync;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.thoughtworks.selenium.SeleniumException;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.UnsupportedCommandException;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,6 +45,9 @@ import org.springframework.stereotype.Component;
 @Component("seleniumWait")
 @Slf4j
 public class SeleniumWaitStrategy implements WaitFor{
+
+    @Autowired
+    StrategyFactory factory;
 
     /**
      * Sleeps a thread
@@ -59,16 +63,11 @@ public class SeleniumWaitStrategy implements WaitFor{
     }
 
     /**
-     * Define locator
-     * @param locator Object locator
-     * @return String locator
+     * Web Controller
+     * @return web controller
      */
-    private String defineLocator(Object locator){
-        if(((String)locator).startsWith("jquery=")){
-            return ((String)locator).replace("jquery=", "css=");
-        } else{
-            return (String)locator;
-        }
+    private WebController<String> web() {
+        return factory.getControllerStrategy(SessionContext.session().getControllerStrategy());
     }
 
 
@@ -82,7 +81,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " presence");
             } try {
-                if (SessionControl.selenium().isElementPresent(defineLocator(locator))) {
+                if (SessionControl.selenium().isElementPresent(web().setLocator(locator))) {
                     break;
                 }
             } catch (Exception ignored) {
@@ -102,7 +101,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " visibility");
             } try {
-                if (SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     break;
                 }
             } catch (Exception ex1) {
@@ -117,7 +116,7 @@ public class SeleniumWaitStrategy implements WaitFor{
      */
     @Override
     public SeleniumWaitStrategy waitForElementToBeClickable(final Object locator) {
-        throw new UnsupportedCommandException("waitForElementToBeClickable(Object locator) is not used by Selenium 1");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
@@ -149,13 +148,13 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " invisibility");
             } try {
-                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     break;
                 }
             } catch (Exception ex3) {
             } sleep(100);
         } while (true);
-        SessionControl.selenium().highlight(defineLocator(locator));
+        SessionControl.selenium().highlight(web().setLocator(locator));
         return false;
     }
 
@@ -169,7 +168,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + "");
             } try {
-                if (SessionControl.selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getText(web().setLocator(locator)).equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception ex4) {
@@ -189,7 +188,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
             } try {
-                if (SessionControl.selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getAttribute(web().setLocator(locator)+"@value").equalsIgnoreCase(text)) {
                     break;
                 }
             } catch (Exception ex5) {
@@ -211,9 +210,9 @@ public class SeleniumWaitStrategy implements WaitFor{
             } try {
                 int elements=0;
                 if(locator.startsWith("//") || locator.startsWith("xpath=")) {
-                    elements=SessionControl.selenium().getXpathCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getXpathCount(web().setLocator(locator)).intValue();
                 } else if(locator.startsWith("css=")) {
-                    elements=SessionControl.selenium().getCssCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getCssCount(web().setLocator(locator)).intValue();
                 }
                 if (elements > 1) {
                     break;
@@ -221,7 +220,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             } catch (Exception e) {
             } sleep(100);
         } while (true);
-        SessionControl.selenium().highlight(defineLocator(locator));
+        SessionControl.selenium().highlight(web().setLocator(locator));
         return (String)locator;
     }
 
@@ -230,8 +229,8 @@ public class SeleniumWaitStrategy implements WaitFor{
      */
     @Override
     public SeleniumWaitStrategy waitForVisibilityofAllElements(final String locator) {
-        //TODO
-        return null;
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
+
     }
 
     /* (non-Javadoc)
@@ -260,7 +259,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 return false;
             } try {
-                if (!SessionControl.selenium().isElementPresent(defineLocator(locator))) {
+                if (!SessionControl.selenium().isElementPresent(web().setLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
@@ -278,7 +277,7 @@ public class SeleniumWaitStrategy implements WaitFor{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
-                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
@@ -308,15 +307,14 @@ public class SeleniumWaitStrategy implements WaitFor{
     /* (non-Javadoc)
      * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementNotClickable(java.lang.Object)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForElementNotClickable(final Object locator) {
-      throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     @Override
     public void waitForJSToLoad() {
-         //TODO
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
 }

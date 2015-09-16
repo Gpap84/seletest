@@ -69,7 +69,7 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings({"rawtypes","unchecked"})
 @Component("webDriverControl")
-public class WebDriverController extends DriverBaseController {
+public class WebDriverController<T extends WebElement> extends DriverBaseController {
 
     /**FileUtils*/
     @Autowired
@@ -158,6 +158,10 @@ public class WebDriverController extends DriverBaseController {
         return waitController().waitForElementVisibility(locator);
     }
 
+    @Override
+    public By setLocator(final Object locator) {
+        return Locators.findByLocator((String) locator).setLocator((String) locator);
+    }
 
     /**************************************
      **Returning type methods**************
@@ -461,7 +465,7 @@ public class WebDriverController extends DriverBaseController {
     @Override
     @JSHandle
     public List<WebElement> findChildElements(Object parent, String child) {
-        List<WebElement> children=waitController().waitForElementPresence(parent).findElements(Locators.findByLocator(child).setLocator(child));
+        List<WebElement> children=waitController().waitForElementPresence(parent).findElements(setLocator(child));
         return children;
     }
 

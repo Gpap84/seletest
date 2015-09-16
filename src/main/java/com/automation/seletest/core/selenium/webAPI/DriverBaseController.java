@@ -29,8 +29,10 @@ package com.automation.seletest.core.selenium.webAPI;
 import com.automation.seletest.core.selenium.threads.SessionContext;
 import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.automation.seletest.core.services.utilities.LogUtils;
+import com.automation.seletest.core.services.webSync.WaitFor;
 import com.thoughtworks.selenium.DefaultSelenium;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -69,6 +71,14 @@ public abstract class DriverBaseController implements WebController{
      */
     public <T extends DefaultSelenium> T selenium(){
         return (T) SessionContext.getSession().getSelenium();
+    }
+
+    /**
+     * WaitFor Controller for web driver
+     * @return WaitFor
+     */
+    protected WaitFor<WebElement> webdriverSync() {
+        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
     }
 
     /* (non-Javadoc)
