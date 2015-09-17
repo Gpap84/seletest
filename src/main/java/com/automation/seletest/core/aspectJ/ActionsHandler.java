@@ -27,10 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.aspectJ;
 
 
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.List;
-
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.services.utilities.LogUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -39,23 +37,20 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.Reporter;
 
-import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.utilities.LogUtils;
+import java.io.IOException;
+import java.text.NumberFormat;
 
 /**
  * Aspect that handles logging,screenshots etc.
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("unchecked")
+
 @Aspect
 @Component
 public class ActionsHandler extends SeletestPointCuts {
@@ -63,9 +58,6 @@ public class ActionsHandler extends SeletestPointCuts {
     /**Log service*/
     @Autowired
     LogUtils log;
-
-    /**Constant for taking screenshot*/
-    private static final String takeScreencap="Take screenshot after exception: ";
 
     /**
      * Log returning value for get** methods
@@ -86,32 +78,11 @@ public class ActionsHandler extends SeletestPointCuts {
     @AfterThrowing(pointcut="waitConditions()", throwing = "ex")
     public void takeScreenCap(final JoinPoint joinPoint, Throwable ex) throws IOException {
         if(Reporter.getCurrentTestResult().getAttribute("verification")==null) {
-            log.warn(takeScreencap+ex.getMessage().split("Build")[0].trim(),"color:orange;");
+            log.warn("Take screenshot after exception: " + ex.getMessage().split("Build")[0].trim(),"color:orange;");
             SessionControl.webController().takeScreenShot();
         }
     }
 
-    /**
-     * Wait for elements before any action....
-     * @param pjp JoinPoint
-     */
-    @Before(value="waitElement()")
-    public void waitFor(final JoinPoint pjp) {
-        WaitCondition waitFor=invokedMethod(pjp).getAnnotation(WaitCondition.class);
-        if(SessionContext.getSession().getWaitStrategy().equalsIgnoreCase("WebDriverWait")) {
-            if (waitFor == null || waitFor.value().equals(WaitCondition.waitFor.VISIBILITY) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement))) {
-                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementVisibility(methodArguments((ProceedingJoinPoint) pjp)[0]));
-            } else if (waitFor.value().equals(WaitCondition.waitFor.CLICKABLE)) {
-                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementToBeClickable(methodArguments((ProceedingJoinPoint) pjp)[0]));
-            } else if (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && !(methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement)) {
-                SessionContext.getSession().setWebElement((WebElement) SessionControl.waitController().waitForElementPresence((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
-            } else if (waitFor.value().equals(WaitCondition.waitFor.PRESENCEALL) && !(methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement)) {
-                SessionContext.getSession().setWebElements((List<WebElement>) SessionControl.waitController().waitForPresenceofAllElements((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
-            } else if (waitFor.value().equals(WaitCondition.waitFor.VISIBILITYALL) || (waitFor.value().equals(WaitCondition.waitFor.PRESENCE) && (methodArguments((ProceedingJoinPoint) pjp)[0] instanceof WebElement))) {
-                SessionContext.getSession().setWebElements((List<WebElement>) SessionControl.waitController().waitForVisibilityofAllElements((String) methodArguments((ProceedingJoinPoint) pjp)[0]));
-            }
-        }
-    }
 
     /**Report execution for method @Monitor*/
     @Around(value="monitor()")

@@ -27,19 +27,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.threads;
 
+import com.automation.seletest.core.spring.ApplicationContextProvider;
 import io.appium.java_client.AppiumDriver;
-
-import java.util.Stack;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.aop.target.ThreadLocalTargetSource;
 import org.testng.Reporter;
 
-import com.automation.seletest.core.spring.ApplicationContextProvider;
+import java.util.Stack;
 
 
 /**
@@ -51,6 +48,7 @@ import com.automation.seletest.core.spring.ApplicationContextProvider;
 @SuppressWarnings("rawtypes")
 public class SessionContext {
 
+	/**Constant for session*/
 	private final static String session="session";
 
 	/**

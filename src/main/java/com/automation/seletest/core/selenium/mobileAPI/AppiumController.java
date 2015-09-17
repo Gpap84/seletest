@@ -29,10 +29,9 @@ package com.automation.seletest.core.selenium.mobileAPI;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
+import org.openqa.selenium.ScreenOrientation;
 
 import java.util.HashMap;
-
-import org.openqa.selenium.ScreenOrientation;
 
 
 
@@ -40,8 +39,7 @@ import org.openqa.selenium.ScreenOrientation;
  * Appium interface
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
  */
-@SuppressWarnings("hiding")
-public interface AppiumController<T>{
+public interface AppiumController{
 
     /**
      * This method launch application in mobile device

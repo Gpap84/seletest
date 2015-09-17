@@ -1,0 +1,29 @@
+<ehcache
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+		updateCheck="false">
+
+	<!--Where cached data will be stored!!-->
+	<diskStore path="java.io.tmpdir" />
+
+	<defaultCache eternal="false"
+				  maxElementsInMemory="1000"
+				  overflowToDisk="false"
+				  diskPersistent="false"
+				  timeToIdleSeconds="0"
+				  timeToLiveSeconds="600"
+				  memoryStoreEvictionPolicy="LRU"/>
+
+	<!--Cache for WebElements in UI-->
+	<cache name="webCache"
+		   maxElementsInMemory="1000"
+		   eternal="false"
+		   overflowToDisk="false"
+		   memoryStoreEvictionPolicy="LFU">
+
+		<cacheEventListenerFactory class="com.automation.seletest.core.ehcache.EhCacheEventListenerFactory"/>
+
+	</cache>
+
+
+</ehcache>

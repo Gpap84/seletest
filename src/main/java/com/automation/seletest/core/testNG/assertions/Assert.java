@@ -27,11 +27,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.automation.seletest.core.testNG.assertions;
 
-import java.util.concurrent.Future;
-
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
+import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -41,10 +42,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.testng.asserts.Assertion;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.SeleniumTest.AssertionType;
-import com.automation.seletest.core.services.annotations.VerifyLog;
-import com.automation.seletest.core.services.factories.StrategyFactory;
+import java.util.concurrent.Future;
 
 /**
  * This class represents the Assertion API
@@ -66,7 +64,7 @@ public class Assert<T extends Assertion> {
 
     /**The strategy used*/
     @Autowired
-    StrategyFactory<?> strategy;
+    StrategyFactory strategy;
 
     /**
      * Specify the type of assertion (Hard or Soft) for this test

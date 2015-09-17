@@ -29,24 +29,22 @@ package com.automation.seletest.core.services.factories;
 
 import com.automation.seletest.core.selenium.common.ActionsController;
 import com.automation.seletest.core.selenium.webAPI.WebController;
-import com.automation.seletest.core.services.actions.WaitFor;
+import com.automation.seletest.core.services.webSync.WaitFor;
 
 /**
  * WaitStrategyFactory
  * @author Giannis Papadakis (mailTo:gpapadakis84@gmail.com)
- * @param <T>
- *
  */
 public interface StrategyFactory<T> {
 
     /**Gets the strategy for waiting for conditions*/
-    WaitFor<?> getWaitStrategy(String waitController);
+    WaitFor<T> getWaitStrategy(String waitController);
 
     /**Gets the elementController type*/
-    WebController<?> getControllerStrategy(String elementController);
+    WebController<T> getControllerStrategy(String elementController);
 
     /**Gets the actionsController type*/
-    ActionsController<?> getActionsStrategy(String actionsController);
+    ActionsController getActionsStrategy(String actionsController);
 
 }
 

@@ -26,37 +26,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.selenium.webAPI;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogEntries;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 /**
  * This interface is for all methods used by webdriver to interact with app UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- * @param <T>
  */
-@SuppressWarnings("hiding")
 public interface WebController<T>{
 
     /**
-     * Clear the cache
+     * This method sets the locator for the HTML element
+     * @param locator the locator to identify the HTML element
+     * @return Object that extends By
      */
-    void clearCache();
+    T setLocator(Object locator);
 
     /**
      * Finds a web element
      * @param locator Object locator
      * @return WebElement the element found
      */
-    WebElement findElement(Object locator);
+    <T> T findElement(Object locator);
 
     /**
      * Click function

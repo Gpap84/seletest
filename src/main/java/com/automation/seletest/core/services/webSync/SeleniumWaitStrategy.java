@@ -24,96 +24,103 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.automation.seletest.core.services.actions;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.UnsupportedCommandException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+package com.automation.seletest.core.services.webSync;
 
 import com.automation.seletest.core.selenium.configuration.SessionControl;
 import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.threads.ThreadUtils;
+import com.automation.seletest.core.selenium.webAPI.WebController;
+import com.automation.seletest.core.services.factories.StrategyFactory;
 import com.thoughtworks.selenium.SeleniumException;
+import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.Alert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
+ * SeleniumWaitStrategy class.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings({"unchecked","deprecation"})
+@SuppressWarnings("deprecation")
 @Component("seleniumWait")
-public class SeleniumWaitStrategy implements  WaitFor<Object>{
-
+@Slf4j
+public class SeleniumWaitStrategy implements WaitFor{
 
     @Autowired
-    ThreadUtils thread;
-
+    StrategyFactory factory;
 
     /**
-     * Define locator
-     * @param locator Object locator
-     * @return String locator
+     * Sleeps a thread
+     * @param timeout long timeout for thread sleep
      */
-    private String defineLocator(Object locator){
-        if(((String)locator).startsWith("jquery=")){
-            return ((String)locator).replace("jquery=", "css=");
-        } else{
-            return (String)locator;
+    private void sleep(final long timeout){
+        try {
+            log.info("About to sleep: ",timeout);
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            log.error(String.format("Interrupted exception occured trying to sleep thread for %a with message %b" , timeout, e.getMessage()));
         }
+    }
+
+    /**
+     * Web Controller
+     * @return web controller
+     */
+    private WebController<String> web() {
+        return factory.getControllerStrategy(SessionContext.session().getControllerStrategy());
     }
 
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementPresence(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForElementPresence(java.lang.String)
      */
     @Override
-    public SeleniumWaitStrategy waitForElementPresence(final String locator) {
+    public String waitForElementPresence(final Object locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " presence");
             } try {
-                if (SessionControl.selenium().isElementPresent(defineLocator(locator))) {
+                if (SessionControl.selenium().isElementPresent(web().setLocator(locator))) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ignored) {
+            } sleep(100);
         } while (true);
-        SessionControl.selenium().highlight(locator);
-        return this;
+        SessionControl.selenium().highlight((String)locator);
+        return (String)locator;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementVisibility(java.lang.Object)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForElementVisibility(java.lang.Object)
      */
     @Override
-    public SeleniumWaitStrategy waitForElementVisibility(final Object locator) {
+    public String waitForElementVisibility(final Object locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " visibility");
             } try {
-                if (SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ex1) {
+            } sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
-        return this;
+        return (String)locator;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementToBeClickable(java.lang.Object)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForElementToBeClickable(java.lang.Object)
      */
     @Override
-    public SeleniumWaitStrategy waitForElementToBeClickable(Object locator) {
-        throw new UnsupportedCommandException("waitForElementToBeClickable(Object locator) is not used by Selenium 1");
+    public SeleniumWaitStrategy waitForElementToBeClickable(final Object locator) {
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForAlert()
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForAlert()
      */
     @Override
     public Alert waitForAlert() {
@@ -125,14 +132,14 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
                 if (SessionControl.selenium().isAlertPresent()) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ex2) {
+            } sleep(100);
         } while (true);
         return null;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForElementInvisibility(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForElementInvisibility(java.lang.String)
      */
     @Override
     public boolean waitForElementInvisibility(final String locator) {
@@ -141,18 +148,18 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " invisibility");
             } try {
-                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ex3) {
+            } sleep(100);
         } while (true);
-        SessionControl.selenium().highlight(defineLocator(locator));
+        SessionControl.selenium().highlight(web().setLocator(locator));
         return false;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForTextPresentinElement(java.lang.Object, java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForTextPresentinElement(java.lang.Object, java.lang.String)
      */
     @Override
     public boolean waitForTextPresentinElement(final Object locator,final String text) {
@@ -161,18 +168,18 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + "");
             } try {
-                if (SessionControl.selenium().getText(defineLocator(locator)).equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getText(web().setLocator(locator)).equalsIgnoreCase(text)) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ex4) {
+            } sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
         return false;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForTextPresentinValue(java.lang.Object, java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForTextPresentinValue(java.lang.Object, java.lang.String)
      */
     @Override
     public boolean waitForTextPresentinValue(final Object locator,final String text) {
@@ -181,21 +188,21 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 throw new SeleniumException("Timeout of " + SessionContext.getSession().getWaitUntil() + " seconds waiting for element " + locator + " to have text " + text + " in value attribute");
             } try {
-                if (SessionControl.selenium().getAttribute(defineLocator(locator)+"@value").equalsIgnoreCase(text)) {
+                if (SessionControl.selenium().getAttribute(web().setLocator(locator)+"@value").equalsIgnoreCase(text)) {
                     break;
                 }
-            } catch (Exception e) {
-            } thread.sleep(100);
+            } catch (Exception ex5) {
+            } sleep(100);
         } while (true);
         SessionControl.selenium().highlight((String)locator);
         return false;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForPresenceofAllElements(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForPresenceofAllElements(java.lang.String)
      */
     @Override
-    public SeleniumWaitStrategy waitForPresenceofAllElements(final String locator) {
+    public String waitForPresenceofAllElements(final String locator) {
         long startTime = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
@@ -203,31 +210,31 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             } try {
                 int elements=0;
                 if(locator.startsWith("//") || locator.startsWith("xpath=")) {
-                    elements=SessionControl.selenium().getXpathCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getXpathCount(web().setLocator(locator)).intValue();
                 } else if(locator.startsWith("css=")) {
-                    elements=SessionControl.selenium().getCssCount(defineLocator(locator)).intValue();
+                    elements=SessionControl.selenium().getCssCount(web().setLocator(locator)).intValue();
                 }
                 if (elements > 1) {
                     break;
                 }
             } catch (Exception e) {
-            } thread.sleep(100);
+            } sleep(100);
         } while (true);
-        SessionControl.selenium().highlight(defineLocator(locator));
-        return this;
+        SessionControl.selenium().highlight(web().setLocator(locator));
+        return (String)locator;
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForVisibilityofAllElements(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForVisibilityofAllElements(java.lang.String)
      */
     @Override
-    public SeleniumWaitStrategy waitForVisibilityofAllElements(String locator) {
-        //TODO
-        return null;
+    public SeleniumWaitStrategy waitForVisibilityofAllElements(final String locator) {
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
+
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForPageLoaded()
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForPageLoaded()
      */
     @Override
     public void waitForPageLoaded() {
@@ -235,7 +242,7 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.ActionsSync#waitForAjaxCallCompleted(long)
+     * @see com.automation.seletest.core.services.webSync.ActionsSync#waitForAjaxCallCompleted(long)
      */
     @Override
     public void waitForAjaxCallCompleted(final long timeout) {
@@ -243,7 +250,7 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotPresent(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementNotPresent(java.lang.String)
      */
     @Override
     public boolean waitForElementNotPresent(final String locator) {
@@ -252,16 +259,16 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
                 return false;
             } try {
-                if (!SessionControl.selenium().isElementPresent(defineLocator(locator))) {
+                if (!SessionControl.selenium().isElementPresent(web().setLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
-            } thread.sleep(100);
+            } sleep(100);
         } while (true);
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementInvisble(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementInvisble(java.lang.String)
      */
     @Override
     public boolean waitForElementInvisible(final String locator) {
@@ -270,16 +277,16 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
             if (System.currentTimeMillis() - startTime >= SessionContext.getSession().getWaitUntil() * 1000) {
              return false;
             } try {
-                if (!SessionControl.selenium().isVisible(defineLocator(locator))) {
+                if (!SessionControl.selenium().isVisible(web().setLocator(locator))) {
                     return true;
                 }
             } catch (Exception e) {
-            } thread.sleep(100);
+            } sleep(100);
         } while (true);
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForPageTitle(java.lang.String)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForPageTitle(java.lang.String)
      */
     @Override
     public boolean waitForPageTitle(final String title) {
@@ -293,17 +300,21 @@ public class SeleniumWaitStrategy implements  WaitFor<Object>{
                     return true;
                 }
             } catch (Exception e) {
-            } thread.sleep(100);
+            } sleep(100);
         } while (true);
     }
 
     /* (non-Javadoc)
-     * @see com.automation.seletest.core.services.actions.WaitFor#waitForElementNotClickable(java.lang.Object)
+     * @see com.automation.seletest.core.services.webSync.WaitFor#waitForElementNotClickable(java.lang.Object)
      */
-    @Cacheable("wait")
     @Override
     public boolean waitForElementNotClickable(final Object locator) {
-      throw new UnsupportedCommandException("waitForElementNotClickable(Object locator) is not used by Selenium RC");
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
+    }
+
+    @Override
+    public void waitForJSToLoad() {
+        throw new RuntimeException(String.format("Method %s not implemented yet",new Object(){}.getClass().getEnclosingMethod().getName()));
     }
 
 }

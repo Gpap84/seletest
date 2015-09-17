@@ -26,8 +26,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.automation.seletest.core.aspectJ;
 
+import com.automation.seletest.core.selenium.configuration.SessionControl;
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.services.annotations.JSHandle;
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.annotations.VerifyLog;
+import com.automation.seletest.core.services.utilities.LogUtils;
+import com.automation.seletest.core.spring.AsyncSeletestExecutor;
+import com.automation.seletest.core.testNG.assertions.SoftAssert;
+import com.thoughtworks.selenium.SeleniumException;
 import lombok.extern.slf4j.Slf4j;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -37,15 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.testng.Reporter;
-
-import com.automation.seletest.core.selenium.configuration.SessionControl;
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.services.annotations.JSHandle;
-import com.automation.seletest.core.services.annotations.RetryFailure;
-import com.automation.seletest.core.services.annotations.VerifyLog;
-import com.automation.seletest.core.services.utilities.LogUtils;
-import com.automation.seletest.core.testNG.assertions.SoftAssert;
-import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Error Handling Aspect class.
@@ -64,6 +63,9 @@ public class ExceptionHandler extends SeletestPointCuts {
     /** Environment instance*/
     @Autowired
     Environment env;
+
+    @Autowired
+    AsyncSeletestExecutor executor;
 
     /**
      * Handle Exceptions...

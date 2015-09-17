@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
  *
  */
 @Service
-@SuppressWarnings("unchecked")
 public class HttpClient {
 
     @Autowired

@@ -20,23 +20,23 @@
             <bean id="rmiRegistry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
                 <property name="port" value="${seletest.jmx.rmi.port}" />
             </bean>
-<!--
+
             <bean id="clientConnector"
                   class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
                   depends-on="seletestJmxServer">
                 <property name="serviceUrl"
                           value="service:jmx:rmi://localhost/jndi/rmi://localhost:${seletest.jmx.rmi.port}/seletestJmxConnector" />
-                <property name="environment">
-                    <map>
-                        <entry key="jmx.remote.credentials">
-                            <bean factory-method="commaDelimitedListToStringArray">
-                                <constructor-arg value="${jmx.username},${jmx.password}" />
-                            </bean>
-                        </entry>
-                    </map>
-                </property>
+                <!--<property name="environment">-->
+                    <!--<map>-->
+                        <!--<entry key="jmx.remote.credentials">-->
+                            <!--<bean factory-method="commaDelimitedListToStringArray">-->
+                                <!--<constructor-arg value="${jmx.username},${jmx.password}" />-->
+                            <!--</bean>-->
+                        <!--</entry>-->
+                    <!--</map>-->
+                <!--</property>-->
             </bean>
--->
+
     <!--ManagementFactory handles managed beans in java platform-->
     <bean id="memoryMxBean" class="java.lang.management.ManagementFactory" factory-method="getMemoryMXBean" />
 

@@ -27,18 +27,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.automation.seletest.core.selenium.webAPI;
 
 
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-
+import com.automation.seletest.core.selenium.threads.SessionContext;
+import com.automation.seletest.core.selenium.webAPI.elements.BySelector;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.automation.seletest.core.services.annotations.JSHandle;
+import com.automation.seletest.core.services.annotations.Monitor;
+import com.automation.seletest.core.services.annotations.RetryFailure;
+import com.automation.seletest.core.services.utilities.FilesUtils;
+import com.automation.seletest.core.services.webSync.WaitFor;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -49,36 +45,43 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.remote.LocalFileDetector;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.threads.SessionContext;
-import com.automation.seletest.core.selenium.webAPI.elements.BySelector;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.core.services.annotations.JSHandle;
-import com.automation.seletest.core.services.annotations.Monitor;
-import com.automation.seletest.core.services.annotations.RetryFailure;
-import com.automation.seletest.core.services.annotations.WaitCondition;
-import com.automation.seletest.core.services.annotations.WaitCondition.waitFor;
-import com.automation.seletest.core.services.utilities.FilesUtils;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class contains the implementation of WebDriver 2 API
  * for interaction with UI
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
- * @param <T>
  *
  */
-@Component("webDriverControl")
 @SuppressWarnings({"rawtypes","unchecked"})
-public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseController<T> {
+@Component("webDriverControl")
+public class WebDriverController<T extends WebElement> extends DriverBaseController {
 
     /**FileUtils*/
     @Autowired
     FilesUtils fileService;
+
+    /**
+     * WaitFor Controller
+     * @return WaitFor
+     */
+    private WaitFor<WebElement> waitController() {
+        return factoryStrategy.getWaitStrategy(SessionContext.session().getWaitStrategy());
+    }
 
     @Override
     @Monitor
@@ -95,28 +98,25 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     @Monitor
-    @WaitCondition(waitFor.CLICKABLE)
     @RetryFailure(retryCount=2)
     @JSHandle
     public WebDriverController click(Object locator) {
-        SessionContext.getSession().getWebElement().click();
+        waitController().waitForElementVisibility(locator).click();
         return this;
     }
 
     @Override
     @Monitor
-    @WaitCondition(waitFor.VISIBILITY)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController type(Object locator, String text) {
-        SessionContext.getSession().getWebElement().sendKeys(text);
+        waitController().waitForElementVisibility(locator).sendKeys(text);
         return this;
     }
 
     @Override
-    @WaitCondition(waitFor.VISIBILITY)
     public WebDriverController changeStyle(Object locator, String attribute, String attributevalue) {
-        executeJS("arguments[0].style."+attribute+"=arguments[1]",SessionContext.getSession().getWebElement(),attributevalue);
+        executeJS("arguments[0].style."+attribute+"=arguments[1]",waitController().waitForElementPresence(locator),attributevalue);
         return this;
     }
 
@@ -136,11 +136,10 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
 
     @Override
     @Monitor
-    @WaitCondition(waitFor.VISIBILITY)
     public WebDriverController takeScreenShotOfElement(Object locator) throws IOException {
         File screenshot = webDriver().getScreenshotAs(OutputType.FILE);
         BufferedImage  fullImg = ImageIO.read(screenshot);
-        WebElement element=SessionContext.getSession().getWebElement();
+        WebElement element=waitController().waitForElementPresence(locator);
         Point point = element.getLocation();
         int eleWidth = element.getSize().getWidth();
         int eleHeight = element.getSize().getHeight();
@@ -156,44 +155,44 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
     @Override
     @JSHandle
     public WebElement findElement(Object locator) {
-        return (WebElement) waitController().waitForElementVisibility(locator);
+        return waitController().waitForElementVisibility(locator);
     }
 
+    @Override
+    public By setLocator(final Object locator) {
+        return Locators.findByLocator((String) locator).setLocator((String) locator);
+    }
 
     /**************************************
      **Returning type methods**************
      **************************************/
 
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getText(Object locator) {
-        return SessionContext.getSession().getWebElement().getText();
+        return waitController().waitForElementPresence(locator).getText();
     }
 
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getTagName(Object locator) {
-        return SessionContext.getSession().getWebElement().getTagName();
+        return waitController().waitForElementPresence(locator).getTagName();
     }
 
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public Point getLocation(Object locator) {
-        return SessionContext.getSession().getWebElement().getLocation();
+        return waitController().waitForElementPresence(locator).getLocation();
     }
 
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public Dimension getElementDimensions(Object locator) {
-        return SessionContext.getSession().getWebElement().getSize();
+        return waitController().waitForElementPresence(locator).getSize();
     }
 
     @Override
@@ -213,14 +212,13 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     @Monitor
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController uploadFile(Object locator, String path) {
         LocalFileDetector detector = new LocalFileDetector();
         File localFile = detector.getLocalFile(path);
-        ((RemoteWebElement)SessionContext.getSession().getWebElement()).setFileDetector(detector);
-        SessionContext.getSession().getWebElement().sendKeys(localFile.getAbsolutePath());
+        ((RemoteWebElement)waitController().waitForElementPresence(locator)).setFileDetector(detector);
+        waitController().waitForElementPresence(locator).sendKeys(localFile.getAbsolutePath());
         return this;
     }
 
@@ -238,11 +236,10 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     @Monitor
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController selectByValue(String locator, String value) {
-        new Select(SessionContext.getSession().getWebElement()).selectByValue(value);
+        new Select(waitController().waitForElementPresence(locator)).selectByValue(value);
         return this;
     }
 
@@ -251,11 +248,10 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      */
     @Override
     @Monitor
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController selectByVisibleText(String locator, String text) {
-        new Select(SessionContext.getSession().getWebElement()).selectByVisibleText(text);
+        new Select(waitController().waitForElementPresence(locator)).selectByVisibleText(text);
         return this;
 
     }
@@ -467,10 +463,9 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#findChildElements(java.lang.Object, java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @JSHandle
     public List<WebElement> findChildElements(Object parent, String child) {
-        List<WebElement> children=SessionContext.getSession().getWebElement().findElements(Locators.findByLocator(child).setLocator(child));
+        List<WebElement> children=waitController().waitForElementPresence(parent).findElements(setLocator(child));
         return children;
     }
 
@@ -478,45 +473,41 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#rowsTable(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public int getRowsTable(Object tableLocator) {
-        return SessionContext.getSession().getWebElement().findElements(By.cssSelector("tbody tr")).size();
+        return waitController().waitForElementPresence(tableLocator).findElements(By.cssSelector("tbody tr")).size();
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#columnsTable(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public int getColumnsTable(Object tableLocator) {
-        return SessionContext.getSession().getWebElement().findElements(BySelector.ByJQuery("tbody tr:nth-child(1) td")).size();
+        return waitController().waitForElementPresence(tableLocator).findElements(BySelector.ByJQuery("tbody tr:nth-child(1) td")).size();
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getFirstSelectedOption(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public String getFirstSelectedOptionText(Object locator) {
-        return new Select(SessionContext.getSession().getWebElement()).getFirstSelectedOption().getText();
+        return new Select(waitController().waitForElementPresence(locator)).getFirstSelectedOption().getText();
     }
 
     /* (non-Javadoc)
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#getAllOptionsText(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public List<String> getAllOptionsText(Object locator) {
         List<String> optionValues = new ArrayList<>();
-        List<WebElement> list=new Select(SessionContext.getSession().getWebElement()).getOptions();
+        List<WebElement> list=new Select(waitController().waitForElementPresence(locator)).getOptions();
         for (WebElement element:list) {
             optionValues.add(element.getText());
         }
@@ -527,11 +518,10 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#clearSelectedOptionByText(java.lang.String)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController clearSelectedOptionByText(Object locator, String text) {
-        new Select(SessionContext.getSession().getWebElement()).deselectByVisibleText(text);
+        new Select(waitController().waitForElementPresence(locator)).deselectByVisibleText(text);
         return this;
     }
 
@@ -539,11 +529,10 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#clearSelectedOption(java.lang.Object, java.lang.String)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     @JSHandle
     public WebDriverController clearSelectedOption(Object locator,String value) {
-        new Select(SessionContext.getSession().getWebElement()).deselectByValue(value);
+        new Select(waitController().waitForElementPresence(locator)).deselectByValue(value);
         return this;
     }
 
@@ -551,10 +540,9 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldEditable(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     public boolean isFieldEditable(Object locator) {
-        return SessionContext.getSession().getWebElement().isEnabled();
+        return waitController().waitForElementPresence(locator).isEnabled();
     }
 
 
@@ -562,10 +550,9 @@ public class WebDriverController<T extends RemoteWebDriver> extends DriverBaseCo
      * @see com.automation.seletest.core.selenium.webAPI.interfaces.MainController#isFieldNotEditable(java.lang.Object)
      */
     @Override
-    @WaitCondition(waitFor.PRESENCE)
     @RetryFailure(retryCount=3)
     public boolean isFieldNotEditable(Object locator) {
-        return !SessionContext.getSession().getWebElement().isEnabled();
+        return !waitController().waitForElementPresence(locator).isEnabled();
     }
 
 

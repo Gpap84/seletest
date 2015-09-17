@@ -26,16 +26,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.pagecomponents.pageObjects.Android;
 
-import java.text.MessageFormat;
-
+import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
+import com.automation.seletest.core.selenium.webAPI.elements.Locators;
+import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.automation.seletest.core.selenium.mobileAPI.AppiumController;
-import com.automation.seletest.core.selenium.webAPI.elements.Locators;
-import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
+import java.text.MessageFormat;
 
 /**
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
@@ -45,7 +44,7 @@ import com.automation.seletest.pagecomponents.pageObjects.AbstractPage;
 public class CalculatorPage extends AbstractPage<CalculatorPage>{
 
     @Autowired
-    AppiumController<?> appium;
+    AppiumController appium;
 
     public enum CalculatorLocators {
 

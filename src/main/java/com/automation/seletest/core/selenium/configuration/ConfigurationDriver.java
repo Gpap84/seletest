@@ -26,18 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.automation.seletest.core.selenium.configuration;
 
+import com.opera.core.systems.OperaDriver;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
-
-import java.io.File;
-import java.io.FileReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Properties;
-
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -52,7 +48,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -65,27 +60,31 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.automation.setest.groovy.configuration.WebDriverOptions;
-import com.opera.core.systems.OperaDriver;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+import java.io.File;
+import java.io.FileReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * Configuration class for bean definitions.
  * @author Giannis Papadakis(mailTo:gpapadakis84@gmail.com)
  *
  */
-@SuppressWarnings("deprecation")
 @Configuration
-@EnableCaching
 @EnableMBeanExport(defaultDomain = "seletest.mbeans")
 @PropertySources({@PropertySource({"BrowserSettings/browser.properties","core.properties"})})
 @ImportResource({
-    "classpath*:META-INF/spring/app-context.xml",
-    "classpath*:META-INF/spring/mail-context.xml",
-    "classpath*:META-INF/spring/thread-pool-context.xml",
-    "classpath*:META-INF/spring/jmx-context.xml"})
+        "classpath*:META-INF/spring/app-context.xml",
+        "classpath*:META-INF/spring/mail-context.xml",
+        "classpath*:META-INF/spring/thread-pool-context.xml",
+        "classpath*:META-INF/spring/cache-context.xml",
+        "classpath*:META-INF/spring/jmx-context.xml"})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
+@Slf4j
 public class ConfigurationDriver {
 
     @Autowired
@@ -100,15 +99,12 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chrome(DesiredCapabilities capabilities) {
-        File chromeDriver;
-        if (System.getProperty("os.name").compareTo("Linux")==0) {
-            chromeDriver=new File(env.getProperty("browser.chromedriver.path"));
-            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_linux32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
-        } else {
-            chromeDriver=new File(env.getProperty("browser.chromedriver.path")+".exe");
-            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_win32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        try {
+            System.setProperty("webdriver.chrome.driver", URLDecoder.decode(getClass().getClassLoader().getResource(".").getPath(), "UTF-8")
+                    + System.getProperty("file.separator") + "downloads" + System.getProperty("file.separator") + "chromedriver.exe");
+        } catch (UnsupportedEncodingException e) {
+            log.error("Exception occurred constructing path to chrome executable: {}", e);
         }
-        System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
         return new ChromeDriver(capabilities);
     }
 
@@ -121,15 +117,12 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver chromeOptions() throws Exception {
-        File chromeDriver;
-        if (System.getProperty("os.name").compareTo("Linux")==0) {
-            chromeDriver=new File(env.getProperty("browser.chromedriver.path"));
-            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_linux32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
-        } else {
-            chromeDriver=new File(env.getProperty("browser.chromedriver.path")+".exe");
-            WebDriverOptions.downloadDriver(chromeDriver, env.getProperty("browser.chromedriver")+"_win32.zip",env.getProperty("net.host"),env.getProperty("net.port"));
+        try {
+            System.setProperty("webdriver.chrome.driver", URLDecoder.decode(getClass().getClassLoader().getResource(".").getPath(), "UTF-8")
+                    + System.getProperty("file.separator") + "downloads" + System.getProperty("file.separator") + "chromedriver.exe");
+        } catch (UnsupportedEncodingException e) {
+            log.error("Exception occurred constructing path to chrome executable: {}", e);
         }
-        System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
         return new ChromeDriver(chromeOptions(new File(env.getProperty("browser.chrome.properties")).getAbsolutePath()));
     }
 
@@ -173,7 +166,6 @@ public class ConfigurationDriver {
      * @return ThreadPoolTaskExecutor the default thread pool task executor
      */
     @Bean(name="SeletestTaskExecutor")
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ThreadPoolTaskExecutor defaultTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setThreadNamePrefix("Seletest Thread Pool - ");
@@ -192,9 +184,11 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver internetExplorer(DesiredCapabilities capabilities){
-        File ieDriverExecutable=new File(env.getProperty("browser.iedriver.path"));
-        WebDriverOptions.downloadDriver(ieDriverExecutable, env.getProperty("browser.iedriver"),env.getProperty("net.host"),env.getProperty("net.port"));
-        System.setProperty("webdriver.ie.driver", ieDriverExecutable.getAbsolutePath());
+        try {
+            System.setProperty("webdriver.ie.driver", URLDecoder.decode(getClass().getClassLoader().getResource(".").getPath(), "UTF-8") +System.getProperty("file.separator")+"downloads"+System.getProperty("file.separator")+"IEDriverServer.exe");
+        } catch (UnsupportedEncodingException e) {
+            log.error("Exception occurred constructing path to ie executable: {}", e);
+        }
         DesiredCapabilities ieCap = DesiredCapabilities.internetExplorer();
         capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
         return new InternetExplorerDriver(capabilities.merge(ieCap));
@@ -221,17 +215,22 @@ public class ConfigurationDriver {
     @Lazy(true)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver phantomJS(DesiredCapabilities capabilities){
-        File phantomJSDriver;
-        if (System.getProperty("os.name").compareTo("Linux")==0) {
-            phantomJSDriver=new File(env.getProperty("browser.phantomJs.path"));
-            WebDriverOptions.downloadDriver(phantomJSDriver, env.getProperty("browser.phantomJs")+"-1.9.8-linux-x86_64.tar.bz2",env.getProperty("net.host"),env.getProperty("net.port"));
-        } else {
-            phantomJSDriver=new File(env.getProperty("browser.phantomJs.path")+".exe");
-            WebDriverOptions.downloadDriver(phantomJSDriver, env.getProperty("browser.phantomJs")+"-1.9.8-windows.zip",env.getProperty("net.host"),env.getProperty("net.port"));
-        }
         DesiredCapabilities phantomJSCap = new DesiredCapabilities();
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,phantomJSDriver.getAbsolutePath());
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--ignore-ssl-errors=yes","--web-security=false","--ssl-protocol=any"});
+        phantomJSCap.setJavascriptEnabled(true);
+        try {
+            phantomJSCap.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, URLDecoder.decode(getClass()
+                    .getClassLoader().getResource(".").getPath(), "UTF-8")+System.getProperty("file.separator")+"downloads"+System.getProperty("file.separator")+"phantomjs-2.0.0-windows"+System.getProperty("file" +
+                    ".separator")+"phantomjs.exe");
+        } catch (UnsupportedEncodingException e) {
+            log.error("Exception occured constructing path to executable: {}", e);
+        }
+        phantomJSCap.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{
+                "--ignore-ssl-errors=yes",
+                "--web-security=false",
+                "--ssl-protocol=any"});
+        phantomJSCap.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, "Y");
+        phantomJSCap.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+        phantomJSCap.setCapability("elementScrollBehavior",1);
         return new PhantomJSDriver(capabilities.merge(phantomJSCap));
     }
 
